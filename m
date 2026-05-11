@@ -1,146 +1,197 @@
-Return-Path: <cgroups+bounces-15743-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15755-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IDFmFpzGAWoRjwEAu9opvQ
-	(envelope-from <cgroups+bounces-15743-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:07:56 +0200
+	id AJl8MH7IAWoRjwEAu9opvQ
+	(envelope-from <cgroups+bounces-15755-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:15:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4DCB50D56A
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8665C50D767
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:15:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9AC13301C907
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 12:05:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8C2343042953
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 12:09:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C1E37AA83;
-	Mon, 11 May 2026 12:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="idsgeYUT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14C037B027;
+	Mon, 11 May 2026 12:09:03 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603AF37881F
-	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 12:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C133137AA7E;
+	Mon, 11 May 2026 12:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778501102; cv=none; b=sUSW6xtiyIwECS6o1i54XItjx0ywprjKmVt/0EfAo8f5ZC4IE1Pq2Ylv1Rg8Fzh+bkDmWvCQlkZGnoKBSaa2o6ENitEgu7YY6Vg0ZnSFoMsTQsrHkJoXikGvvCTknpqa9nHW3FT+E8u+0c2q/jzO23H/dAM7+HKQX+kKWqpAsT8=
+	t=1778501343; cv=none; b=V89a3eVltXN8l+JwigI2rb5yX1XeUbGYUjsE161n1E99DDjiOZQr4icRujqI8BaYIbeTfeUAKp6tWKWHeUzkX9xQLZVUv9vwnJeJO8HvMQgm8s8cZBZoWaYxwVt05NpuyGg9JpwYnBdIioYUzFAkL9qOuNOjH10l/ntlZpA0S2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778501102; c=relaxed/simple;
-	bh=+i9nY4yS0mmOkbjwKmwBLgjJ9pvH9NuVOTXbzoovY1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c98L9A/aGzCujEsfbeP7ki9u+hdBFY6VQR/B+QVYBNHItDe8ELf/1ZfmhTEKqcDPa9vEV5eg91u/KooJ58gVKGL0Qe1SF5pHVtLIjoMUP/q24eCj+iJOK72pSR+DpRUVdLd7PPkwXfXNtEoAayNAMud4bvvNn2n4hQ7ANuxP8Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=idsgeYUT; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48d102471a4so41829815e9.2
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 05:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778501100; x=1779105900; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cqTnF9n3Qex9jOfxNTk7/2y9GOIfeHPZuAdK9XxmLL4=;
-        b=idsgeYUTnnQaeJsP7mq0J3y4XnHB8z8WZRQpeZGpl8ikv/KA9Q4NM0684iuFMn8uAa
-         yjdkSlf2sXCuFnMQUCKU/tdPBm42S/pzQGWVgfjntq3P1BFvvFT0Tt4EDJGioktxsIwW
-         UYhOk+0xwcSqDnUr/M2Yi1pu+SYp9EnxjoNDkOEpgQG/Ye/s4r4JBm8YvnvduiLr3o53
-         vE+ShIVz5GBv19VbFR448lV4dDnxix1XfO2596CFkyBnSyBd+q1vrQ1vkyUjAg+gsVYs
-         5YaVLt0WTyH2mqJ0S/EyIkQT5oHWK7pcraODrp5Xvcpvw5kwZtxGSRaENJ5cPR/VU7c9
-         JLpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778501100; x=1779105900;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cqTnF9n3Qex9jOfxNTk7/2y9GOIfeHPZuAdK9XxmLL4=;
-        b=WUaHlvJ7m6HhYzebyGL+2SONc5RPZxKxgqieP9CnY69Hrx8ZDK0jlc2IZRqwyplpCe
-         rQcO1GUNndbHgWBVRmj8ulca6PiQXCibMP1u8p38A9DT1VPO3t74aEnjwvBvp6d4gShz
-         Lnp3xHYWBhlaaln3VlPZ12KLDIB6n4GizLnVyQV0rmp4UPtDXjzrWe2Smsf+LGeGxH1K
-         UqxA1o6s64KtpvLfhflYsVNgOBd21wi3snqXEvZD9R2RIAIPoKmL1DRmRgQzBZ0z5PQI
-         Y2oaguQs9U4/UX3Ua/TCry9Ih1PX+7cWFxS5oiSGm8ratnNw0fLmsvVCPNgK+A435pmd
-         7tug==
-X-Forwarded-Encrypted: i=1; AFNElJ8SdMo9rbGcBLT0BF+NDHOfnjYjZEgkrfc3bTiKb9jH9gRs3RDoZBHdvDR2P8Ylhpr5c1ECy22J@vger.kernel.org
-X-Gm-Message-State: AOJu0YyCQl16znHb66iQXdTWTBzfglomaiVVwCJZDbc8oUzSogRhk/0T
-	CnYPleuoS4XUVTO+KmYgl+KPRQ1zFxq3PlYHpAl9XuWCuCNFWFmPs80D
-X-Gm-Gg: Acq92OGFzlGcsPymAoQt1dPiOBieRG6kyWg8FjNeMF2bVXDCoscK2GRbrhdG/n82iOD
-	b8MafO5Siauc9a3dCc/lKmLQESO6mbjt5F37pDhzSEpPxh1FrlivxqGLLLazdC/UY9x3h1sr4nb
-	MwpuSo+Hy6Q8Fels7UnkFEaZujUoVx8s43VETH0GSnWTybGMx9SvdkXuM8qCtLsKlPHBLqzLrqd
-	GZA03dK8m+jlOKGKkZy+xsW4dLCLUaWf97YvU1EtxdFPktb36Ej++GNl2aLypPFVwZxmurQfHX4
-	Lw8XpVl1oY35hYFGhhhVv/fwYZi8+c2eoDfu0RyFPiFqadAWw5Yh3Q9SyDRJp86HEBgAicA2GTb
-	QhQRLd+motuGhdd0XXc8A41hYF7T3zI7ezyNKWJALtyiSgHuSOzejxVH3bCNKatmmFV1DWnyGPh
-	v7Y0B7WLq76v61yHViX5B5CEzWFJqr02ViEUfLsTrmHhbrVJUFB4x4rzPN2J8gQ//pG/dfsRGbw
-	w==
-X-Received: by 2002:a05:600c:1908:b0:489:1cd2:610a with SMTP id 5b1f17b1804b1-48e6767dfa2mr228143905e9.9.1778501099495;
-        Mon, 11 May 2026 05:04:59 -0700 (PDT)
-Received: from fedora ([185.193.234.8])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45491ca2fd6sm26106273f8f.30.2026.05.11.05.04.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2026 05:04:59 -0700 (PDT)
-Date: Mon, 11 May 2026 13:04:56 +0100
-From: Vishal Moola <vishal.moola@gmail.com>
-To: Hongfu Li <lihongfu@kylinos.cn>
-Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, shuah@kernel.org,
-	jthoughton@google.com, seanjc@google.com, zhangguopeng@kylinos.cn,
-	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/cgroup: Add NULL check after malloc in
- cgroup_util.c
-Message-ID: <agHF6GQg9MpwSfPa@fedora>
-References: <20260511060853.1873161-1-lihongfu@kylinos.cn>
+	s=arc-20240116; t=1778501343; c=relaxed/simple;
+	bh=K17HJv9wHchg6HjxNvHjeVPGC/HYEA4AgbL+Jx6tXCQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SpppVGDj9rbIp5F9TWlO38IVvLqKHHlYNvamCVRqAALICMbqZsO1ggqqxh2erQyMIGbgyTW8+lm7Bmcz5cum6fY6Vdn1GHd3B97MWLMxvClgXfiopccVqiuDfn4H/UvsOGSS5UxpNvqd8O+qNx/xK6Vb9HV61wlAHnraUn2l4rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gDdll3dKPzKHMrn;
+	Mon, 11 May 2026 20:08:03 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 5AFE240570;
+	Mon, 11 May 2026 20:08:54 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgBHDVnVxgFqcAmkBw--.4751S2;
+	Mon, 11 May 2026 20:08:54 +0800 (CST)
+Message-ID: <08ab3e19-38f7-4892-b752-c3a601ed15ba@huaweicloud.com>
+Date: Mon, 11 May 2026 20:08:53 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260511060853.1873161-1-lihongfu@kylinos.cn>
-X-Rspamd-Queue-Id: D4DCB50D56A
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup: Keep favordynmods enabled once per-threadgroup
+ rwsem is active
+To: Guopeng Zhang <zhangguopeng@kylinos.cn>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: Yi Tao <escape@linux.alibaba.com>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260511081607.83490-1-zhangguopeng@kylinos.cn>
+ <22d91fdc-db54-4bcf-bc5a-2a496cc43057@huaweicloud.com>
+ <85eaa9ae-1558-41a8-bf12-999a9b44bfa9@kylinos.cn>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <85eaa9ae-1558-41a8-bf12-999a9b44bfa9@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHDVnVxgFqcAmkBw--.4751S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw18KrWkGFW5uryrtryfXrb_yoW5Zr4rpa
+	nrAF9xtws8GFn8Aas7ta40qF10ya10qFW7JFyDtr18A3ZIgr4ftr4Iyw1UZF1jvFnrGFW7
+	AwnIyrZ5Ca1jy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Rspamd-Queue-Id: 8665C50D767
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15743-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vishalmoola@gmail.com,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.997];
+	MID_RHS_MATCH_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15755-lists,cgroups=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 02:08:53PM +0800, Hongfu Li wrote:
-> Add NULL checks after malloc() in three helper functions to prevent
-> NULL pointer dereference on memory allocation failure.
-> - cg_name()
-> - cg_name_indexed()
-> - cg_control()
-> 
-> These functions allocate memory with malloc() but previously called
-> snprintf() unconditionally, which would trigger undefined behavior
-> if allocation fails.
-> 
-> Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
-> ---
 
-Reviewed-by: Vishal Moola <vishal.moola@gmail.com>
+
+On 2026/5/11 17:53, Guopeng Zhang wrote:
+> 
+> 
+> 在 2026/5/11 17:05, Chen Ridong 写道:
+>>
+>>
+>> On 2026/5/11 16:16, Guopeng Zhang wrote:
+>>> cgroup_enable_per_threadgroup_rwsem is a one-way switch. Once it is
+>>> enabled, cgroup.procs writes use the per-threadgroup rwsem and
+>>> cgroup_threadgroup_change_begin()/end() use the same global state to
+>>> decide whether to take and release the per-threadgroup rwsem.
+>>>
+>>> The disable path warned that the per-threadgroup rwsem mechanism could not
+>>> be disabled but still called rcu_sync_exit() and cleared
+>>> CGRP_ROOT_FAVOR_DYNMODS. That partially disabled favordynmods while the
+>>> global per-threadgroup rwsem mode remained enabled: cgroup.procs writes
+>>> would continue to use the per-threadgroup rwsem, while
+>>> cgroup_threadgroup_change_begin()/end() could observe the exited rcu_sync
+>>> state. The root would also no longer report favordynmods.
+>>>
+>>> Make the transition match the documented one-way semantics. Call
+>>> rcu_sync_enter() only for the first favordynmods enable, and make later
+>>> disable attempts a no-op after warning once the per-threadgroup rwsem mode
+>>> has been enabled.
+>>>
+>>> Fixes: 0568f89d4fb8 ("cgroup: replace global percpu_rwsem with per threadgroup resem when writing to cgroup.procs")
+>>> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+>>> ---
+>>> Manual AB test:
+>>>
+>>> Before this patch:
+>>>   enable favordynmods:
+>>>     cgroup2 opts: rw,relatime,favordynmods
+>>>   disable attempt:
+>>>     cgroup2 opts: rw,relatime
+>>>   dmesg:
+>>>     cgroup: cgroup favordynmods: per threadgroup rwsem mechanism can't be disabled
+>>>
+>>> After this patch:
+>>>   enable favordynmods:
+>>>     cgroup2 opts: rw,relatime,favordynmods
+>>>   disable attempt:
+>>>     cgroup2 opts: rw,relatime,favordynmods
+>>>   dmesg:
+>>>     cgroup: cgroup favordynmods: per threadgroup rwsem mechanism can't be disabled
+>>>
+>>>  kernel/cgroup/cgroup.c | 11 +++++------
+>>>  1 file changed, 5 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+>>> index 6152add0c5eb..fd10fb5b3598 100644
+>>> --- a/kernel/cgroup/cgroup.c
+>>> +++ b/kernel/cgroup/cgroup.c
+>>> @@ -1297,14 +1297,13 @@ void cgroup_favor_dynmods(struct cgroup_root *root, bool favor)
+>>>  	 */
+>>>  	percpu_down_write(&cgroup_threadgroup_rwsem);
+>>>  	if (favor && !favoring) {
+>>> -		cgroup_enable_per_threadgroup_rwsem = true;
+>>> -		rcu_sync_enter(&cgroup_threadgroup_rwsem.rss);
+>>> +		if (!cgroup_enable_per_threadgroup_rwsem) {
+>>
+>> Is this branch redundant? I think if (favor && !favoring) alone should suffice —
+>> or can the outer condition be true twice (i.e., can this block be entered
+>> multiple times)?
+>> Hi Ridong,
+> 
+> Thanks for taking a look.
+> 
+> I don't think the inner check is redundant. `favoring` is per-root, while
+> `cgroup_enable_per_threadgroup_rwsem` is global.
+> 
+> For example, root A may have already enabled favordynmods:
+> 
+
+This functionality is only available for cgroup v2, right?
+
+Never mind — I see Tj has already replied.
+
+-- 
+Best regards,
+Ridong
+
 
