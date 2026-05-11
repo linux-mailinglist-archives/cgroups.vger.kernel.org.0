@@ -1,119 +1,161 @@
-Return-Path: <cgroups+bounces-15720-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15721-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id XUeKExaSAWrsegEAu9opvQ
-	(envelope-from <cgroups+bounces-15720-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 10:23:50 +0200
+	id +PljCU6SAWrTeQEAu9opvQ
+	(envelope-from <cgroups+bounces-15721-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 10:24:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8397850A085
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 10:23:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A6BC50A0B9
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 10:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3C1BC3014872
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 08:19:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EA6C5303CC2D
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 08:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE45F3BAD9C;
-	Mon, 11 May 2026 08:18:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794533B3886;
+	Mon, 11 May 2026 08:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DBJJRewk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWuCNBKg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1E03BD64E;
-	Mon, 11 May 2026 08:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC963B9DAC
+	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 08:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778487511; cv=none; b=odhe8XJQwnQ0Qfm4xuA5w02TO+q+zbkFOe/LCzRM0Um3gtxd6k+BZkbawb1Hzz3OcdyMjmOfHzqoKs8RmjagfMJPw0TfYt3b2v3YYTHJkDwyT+RLkZT2sHXNuOiepBTAl0KcQLG8x0H5TiJShioeMvrOWmhGo8/PChYs1rX7BhU=
+	t=1778487538; cv=none; b=OtJ3OwXpb7lPfiOiyx4hjdwB5vL8npA1OeLDFCnPeK+KQKj+FjnWErrY/X6QoNZxaCDhf/9C3l7SEfNKtV4/mOoxWYMoejp1bBcjtdh7RTQmLJ6xHy+i5wRPk63gsrRXvoF3gmAcHPtKm/tCjqQ+IZhmRCarzMcRbTaA7f00sG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778487511; c=relaxed/simple;
-	bh=XKpDscIRtiV2SKDAxFnyBPB4+eiP7Y2B0hmmz8ILKQI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=KzBO2dCR77bTJZCtox6ld1KdVsdxSAo3i/GH04cRyDYo0T0WwhDzqaVehgSfmdM4D7hr3lH+QkDqkz2kWPbI5A9FQQ40eiBa11u1xcgplvATJ4mD13s92hDjIJi4CY2k+MFaV23L7j+OTglArVVQvpOi1DMZtISwRDG+gfNvSPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DBJJRewk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2BD3C2BCB0;
-	Mon, 11 May 2026 08:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778487510;
-	bh=XKpDscIRtiV2SKDAxFnyBPB4+eiP7Y2B0hmmz8ILKQI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DBJJRewk4WLRF+yiy4yChajgnFp2H3ZJ16DKoXYuQewdX4CJg8mplc89AzO2p0Ktu
-	 E/QBTBfFoKh5Y7EeZkiqJVhbJoQwKebFt++cq8zG0zr++JCvUlyHl4JhtcrW/GPNNX
-	 a4WByrGS5t9lcKRr9zuFwseMQ7e9DVbSPGwy8ibTjDBqzWG2NJegQC9NWRQsTLigUy
-	 aapKw9yXk0+8Pikbp8/j2UHTyh7m3p3gzC3POCfxFIsmBfRfNaWbivv7pGS2fRqndf
-	 Z+853/BbDQmQ9FIDDKC2GnD6yyY5efF+yjXSWly+2sgq9SFsomL4ga6jvTdPZI814Y
-	 kEjGl2PZDAzdA==
-Date: Sun, 10 May 2026 22:18:28 -1000
-Message-ID: <8074401ce6fb258c2f27fe35b76f4c3f@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Guopeng Zhang <zhangguopeng@kylinos.cn>,
- Waiman Long <longman@redhat.com>,
- Tejun Heo <tj@kernel.org>,
- Michal =?UTF-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
- Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Chen Ridong <chenridong@huaweicloud.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Gabriele Monaco <gmonaco@redhat.com>,
- Will Deacon <will@kernel.org>,
- linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] cgroup/cpuset: reset DL migration state on
- can_attach() failure
-In-Reply-To: <20260509102031.97608-2-zhangguopeng@kylinos.cn>
-References: <20260509102031.97608-1-zhangguopeng@kylinos.cn>
- <20260509102031.97608-2-zhangguopeng@kylinos.cn>
+	s=arc-20240116; t=1778487538; c=relaxed/simple;
+	bh=Nx0sQykWEqtrEC53sml2bRH7Cx2uV57dWsIG/5UL9+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NGHkTknpqz33dt8XrQh1OdMdWYOQndYgxR3wWQVJXLNCllgPMGZ16HaS4zwVfY/iD+b6pXsxCBbzq80BWIK/V9L1kvBBxQHaxK8v5ewi4bJRC2Lqj9x6MSeS2nTo1qiFQOgY36yLeRm8XMPqeBw5XIE+7WBDoRs34odqBUZuddo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWuCNBKg; arc=none smtp.client-ip=209.85.216.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-364f7c42c62so3294659a91.0
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 01:18:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778487527; x=1779092327; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/6eqSyVRJ1DRWUO85e98DAUR1Huu+3ED4P9WdAPK+4=;
+        b=RWuCNBKgzzhlGp1tyTlIb0VNLyYfK+dn9eBw+VoAyO5EkTcvFpAal6d2K7sDDEsX1E
+         61Ae8JLaUmZeEkb/C5j8YvDUMpvnRMhfsApbhbf6F9yaD9rdLgjHmqYek4doafimzlbD
+         jWkX2/cYYvxhYUuAcoh/Ly8OHKfhsUkdn/e/K+jjpm4pkUO0FjJ7/C4Z4rN/k++LR9AQ
+         kk7rQz+Jp1RJ66rKfDWUBfCDNq6CnjSHWxzsMX0TYaFjtIi1jX77C/VM5NIOqaK6N9JW
+         kl+gLTDHKbM695UHCoPdcQdEGMQjrq9hcZGNMHRN7BMHF1pCDMX3nLFbItmYvlirmfrT
+         I4aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778487527; x=1779092327;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l/6eqSyVRJ1DRWUO85e98DAUR1Huu+3ED4P9WdAPK+4=;
+        b=RSf0c8YyZ6lWHoXS6+PYNSC4/HCL+pgkHL3J2wLtB/3vFIQUbkQ68NakptWh9Giqbc
+         pN9yRZGA4SoaNQGWDJ+qtX+iKk62BSw2WVKMRqCgxSZ6ljK/oCQYhJxJZR8CAa8d1Rlq
+         w25D9abMO9B2ZJjsJvvjn11dg40gSlK9pYE4w8UlnPEpV3gwfEHOujEPztvAfa1undJc
+         SQPEvm7By/ZWKMTrSfFK6UvDv26fRINYrERifj52KrhhQPZag2R5UJzBU8/xwhIZYInv
+         nBuhHz65Qz2g1/bhpahMtnV2KpLaRR7XDDAOQ2oXTjFJsesQftk68Krx+RT532a+ZHg5
+         sGSA==
+X-Gm-Message-State: AOJu0YxOCVztPLZL267f1k595ZluZcWW65V+F38UADqD4f7kTup3ZieM
+	+bt6nszMZ9ZZWALNh1d+A6FlxPKGsG2GcpSpYjvk6aAp5xYf92gZeo5X9aeBHxnY779ZAejh
+X-Gm-Gg: Acq92OH6W0cnv4zepkhjLtDOU5vPK6tD5LEf0p0w94WtffWMOU/dK97AJxkSb0dkmTp
+	IS50xN7drHu5KJl0UYNy0SNa9IIDX4E4ZxLilecTxbE+2GXeiVVB0YoWY0/Gy1OK168ZSCnKWB3
+	D6VNRY5T9vqPczqblqNeu3M3Og7xkg9LMhZwkIj3ZBGnL6/QcFSy8H4gQnJ4UEqzx25rv58I3w5
+	fgBfa6uzZivILB0g/RP/KMS7umiDwV9Y+PP9GH86Ihve59LW9KXKQTXqaSnhOs0pgtuqyk7nEl6
+	xWbWz54uj1XleazjnZwepdW7UaOf3/Bankmqehynw5AsIc+cgnjDRjYeIPBAc8OpWwuqnWA5C5A
+	YMmYy0D0ICrPofbnPGsAnSlc1RBCTmQ7f3fhYAkrmAYyFPx6d3UUZ64G8jvSTepj9ZcnFX1wnOV
+	JiuNvwd9HL3y3vXK7zNFUchTkEKJtmcWxCaDraQw==
+X-Received: by 2002:a17:90b:3883:b0:368:6998:b49e with SMTP id 98e67ed59e1d1-3686998bc7emr2157344a91.9.1778487527270;
+        Mon, 11 May 2026 01:18:47 -0700 (PDT)
+Received: from intel.company.local ([210.184.73.204])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-367beac5b48sm2631245a91.11.2026.05.11.01.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2026 01:18:46 -0700 (PDT)
+From: Wandun Chen <chenwandun1@gmail.com>
+X-Google-Original-From: Wandun Chen <chenwandun@lixiang.com>
+To: longman@redhat.com,
+	chenridong@huaweicloud.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] cgroup/cpuset: skip hardwall ancestor scan in cpuset v2 in cpuset_current_node_allowed()
+Date: Mon, 11 May 2026 16:18:38 +0800
+Message-ID: <20260511081838.862889-1-chenwandun@lixiang.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: 8397850A085
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 9A6BC50A0B9
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15720-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15721-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenwandun1@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email]
 X-Rspamd-Action: no action
 
-Hello,
+From: Chen Wandun <chenwandun@lixiang.com>
 
-Applied 1/2 to cgroup/for-7.1-fixes with Cc: stable@vger.kernel.org # v6.10+.
+Cgroup v2 doesn't have the concept of memory hardwall, only top_cpuset
+has CS_MEM_EXCLUSIVE/CS_MEM_HARDWALL flags, nearest_hardwall_ancestor
+always returns top_cpuset with all nodes set, so no need to acquire
+callback_lock and scan up cpuset.
 
-Thanks.
+Suggested-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Chen Wandun <chenwandun@lixiang.com>
 
---
-tejun
+---
+v1 --> v2:
+use cpuset_v2 instead of is_in_v2_mode, suggested by Tejun.
+---
+ kernel/cgroup/cpuset.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index a48901a0416a..cbd9e7fc800e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -4231,6 +4231,9 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
+ 	if (gfp_mask & __GFP_HARDWALL)	/* If hardwall request, stop here */
+ 		return false;
+ 
++	if (cpuset_v2())
++		return true;
++
+ 	/* Not hardwall and node outside mems_allowed: scan up cpusets */
+ 	spin_lock_irqsave(&callback_lock, flags);
+ 
+-- 
+2.43.0
+
 
