@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-15745-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15751-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gMTvDPzGAWqSjgEAu9opvQ
-	(envelope-from <cgroups+bounces-15745-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:09:32 +0200
+	id AL+gIpvGAWoRjwEAu9opvQ
+	(envelope-from <cgroups+bounces-15751-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:07:55 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FE8C50D5C7
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:09:29 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A66450D563
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 14:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3F04F3045EE6
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 12:07:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 858063014272
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 12:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409C837B02E;
-	Mon, 11 May 2026 12:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455F83A0EB3;
+	Mon, 11 May 2026 12:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ewnTeeEs"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gBY4cj+a"
 X-Original-To: cgroups@vger.kernel.org
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B39237B019;
-	Mon, 11 May 2026 12:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E2837B027;
+	Mon, 11 May 2026 12:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778501241; cv=none; b=beKrbu4ctS4aKOaO76kWHaI6JYjC/+i7lrxABN5ji3BSXPv/L8WA2n7WEYWJ2KS/N1UmX6U8x9XPXSZQefhuS9J5PIDaNBf6ViBdaqQCkmIDA2HIJeDA/qsslenSS/jui/NB1VRLzdm6K+1tjC2Lp59kj5jNCTjgXqLocdPXuDs=
+	t=1778501244; cv=none; b=PC1+uHjURijoQNir9l1V8mkidgUAXk7XB4ZfrQejcaw2QIINSQQOQT9DdDd1ZxZ8UZigraBFqbvC+5XffMz36QtbSlLCpRgwEXB8pJ/xNvxOK/ZH+U8tsuc5/pox+8FlbfsCysJ30ExKD5yh55NwxgXGKMx++2kBTzjSTSwkFTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778501241; c=relaxed/simple;
-	bh=74XIwVKXNdZdW2lgIMAjqDEX5lPpAsOLQAevkzqcgxU=;
+	s=arc-20240116; t=1778501244; c=relaxed/simple;
+	bh=k+pTtIaHnkTkTKHeFxbxviXAACzwjbCoERO6tUUG+L4=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=jlFDwjYljH7JNheFWKYtrvhdJ+9LhDcmR1ZHP4TCrK6qs2zVur6F6m7KJsbh4G+o2roPu4ebCn+7nXeQqd4MNJHpOnfDR5dP7ioi+V9B0Gv1Mcouov2GUcvgMQJ4uTKDrdNodHSG1Wc7NiQfhRov1HhxMqjZb+cAruaSRKpt+C0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ewnTeeEs; arc=none smtp.client-ip=90.155.92.199
+	 Content-Type; b=BwWsdaa1q8ipBpFpYdLCBEHM9zc/LnPABQVV0JtjP6aQ+Hgi7uNA69CqVNbyu3ItXBgNfNr5g7zC3IO+mFTnnneZkB4kNYu0BsfnWANK2+KqQxTHI815bcDAZZlmVDWU7ijLcon/F9I5qkKNyY5Q2hsXQoOk+IGjxeFDSFcJ808=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gBY4cj+a; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=/nBno72/K1OUhxB+muvWZ/oNtRySVk9xDO45q62blsY=; b=ewnTeeEsMU8nUt37TAm0yjckfz
-	GYMDoTRT5Vqxq8/OjWMvWgIQ9a899LBv4ZoyQVvpI6yxLLT4iO1Njb0svRpYA2IOjYpmC39UTsWhv
-	H58x6UfG4D0DXNWtQtT+ORERZ9dZ3JvazORCHE1iL/NHBbY9VP5aNesTCLzqsRYOV8JPp+C2rQqXs
-	A1ktYUeJ6p3HHsATxB6XSin6umm8DIvCA8y7vim5ElIwZ00UwoTUoLv0hcyOlbSgN66nJF0/mPwRO
-	NpDq54iAshYiaIABii/smhW6TDzTqk1w71MJSWEwKh7VarRL4U5sDlw++uJcxzZc6HInUDAqA9gXe
-	l/sb41JQ==;
-Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	bh=MfDnJaDuHfmTlNlHQofhOK4P8wdrC5bwkWlHclTuFTk=; b=gBY4cj+ak1BsL/7h5Ll8ILYeyr
+	LQ+5eLAL94kuEJGQR8z7kueUciFt3VwRvPVBw6tKdlCa27U1O0KuYgthD2kqPWf3dGXlVM62MEW3d
+	+alW+Np1TRPkSd7SSAQFOazSgTGqOah7RWvUyWkL8LwcEkLbqkGDq52JN7mnyzpA7hd+NTES5oPI2
+	QkmJSFzxuEJRzj/PiQeMRsVKiizI+wsbkgGrhsNAQpqZcz2jWZxAjFjfhVbpDMXXmQQzV8CQ5xaC5
+	Oep7vldSjmb+h+oRCh6x5p3wGFoIm5JVY07Bm+N9hF+OCMY6uC9xKId0RVn5/sR6vB5DA9+c6mkRU
+	UmCDD5hA==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
 	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wMPPZ-0000000BZMS-1x3u;
+	id 1wMPPZ-0000000BZMR-1yZd;
 	Mon, 11 May 2026 12:07:03 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-	id 115B8301261; Mon, 11 May 2026 14:07:00 +0200 (CEST)
-Message-ID: <20260511120627.176946327@infradead.org>
+	id 1702B302F8E; Mon, 11 May 2026 14:07:00 +0200 (CEST)
+Message-ID: <20260511120627.281160085@infradead.org>
 User-Agent: quilt/0.68
-Date: Mon, 11 May 2026 13:31:06 +0200
+Date: Mon, 11 May 2026 13:31:07 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 To: mingo@kernel.org
 Cc: longman@redhat.com,
@@ -73,7 +73,7 @@ Cc: longman@redhat.com,
  jstultz@google.com,
  kprateek.nayak@amd.com,
  qyousef@layalina.io
-Subject: [PATCH v2 02/10] sched: Use {READ,WRITE}_ONCE() for preempt_dynamic_mode
+Subject: [PATCH v2 03/10] sched/debug: Collapse subsequent CONFIG_SCHED_CLASS_EXT sections
 References: <20260511113104.563854162@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -82,12 +82,12 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Queue-Id: 5FE8C50D5C7
+X-Rspamd-Queue-Id: 3A66450D563
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -96,10 +96,10 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	DKIM_TRACE(0.00)[infradead.org:+];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15745-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15751-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	PRECEDENCE_BULK(0.00)[];
@@ -109,74 +109,174 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_NONE(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email,infradead.org:mid,infradead.org:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,infradead.org:email,infradead.org:mid,infradead.org:dkim]
 X-Rspamd-Action: no action
 
-Robots figured out you can read and write this concurrently and got
-'upset'. Gemini even noted sched_dynamic_show() can generate
-'confusing' output if it observed different values during the
-printing.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  |   15 ++++++++-------
- kernel/sched/debug.c |    5 +++--
- 2 files changed, 11 insertions(+), 9 deletions(-)
+ kernel/sched/debug.c |   92 ++++++++++++++++++++++++---------------------------
+ 1 file changed, 44 insertions(+), 48 deletions(-)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -7743,7 +7743,7 @@ static void __sched_dynamic_update(int m
- 		break;
- 	}
- 
--	preempt_dynamic_mode = mode;
-+	WRITE_ONCE(preempt_dynamic_mode, mode);
- }
- 
- void sched_dynamic_update(int mode)
-@@ -7784,12 +7784,13 @@ static void __init preempt_dynamic_init(
- 	}
- }
- 
--# define PREEMPT_MODEL_ACCESSOR(mode) \
--	bool preempt_model_##mode(void)						 \
--	{									 \
--		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
--		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
--	}									 \
-+# define PREEMPT_MODEL_ACCESSOR(mode)					\
-+	bool preempt_model_##mode(void)					\
-+	{								\
-+		int mode = READ_ONCE(preempt_dynamic_mode);		\
-+		WARN_ON_ONCE(mode == preempt_dynamic_undefined);	\
-+		return mode == preempt_dynamic_##mode;			\
-+	}								\
- 	EXPORT_SYMBOL_GPL(preempt_model_##mode)
- 
- PREEMPT_MODEL_ACCESSOR(none);
 --- a/kernel/sched/debug.c
 +++ b/kernel/sched/debug.c
-@@ -239,6 +239,7 @@ static ssize_t sched_dynamic_write(struc
- static int sched_dynamic_show(struct seq_file *m, void *v)
+@@ -446,6 +446,8 @@ static const struct file_operations fair
+ 	.release	= single_release,
+ };
+ 
++static struct dentry *debugfs_sched;
++
+ #ifdef CONFIG_SCHED_CLASS_EXT
+ static ssize_t
+ sched_ext_server_runtime_write(struct file *filp, const char __user *ubuf,
+@@ -478,75 +480,92 @@ static const struct file_operations ext_
+ 	.llseek		= seq_lseek,
+ 	.release	= single_release,
+ };
+-#endif /* CONFIG_SCHED_CLASS_EXT */
+ 
+ static ssize_t
+-sched_fair_server_period_write(struct file *filp, const char __user *ubuf,
+-			       size_t cnt, loff_t *ppos)
++sched_ext_server_period_write(struct file *filp, const char __user *ubuf,
++			      size_t cnt, loff_t *ppos)
  {
- 	int i = (IS_ENABLED(CONFIG_PREEMPT_RT) || IS_ENABLED(CONFIG_ARCH_HAS_PREEMPT_LAZY)) * 2;
-+	int mode = READ_ONCE(preempt_dynamic_mode);
- 	int j;
+ 	long cpu = (long) ((struct seq_file *) filp->private_data)->private;
+ 	struct rq *rq = cpu_rq(cpu);
  
- 	/* Count entries in NULL terminated preempt_modes */
-@@ -247,10 +248,10 @@ static int sched_dynamic_show(struct seq
- 	j -= !IS_ENABLED(CONFIG_ARCH_HAS_PREEMPT_LAZY);
+ 	return sched_server_write_common(filp, ubuf, cnt, ppos, DL_PERIOD,
+-					&rq->fair_server);
++					&rq->ext_server);
+ }
  
- 	for (; i < j; i++) {
--		if (preempt_dynamic_mode == i)
-+		if (mode == i)
- 			seq_puts(m, "(");
- 		seq_puts(m, preempt_modes[i]);
--		if (preempt_dynamic_mode == i)
-+		if (mode == i)
- 			seq_puts(m, ")");
+-static int sched_fair_server_period_show(struct seq_file *m, void *v)
++static int sched_ext_server_period_show(struct seq_file *m, void *v)
+ {
+ 	unsigned long cpu = (unsigned long) m->private;
+ 	struct rq *rq = cpu_rq(cpu);
  
- 		seq_puts(m, " ");
+-	return sched_server_show_common(m, v, DL_PERIOD, &rq->fair_server);
++	return sched_server_show_common(m, v, DL_PERIOD, &rq->ext_server);
+ }
+ 
+-static int sched_fair_server_period_open(struct inode *inode, struct file *filp)
++static int sched_ext_server_period_open(struct inode *inode, struct file *filp)
+ {
+-	return single_open(filp, sched_fair_server_period_show, inode->i_private);
++	return single_open(filp, sched_ext_server_period_show, inode->i_private);
+ }
+ 
+-static const struct file_operations fair_server_period_fops = {
+-	.open		= sched_fair_server_period_open,
+-	.write		= sched_fair_server_period_write,
++static const struct file_operations ext_server_period_fops = {
++	.open		= sched_ext_server_period_open,
++	.write		= sched_ext_server_period_write,
+ 	.read		= seq_read,
+ 	.llseek		= seq_lseek,
+ 	.release	= single_release,
+ };
+ 
+-#ifdef CONFIG_SCHED_CLASS_EXT
++static void debugfs_ext_server_init(void)
++{
++	struct dentry *d_ext;
++	unsigned long cpu;
++
++	d_ext = debugfs_create_dir("ext_server", debugfs_sched);
++	if (!d_ext)
++		return;
++
++	for_each_possible_cpu(cpu) {
++		struct dentry *d_cpu;
++		char buf[32];
++
++		snprintf(buf, sizeof(buf), "cpu%lu", cpu);
++		d_cpu = debugfs_create_dir(buf, d_ext);
++
++		debugfs_create_file("runtime", 0644, d_cpu, (void *) cpu, &ext_server_runtime_fops);
++		debugfs_create_file("period", 0644, d_cpu, (void *) cpu, &ext_server_period_fops);
++	}
++}
++#endif /* CONFIG_SCHED_CLASS_EXT */
++
+ static ssize_t
+-sched_ext_server_period_write(struct file *filp, const char __user *ubuf,
+-			      size_t cnt, loff_t *ppos)
++sched_fair_server_period_write(struct file *filp, const char __user *ubuf,
++			       size_t cnt, loff_t *ppos)
+ {
+ 	long cpu = (long) ((struct seq_file *) filp->private_data)->private;
+ 	struct rq *rq = cpu_rq(cpu);
+ 
+ 	return sched_server_write_common(filp, ubuf, cnt, ppos, DL_PERIOD,
+-					&rq->ext_server);
++					&rq->fair_server);
+ }
+ 
+-static int sched_ext_server_period_show(struct seq_file *m, void *v)
++static int sched_fair_server_period_show(struct seq_file *m, void *v)
+ {
+ 	unsigned long cpu = (unsigned long) m->private;
+ 	struct rq *rq = cpu_rq(cpu);
+ 
+-	return sched_server_show_common(m, v, DL_PERIOD, &rq->ext_server);
++	return sched_server_show_common(m, v, DL_PERIOD, &rq->fair_server);
+ }
+ 
+-static int sched_ext_server_period_open(struct inode *inode, struct file *filp)
++static int sched_fair_server_period_open(struct inode *inode, struct file *filp)
+ {
+-	return single_open(filp, sched_ext_server_period_show, inode->i_private);
++	return single_open(filp, sched_fair_server_period_show, inode->i_private);
+ }
+ 
+-static const struct file_operations ext_server_period_fops = {
+-	.open		= sched_ext_server_period_open,
+-	.write		= sched_ext_server_period_write,
++static const struct file_operations fair_server_period_fops = {
++	.open		= sched_fair_server_period_open,
++	.write		= sched_fair_server_period_write,
+ 	.read		= seq_read,
+ 	.llseek		= seq_lseek,
+ 	.release	= single_release,
+ };
+-#endif /* CONFIG_SCHED_CLASS_EXT */
+-
+-static struct dentry *debugfs_sched;
+ 
+ static void debugfs_fair_server_init(void)
+ {
+@@ -569,29 +588,6 @@ static void debugfs_fair_server_init(voi
+ 	}
+ }
+ 
+-#ifdef CONFIG_SCHED_CLASS_EXT
+-static void debugfs_ext_server_init(void)
+-{
+-	struct dentry *d_ext;
+-	unsigned long cpu;
+-
+-	d_ext = debugfs_create_dir("ext_server", debugfs_sched);
+-	if (!d_ext)
+-		return;
+-
+-	for_each_possible_cpu(cpu) {
+-		struct dentry *d_cpu;
+-		char buf[32];
+-
+-		snprintf(buf, sizeof(buf), "cpu%lu", cpu);
+-		d_cpu = debugfs_create_dir(buf, d_ext);
+-
+-		debugfs_create_file("runtime", 0644, d_cpu, (void *) cpu, &ext_server_runtime_fops);
+-		debugfs_create_file("period", 0644, d_cpu, (void *) cpu, &ext_server_period_fops);
+-	}
+-}
+-#endif /* CONFIG_SCHED_CLASS_EXT */
+-
+ static __init int sched_init_debug(void)
+ {
+ 	struct dentry __maybe_unused *numa;
 
 
 
