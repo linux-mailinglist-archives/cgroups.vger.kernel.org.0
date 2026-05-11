@@ -1,191 +1,173 @@
-Return-Path: <cgroups+bounces-15771-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15772-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gBUlNtQTAmrangEAu9opvQ
-	(envelope-from <cgroups+bounces-15771-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 19:37:24 +0200
+	id QP6gL94aAmocoAEAu9opvQ
+	(envelope-from <cgroups+bounces-15772-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:07:26 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 538EF5139A8
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 19:37:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28F15514147
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:07:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9E35A30C2C3E
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:31:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 75E1531F1A47
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53AFF477984;
-	Mon, 11 May 2026 17:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A6C4508FC;
+	Mon, 11 May 2026 17:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TjeQZaay"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GHd3INcC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F73472785;
-	Mon, 11 May 2026 17:31:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0402A35958;
+	Mon, 11 May 2026 17:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778520664; cv=none; b=rhYPXHCLb5+IDfwQfd13mRHlzFgo0k+pWnHWSxS+UUCUXrV7EZ8pUj8aROPkwMybB9Kgs1xsaI1Fnu65GAs/GzhFV7fOuLWm56ZIq9fNmwUGuXRkwqjelWO1Dvxj9p3ZFA3oVb7PyD/hOK4/IBD1VizHhWfE1O70SExBkQLUL6Q=
+	t=1778521038; cv=none; b=TtoDHB2jGMaRa6iWXsbEFoN+1ONgiiaNHmTbR+Dj0sMkXK/ng4VhhDXzNsZl2u0jWS/0FbQkCxQSD3vk1VrslW8b2Mo/n1PvAjt00bNGENUDuS8sLez3DKlmHdEHSx7qAI/ij9vr2TtzIGugGnUwItSNSqYiQJrtMHXCB6LI+lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778520664; c=relaxed/simple;
-	bh=+LnmobJh1DnauE2NercKhjcRavXPbcfXqJhkutDMYck=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YnPpE+6OPrdUyRTBcHNTUiQnmKqg9huQ9gJdwvpUtKNQxYrDJgb1DXHf5YSQyp17HOd0pgahVKHvhxOD/QsdqO2b7T7+QZ0L7mc/1l6ZIf5jIusoi/xXtHvqKHJbiJiy5BAph3mAvfI7XVMdtR8GJv0ZR81AQ8GWfLrsqDuxwBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TjeQZaay; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1778520663; x=1810056663;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+LnmobJh1DnauE2NercKhjcRavXPbcfXqJhkutDMYck=;
-  b=TjeQZaayKth76rRy+4Xo/9ZAVU0LniylPYDWpum34pUMD6jQpJITNuo9
-   4WoGWxgZQNSRtWjL58CMbRtTMZpKLy4RV4AIT7gCxUKYDW6uiH0HkDPK3
-   0+PnKDU0RjSOqFGGwJdAArirYpWZytT8WGTJZ9lQdB5Es0YzglucgvCI/
-   3ZhwUrgouFd5wDAKAXKKvnlfH8bn9Fc0lpRDpwMX9v/KIlnVK23F2Knhn
-   HEQjpWGythmkFZz2ak8AM7ipHIbHPVI9VpHdpCsy3ayybbg83vgxBLV5y
-   bVs/68pp0h5zPFjtsAyugPhLofwuGXOy6OP7Ef2FckGliJh3flt3rVEg/
-   Q==;
-X-CSE-ConnectionGUID: T2+/DA1RTDyYJK50Apc3/g==
-X-CSE-MsgGUID: hIoQBN05Sfabcr7icv9fPQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="79314247"
-X-IronPort-AV: E=Sophos;i="6.23,229,1770624000"; 
-   d="scan'208";a="79314247"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2026 10:31:03 -0700
-X-CSE-ConnectionGUID: DvbSBq9sQdWWe7FxUzkH4A==
-X-CSE-MsgGUID: G/tszHa2SrybPgfcN93OIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,229,1770624000"; 
-   d="scan'208";a="261000497"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO fedora) ([10.245.244.248])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2026 10:30:58 -0700
-From: =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-To: intel-xe@lists.freedesktop.org
-Cc: =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
-	Natalie Vock <natalie.vock@gmx.de>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org,
-	Huang Rui <ray.huang@amd.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Simona Vetter <simona@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] drm/amdgpu: Wire up dmem cgroup reclaim for VRAM manager
-Date: Mon, 11 May 2026 19:30:08 +0200
-Message-ID: <20260511173008.36526-6-thomas.hellstrom@linux.intel.com>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260511173008.36526-1-thomas.hellstrom@linux.intel.com>
-References: <20260511173008.36526-1-thomas.hellstrom@linux.intel.com>
+	s=arc-20240116; t=1778521038; c=relaxed/simple;
+	bh=N/d70V8PE3dSH/aumUplyCyeuucJ1n4qD1Ocrb4xtAk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HOPIox+9AAF0nmsZhBeNhixROALlOhBdsuBzncBQjaCqWGMbMt9lxdZAANsV8pn1saYmopssjCde4lCsClMbs3Q90KwADYOrR+flhc9t/JAlwT5bFy4LN0OMdmTbwOtus3vMsvgS6EZvaECfwJeQW3zM2CdEorBaLVDCScv9P/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GHd3INcC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA75C2BCB0;
+	Mon, 11 May 2026 17:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778521037;
+	bh=N/d70V8PE3dSH/aumUplyCyeuucJ1n4qD1Ocrb4xtAk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GHd3INcC285TiWddXtQwWIiRNQyLtd9nu93/mvX2tce6l0FHh4AumBvxV/q4lAEzY
+	 ImYIBT+m5GX/oaZoxzbyLdJc3NH0RasadrYewCSkuZBkAUesVxULsXQ6lInQ3Qouaa
+	 xmykr/j53WH5pBRGg0fnl3/PkKBVfGFycBiqCRWmR7IMGVNeIrJTikgJ6eeDOW5kDf
+	 6PG73sxcYoxH0kI2dfVGU92zpDUXwEiJqoYy6nrOEAQBTdUiOY5bCjbpCK24uWiekE
+	 NWaBILveXm96wvx2Pqrb5Tw5jYjtS1KM8jIwaNEndbwvRSB1OKFtC44H4rNtZ/OOCj
+	 Em1kJEHJ7V2Aw==
+Date: Mon, 11 May 2026 07:37:16 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Yuri Andriaccio <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	Luca Abeni <luca.abeni@santannapisa.it>,
+	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
+ RT cgroups
+Message-ID: <agITzCYT3yf_szi7@slm.duckdns.org>
+References: <20260430213835.62217-1-yurand2000@gmail.com>
+ <20260430213835.62217-21-yurand2000@gmail.com>
+ <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
+ <afpLir8tD0Ycb3D8@slm.duckdns.org>
+ <20260507105331.GQ1026330@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 538EF5139A8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260507105331.GQ1026330@noisy.programming.kicks-ass.net>
+X-Rspamd-Queue-Id: 28F15514147
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15771-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[linux.intel.com,gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15772-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,santannapisa.it,cmpxchg.org,suse.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:dkim,linux.intel.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[slm.duckdns.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Register the VRAM manager with the dmem cgroup reclaim infrastructure
-so that lowering dmem.max below current VRAM usage triggers TTM
-eviction rather than failing with -EBUSY.
+Hello, Peter.
 
-Guard place->flags in amdgpu_ttm_bo_eviction_valuable() against NULL,
-as the TTM reclaim path passes a NULL place in cgroup drain mode.
+On Thu, May 07, 2026 at 12:53:31PM +0200, Peter Zijlstra wrote:
+...
+> Looking at cpu_period_quota_parse() this thing takes two u64 values for:
+> {runtime, period} but allows runtime to be the string "max".
+> 
+> I think we'd want an optional extension to that and allow 3 values for:
+> {runtime, period, deadline}, where if the deadline is not given, it will
+> be the same as period.
 
-v3:
-- Rebased on fix for uninitialized list and buddy allocator on the
-  drmm_cgroup_register_region() error path.
+Yeah, I don't know what's needed here but extending the interface as
+necessary is completely fine.
 
-Assisted-by: GitHub_Copilot:claude-sonnet-4.6
-Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c      | 2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 9 ++++++---
- 2 files changed, 7 insertions(+), 4 deletions(-)
+> Right... this then means we need two controls, one to do hierarchical
+> bandwidth distribution, and one to assign bandwidth to the internal
+> group -- which is then subject to its own bandwidth distribution
+> constraint.
+> 
+> This might be a little confusing, but there is no way around that
+> AFAICT.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-index 0dc68fb9d88e..334a177ae8d3 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-@@ -1485,7 +1485,7 @@ static bool amdgpu_ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
- 	dma_resv_for_each_fence(&resv_cursor, bo->base.resv,
- 				DMA_RESV_USAGE_BOOKKEEP, f) {
- 		if (amdkfd_fence_check_mm(f, current->mm) &&
--		    !(place->flags & TTM_PL_FLAG_CONTIGUOUS))
-+		    !(place && (place->flags & TTM_PL_FLAG_CONTIGUOUS)))
- 			return false;
- 	}
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-index ac3f71d77140..a1f1ae264a40 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-@@ -916,6 +916,7 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
- {
- 	struct amdgpu_vram_mgr *mgr = &adev->mman.vram_mgr;
- 	struct ttm_resource_manager *man = &mgr->manager;
-+	struct dmem_cgroup_region *cg;
- 	int err;
- 
- 	ttm_resource_manager_init(man, &adev->mman.bdev,
-@@ -932,9 +933,11 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
- 	if (err)
- 		return err;
- 
--	man->cg = drmm_cgroup_register_region(adev_to_drm(adev), "vram", adev->gmc.real_vram_size);
--	if (IS_ERR(man->cg))
--		return PTR_ERR(man->cg);
-+	cg = drmm_cgroup_register_region(adev_to_drm(adev), "vram",
-+					 adev->gmc.real_vram_size);
-+	if (IS_ERR(cg))
-+		return PTR_ERR(cg);
-+	ttm_resource_manager_set_dmem_region(man, cg);
- 
- 	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_VRAM, &mgr->manager);
- 	ttm_resource_manager_set_used(man, true);
+Separating out the rt as a separate controller is one way and if the
+configuration wants to stick to strict allocation model where nothing is
+available by default unless explicitly allocated, this would be the only
+way. Interface-wise, I think this is going to be fine but I suspect this
+likely would complicated internal implementation quite a bit as now rt can't
+piggyback on existing sched core cgroup infra - no task_group or
+synchronization built around them - and has to build everything on its own.
+It's not the end of the world but not ideal either.
+
+> > - This has the same problem with cgroup1's rt cgroup sched support where
+> >   there is no way to have a permissive default configuration, which means
+> >   that users who don't really care about distributing rt shares
+> >   hierarchically would get blocked from running rt processes by default,
+> >   which basically forces distros to disable rt cgroup sched support. This is
+> >   not new but it'd be a shame to put in all the work and the end result is
+> >   that most people don't even have access to the feature.
+> 
+> Right, but cgroup-v2 allows enabling/disabling specific controllers for
+> a (sub)-hierarchy, right? So if the controller is not enabled (by
+> default), it will fall back to putting the tasks in whatever parent does
+> have it on, and by default the root group would have and would accept
+> tasks.
+> 
+> Additionally, I think we want a flag to allow non-priv tasks to use RT
+> inside the controller -- after all, these tasks would be subject to
+> strict bandwidth controls and cannot burn the system like unbounded/root
+> FIFO tasks can.
+> 
+> Does that all sound workable?
+
+Yeah, if rt becomes its own controller, I don't see any fundamental
+roadblocks. It'd involve a bunch of churn which may add to maintenance
+overhead but it should work. An alternative would be coming up with some way
+to express the default no-enforcement state through the config knobs. I'm
+sure this would be doable too and if folks can figure out a reasonable
+interface, it should be able to obtain basically the same functionality with
+a lot less code.
+
+Thanks.
+
 -- 
-2.54.0
-
+tejun
 
