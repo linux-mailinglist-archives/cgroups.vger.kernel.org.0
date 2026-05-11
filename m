@@ -1,224 +1,219 @@
-Return-Path: <cgroups+bounces-15731-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15732-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0IYuGxSiAWpKgwEAu9opvQ
-	(envelope-from <cgroups+bounces-15731-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 11:32:04 +0200
+	id uHxrLbalAWpDhQEAu9opvQ
+	(envelope-from <cgroups+bounces-15732-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 11:47:34 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 320CE50AF11
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 11:32:04 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D77EA50B405
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 11:47:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B968C3027F58
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 09:30:43 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1A46A30508A0
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 09:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481013BF66B;
-	Mon, 11 May 2026 09:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b8tOssuZ";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="EBjZmITb"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A623A257A;
+	Mon, 11 May 2026 09:32:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90B73BD654
-	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 09:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621D737C930
+	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 09:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778491796; cv=none; b=GOdxvMNLvvcNRmgpJi3opdJIxmE1fq3OzJwa3BHaLIA9jqdl0oMJM/sCyRreSA6ZoTsuBXfYsm7K6JNkQGSlMpnr9GkbMHfSIIB3KIw87qMvUC2Y0abMSiCf4bAgLEmpzGutLgaZ7zxiC1L7pIjL5Qf7w+u+f8GO3nKB2KuKJAw=
+	t=1778491948; cv=none; b=aVb6op6aXCZAlLMTIvVYOxcR0sBHkdKXT4XZB+OFSq+xGu059WqI3WpcPBJa08qfeng5CrtjQDX3o4ThGyXiXUaVEl5czWWyffrpf6XaV30tcxmk++CxSEUQHPWl4Job4fq7OZ9x8tWV3rkx2eSkQJYEVpLjOm8PFTfAGqVvhtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778491796; c=relaxed/simple;
-	bh=p0ukpXDdMIjahg/dwyxcpgBlHpQ/LJiiE2hUUZVLoR8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=StLRGX+H3stnZ0hPaxBp4GDpNJ1bcDQzoI8wdadGS0i2lIxVYGs9JLtLEYxHwlNBkmj4bwmR/QPyqRi8YGm2rI/rXTF33V+7cxbPPJNmnf4EyKyp381zeU8KoUhTd6ntKGjOeYE8PPtzk2phq2xS7nIcmvUqKAgEXwcSgFqt9f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b8tOssuZ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=EBjZmITb; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778491793;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yL+az9BIHTnebA7bZqfjZuHBOfbE8wVkbiZ0XEwVSBQ=;
-	b=b8tOssuZ4DA7/Dv+BPfIIh4HGnlRh1votuzK/WGcXdz0w9LLpkgbPchO16fKSGWwqRfTm+
-	Uqc+SYOpTpugjIcFkZweAu+d5WcaCn4j4hnPr1HicE8WoPfc2cu+NjW+leUnvunK7DwCcr
-	TWskq4HHbceHmYAiem3gfVqDwmhpMwc=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-592-o1ocqXvYMvWmUE88nIowLg-1; Mon, 11 May 2026 05:29:52 -0400
-X-MC-Unique: o1ocqXvYMvWmUE88nIowLg-1
-X-Mimecast-MFC-AGG-ID: o1ocqXvYMvWmUE88nIowLg_1778491791
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-488d3eec9bcso30721695e9.3
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 02:29:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1778491791; x=1779096591; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yL+az9BIHTnebA7bZqfjZuHBOfbE8wVkbiZ0XEwVSBQ=;
-        b=EBjZmITbClwUT4OpPA3bxHg+wAtjdouVE1hdsEBy2WyopZPc+WG+2FUoyVTRZrEKgP
-         UWxaQH6aAw64nYFVnUQx26Q44DpeB04U+DNgkqH7JM14Qk/MFFzAZJAnUsfFAlnN1xk3
-         y94PSpg1GTgtyGaKhYdN3Dzgk7ppNWWNn3yhE9uHlOI7DldZFpB2LiCBkLEGIn53tEd1
-         kNSl0Ata5cibtoX0egA7dlRffqjv228te7loM1A8/oz15x1FSjeYoqOvekNcJAQ6oHYX
-         g92L5SI5eLA6zBlqSJQnzwfF4uBwBR/bQm/1w5REZYUpcbdBJxpJoN9sKbjkhAxJ3V/O
-         kDNA==
+	s=arc-20240116; t=1778491948; c=relaxed/simple;
+	bh=d9PSxFFxGUfO9bcu4GbUqyZO6ELfnJGEDw8k62X8+NQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=t6LElYX8rubOAB/WfGJHhvwC24x4sEHMZ6cEjPfZwvd0DwJvVTGZQ7AEDXOm/rxfBlb13W7Q51zucXUSvYozuWOCQM3duzv6Wf3ojAPtfWZ929z6D8qcelN0VXVOyoZ6XSmhKwSIwdK25KKX6eSFZhUmXCHATkWjDjvFP4xmv4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-6314d2e31d6so701302137.0
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 02:32:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778491791; x=1779096591;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yL+az9BIHTnebA7bZqfjZuHBOfbE8wVkbiZ0XEwVSBQ=;
-        b=RzYB/9qbtAu9byOiI0DVpXxk1aBrD/kcrGZIeHXyl0PLQkz5PKPgpuANIwwJl3HjyZ
-         afcGlWcHSicB3JuV/yajPwh1W/3JTAQFEuO6bbEqn80uMmjbZR/tN0+zobPy6HZhPIpc
-         w0pirAvI8wcagEzqf1hktGWM92RhWlzKEnpkGqqODdjaz5KJLya/+6GNgGPPUVVZWsKg
-         MyrJEiKzr1BhOuMwvZYZtevFL0NlbueNQtc9kC4oiX5mHia1vkEBru/M1p26d6VdoQxJ
-         2ijYONqO70GFXOeQBFy1s+Yf2kcKoeaFx6PvqJ+odR4eEIvsp9AIENveyG5xjPDvmAT6
-         uF6Q==
-X-Forwarded-Encrypted: i=1; AFNElJ8CkdkBH62OOYsaJmuAPSZxSigdt+po4vYrRfydUbX7sGmAVJCzURQXigzJgoaKKBcZckkoHnHe@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0FtIQ4mawNwGNrDxqzzMWSWqRtenezDGpE7Z9wQFiuPD6loqS
-	IM+vMOyT7nbyZY/56M36ECofItsA93g3oy5FUX8ZeF4lLRbK11HwB9kIK6HXuREK49HmifeKknH
-	2lfa48p+iiP0DT79gJ3wmgmuI72Z5rpHDDV7Wt76/MACpW3l0lo+1g34m3sU=
-X-Gm-Gg: Acq92OHfGETxFRL42kM1N5zaM3us1R/W04xTaMytV9QkmAXuRhJlquka9A9zjpLXFn5
-	vLGmqYbuaTimI/Xpq2a0Oyt1mOJNUENsG9cUSprBNgUbmZzFFvLJ+Ls2Wr74r7Xw6f+/JEuCdJF
-	goa7/51FvOB4VY9wbdxMfqoy3MgtQMSZxRuwP25XySIcM7cLe2L0d6ZF10dY/kNnHDUag2XcRvS
-	OCal7/xYLRsprKBH7xDVrflyWvTTXAWrlAne+YR3XSOdWdsePc+D+b1R2+hMg2eDewjGywojqIn
-	GIaiqbl6deFjUhCDnq/ABuKsmfDrdM7AR9VDPyriFj60frt35gAYwEecoAXVVRi58TtabpSiDzA
-	8eaDxk8aTIFN1XClJhYDnnQSVjLVrdEcY/UUR+XUYg9uuNtkwE67B
-X-Received: by 2002:a05:600c:4591:b0:488:bc6a:528d with SMTP id 5b1f17b1804b1-48e707f81e6mr138978545e9.22.1778491791030;
-        Mon, 11 May 2026 02:29:51 -0700 (PDT)
-X-Received: by 2002:a05:600c:4591:b0:488:bc6a:528d with SMTP id 5b1f17b1804b1-48e707f81e6mr138978155e9.22.1778491790616;
-        Mon, 11 May 2026 02:29:50 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.56.132])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e702e5630sm159657345e9.8.2026.05.11.02.29.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 May 2026 02:29:49 -0700 (PDT)
-Date: Mon, 11 May 2026 11:29:47 +0200
-From: Juri Lelli <juri.lelli@redhat.com>
-To: luca abeni <luca.abeni@santannapisa.it>
-Cc: Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
-	Yuri Andriaccio <yurand2000@gmail.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
- RT cgroups
-Message-ID: <agGhi9_SG6vRnDVq@jlelli-thinkpadt14gen4.remote.csb>
-References: <20260430213835.62217-1-yurand2000@gmail.com>
- <20260430213835.62217-21-yurand2000@gmail.com>
- <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
- <afpLir8tD0Ycb3D8@slm.duckdns.org>
- <20260507105331.GQ1026330@noisy.programming.kicks-ass.net>
- <afypzfyH0M7Rcge2@jlelli-thinkpadt14gen4.remote.csb>
- <20260507183931.3915dc59@nowhere>
+        d=1e100.net; s=20251104; t=1778491945; x=1779096745;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Nrzls/aY5F/88Jsnwy7xDyfA7Q7OHE0DPx4RzZ5fDw=;
+        b=eeUKJrjmsAWOfHvxqE5rh5NXTK0RgXAyE4tfPZGLRHhISkSgBana1lnouiqjUoJtB9
+         QZ6F+KWpX+WLSX88TS5U+kJhabgYJwW1phb2q4wLatl98iHKRppS0eZMbA3T9vNzEBwx
+         AuLvLdAZKPZ8X5jOK/b66kdTnZTMjoNB+45RDs+iHIMaOqKLBBciLAhGFo0dD93XjaJS
+         GioOiPlfvu+KUEAJmkGQ/8P6adRgJFvsXz0OKZaT6XVmckVy9f15bP43qHEAqjtJxmNm
+         QoderIzjKsOVIvs00aw8vq6S4ZSlFMvBx5s6oLHU/Lu3JvBtjr1d0SiWyz8cUbZK9FMO
+         TjaQ==
+X-Gm-Message-State: AOJu0YynkUZppTbtO75zfYiMJ7HL/169Krc4nJu1qdctpnZJgX4v2Fra
+	wqG3GHoeDjzejbnNhKTW5DI8UfoYIG5D91SkQrtVXbA+M+t4Na4MC2TH64glGhIU
+X-Gm-Gg: Acq92OHxmlYHGiqUJHgJq1430XuHPrQWqz58bJHy9AG+ZGBFjpOLeR/UrzvQVnCT8sX
+	39MIVIRlmQxG7aaFmyqfwQMZpanJzgSqNvWt37n07AhJeBQNcpKd/C+uXVYE+yAsZthpP/dW00X
+	FdbSZFuECbeWpkv421bAmjmubP7wWS6NT7dF5uQ+a4EEv1bQng5YdOzKrjurE6xpkh7HcOdt1Ko
+	s9RNcnm+Jha1ugE1HKVJF8qW8nUVIWlQH8L8gUi/DnYXg1tex4RrLmx003IiJbhCRHf3E3ND/yM
+	iriYnFxxOAqGEPIwc1zkqYgIXGkYXrWUvXUne1vB/1M7YwYLuPzIw16Kfgt1NAfzw9pjBEB7wz6
+	Cj3s6kbz7aaxKKrmW8HzP44Ab1+ryJXps4elca/rz5OTU388tKciV8RjPfxm0Rr/67zvyV6aWJc
+	+bIGlck1zb8UM3Y3MDPATMO7zirZyzz/JxpzYv5yJo1u4QENmz/Yq6PwFDOeRMQFex
+X-Received: by 2002:a05:6102:50a4:b0:611:e0c2:1604 with SMTP id ada2fe7eead31-6313ea9f02amr4386787137.19.1778491945159;
+        Mon, 11 May 2026 02:32:25 -0700 (PDT)
+Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-6313ffe8e17sm5466057137.3.2026.05.11.02.32.24
+        for <cgroups@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 May 2026 02:32:24 -0700 (PDT)
+Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-56a9076813bso1591917e0c.3
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 02:32:24 -0700 (PDT)
+X-Received: by 2002:a05:6122:3d08:b0:56f:2609:cd95 with SMTP id
+ 71dfb90a1353d-575864d866dmr5663907e0c.9.1778491944525; Mon, 11 May 2026
+ 02:32:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260507183931.3915dc59@nowhere>
-X-Rspamd-Queue-Id: 320CE50AF11
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 11 May 2026 11:32:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX_Y6Sis7776SEjoPZP2NQ8sO7dUbWLF4oCZnWOWQy5vQ@mail.gmail.com>
+X-Gm-Features: AVHnY4J6wptwE4Y5YbQ0RNvAcYZuakxv9GbDOHanQCgeHqKHbSOCIBpnNysMsU8
+Message-ID: <CAMuHMdX_Y6Sis7776SEjoPZP2NQ8sO7dUbWLF4oCZnWOWQy5vQ@mail.gmail.com>
+Subject: Unable to handle kernel NULL pointer dereference in percpu_ref_get()
+To: cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>
+Cc: linux-riscv <linux-riscv@lists.infradead.org>, 
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: D77EA50B405
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15731-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[infradead.org,kernel.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,santannapisa.it,cmpxchg.org,suse.com];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_FROM(0.00)[bounces-15732-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[linux-m68k.org];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,jlelli-thinkpadt14gen4.remote.csb:mid]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.994];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux-m68k.org:email]
 X-Rspamd-Action: no action
 
-On 07/05/26 18:39, luca abeni wrote:
-> Hi,
-> 
-> On Thu, 7 May 2026 17:03:41 +0200
-> Juri Lelli <juri.lelli@redhat.com> wrote:
-> 
-> > On 07/05/26 12:53, Peter Zijlstra wrote:
-> > > On Tue, May 05, 2026 at 09:56:58AM -1000, Tejun Heo wrote:  
-> > 
-> > ...
-> > 
-> > > > - However, the cpu controller is a threaded controller which
-> > > > means that it can have threaded sub-hierarchy where the
-> > > > no-internal-process rule doesn't apply. This was created
-> > > > explicitly for cpu controller. The proposed change blocks it
-> > > > effectively forcing cpu controller into regular domain controller
-> > > > behavior subject to no-internal-process rule. Note these are
-> > > > enforced at controller granularity and this means that users who
-> > > > use the threaded mode will be forced to pick between the two.  
-> > > 
-> > > Right... this then means we need two controls, one to do
-> > > hierarchical bandwidth distribution, and one to assign bandwidth to
-> > > the internal group -- which is then subject to its own bandwidth
-> > > distribution constraint.
-> > > 
-> > > This might be a little confusing, but there is no way around that
-> > > AFAICT.  
-> > 
-> > Just to check if I'm following, you are thinking something like below?
-> > 
-> > groupA/
-> >   cpu.rt.max = "50 50 100"       <- 0.5 from root
-> >   cpu.rt.internal = "20 20 100"  <- 0.2 from groupA for threads at
-> > this level
-> >   + threadA                               <
-> >   + threadB                               <
-> >   +- group1/
-> >        cpu.rt.max = "30 30 100"  <- 0.3 from groupA
-> >        + threadC
-> > 
-> > And we still keep it flat, so 2 dl-entities (per CPU), one handles
-> > threads at groupA level and the other threads inside group1?
-> 
-> An alternative idea I was thinking about: we create 2 dl entities (one
-> for "groupA" and one for "group1"); we set cpu.rt.max for groupA, and
-> we subtract group1's utilization from it (so, if groupA's cpu.rt.max is
-> "50 100" and group1's cpu.rt.max is "30 100", groupA is served by a dl
-> entity (50-30,100)=(20,100) while group1 is served by a dl entity
-> (30,100)).
-> 
-> Basically, with this idea the "internal" reservation is automatically
-> computed based on rt.max and on the children cgroups. A possible issue
-> is that if the children consume all the groupA's utilization the groupA
-> RT tasks remain with 0 runtime (and never execute).
+Hi all,
 
-While I like the automatic approach, I also fear that it might be more
-difficult to maintain/use from a systemd admin perspective, e.g. I
-cannot make a subgroup reservation bigger because there are threads
-running in the parent group which consume all the remaining (internal)
-bandwidth. If we make it explicit it seems easier to see where bandwidth
-is allocated at all levels.
+After merging v7.1-rc3, booting the kernel on RZ/Five hung.
+When retrying with "earlycon keep_bootcon", I managed to catch the
+crash report below.  Unfortunately I could not reproduce it after that,
+hence no bisection result, but perhaps this rings a bell?
 
-Peter? Tejun? What do we want to do with this interface?
+    Unable to handle kernel NULL pointer dereference at virtual
+address 0000000000000000
+    Current swapper/0 pgtable: 4K pagesize, 39-bit VAs, pgdp=0x00000000494f7000
+    [0000000000000000] pgd=0000000000000000, p4d=0000000000000000,
+pud=0000000000000000
+    Oops [#1]
+    CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted
+7.1.0-rc3-rzfive-02022-ge48a16cf2dd1 #515 PREEMPT
+    Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
+    epc : percpu_ref_get+0x32/0x40
+     ra : percpu_ref_get+0x10/0x40
+    epc : ffffffff80089562 ra : ffffffff80089540 sp : ffffffc60000bb10
+     gp : ffffffff812ea908 tp : ffffffd6018c9a00 t0 : ffffffd601997800
+     t1 : ffffffff80df6a2f t2 : 69676552203a5445 s0 : ffffffc60000bb30
+     s1 : ffffffff81291f18 a0 : ffffffff81291f18 a1 : 0000000000000002
+     a2 : 0000000000000000 a3 : 0000000000000001 a4 : 0000000000000000
+     a5 : 0000000200000022 a6 : 0000000000000508 a7 : 0000000000000038
+     s2 : ffffffff8128f4f8 s3 : 0000000000001000 s4 : ffffffff812c9978
+     s5 : 0000000000000010 s6 : 0000000000000000 s7 : ffffffff812ee3f8
+     s8 : ffffffff80a21e58 s9 : 0000000000000008 s10: ffffffff808000aa
+     s11: 0000000000000000 t3 : ffffffff812fd06f t4 : ffffffff812fd06f
+     t5 : ffffffff812fd070 t6 : ffffffd6018aaa7c ssp : 0000000000000000
+    status: 0000000200000100 badaddr: 0000000000000000 cause: 000000000000000d
+    [<ffffffff80089562>] percpu_ref_get+0x32/0x40
+    [<ffffffff8008eac8>] cgroup_sk_alloc+0x40/0x6e
+    [<ffffffff8055ae8a>] sk_alloc+0xb4/0xdc
+    [<ffffffff805b7718>] __netlink_create+0x32/0x8a
+    [<ffffffff805b984a>] __netlink_kernel_create+0x60/0x182
+    [<ffffffff80584492>] rtnetlink_net_init+0x4e/0x7a
+    [<ffffffff8056aacc>] ops_init+0xc6/0xf8
+    [<ffffffff8056bc3c>] register_pernet_operations+0xd0/0x148
+    [<ffffffff8056bce2>] register_pernet_subsys+0x2e/0x48
+    [<ffffffff8082ccb4>] rtnetlink_init+0x18/0x54
+    [<ffffffff8082d27c>] netlink_proto_init+0x11c/0x140
+    [<ffffffff8080100a>] do_one_initcall+0x70/0x13c
+    [<ffffffff808013b2>] kernel_init_freeable+0x274/0x276
+    [<ffffffff806bda22>] kernel_init+0x1e/0x12a
+    [<ffffffff8000d368>] ret_from_fork_kernel+0x10/0xa2
+    [<ffffffff806c37f6>] ret_from_fork_kernel_asm+0x16/0x18
+    Code: 00e7 20ef d9fe 60e2 6442 64a2 6105 8082 77f3 1001 (6314) 8b89
+    ---[ end trace 0000000000000000 ]---
+    note: swapper/0[1] exited with irqs disabled
+    BUG: sleeping function called from invalid context at
+include/linux/percpu-rwsem.h:51
+    in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 1, name: swapper/0
+    preempt_count: 0, expected: 0
+    RCU nest depth: 2, expected: 0
+    CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Tainted: G      D
+7.1.0-rc3-rzfive-02022-ge48a16cf2dd1 #515 PREEMPT
+    Tainted: [D]=DIE
+    Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
+    Call Trace:
+    [<ffffffff8000fab6>] dump_backtrace+0x1c/0x24
+    [<ffffffff80001226>] show_stack+0x2a/0x34
+    [<ffffffff8000b57a>] dump_stack_lvl+0x32/0x4a
+    [<ffffffff8000b5a6>] dump_stack+0x14/0x1c
+    [<ffffffff8003861a>] __might_resched+0x110/0x11a
+    [<ffffffff80038678>] __might_sleep+0x54/0x60
+    [<ffffffff8002382e>] exit_signals+0x1e/0x140
+    [<ffffffff80019858>] do_exit+0x14a/0x642
+    [<ffffffff80019e24>] __riscv_sys_exit+0x0/0x1c
+    [<ffffffff8000f50a>] die+0xdc/0xea
+    [<ffffffff800015d4>] die_kernel_fault+0x1da/0x1e6
+    [<ffffffff80012d20>] no_context+0x38/0x40
+    [<ffffffff80012db2>] handle_page_fault+0x5e/0x23c
+    [<ffffffff806bc9f8>] do_page_fault+0x1e/0x36
+    [<ffffffff806c36da>] handle_exception+0x15e/0x16a
+    [<ffffffff80089562>] percpu_ref_get+0x32/0x40
+    [<ffffffff8008eac8>] cgroup_sk_alloc+0x40/0x6e
+    [<ffffffff8055ae8a>] sk_alloc+0xb4/0xdc
+    [<ffffffff805b7718>] __netlink_create+0x32/0x8a
+    [<ffffffff805b984a>] __netlink_kernel_create+0x60/0x182
+    [<ffffffff80584492>] rtnetlink_net_init+0x4e/0x7a
+    [<ffffffff8056aacc>] ops_init+0xc6/0xf8
+    [<ffffffff8056bc3c>] register_pernet_operations+0xd0/0x148
+    [<ffffffff8056bce2>] register_pernet_subsys+0x2e/0x48
+    [<ffffffff8082ccb4>] rtnetlink_init+0x18/0x54
+    [<ffffffff8082d27c>] netlink_proto_init+0x11c/0x140
+    [<ffffffff8080100a>] do_one_initcall+0x70/0x13c
+    [<ffffffff808013b2>] kernel_init_freeable+0x274/0x276
+    [<ffffffff806bda22>] kernel_init+0x1e/0x12a
+    [<ffffffff8000d368>] ret_from_fork_kernel+0x10/0xa2
+    [<ffffffff806c37f6>] ret_from_fork_kernel_asm+0x16/0x18
+    Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+    ---[ end Kernel panic - not syncing: Attempted to kill init!
+exitcode=0x0000000b ]---
 
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
