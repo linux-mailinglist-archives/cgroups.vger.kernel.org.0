@@ -1,51 +1,83 @@
-Return-Path: <cgroups+bounces-15761-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15762-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EOYRJeX9AWppnAEAu9opvQ
-	(envelope-from <cgroups+bounces-15761-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 18:03:49 +0200
+	id WB8jAY0JAmqznQEAu9opvQ
+	(envelope-from <cgroups+bounces-15762-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 18:53:33 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34375511C06
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 18:03:48 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A324512B73
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 18:53:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3231D302BBFD
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 15:56:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2729F3199943
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 16:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC9941C2F9;
-	Mon, 11 May 2026 15:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4CE426EB3;
+	Mon, 11 May 2026 16:22:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iWY1agl2"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="iJ7UDUjD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012070.outbound.protection.outlook.com [52.101.43.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B007402B87;
-	Mon, 11 May 2026 15:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778514987; cv=none; b=KoY6A5jwu4s5haU0bCze8wdUAVFd4U7fxApaJIUT4xl2oGxWunHdENsgQxArpG5QM6StoYiP+5+FPEhqLgErMP8I2mviRgpMc93+O1/cKYo/SwB0LejTnADfa1zZmuJ/uWZ6c45/7dWxGC0EyIUIgFfo4UfB8hpWQlsmH7p9/2Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778514987; c=relaxed/simple;
-	bh=wHF3j54IopBAPswmwUy+Go6x+2HXg2Z8f8E+TCPm3PQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ijZCqYZgWmbJGOMbRsh29/BxiwzJ7YjxE879UyRaRDiYFDMSJkRa7WkXgZaZsbMHsCtxhlXzSqr+JcZVy0YH2jtfa8Z8yqw4da55mTXx0uZIbBIbnguQWSh/XHbG+Q8iddIVeeJVAEWczMvS5JW+xi3IhEYmtWJQJllQud6PffE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iWY1agl2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11D17C2BCB0;
-	Mon, 11 May 2026 15:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778514986;
-	bh=wHF3j54IopBAPswmwUy+Go6x+2HXg2Z8f8E+TCPm3PQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=iWY1agl25YwFg/1AFNy9/VKJjHwRcbFqhG2jvhJjHofiGhZENmc49UsWAL8ItB0VX
-	 LuQiFxMk08urZ4n1sV0aCAEm3T36Nn6DRFSMyjCl9IvcVUFcciMK5IGGCfzTkvVgkZ
-	 FJkI4LfP4jrPSYkLwkSjXILCi/XOOV99yUNeMjgim97fCybsUeuHgCqfCBK4sKgyYU
-	 jh3Sk0psLkcXDXKeBLWUrQBvwYJ2hc7secFOqxsYYu2cGoR9z8dO91DNCV9bevvz+V
-	 L66WRhCxH76G0hDBACkxMGxDegrnu7E0dLI9mWZNrXaoFHTugvb8+sXLBrc9iu0Ae4
-	 PU8UnQrRVFCBw==
-Message-ID: <3ff8b23a-479d-46e8-b820-a23697587f01@kernel.org>
-Date: Mon, 11 May 2026 17:56:19 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E04B3425CEA;
+	Mon, 11 May 2026 16:22:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778516534; cv=fail; b=Bz2aBvk0VJNV9UxgEjxTKS/wKCEx0ENvDu43jTh9u1z9yzL/bzVX+0iRAHQAvCiBqzJDVnA1MVRGNG/0NJ8uju8Gze714x6s/BaCSUqkjKtMzjSms2tuhw4aVM00xFKTAisbAIwZs6vIUJAmLXqIzAOEyQuf64L1EjasqRZkOBM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778516534; c=relaxed/simple;
+	bh=b6L6AKu2Q4RWN+BfCI/k3ye+nwtNcTcLsDPogE0rymk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nOmQBi++Rhxvxz5ijxuiv7m0fk13oStcVUmWo/Tp+62FeV+EO88OAOdauCn8VVC0llWYqz+bZEBGLT2wixBuuTP00TuPpe65G1sytlFHnwqAW4Hhszgp+2qg9hRDrSaXn5wtugrfbmvXcKD0hIZYqDeYINf9ofmusQ3S3nrDm20=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=iJ7UDUjD; arc=fail smtp.client-ip=52.101.43.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=STuOrGwFWI0Ve42N9eAMlssyMa8ArkB0c9wnEAw/pM/pJIliaAs3hagoGFIO1MAJwMYMF1UUCeuenYUosDB/w7jKeAOvRe1A24Z4qI1fep/wq58UJY6o4sP1Pblt3SCIFynHNRyle0/6KSpM08APkUPDWcB3mo5gGptdhslBFrlgJH/bDjonpB10MAnS345dZRUHV/S4Z+ZB/de7vECsHzd/9LsnD8Cz2D9xt77VBK3rTXC6taojnQrg3QWTLVkHDS4RRu/6jHA/2STHEpwCuUETMTwxTSwaeFJx3Qii6D1bhuc3ocobvKIytBSWVn5/fzaWdypW/h6a05HG/Egbfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bMu0W6yUKLu8Q+F8n8ScXXufGmJRaB6RBQMMaVk3xGU=;
+ b=liA7/YmGzLwu80Qoc92ecB88U6V16vKgZJL9ykWeGrC6JQPtA6JiA/FwjOGiS/kq29LlWNqfbcaiU+HGHNWhwPMjwYdEdjyxloQUhwLScGUiyt2t9gHRIy9/4386dHxl4sJ4/JOgapoS9mgV72eHUYa7qZfJifjKfE09tsw0pHixhuMquvie/yjOFPMCNPXuXvxP09M4fgQ4zxRlspEUspESbtjXRbW1lf6NDbtonfozlzqyXSOhHgi0lQDZghlv7V8H1OPuKOlFMsYxFCGspIe+wf35nQda1V+0xkMB2I/m2cO4kKkOAaEiRT9GCgJciV6DmmsnHIkJ4dlu97Rr3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=infradead.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bMu0W6yUKLu8Q+F8n8ScXXufGmJRaB6RBQMMaVk3xGU=;
+ b=iJ7UDUjD5xMrPdn+GnNuH0CG3xdmxBU9PWHadU5KEPhdRVo7Rx1VJgYt3YrnCptDFhgPuW9TohuWzx3ei4/tBvQpGiTxoHOU5LPYK0XQjyLenX2QABk6mPRB22c6ELto5BsQnfYrinPNJFBhUsWl9YWBXTqsM4zB3pybzTcmeLU=
+Received: from BY1P220CA0007.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:59d::13)
+ by DS4PR12MB9745.namprd12.prod.outlook.com (2603:10b6:8:2a9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.22; Mon, 11 May
+ 2026 16:22:08 +0000
+Received: from BY1PEPF0001AE1D.namprd04.prod.outlook.com
+ (2603:10b6:a03:59d:cafe::ff) by BY1P220CA0007.outlook.office365.com
+ (2603:10b6:a03:59d::13) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.20.9891.23 via Frontend Transport; Mon,
+ 11 May 2026 16:22:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
+Received: from satlexmb08.amd.com (165.204.84.17) by
+ BY1PEPF0001AE1D.mail.protection.outlook.com (10.167.242.106) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.25.13 via Frontend Transport; Mon, 11 May 2026 16:22:07 +0000
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Mon, 11 May
+ 2026 11:22:05 -0500
+Received: from [172.31.184.125] (10.180.168.240) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
+ Transport; Mon, 11 May 2026 11:21:58 -0500
+Message-ID: <133c4d08-5dfb-4f4f-83cb-f9652d4212ef@amd.com>
+Date: Mon, 11 May 2026 21:51:57 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -53,161 +85,145 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/9 v2] mm/memcontrol: Make memory cgroup limits
- tier-aware
-To: Joshua Hahn <joshua.hahnjy@gmail.com>, linux-mm@kvack.org
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Koutny <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
- Kairui Song <kasong@tencent.com>, Muchun Song <muchun.song@linux.dev>,
- Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett"
- <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@kernel.org>,
- Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
- Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>,
- Youngjun Park <youngjun.park@lge.com>, Qi Zheng <qi.zheng@linux.dev>,
- Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
- Wei Xu <weixugc@google.com>, Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
- David Rientjes <rientjes@google.com>,
- Yiannis Nikolakopoulos <yiannis@zptcorp.com>,
- "Rao, Bharata Bhasker" <bharata@amd.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-team@meta.com
-References: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
+Subject: Re: [PATCH v2 10/10] sched/eevdf: Move to a single runqueue
+To: Peter Zijlstra <peterz@infradead.org>, <mingo@kernel.org>
+CC: <longman@redhat.com>, <chenridong@huaweicloud.com>,
+	<juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+	<dietmar.eggemann@arm.com>, <rostedt@goodmis.org>, <bsegall@google.com>,
+	<mgorman@suse.de>, <vschneid@redhat.com>, <tj@kernel.org>,
+	<hannes@cmpxchg.org>, <mkoutny@suse.com>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <jstultz@google.com>, <qyousef@layalina.io>
+References: <20260511113104.563854162@infradead.org>
+ <20260511120628.206700041@infradead.org>
 Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 34375511C06
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <20260511120628.206700041@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY1PEPF0001AE1D:EE_|DS4PR12MB9745:EE_
+X-MS-Office365-Filtering-Correlation-Id: 87ce0d59-4466-4536-1c04-08deaf797241
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|7416014|36860700016|376014|82310400026|11063799003|56012099003|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	kmCpHKq7vRleLtL7ZIM/teUhJ4wAMLV+m1eey3ot86YUFWZ+e6aWcLRdC1sH/vAnkwgFM1koMrrih8/muknr5XnI4izQMvArLtaXyDwiypJUPCle/qFvbArlBxgjRPJy1kc2hQZU+b6gCQOarrAOIv/h2KaDW7dlPq4gau/4m1Kjc6HjwUUCivcDTCSnrUDyqQj8WiCRXU10O2fsFajx2jmeHgGdcySMRn6LGQs8Hu+2h6zui92N9QTjM+ybmqR9Hu3JgTtC0r9eedO/uS3ImWBil+sVkEtKVnI96PNmyXL81Ru+fTfFgJkwtrWA2QQjZc8Oif0tApD61gYfG3OooZqyNhm6v1mMKAsJes43OPm156VeeXkKNDwm7+1jG0Xucc1vduqj5NV40B+xSl5lhZs3z3IRf1Ur3kptk4JIYsVioXkZwX1MK6kJ9TxcybVUd/vedMPdDRAxDIqhb3GtQIOZqieSW1VbWjU20Sn0JtZKJtmw/8fB3+HTZ5GJEnjaPCjLYiB92iKCp4Jc96zRZZcGyS9Z/2Bh16oK1C4y6E1H7Gg/uBAYHGFUVUuYLrtNs8mec8BB+fximQT/5TJ2CqNuv+V7zD/5ytRNyKnTlV2Qdr5/KE9OCfrmFPwVJ7hFaf9H9U4QP/kngviENS2lvvER9qiJHchMKvzCkEaZsUTHfRh2fP40+WnvkkoXduD2dMQjZTq9MroBgRbr3BKM+i1MCQAhTQEM30yF+wFA/kI=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(7416014)(36860700016)(376014)(82310400026)(11063799003)(56012099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	AwNEKdb3ANAzyoL6anIJmmm/LGLzCwoKC2d5Q8Db3z7m/dqrmjaBCD5ggI9beo0PzLti8a2q8ko8lBK7RCtaaLgsXu3v2Sg3UI8lmpUPc80jMGKCqI3jIDtPFZnIc4qes9m+72ed9LYSeIgfWEVXFOSW0xkN7oEPIZ7PjwMU4Kd2u0eJFyXzuzZkw32w5hOo4/q4QFWzGsXbrAEyYsFO9DZlElqUmwYkUMt9K70wiI5IYOcLfWW40xKpabFJCsV6nzM03VbCa17gDXWqamuKt0foI8YhBoDp7uFwgQcmHDtqiz7NH5LhICKjuEL4APCopshoujzjT7/QvoEkz8sNqqkIB96fpK8sd/rtX+Zr1yQHxFzLNf1g7EgODOY66SkWw5/qImgR58trsGO9DBtUcVpnkH4PJeap+GORiEmEE69c39h8KXkowNVZLLv5buzw
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 May 2026 16:22:07.5233
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87ce0d59-4466-4536-1c04-08deaf797241
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BY1PEPF0001AE1D.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS4PR12MB9745
+X-Rspamd-Queue-Id: 7A324512B73
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-15762-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15761-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,kvack.org];
-	RCPT_COUNT_TWELVE(0.00)[33];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,amd.com:mid,amd.com:dkim];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,linux.dev,linux-foundation.org,tencent.com,oracle.com,google.com,huaweicloud.com,gmail.com,redhat.com,lge.com,cs.cmu.edu,zptcorp.com,amd.com,vger.kernel.org,meta.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	DKIM_TRACE(0.00)[amd.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[kprateek.nayak@amd.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	RCVD_COUNT_SEVEN(0.00)[8]
 X-Rspamd-Action: no action
 
-On 4/23/26 22:34, Joshua Hahn wrote:
-> INTRODUCTION
-> ============
-> Memory cgroups provide an interface that allow multiple works on a host to
-> co-exist via weak and strong memory isolation guarantees. This works, because
-> for the most part, all memory has equal utility. Isolating a cgroup’s memory
-> footprint restricts how much it can hurt other workloads competing for memory,
-> or protects it from other cgroups looking for more memory.
-> 
-> However, on systems with tiered memory (e.g. CXL), memory utility is no longer
-> homogeneous; toptier and lowtier memory provide different performance
-> characteristics and have different scarcity, meaning memory footprint no longer
-> serves as an accurate representation of a cgroup’s consumption of the system’s
-> limited resources. As an extreme example, a cgroup with 10G of toptier
-> (e.g. DRAM) memory and a cgroup with 10G of lowtier (e.g. CXL) memory both
-> appear to be consuming the same amount of system resources from memcg’s
-> perspective, despite the performance asymmetry between the two workloads.
-> 
-> Therefore on tiered systems, memory isolation cannot currently happen, as
-> workloads that are well-behaved within their memcg limits may still hurt the
-> performance of other well-behaving workloads by hogging more than its
-> “fair share” of toptier memory.
-> 
-> Introduce tier-aware memcg limits, which establish independent toptier limits
-> that scale with the memory limits and the ratio of toptier:total memory
-> available on the system.
-> 
-> INTERFACE
-> =========
-> This series introduces only one adjustable knob to userspace; a new cgroup mount
-> option “memory_tiered_limits” which toggles whether the cgroup mount will scale
-> toptier limits. It also introduces 4 new read-only sysfs entries per-cgroup:
-> memory.toptier_{min, low, high, max}.
-> 
-> The new toptier memory limits are scaled according to the amount of toptier
-> memory and total memory available on the system as such:
-> 
-> memory.toptier_high = (toptier_mem / total_mem) * memory.high
-> 
-> For instance, on a host with 100GB memory, with 75G toptier and 25G CXL, the
-> “toptier ratio” would be 75 / 100 = 0.75. A cgroup with the following memcg
-> limits {min: 8G, low: 12G, high: 20G, max: 24G} might see toptier limits scaled
-> at {min: 6G, low: 9G, high: 15G, max: 18G}.
+Hello Peter,
 
-Assume you have a bigger hierarchy (HBP, DRAM, CXL), or assume you have multiple
-NUMA nodes with a hierarchy each.
+On 5/11/2026 5:01 PM, Peter Zijlstra wrote:
+> @@ -9291,34 +9206,25 @@ static void wakeup_preempt_fair(struct r
+> +	se = pick_next_entity(rq, true);
+> +	if (!se)
+> +		goto again;
+>  
+>  	p = task_of(se);
+> -	if (unlikely(throttled))
+> +	if (unlikely(check_cfs_rq_runtime(cfs_rq_of(se))))
+>  		task_throttle_setup_work(p);
 
-Your proposal doesn't really seem to be very versatile, or am I wrong?
+I think this bit should also be replicated in set_next_task() after
+account_cfs_rq_runtime() since any part of the hierarchy may get
+throttled as a result of failing to grab runtime.
+
+Also check_cfs_rq_runtime() only sees if the cfs_rq is throttled
+but the task can fail to run if it is on a throttled_hierarchy() too
+so that should be the correct check here.
+
+Something like below (only build tested on queue/sched/flat):
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index e54da4c6c945..950c072244b2 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9224,7 +9224,19 @@ struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
+ 		goto again;
+ 
+ 	p = task_of(se);
+-	if (unlikely(check_cfs_rq_runtime(cfs_rq_of(se))))
++	/*
++	 * For cases where prev is picked again after
++	 * being throttled, entity_tick() would have
++	 * already marked its hierarchy as throttled.
++	 *
++	 * Add throttle work here since
++	 * put_prev_set_next_task() is skipped on
++	 * same task's selection.
++	 *
++	 * For other case, set_next_task_fair() will
++	 * handle adding the throttle work.
++	 */
++	if (throttled_hierarchy(cfs_rq_of(se)))
+ 		task_throttle_setup_work(p);
+ 	return p;
+ 
+@@ -13819,6 +13831,12 @@ static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
+ 		if (on_rq)
+ 			weight = __calc_prop_weight(cfs_rq, se, weight);
+ 	}
++	/*
++	 * Add throttle work if the bandwidth allocation above failed
++	 * to grab any runtime and throttled the task's hierarchy.
++	 */
++	if (throttled_hierarchy(task_cfs_rq(p)))
++		task_throttle_setup_work(p);
+ 
+ 	se = &p->se;
+ 	cfs_rq->curr = se;
+---
+
+
+>  	return p;
+>  
 
 -- 
-Cheers,
+Thanks and Regards,
+Prateek
 
-David
 
