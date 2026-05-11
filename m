@@ -1,194 +1,185 @@
-Return-Path: <cgroups+bounces-15765-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15766-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sPjlDGUQAmqIngEAu9opvQ
-	(envelope-from <cgroups+bounces-15765-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 19:22:45 +0200
+	id YAwTA2ESAmq+ngEAu9opvQ
+	(envelope-from <cgroups+bounces-15766-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 19:31:13 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39BE351356B
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 19:22:44 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23A35137D7
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 19:31:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 18AB831558B2
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 16:45:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 00567301067F
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB2D2749D6;
-	Mon, 11 May 2026 16:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9312E3C2774;
+	Mon, 11 May 2026 17:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QQAOv8Zt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GpjpJikG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B233D3D1C
-	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 16:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778517894; cv=pass; b=UBOtMEBUQJuCJIEKHXTRZG3AYZGQIRoPnAUttbqoF/qzjKZ+6BLA1tWBkgsADZFEhCoiNS5Wippe4YjBRPnvQFXPKLlyY2TXsMPPtCXpjT8ZoM8/n+CwYXhWJOVOU+Nyl0l/t7eAE6F2CoB9zGjfsH9F0mBNNoeHMArqNXT7WJg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778517894; c=relaxed/simple;
-	bh=yW8uytGuflTw9lvqYH/Aia0868CW1vKIuG0TgOoaFoA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FH8fZ/0E5+9Pkzpbx50gggCHsLPZ5+D+r357osLWwL0ZLgywEYcrcqRNPu9X1xoeEqUPqpHZvQU4ot+ap7MHsI2FFM4FpD3zDTkA/tBjleS8TFp6fJXIPfYI1wg474btfFPKRZrBqCDnvYhI3rCaZISARna3crOT+WTomuZhMJc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QQAOv8Zt; arc=pass smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-67f94c078e8so2326525a12.1
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 09:44:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778517892; cv=none;
-        d=google.com; s=arc-20240605;
-        b=OaL4jZKa2AVQ/ffPVfpVEQHS9kYKPOD6z0bLBxVbNdgS0pHTVWJl5orLLRKQK35gjq
-         6nL5EYR/L5TTQ1ZcJSvv3TLk6qvGZD3vGxC/+eBfAO2T2Fw8mmkcS4fV2h2ug3I2M7eq
-         xva5erELnVeP7lnKXAv1flF2BldXMemqKuJkkgphM3MZEWdAvu/a/wqSo+UOKsRxW8hg
-         Qzk4gXpRjZQL4l7NV2ZlO8vV46y6Ao4gTlHVYT8wZu3WNq6kWGZ1JdcE6bwNhRQoCW2V
-         ywujZ/Gfw//qttho5OBBGFtAitQEr9IH1uD+v0/kE1Z6UqZw0phu5n4fQSUBAFWZ0r8r
-         er8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Hv3Z/T/rDKetsPnNf4uqDj2NLpcvDmI8p9/YXJ0ZLU8=;
-        fh=zMy1rA0vh3Sd7QZyZ8HEf0Ppa8+2UgFEq8lZCdxrEtM=;
-        b=SE93oJh0PTD09hCXOWkHELPTayXC1Hqr6XtU/O1By0AAdqqGQsB6mo/7zM1sN8Ri7C
-         h18v+zho07eqQnddrRuLOw9MjontpJzRMGklsCXBWZN+gk+VR/8QQvT3i5tK78AD9tZn
-         KtwLITJhqK8+X3MN2e9MvdR+T7ker2GSwEhJRuGDCTYa93dy2ko8Qmj3tvMkO9E394q6
-         b68F5gBocUT2UVa13GYxdaYTiObNBS3SZ2Y/QkUeWnHaYD0Ue0gA/b9cbGn7tdNaTYVE
-         erRzV8plv+AjmQKNyf+MczMlqzWlU9WgdFUuIsLBhoYrcVmn1vJDY2kUYKSNavqFyfpN
-         YmhQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778517892; x=1779122692; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hv3Z/T/rDKetsPnNf4uqDj2NLpcvDmI8p9/YXJ0ZLU8=;
-        b=QQAOv8Zt3Oa9V3HfjDWdDMuDRXr9ZmKJCwbIGDz5eTPc2b4Rf+04FjyBO22ney2jCW
-         DcZ57rxgbNNpzQVnVuoK969wrqfFoGzku0Sl/UCr7+iHdO8/xqJ3auKt0tPY5TfuqXJU
-         wPOu18DW8Cvj/vZtTcvYP8U35ZoO3FgSlu95zkT+bZfEx6xjkcu5HTGrBWgdxLKH8AcS
-         zwcIeB8NWgd+TRAFnpVJfLjwd6yoqxLfUy0e/l0Ps3lsOiEAX8TB6EaNL8Mj73IfR/7D
-         L9hjmcB5CVzW/8UUkZ7JoJgabohWeczMSgOGpYmB+/Zq4+AA9KORdON/bndpAasKWAQx
-         cxIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778517892; x=1779122692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Hv3Z/T/rDKetsPnNf4uqDj2NLpcvDmI8p9/YXJ0ZLU8=;
-        b=TBe0DrFosfal6HaYH9WdKN1fwJXQiWwJExxw3ddaIQxv/je9eLtqv42/E/P5vYy9zK
-         4XkMVJwh5DZAtcRdmkIy0t1PcCGCOV6CdnlAviiWXzMA4E2UswpFHfYqDieLJKsja/HO
-         ZTE3q6BWvjcFJl1TM5p18zD9aby7gWuEAKoa0yfmUKmNIwiXu+emdDmVdlTZwrQsxpJS
-         yj3nL8NyXfpPh8m7cmPwa+iHDEsezp+UGnuBK9LRBZTNTKw3vTp7JCorSl1Km6qlIm5e
-         Q+m4oHN1KwQXIZMsmCl5rXn2b3x3AioZZUK1ZFRsUu0XAR+GZn1x04JAFt8jaoIwnre5
-         pp8w==
-X-Forwarded-Encrypted: i=1; AFNElJ8LCa9Zs06IAWW85sgfE4MuDzy2m1+QLC6EBibceoGYYvL0AfWelscCQW4mQwUKSjsHGxePOu9b@vger.kernel.org
-X-Gm-Message-State: AOJu0Yym7mBwvg173yjUXxO1C7tdnqZ04DyC3VHODc8wDoc+QmGTaBlU
-	htcMRUwL1pDO7SjDI6KneZCw3kkj8NS+F5BKvVZno+b44BB08mM+W9M1/NAfaEvDQUE2dHldr8W
-	Aq2O4Nwiad8/CUYeY2x54WLNWskpM/Fw=
-X-Gm-Gg: Acq92OGHJlsVIEteuY6kfdLEiquGv8rOPh67/+h3Rw3fYUgcplwcSMkOvtpi6nftJ6C
-	7vxNdKfJwZmoSrz7DcyRlNFtdYs/i5X6IVer/9leMnYXQDfxzlv1SQ2t4XjZ56hKYUhmNSr03yG
-	EKfbmV+F0Baki1GfRzumTrGcpFxHyCXrROeFxGkU0e7HCezbumLF7jn7HBGCisi0W7PcfIoN2ja
-	f6I7J4QbvPjibfSCMj3kMlxXExn0RGtKEsPghKBpC6BHKQiFjapXNBmOU9Jf6n63I2P7H1vSFco
-	RY0j/URyAHIcYOdiHKqi0SDz+OaxXVvrvZDWsX0dcTj+SYjeoKI=
-X-Received: by 2002:a17:907:98c:b0:ba7:b198:7d35 with SMTP id
- a640c23a62f3a-bc56be38696mr1454458366b.19.1778517891489; Mon, 11 May 2026
- 09:44:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D928444E040;
+	Mon, 11 May 2026 17:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778520655; cv=none; b=Kh9esCHFB2yaHkDROTO3pyxbOCsCnB1v9e7LjZWjNYMnMuE3wrLGvNitvInlIek3rbQWHQI+dPALZJ+5+vzHMJmPrAjs1RDDOQ1v4USWbb9lH4z9wqHMW1r0C2rGAc3bDHU33EO55uDdAOv4GdEv20rR2kbACttfIIdm9ty4KAE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778520655; c=relaxed/simple;
+	bh=QwAUyWjs2Ijf+FDLhUVD/L6ZmCDjeyicV4iWxLk6j7w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cAzYkKwtWU/EDKbT6Wb0RMOsXJViLCVq8QP/olpyjZHAOhHP0si8Z6d7BOvPDXJVum6NxhHhSBngm6Me5P/LYRctdHcd0Ei7mwNRf5iYYli5GH4xtkeTxDacuCym11qVB9oGYXfVGyleLQaYU3wNS8zmVC5Mcy1ka6wLbcbL3Ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GpjpJikG; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1778520653; x=1810056653;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QwAUyWjs2Ijf+FDLhUVD/L6ZmCDjeyicV4iWxLk6j7w=;
+  b=GpjpJikGTY4eK4I1fDNgl22jamRX8qt3lWto72Mb0V9sxRSFNdAHcf2a
+   GagKdxYBGSeyAcAZqL+KZXr8R9oy+a1HBd8nx95qIQeFKiYtknb3sQjdV
+   grrGf1AMqHRXWtFlvzHVbp8Md4xA6Kz/IOdGBy6nM4oFCl4vp7zjNgqDt
+   SX3D+rZYOyjOueM8+72+NBn8Z2GUKE5PwxszXob5niTGCsjSO6Nkmv2+M
+   PmjQeHlvmZtBVpvTS/0mWiM+z+z0MDH2Fb67EO8IpE0elgDXCPRqm3UK7
+   Uh6SMSkMTz22tdfXf9MOIovTSGtDdwpuWsS0Z5Olzybv8YQ4FJ7ylWeVR
+   g==;
+X-CSE-ConnectionGUID: oemgjQhaTnuLL9i7Ntozsw==
+X-CSE-MsgGUID: qBtzpvRmSzuYRH3T+juuiA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="79314094"
+X-IronPort-AV: E=Sophos;i="6.23,229,1770624000"; 
+   d="scan'208";a="79314094"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2026 10:30:40 -0700
+X-CSE-ConnectionGUID: 5rs/O7s1RCiuzwYiPThWVw==
+X-CSE-MsgGUID: lp2pCNh7SwOCLVWmxpoCWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,229,1770624000"; 
+   d="scan'208";a="261000287"
+Received: from pgcooper-mobl3.ger.corp.intel.com (HELO fedora) ([10.245.244.248])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 May 2026 10:30:35 -0700
+From: =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
+To: intel-xe@lists.freedesktop.org
+Cc: =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Natalie Vock <natalie.vock@gmx.de>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Tejun Heo <tj@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org,
+	Huang Rui <ray.huang@amd.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Simona Vetter <simona@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/5] Add reclaim to the dmem cgroup controller
+Date: Mon, 11 May 2026 19:30:03 +0200
+Message-ID: <20260511173008.36526-1-thomas.hellstrom@linux.intel.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
- <20260421-swap-table-p4-v3-5-2f23759a76bc@tencent.com> <675e9027-9fb5-47b5-9a2d-c9a416a27d0d@kernel.org>
- <CAMgjq7DegMz2ZEHOhHkAqDEWDuCSZ7Ktsxw1ibDY8axFzRRGnQ@mail.gmail.com> <c72ead41-0bb3-4da0-856c-315dc552c722@kernel.org>
-In-Reply-To: <c72ead41-0bb3-4da0-856c-315dc552c722@kernel.org>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 12 May 2026 00:44:14 +0800
-X-Gm-Features: AVHnY4Lqb9-Qjp1gLoCD6Wj_xSwNStP-lbWfmLcjcAc8JKIbMJcoyw45UeE5es8
-Message-ID: <CAMgjq7CK7DPfHEXUY+mDeKu33n=CBrh1RKmpem7Arjsas9rxYw@mail.gmail.com>
-Subject: Re: [PATCH v3 05/12] mm, swap: unify large folio allocation
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, Chris Li <chrisl@kernel.org>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Youngjun Park <youngjun.park@lge.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Yosry Ahmed <yosry@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>, 
-	Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 39BE351356B
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: A23A35137D7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15765-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,nvidia.com,linux.alibaba.com,kernel.org,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	TAGGED_FROM(0.00)[bounces-15766-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linux.intel.com,gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org];
+	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.intel.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,intel.com:email,intel.com:dkim]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 11:15=E2=80=AFPM David Hildenbrand (Arm)
-<david@kernel.org> wrote:
->
-> On 5/11/26 16:37, Kairui Song wrote:
-> >
-> > Yes, the current status is a bit odd, about two years ago I also
-> > wanted to name it `swapin_direct()`.
-> > https://lore.kernel.org/linux-mm/20240326185032.72159-3-ryncsn@gmail.co=
-m/
-> >
-> > But actually ZRAM or shmem would also benefit from supporting unified
-> > readahead like this:
-> > https://lore.kernel.org/linux-mm/20240102175338.62012-6-ryncsn@gmail.co=
-m/
-> >
-> > So calling it `swapin_entry` seems more future-proof. At some point in
-> > the future we might remove `swapin_readahead`. All swapin operations
-> > could have a unified or at least a per-device readahead policy like
-> > the one in the link above, instead of the current policy where the
-> > caller must decide whether to perform readahead.
-> >
-> > But any suggestion on naming is welcome :)
->
-> The other proposal
->
->         https://lore.kernel.org/all/tencent_CD11FE9B4A0B362E95E776C5F6795=
-98FAA07@qq.com/
->
-> calls it
->
->         swapin_synchronous_folio
->
-> Maybe just swapin_sync_io()/swapin_sync() or sth like that?
+When writing a "max" limit lower than the current usage, the
+existing code silently failed. This series aims to improve
+on that by returning -EBUSY on failure and also attempt
+to synchronously reclaim device memory to push the usage
+under the new max limit to avoid the error.
 
-Good idea, I can keep the swapin_sync name at this point. Sync io flag
-still may remain for a longer time.
+Patch 1 fixes a pre-existing amdgpu_vram_mgr_init() error path
+Patch 2 implements and documents a reclaim callback interface
+      for the dmem controller.
+Patch 3 implements a TTM reclaim callback.
+Patch 4-5 hooks up the reclaim callback to the dmem cgroups-
+      aware drivers xe and amdgpu.
+
+v2:
+- Remove the error propagation that was in a previous series (Maarten)
+- A number of updates in patch 1. See its commit message for
+  details (Maarten)
+
+v3:
+- Add patch 1 fixing a pre-existing amdgpu_vram_mgr_init() error path
+  bug where drmm_cgroup_register_region() was called before
+  INIT_LIST_HEAD() and gpu_buddy_init(), causing a kernel panic on
+  failure. (Sashiko-bot)
+- Use an rwsem to protect reclaim callback registration and region
+  unregister against concurrent reclaim invocations. (Sashiko-bot)
+- Fix ttm_resource_manager_set_dmem_region() storing an error pointer
+  in man->cg unconditionally. (Sashiko-bot)
+- Fix kernel-doc function name format for ttm_bo_evict_cgroup() and
+  ttm_resource_manager_set_dmem_region().
+
+User-space tests are at
+https://patchwork.freedesktop.org/series/163935/
+
+Test-with: 20260428065411.4222-1-thomas.hellstrom@linux.intel.com
+
+Thomas Hellström (5):
+  drm/amdgpu: Fix init ordering in amdgpu_vram_mgr_init()
+  cgroup/dmem: Add reclaim callback for lowering max below current usage
+  drm/ttm: Hook up a cgroup-aware reclaim callback for the dmem
+    controller
+  drm/xe: Wire up dmem cgroup reclaim for VRAM manager
+  drm/amdgpu: Wire up dmem cgroup reclaim for VRAM manager
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c      |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c |  10 +-
+ drivers/gpu/drm/ttm/ttm_bo.c                 |  95 ++++++++++++++++-
+ drivers/gpu/drm/ttm/ttm_bo_util.c            |   3 +-
+ drivers/gpu/drm/ttm/ttm_resource.c           |  37 +++++++
+ drivers/gpu/drm/xe/xe_ttm_vram_mgr.c         |  19 ++--
+ include/drm/ttm/ttm_bo.h                     |  10 ++
+ include/drm/ttm/ttm_resource.h               |   4 +
+ include/linux/cgroup_dmem.h                  |  24 +++++
+ kernel/cgroup/dmem.c                         | 106 +++++++++++++++++--
+ 10 files changed, 286 insertions(+), 24 deletions(-)
+
+-- 
+2.54.0
+
 
