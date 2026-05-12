@@ -1,70 +1,66 @@
-Return-Path: <cgroups+bounces-15857-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15858-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SFFLJSJ2A2rf5wEAu9opvQ
-	(envelope-from <cgroups+bounces-15857-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 20:49:06 +0200
+	id 8GVcDH1wA2p15wEAu9opvQ
+	(envelope-from <cgroups+bounces-15858-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 20:25:01 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFFE5281ED
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 20:49:06 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EF4152789A
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 20:25:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C346F30CC4C6
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 18:19:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id CC4EC3046AE5
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 18:20:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F4F37C93E;
-	Tue, 12 May 2026 18:19:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4667A381AE7;
+	Tue, 12 May 2026 18:20:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="khvrq4K2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DDb7t29T"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAB3356741;
-	Tue, 12 May 2026 18:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08ACB3812C8;
+	Tue, 12 May 2026 18:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778609944; cv=none; b=B8W1bDsc+d35BCI+AdsNOIdHRJZk6V1SosJLqfRqR1M/ex7WlJxuOE+9/xWJ4rVuvudEWq8QR3MqOUMvdLOdoc6EOFCAXKezC4YB1lLdQ7z9NKTya7YVy0wfpU+h3ih0W9dKy72+3ulA4tMpzlgiT5zfb17Dijv+DGUIKiLs9s4=
+	t=1778610052; cv=none; b=kzq6vav8qx/MiCPOVKIDGSkMn0eKDh5PJoFYIt0lWzPfXQAaL4+1xmUv804zGU4WD8LBTiLrIM1XKnUBbCP5SVm6pJNYi41rzx/wT2OTKKjb8d8l+n8xyoFqPnW1LxktD4ibunuyQfJZr/Dy64xOH/z+vn8B63buXP3QzY1ih3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778609944; c=relaxed/simple;
-	bh=N1WR3oJ1M93TcD66wBLy2PuWMj8UZxgV3MASIKa8ASQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=fiTSFaQIW+JwSv3RrWhk9rj71jHdmYfix7pDmkaa/U8HZtqee31sZVfa6AH60XlNptKFVTHdz3TuL1SAaI/Rzgp9cpfhGdQX13kdoxQBfPdKQJ33dLz35ktjqQc8wH9d83t2b+cjucRBaKkfvwavoK0Mf6JqJOucQy0vVt6FtnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=khvrq4K2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9B0BC2BCB0;
-	Tue, 12 May 2026 18:19:03 +0000 (UTC)
+	s=arc-20240116; t=1778610052; c=relaxed/simple;
+	bh=V3W42SBmQf4d+KigTBwM8MJb1z78Kgg0dhdU64pdM0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QnnL+dNQwnJwd41U1P8zOqgOu6BCjdUojoQayRmpRdHyM2TqIKvde2T55gKeTlR9GrmrYvSORdfnCFfuA7YMdTYXo3agBUc7C4qK03hSQj7BIrAGHNH7CZFKt8qoWl2iw5xoeqK7rFWkujVUWRJPIfR8a10YjwQ9ysIw5IX6ra8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DDb7t29T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6CA7C2BCB0;
+	Tue, 12 May 2026 18:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778609943;
-	bh=N1WR3oJ1M93TcD66wBLy2PuWMj8UZxgV3MASIKa8ASQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=khvrq4K2MyB3BP5e6Ktn3Qv97UAv1E7VdARTMcF1cD8KFpXm/zHbstfmnjLhzAwCR
-	 xAPUV6ZDID4rH8AkOmQ1mLXw+yFDW+/5s/bqZzkvrPuVu6dhVxjx0B2m0GqI3A1igF
-	 81zPUeNwaE23dzWmLutR/ng0Yfl8GPzRfKkpneT0Csa7t1x1AUESIM+EupAzVpfufS
-	 LHj3F5aRUFTh6WDBrlrJRm5SkEqsxMr3zJAfGdMx0PHMzycZzn01ywPQHwDpSKbmGJ
-	 WRobJUCYkDtKyBrjTUbLBA8lXipvknd7fB8W2/QFIOW95FqsRfkrlTcfXXFrAe3xwG
-	 g/LT0IKKSiROA==
-Date: Tue, 12 May 2026 08:19:02 -1000
-Message-ID: <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
+	s=k20201202; t=1778610051;
+	bh=V3W42SBmQf4d+KigTBwM8MJb1z78Kgg0dhdU64pdM0g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DDb7t29TUPL6s/59AWia8vypqivnxK2p/U0uizuLS6J6OUMV+AlnttnbJ/FAyRnEd
+	 eqjjKu1waqlK5rVtfC/wSJfzV/J93D94F6ZXy55yYBWMFSWqmnVDQbhTRjZaS/nIxu
+	 ipqURz8n+VDp6Dn0tJjuw+wDMa2CMHgw416w6wy9tJPblbl2/fTFWSraHlnF8at9ZD
+	 6oNNU2AyoNBoP2dn3FPQOt5XCClU4O6uGaDFfUJwOsJzulCyZisWq7X/35KUcvzbQW
+	 gQqEp5VF3QKzpwQhFl4sc5HtUf1V0USPSrXDkgUqxLZO03UnqkiqM9AfPBdoKo75kd
+	 ZNf0LWvQxOqtg==
+Date: Tue, 12 May 2026 08:20:50 -1000
 From: Tejun Heo <tj@kernel.org>
 To: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
 Cc: luca abeni <luca.abeni@santannapisa.it>,
- Peter Zijlstra <peterz@infradead.org>,
- Yuri Andriaccio <yurand2000@gmail.com>,
- Ingo Molnar <mingo@redhat.com>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org,
- hannes@cmpxchg.org,
- mkoutny@suse.com,
- cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies
- of RT cgroups
-In-Reply-To: <c446b9be-38d7-425c-9ca8-eda721fe1c9e@santannapisa.it>
+	Peter Zijlstra <peterz@infradead.org>,
+	Yuri Andriaccio <yurand2000@gmail.com>,
+	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
+	cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
+ RT cgroups
+Message-ID: <agNvghphiv9sCJrq@slm.duckdns.org>
 References: <20260430213835.62217-1-yurand2000@gmail.com>
  <20260430213835.62217-21-yurand2000@gmail.com>
  <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
@@ -72,51 +68,58 @@ References: <20260430213835.62217-1-yurand2000@gmail.com>
  <20260507163058.2c435922@nowhere>
  <agIfvZuvXEtK45em@slm.duckdns.org>
  <c446b9be-38d7-425c-9ca8-eda721fe1c9e@santannapisa.it>
+ <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: 2FFFE5281ED
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
+X-Rspamd-Queue-Id: 4EF4152789A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15857-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
+	TAGGED_FROM(0.00)[bounces-15858-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,slm.duckdns.org:mid]
 X-Rspamd-Action: no action
 
-Hello,
+On Tue, May 12, 2026 at 08:19:02AM -1000, Tejun Heo wrote:
+> How is a delegated subtree prevented from setting cpu.rt.min = 'root' and
+> escaping its ancestors' cpu.rt.max budget?
 
-How is a delegated subtree prevented from setting cpu.rt.min = 'root' and
-escaping its ancestors' cpu.rt.max budget?
+Hmm.. I guess the same problem exists w/ separate rt controller too. If the
+users on the system already started using rt, how do you enable the
+controller from the top down with budgets already being used down in the
+hierarchy?
 
 Thanks.
 
---
+-- 
 tejun
 
