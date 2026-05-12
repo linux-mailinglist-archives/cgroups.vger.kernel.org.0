@@ -1,181 +1,171 @@
-Return-Path: <cgroups+bounces-15830-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15831-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YB4CL7/vAmrAywEAu9opvQ
-	(envelope-from <cgroups+bounces-15830-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:15:43 +0200
+	id WK4NGafxAmrpywEAu9opvQ
+	(envelope-from <cgroups+bounces-15831-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:23:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F99551D72E
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:15:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB82A51D963
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:23:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D13C9304FAA6
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:03:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C74B931A8792
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 807FF3A1A44;
-	Tue, 12 May 2026 09:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040F73B0AC6;
+	Tue, 12 May 2026 09:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="qLwcBqvs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53DF339937C;
-	Tue, 12 May 2026 09:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5A13AF668;
+	Tue, 12 May 2026 09:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778576465; cv=none; b=jsCc9+2b2OxQbcoTKMcQI8Jl/z5xncDw21uL+pB6IP9/vLbfSwbLiCmki2OJZQ2q82UQrjzUjJSeGDjlDFhGCPcXWy7agwd4Y81qC9roERi2pIWqFpMCYPaxM3xD4KvpHbt9A6UN+YWBa5RaMfFp+bPY19DhmgujM6f5SkQu+YY=
+	t=1778576561; cv=none; b=dBkY230AinWPYngISvZLkxU9IVIAcKrlSdRNzwbouvu23nDUvkb17S4VM5mNZ4niZCc+Q8yGmJuuezTa1ApdSx7WnNxEMcaWaBbDGUTIt471eTBSKj/+Iyw69Fds/JbhBEOWIVkVicND9xqufvX1hqLCN6japfuZeP6KPC9r8MY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778576465; c=relaxed/simple;
-	bh=6Z0u23d16c8XJnA5FhWp2rU8pNn6ua0KrG7WvNX7ouU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OCZ5qpuk8AqqpHdUvQn8qu67o4yWX9AVckPBsumwYo3IRMSOKEjEne2Ylqi0MclUfNQcNHAhiY9JmwrjJNMZ+B3BC3ib2COtG+y327u7hYPw3GQJvcsfy/fZ4qinnWeeYJpIybxZnSeCZ4TBilD3ZwDWtu+oUljtRyflT72KxjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 13ffdcc04de111f1aa26b74ffac11d73-20260512
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
-	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD
-	HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER
-	HR_SJ_NOR_SYM, HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_CHARSET
-	HR_TO_CHARSET_NUM, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME, IP_TRUSTED
-	SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED, SN_TRUSTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
-	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
-	ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:32f6c264-44f3-4f1c-a0bc-d5ae7b2be884,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:15
-X-CID-INFO: VERSION:1.3.12,REQID:32f6c264-44f3-4f1c-a0bc-d5ae7b2be884,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:15
-X-CID-META: VersionHash:e7bac3a,CLOUDID:8e896fa5dde146f648f103697075b0d5,BulkI
-	D:2605121700523Q9ZZCVN,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
-	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
-	0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 13ffdcc04de111f1aa26b74ffac11d73-20260512
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 30499878; Tue, 12 May 2026 17:00:52 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sunshaojie <sunshaojie@kylinos.cn>
-Subject: [PATCH] cgroup/cpuset: Return only actually allocated CPUs during partition invalidation
-Date: Tue, 12 May 2026 17:00:34 +0800
-Message-Id: <20260512090034.183133-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1778576561; c=relaxed/simple;
+	bh=cGQpnP2IE2ZPzENjOmgQRCKXBvFqmE6nGUpQ5lxszOg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XG2Sdwx65uP/yHCZqAX59LE74Qkl5OtmsbTo7b1IDUdgESUUJzRn2DIY8h1k1xAMM3o0+s2OC5i1D86+65e4PWGFTGkonmal7OkA185gL5WRJdaH0lJVFty0W0kBhfh+f7qwqFGDZQgcO0KSEhvG0wE41pP/AIO9qWkqSDveekw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=qLwcBqvs; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1778576551; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=+cyTZjQS6UqdXmYhbAizO7A1hVVtxlnJezCg5zZ803w=;
+	b=qLwcBqvsh5LD+NV8W0eg54jSIJvt0gB8CPyYvTE1RfwYD/ngDA1QozBiucuLzHAIXleQddHy4mCMh/IOfwyyN+jG/3c3YsX+35Nl/eypP1oALs2O7qlTptKoXYcX706gr1MFJ7lqAb5I2AuuIunPR4sTQE3MlZF3+6VoE7Q7mN4=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037033178;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0X2q-o6n_1778576545;
+Received: from 30.74.144.137(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0X2q-o6n_1778576545 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 12 May 2026 17:02:28 +0800
+Message-ID: <a4c22e4c-5669-4323-8229-1da261e9c72f@linux.alibaba.com>
+Date: Tue, 12 May 2026 17:02:27 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 03/12] mm/huge_memory: move THP gfp limit helper into
+ header
+To: Zi Yan <ziy@nvidia.com>, Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Barry Song <baohua@kernel.org>,
+ Hugh Dickins <hughd@google.com>, Chris Li <chrisl@kernel.org>,
+ Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
+ Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Youngjun Park <youngjun.park@lge.com>,
+ Chengming Zhou <chengming.zhou@linux.dev>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Yosry Ahmed <yosry@kernel.org>,
+ Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>,
+ Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>,
+ Michal Hocko <mhocko@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Axel Rasmussen <axelrasmussen@google.com>
+References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
+ <20260421-swap-table-p4-v3-3-2f23759a76bc@tencent.com>
+ <D631DCC9-85F0-4E68-88A0-AD5DE328818E@nvidia.com>
+ <CAMgjq7BDmGWaVWBL+52_c=jgs293bgB+Qe-MafKE7dWZRsmx9A@mail.gmail.com>
+ <125AABD0-02D5-4656-9F55-4B5BFBD5BD3D@nvidia.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <125AABD0-02D5-4656-9F55-4B5BFBD5BD3D@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8F99551D72E
+X-Rspamd-Queue-Id: BB82A51D963
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15830-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15831-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[nvidia.com,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[sunshaojie@kylinos.cn,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.875];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[baolin.wang@linux.alibaba.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,kylinos.cn:email,kylinos.cn:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,alibaba.com:email,tencent.com:email,linux.alibaba.com:mid,linux.alibaba.com:dkim]
 X-Rspamd-Action: no action
 
-From: sunshaojie <sunshaojie@kylinos.cn>
 
-In update_parent_effective_cpumask() with partcmd_invalidate, the CPUs
-to return to the parent are computed as:
 
-    adding = cpumask_and(tmp->addmask, xcpus, parent->effective_xcpus);
+On 4/22/26 1:23 AM, Zi Yan wrote:
+> On 21 Apr 2026, at 13:21, Kairui Song wrote:
+> 
+>> On Tue, Apr 21, 2026 at 9:14 PM Zi Yan <ziy@nvidia.com> wrote:
+>>>
+>>> On 21 Apr 2026, at 2:16, Kairui Song via B4 Relay wrote:
+>>>
+>>>> From: Kairui Song <kasong@tencent.com>
+>>>>
+>>>> Shmem has some special requirements for THP GFP and has to limit it in
+>>>> certain zones or provide a more lenient fallback.
+>>>>
+>>>> We'll use this helper for generic swap THP allocation, which needs to
+>>>> support shmem. For a typical GFP_HIGHUSER_MOVABLE swap-in, this helper
+>>>> is basically a no-op. But it's necessary for certain shmem users, mostly
+>>>> drivers.
+>>>>
+>>>> No feature change.
+>>>>
+>>>> Signed-off-by: Kairui Song <kasong@tencent.com>
+>>>> ---
+>>>>   include/linux/huge_mm.h | 30 ++++++++++++++++++++++++++++++
+>>>>   mm/shmem.c              | 30 +++---------------------------
+>>>>   2 files changed, 33 insertions(+), 27 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>>> index 2949e5acff35..ffe5a120eee4 100644
+>>>> --- a/include/linux/huge_mm.h
+>>>> +++ b/include/linux/huge_mm.h
+>>>> @@ -237,6 +237,31 @@ static inline bool thp_vma_suitable_order(struct vm_area_struct *vma,
+>>>>        return true;
+>>>>   }
+>>>>
+>>>> +/*
+>>>> + * Make sure huge_gfp is always more limited than limit_gfp.
+>>>> + * Some shmem users want THP allocation to be done less aggressively
+>>>> + * and only in certain zone.
+>>>> + */
+>>>> +static inline gfp_t thp_limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
+>>>
+>>> Would it be better to rename it to thp_swap_limit_gfp_mask() or something
+>>> more descriptive? I am just worried about misuses in the future due to
+>>> the generic thp prefix.
+>>
+>> Good idea, I wasn't sure if this might be helpful for any other user,
+>> but for now naming it more descriptive does help to avoid misuse.
+>>
+>> How about thp_shmem_limit_gfp_mask? Ordinary swap is fine with thp
+>> gfp, only shmem is a bit special.
+>>
+> 
+> Sounds good to me. Thanks.
 
-where xcpus = user_xcpus(cs) which returns cs->exclusive_cpus (if set)
-or cs->cpus_allowed. When exclusive_cpus is not set, user_xcpus(cs) can
-contain CPUs that were never actually granted to the partition due to
-sibling exclusion in compute_excpus(). Consequently, the invalidation
-may return CPUs to the parent that remain in use by sibling partitions,
-causing overlapping effective_cpus and triggering the
-WARN_ON_ONCE(1) in generate_sched_domains().
-
-Use cs->effective_xcpus instead, which reflects the CPUs actually
-granted to this partition.
-
-Reproducer (on a 4-CPU machine):
-
-    cd /sys/fs/cgroup
-    mkdir a1 b1
-
-    # a1 becomes partition root with CPUs 0-1
-    echo "0-1" > a1/cpuset.cpus
-    echo "root" > a1/cpuset.cpus.partition
-
-    # b1 becomes partition root with CPUs 1-2, but sibling exclusion
-    # reduces its effective_xcpus to CPU 2 only
-    echo "1-2" > b1/cpuset.cpus
-    echo "root" > b1/cpuset.cpus.partition
-
-    # b1 changes cpus_allowed to 0-1 -> partition invalidation
-    echo "0-1" > b1/cpuset.cpus
-
-    # Expected: CPUs 2-3  (only CPU 2 returned from b1)
-    # Actual:   CPUs 1-3  (CPU 0-1 returned, overlapping with a1)
-    cat cpuset.cpus.effective
-
-dmesg will also show a WARNING from generate_sched_domains() reporting
-overlapping partition root effective_cpus.
-
-Fixes: 0c7f293efc87 ("cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2")
-Signed-off-by: sunshaojie <sunshaojie@kylinos.cn>
----
- kernel/cgroup/cpuset.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 1335e437098e..2311470ef077 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1715,7 +1715,8 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		 */
- 		if (is_partition_valid(parent))
- 			adding = cpumask_and(tmp->addmask,
--					     xcpus, parent->effective_xcpus);
-+					     cs->effective_xcpus,
-+					     parent->effective_xcpus);
- 		if (old_prs > 0)
- 			new_prs = -old_prs;
- 
--- 
-2.43.0
-
+Sounds good to me too. Feel free to add:
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
