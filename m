@@ -1,51 +1,50 @@
-Return-Path: <cgroups+bounces-15817-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15818-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mGkvJCLHAmp0wgEAu9opvQ
-	(envelope-from <cgroups+bounces-15817-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:22:26 +0200
+	id 6BKHMjjHAmp7wQEAu9opvQ
+	(envelope-from <cgroups+bounces-15818-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:22:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08E4D51AE2F
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C6B51AE45
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:22:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A134A3034310
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 06:21:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CB73D306509F
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 06:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3874DB56B;
-	Tue, 12 May 2026 06:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEB444CADC;
+	Tue, 12 May 2026 06:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="ow4GRMhB"
+	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="WfXdgDmA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from outbound.ci.icloud.com (ci-2001h-snip4-2.eps.apple.com [57.103.91.65])
+Received: from outbound.ci.icloud.com (ci-2001d-snip4-11.eps.apple.com [57.103.91.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196A747887B
-	for <cgroups@vger.kernel.org>; Tue, 12 May 2026 06:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.91.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C980D3264FD
+	for <cgroups@vger.kernel.org>; Tue, 12 May 2026 06:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.91.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778566871; cv=none; b=G8W8HkTVYT8Ji+fmiQtQMuURJk+OvX0JpZdXTYI0GglHJz3jxlHxrxVjkp41JDv1CzWBGqZ8wuClZ1tWv1c6RasI8JwHQae09+alRUMfK3Fu1N4lrDnjOLLrLnVo4T+kTvOJiyX6ilFFcBIMw3GDcHQcU12mBvLuh9AznAgXQ5A=
+	t=1778566874; cv=none; b=Rj6r6mmM9AEsrvlxcZmGJ1phayQuntNTU0QhrqSUQ8OZPKtT8GJ3BB+hfy55VEIzyHEXlM1Z6eaD5CysOfiI6+PugVUjIyzinVT3UowmyKhdl3jI6dkKH5+zp9meOxOdcaRdsB6+wifRALY0Ny6bhdaoKIEfPUpOQB8+b886HQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778566871; c=relaxed/simple;
-	bh=lzCq7haBc4sca2HsI7iigGUxADMapnK6Tk4EPTZmuyE=;
+	s=arc-20240116; t=1778566874; c=relaxed/simple;
+	bh=9FP8n6XGR1QceBaNZQHKC7yOvhgDJhFZnp5vXDSzB/E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=oEgYF+deX0ST4w0yAK1KBETFzhSBinqmOR5FrLHlDgvdmY7jOBdpZyfJOb3ZIMaCZce6Q0t5nBChuTaTjENbbu7G1GN/VbHo3HZpdXTqjSo8wgCzZoA+m+Er4zjDvMAhAZQ+SYy6+WKvvvzByc1qbTUFMihSv2ajPNgLaxt1ckE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=ow4GRMhB; arc=none smtp.client-ip=57.103.91.65
+	 In-Reply-To:To:Cc; b=HcIz2cE19UiYBtygogvC33Y55V5H5R2IqsHZ64ii3hB1R6q3RBTDhSdXF2Gxmh9kD6lBQGYnIwLJ1YRNm3SshSDDEu91WHVSvUS6F85K2ip7hDpXurHSefAUcFRAUTJ6pS5I3ySedTdqGTGPvjZ0f9f5IaOOYRZzCfI/xjcz7jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=WfXdgDmA; arc=none smtp.client-ip=57.103.91.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
 Received: from outbound.ci.icloud.com (unknown [127.0.0.2])
-	by p00-icloudmta-asmtp-us-central-1k-100-percent-4 (Postfix) with ESMTPS id 9779B1800103;
-	Tue, 12 May 2026 06:20:44 +0000 (UTC)
-X-ICL-Out-Info: HUtFAUMEWwJACUgBTUQeDx5WFlZNRAJCTQhJB0MFXwReC0sKQw5eEhVdRV8YXApUH1oNQC1eCF4fTBwdDlgGEhZdRV8YXApUH1oNQC1eCF4fTBwdDlgGEgJaRQFbFwNXHFZFXBhDCV0FVxwdDl5FWxNVF0YJGQhdHRkIRx8KMANCDlYDQwdFAC0ZHFdQXgheH0wcHQ5YBhIdUBwOUQVbAEYJTQJfGhtBGWYRXh1FRkRBFEweX1VcVEEJHlcLVg8HME0dXQ5SBUZeWhdeUxcfSwBcRVoOWwRHFA==
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com; s=1a1hai; t=1778566850; x=1781158850; bh=HFQgmeVI0oO/YyDZZt3bpmB4cnLvJvO3q2IZPwc5y8Y=; h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:x-icloud-hme; b=ow4GRMhBy3HR3saemv/Dx4xL6GdvF/TMpMEdR5eY1ONuQO7wkW4Swd4qTFXa17Aias7GbIze2IUr/eRh4l32XyiUsJzHh9pLwaprqPU+8chKFycy6NCIkfpvLsWrbYMsUZdhsqiAYCGQLLqBRi1bo8Ym0+0txhw+joxzLTguTR59M6RZ+sHVPHl/Jurf1pDXaWxfhnAQO02gvLTdZrbj16BuscOwEcc4U8yTFeDIhE7W2IqtU2RSXHvvuF+L5j01s2CJHZvNwSu4gh8mqLeXWzuDy0uXxIgTC1oOh31f3tia8kCf+bTm8FMvEyMRcPE6+wO3QjerVehpAikR4AuO5g==
+	by p00-icloudmta-asmtp-us-central-1k-100-percent-4 (Postfix) with ESMTPS id C11F2180011C;
+	Tue, 12 May 2026 06:20:52 +0000 (UTC)
+X-ICL-Out-Info: HUtFAUMEWwJACUgBTUQeDx5WFlZNRAJCTQhJB0MFXwReC0sKQw5eEhVdRV8YXApUH1oNQC1eCF4fTBwdDlgGEhZdRV8YXApUH1oNQC1eCF4fTBwdDlgGEgJaRQFbFwNXHFZFXBhDCV0FVxwdDl5FWxNVF0YJGQhdHRkIRx8KMANCDlYDQwdFAC0ZHFdQXgheH0wcHQ5YBhIdUBwOUQVbAEYJTQJfGhtBGWYRXh1FRkRBFE0eX1VcVEEJHlcLVg8HME0dXQ5SBUZeWhdeUxcfSwBcRVoOWwRHFA==
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com; s=1a1hai; t=1778566856; x=1781158856; bh=mKgIAnZB5fUXzrw1IdBcNeVNTkRS5dYeFy3GvsnLKiY=; h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:x-icloud-hme; b=WfXdgDmAI2tBeLM82M0xxxdMvosHkKR1IXKAu/jjSOrU8tQl/ZxyO3RH/ha7K4L+3NlLDISMcPN0ZrGkBDF8WI30KLA9MLcBFBHGNQ4cVOim34Ff5eJ4TX5DdPwpNpwjXprDJ4PQQg+6WG5wq7ByFoDCk+J0CHB2hV6WWpxIa1I3v8FY7lyYBaIQSc6NEz3T8+Zk1NdwdYvvpAAv3Zp0J4Hg923FmcjQ38IwOgk6RGi6iwCeiqyxvsuxYgmg7E+CQLTr0tYRxTfYQN/+rf5N7v2QSN3rcxkNF+sD/HTl/mG2NhRRgPTPJnSGAwUmpovYqVgjulEgfPivLYsRlYTnNw==
 Received: from [127.0.0.1] (unknown [17.57.156.36])
-	by p00-icloudmta-asmtp-us-central-1k-100-percent-4 (Postfix) with ESMTPSA id 8424B180013B;
-	Tue, 12 May 2026 06:20:35 +0000 (UTC)
+	by p00-icloudmta-asmtp-us-central-1k-100-percent-4 (Postfix) with ESMTPSA id 5BCAF18000B9;
+	Tue, 12 May 2026 06:20:44 +0000 (UTC)
 From: Luka Bai <lukafocus@icloud.com>
-Date: Tue, 12 May 2026 14:20:00 +0800
-Subject: [PATCH 4/6] psi: do not call record_times when the state is not
- changed
+Date: Tue, 12 May 2026 14:20:01 +0800
+Subject: [PATCH 5/6] psi: add psi group for the root cgroup
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -54,7 +53,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260512-psi_impr-v1-4-2b7f10fdfad5@tencent.com>
+Message-Id: <20260512-psi_impr-v1-5-2b7f10fdfad5@tencent.com>
 References: <20260512-psi_impr-v1-0-2b7f10fdfad5@tencent.com>
 In-Reply-To: <20260512-psi_impr-v1-0-2b7f10fdfad5@tencent.com>
 To: linux-mm@kvack.org
@@ -76,28 +75,27 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
  linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
  Luka Bai <lukabai@tencent.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1778566802; l=1376;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1778566802; l=1490;
  i=lukabai@tencent.com; s=20260501; h=from:subject:message-id;
- bh=K3W73Ej/H0RH/u7ug92VzPA/oQvz5jykvDzJfWcXDc8=;
- b=UOPUAuG2SMAddJiUXqFia9+qZ6pYXrAI5NMq3HPcY0QsvJzfIJo2mUffCromL/WOhhHUFI1ss
- lo2PUu8RNO3C9et3pjuE+4l0GXHz36Pxes0NjKltfze7gQcrJHXY0gR
+ bh=hegqJxsefRUo0IZb6av0loX0beqXtKAilCIuw9AGMOg=;
+ b=PpQmxUSe15FVJGWEVgQ54mSJ/1lP1TFKzTir1B2BYtnj3SMHDa69594F8Hmf2TlrNR0dmx2qS
+ Q4m22WKPwWwD4F4CLCngciseUZUM95VA5i6FGqMEAV4qErxozcS0EKq
 X-Developer-Key: i=lukabai@tencent.com; a=ed25519;
  pk=KeaVteSWd00GIAjFyWZnuFsKAKixjga1ZkLMcI66nPM=
-X-Proofpoint-GUID: g9I8dGtUZgJhv2L6LpR1sKeFx3DMaVBn
-X-Proofpoint-ORIG-GUID: g9I8dGtUZgJhv2L6LpR1sKeFx3DMaVBn
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTEyMDA2MCBTYWx0ZWRfX7NXkfgr0AzlI
- BXnEsThg68asqk8eaLufSGZHZ5yc5dwqWIlcVz4z10yrJRZ0FsAfTumvp50tBpxWYyJTF5erq8u
- yNUYifqjuq8QbLxjBK2DHJIvwXcPkca0bWhjmNWxrdLBmL3nyCnTfWJcZIvO296B61gajcwNmns
- QNNda9lnhk3nlq5c16dFjQzLdXRNiziCn0v63gTkl5gICYqz5GUAD5EDa7BTjgwYR38OFdN1NOW
- Tvfny2N7FTNLj4AQXz+UZepLPnyqIubWEmjUbwQAy2Ss+/KNYSA8ScW1PyKZR/EHRXc6qcCCGzp
- +x2lzIs9iyeaqXUDF8ZmCtH155clIcvl1GoS77f/4PRHaawJNao38qQ+HeFI2c=
-X-Authority-Info-Out: v=2.4 cv=JfSxbEKV c=1 sm=1 tr=0 ts=6a02c6c0
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTEyMDA2MCBTYWx0ZWRfX0EYYtqAKu+rD
+ yhcbvq0Iuaphbygoj5MTpyMOFj/S9zSD7ipPt2xh10r7q6GLMgeWnDOIcMhwQwafZcILtGCijJe
+ SbmPA0Gnc+rUuIib7XjHzO1JEq98Obm3T6djFk6ub0sPso4NIRLwYp5OFingNelgizgGP+jvgXl
+ NQvcUDByWZO1dEFVDB1k38KRMLLNd1u/0vYTQilKG9sz45w0VRy1Ut869gv1hWFslAeF9AyAYSK
+ e69KW+mGRkPOAtA641O+e4T52Zl2XC+afS/pYAmNvMitoPMaa704jw6L7J8HjhHQ9caTLdEgtNp
+ Ds/YlM6zgzuj6xvEB1Ig8gEm52uHMjGdswtA6sHjNq7abTSQiYRzmJOAaVtIn4=
+X-Authority-Info-Out: v=2.4 cv=BryQAIX5 c=1 sm=1 tr=0 ts=6a02c6c7
  cx=c_apl:c_pps:t_out a=2G65uMN5HjSv0sBfM2Yj2w==:117
- a=2G65uMN5HjSv0sBfM2Yj2w==:17 a=jPpEGkWhOON_I5X-:21 a=IkcTkHD0fZMA:10
- a=NGcC8JguVDcA:10 a=x7bEGLp0ZPQA:10 a=UaoJkeuwEpQA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=GvQkQWPkAAAA:8 a=wbxJtr-Xvdy7Wj_ENd8A:9
- a=QEXdDO2ut3YA:10
-X-Rspamd-Queue-Id: 08E4D51AE2F
+ a=2G65uMN5HjSv0sBfM2Yj2w==:17 a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10
+ a=x7bEGLp0ZPQA:10 a=UaoJkeuwEpQA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=GvQkQWPkAAAA:8 a=PktQUFpngk8bp4KwMBsA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: B6dnkmnWxy2EQg2uAF8glNidlGTVlMce
+X-Proofpoint-ORIG-GUID: B6dnkmnWxy2EQg2uAF8glNidlGTVlMce
+X-Rspamd-Queue-Id: 56C6B51AE45
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -111,7 +109,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15817-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15818-lists,cgroups=lfdr.de];
 	FREEMAIL_FROM(0.00)[icloud.com];
 	RCPT_COUNT_TWELVE(0.00)[26];
 	FROM_HAS_DN(0.00)[];
@@ -130,43 +128,45 @@ X-Rspamd-Action: no action
 
 From: Luka Bai <lukabai@tencent.com>
 
-In psi_group_change, record_times is always called no matter whether
-the state_mask changes. Since it can cost some performance, we
-choose to not to do it unconditionally. If the state has not changed,
-we can keep the psi time unchanged.
-
-This will not make any difference to the final result since when
-we need to acquire the psi time, get_recent_times() will always
-calculate the remaining time into the final result.
+Cgroup_psi() now includes a condition, and checks against whether
+the cgroup is the root cgroup to decide whether to use psi_system
+instead of cgrp->psi. This is mostly because the default hierarchy
+does not have any psi group attached. So we make psi_system as
+its psi group, and remove the if condition in cgroup_psi().
 
 Signed-off-by: Luka Bai <lukabai@tencent.com>
 ---
- kernel/sched/psi.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ include/linux/psi.h    | 2 +-
+ kernel/cgroup/cgroup.c | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 9b7a85d1bc28..4c4bd134c785 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -880,9 +880,15 @@ static void psi_group_change(struct psi_group *group, int cpu,
- 	if (unlikely((state_mask & PSI_ONCPU) && curr_in_memstall))
- 		state_mask |= (1 << PSI_MEM_FULL);
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index e0745873e3f2..8f2db511d051 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -34,7 +34,7 @@ __poll_t psi_trigger_poll(void **trigger_ptr, struct file *file,
+ #ifdef CONFIG_CGROUPS
+ static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+ {
+-	return cgroup_ino(cgrp) == 1 ? &psi_system : cgrp->psi;
++	return cgrp->psi;
+ }
  
--	record_times(groupc, now);
--
--	groupc->state_mask = state_mask;
-+	/*
-+	 * We only need to record times when the state changes. Or
-+	 * we can keep it unchanged and wait for get_recent_times()
-+	 * to handle the remaining time.
-+	 */
-+	if (state_mask != groupc->state_mask) {
-+		record_times(groupc, now);
-+		groupc->state_mask = state_mask;
-+	}
- 
- 	if (state_mask & group->rtpoll_states)
- 		psi_schedule_rtpoll_work(group, 1, false);
+ int psi_cgroup_alloc(struct cgroup *cgrp);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 43adc96c7f1a..357c68662d18 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -178,6 +178,9 @@ static DEFINE_PER_CPU(struct cgroup_rstat_base_cpu, root_rstat_base_cpu);
+ /* the default hierarchy */
+ struct cgroup_root cgrp_dfl_root = {
+ 	.cgrp.self.rstat_cpu = &root_rstat_cpu,
++#ifdef CONFIG_PSI
++	.cgrp.psi = &psi_system,
++#endif
+ 	.cgrp.rstat_base_cpu = &root_rstat_base_cpu,
+ };
+ EXPORT_SYMBOL_GPL(cgrp_dfl_root);
 
 -- 
 2.52.0
