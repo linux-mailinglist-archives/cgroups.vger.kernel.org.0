@@ -1,214 +1,390 @@
-Return-Path: <cgroups+bounces-15843-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15844-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UCHTC5P5AmokzQEAu9opvQ
-	(envelope-from <cgroups+bounces-15843-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:57:39 +0200
+	id WBLZJcL9AmqrzQEAu9opvQ
+	(envelope-from <cgroups+bounces-15844-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 12:15:30 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EF7451E274
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:57:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9E0151E5DB
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 12:15:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F21E23018319
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:55:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BE2403045029
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BE64BCADE;
-	Tue, 12 May 2026 09:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D444C6EFE;
+	Tue, 12 May 2026 10:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WzpLM1Ir"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="CLTBUa70"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B174B8DFB
-	for <cgroups@vger.kernel.org>; Tue, 12 May 2026 09:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778579755; cv=pass; b=s29iogIls4Kagd82jX3MWTLkO3T8n+aE8+gq6AxOSIOAXzEBgN+MJRvKz7XPVMfEGQERLVREOUTCV9Z4UOMX1xdy0Drp/Y8aoGBLkUiniopie7Xmw3oxOoQf7V5Y/Wr8fuRens2Yi0YtPt9s0pTrkaTndP4Nnu1YP0m1dXln3tw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778579755; c=relaxed/simple;
-	bh=zPcL/MutD2/lLMYB30otertVa4RgHwlHM1Myqydlu+s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SY28CuGBXAtoR9Owpod37jO5vyxmTIs+SEm5/oV+eNJPDeqwpyBtf/i7SkYYZkYGlmTCY4pyYoXkKGAETDxXSbG3MzVGkYwU8ejQ/gDU8KjTTbqCHxNV+QrjPRzwZH4RTvgHkmDot/jrIS9uQQyV7yKtrbh5KbIMqn7ym7h5hgA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WzpLM1Ir; arc=pass smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-67c1e0229acso8173375a12.1
-        for <cgroups@vger.kernel.org>; Tue, 12 May 2026 02:55:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778579752; cv=none;
-        d=google.com; s=arc-20240605;
-        b=A4kSpzTYi3u6W7NxWb3wNxHZf7ZaI/SC+pr6sqbW0cNS4jkN3HN8fb3L0zpwxPi3se
-         ETwmogNz0ycjLrVSCQgeRgm4Ay/R+FvIJ39NmCDs2dhH075UirDyf+1ngtA2wqfuCITU
-         c/kn/gVlJuBMIFsta/fF49BemSXN2Vb29hUHdd59p28hW7F/S7S0RDbmk2CTC3+E58U/
-         GcW9V9eptnRckuy0dNXA0kJZFD+MpWWABOXRnXajJLsRdQvcSbizj0nLSJYZYZRmspI6
-         aXazFw8i9ImGclZ1ZD8BtgxnfawK5qQ4dIT+PpcJE/e1vA5aTnWFaYwujUliywBxKWNA
-         NpXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=cZz2gwZyFbKND0yBkZDP9VGhlp4RSoQid3s+abYi6/4=;
-        fh=w7/Ax9L1dtZpg2iRRhSNzbHlGJAroRcek7Lp/SBeVIw=;
-        b=UcmCkZ4RGwg/o8bPk0GZnNR/fjfrUDkio51VTciMMmmOnxTYRv+ow12tWj4TvW5tI6
-         aFgE1qYgMSFY8gZEzWLm6kCGDt1BIuVQH6/f1BGKNMMREYx8zk+Sbb4eczM6x+N7a4C0
-         8KM0mxBN0pX/zqP8//XJKszGg0A1jtMBM6b2QJ1idomXDuPoQej8eCFRInKCF8tduW49
-         vM5R/tKEWHMOj6vx4V/lSpFSu3h0B/6nqhnq+cZjD6j/R201jHVkbIsjMVHjw/VGkHQx
-         mtNQ7GBWLynbGEH7XCMHNrL6NfQT2uxdPTzxb6uooi4gTipVP4XnGtgWJdBopN9/eyVv
-         c6mg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778579752; x=1779184552; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cZz2gwZyFbKND0yBkZDP9VGhlp4RSoQid3s+abYi6/4=;
-        b=WzpLM1IrhkE3e/mi/vB50mIA6EmLwz58sJF+kmxrRI3Z2YmMoC66Nt1C8FsPLxDwYH
-         5ozpZl/uJWPh5AAj95Usn5xagJ6/T7swfoPjhhERg1BEVAMbUJtrwSakd3gBwZD0i4Hp
-         F/dpL2M35Ff0Ot0CnBaxBeYEFkwD7I0pcJzysP6mHNiyop0KPbeTLXnK5zhPGga3PNEx
-         75Ed9qlglaQr7fkDXJMT+QfjLDFzvvJ/hTYCALJtYT/FM7ptA9JMVKSAArzPj4BjdRVb
-         sKt7LiC2UqbFPmmwoPubNtwNCprlrhDIvtq7q4+tyDLzH4yhx3D7AhHgb5PiJfi+QwdK
-         gJKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778579752; x=1779184552;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cZz2gwZyFbKND0yBkZDP9VGhlp4RSoQid3s+abYi6/4=;
-        b=oAK6NaZQT/DFXI9/71iTb618JYVf9yVq+9FSPTqttF8kuNJ6q6yKLBS1mexupsAsOS
-         jp3E0CTG5rJRwES70saFqnfqrEFApieBOq1s789zicdikVRCisC+jclw4Lgdwuz0HHic
-         1vCdSoqqLz+4iec8FUNIedEXM0YO7Ok73/tjaq3gKUrr4dtXjP0s8JGhXNf3WuveDTl2
-         7JIZ3CudlOHzg4J/jaROnOUIE0QscGjJyBr4uze7ttQIIyAFQihMFn9DQ4twnP7jLDzC
-         ti78zTaaQ99wg8Grbg26yOaQTdTyVqMeSNS1ddUtTSylUcUCcHVwmmSiq1p+AeBcGWpR
-         1uEA==
-X-Forwarded-Encrypted: i=1; AFNElJ/zRrTUO7bQXzF7NdJQaFxcvoGWFcomqPpUT+dze3tS1sUg4mb7aLrwdVzb0Czc9bhslfwORkoa@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywg0wRkKZyqaQOV3Tr/ZLitKBZZXGahtTOoW0gvwaAadZAmG3pt
-	O0lhC7Gla4O0TzNGnrXvHWipcd8W3gsLyXiZ4eSbn+F/mwHPobxK6+6r2HT7IP/IXe8dD/syn44
-	f8Wr6AhajyWDqkD+/hVl7Ieg7LT12G1E=
-X-Gm-Gg: Acq92OER4nOYCJZfuROG7JjGt1UNiW+bBg2znqcTXSRWpYDVNGHg7zfmChEA7pkCrEO
-	3WeRYIkGvvxUPXZrzgErcXj1COIWM+WCLvvTxHDgI5L52hEY3DfUz+7dkH0x/POq6leEzDiOSd6
-	+lUtmckGmeGV+5uunK1OJUAine6q2Mr5Y9mFDH0aAoQStW9fqZGyIrqsybwNbRpxKXhpIqJab8o
-	3EmXFGmYYKdmQk+Ejr4C0Tn31HjEwphGUztOxivf+tErR4xcRpif9+p/H99l0P6bOeC+ZIkILC5
-	vt1a6bDQML5AjdR0Pj+lAGQWEA9K+TwcVhB8sS0S
-X-Received: by 2002:a05:6402:c45:b0:677:1ce0:c08d with SMTP id
- 4fb4d7f45d1cf-680cf83d375mr1265634a12.18.1778579751409; Tue, 12 May 2026
- 02:55:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59C13ACF0F;
+	Tue, 12 May 2026 10:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778580643; cv=none; b=lgLYeRBZ36Mbx5G5BfmGh2BYQlRIEmv4b+djSbPEdRnCjRFRIV5rh8CYcaNY8SzghBQLw454oUiWvqhb/HV+50x4d3NYJNvjPGprUNg6XObdKk8CYLoi2Ih5wbXzeq8b4UpB2+FN5U9XjzHXR17JvcOqHtud8Ow2w4Qcxo/1yD4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778580643; c=relaxed/simple;
+	bh=3JB5iePWwKENn5+7JQfI2uGogR65/kf8GGuwHaDWDvE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cw8TgyhKSLMtNGrijUOOQDDebACv3ftozS2GGqUVA6e3hos5J2keqJIO3rhomNBXkRElSbB7bexY/AgA1vvhtoCa7g8MnM/t9sJrBN0u4PStbbkK6r/0By90Mzgu8paDBEl8iD+bppREPA0lpL7HqeeaqQs5bt3mBReYs6dDkeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=CLTBUa70; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1778580637; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=VhNXofBJzMZ4LJ0hPZudDkIz4qghFLBmis7XZf0b3lc=;
+	b=CLTBUa70abtciVrBaCuWKtyv0llhvUvttZDSfQ3l1r2akWB88Wm0RuFuFbmrYMAOQrsF9BU9gkKha8EnPRR6F+JIi/5tG+QZahhPZMBvMCmMSHHe8GGqHvgxDuZGMcAekEEJTMMfVXR8COJUTlsHAw05ycwyCptHmuDW2DZ05xk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0X2qAZik_1778580633;
+Received: from 30.74.144.137(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0X2qAZik_1778580633 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Tue, 12 May 2026 18:10:34 +0800
+Message-ID: <d5341d37-5644-4446-a406-9a7251b83399@linux.alibaba.com>
+Date: Tue, 12 May 2026 18:10:31 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 05/12] mm, swap: unify large folio allocation
+To: kasong@tencent.com, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
+ Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>,
+ Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Youngjun Park <youngjun.park@lge.com>,
+ Chengming Zhou <chengming.zhou@linux.dev>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Yosry Ahmed <yosry@kernel.org>,
+ Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>,
+ Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>,
+ Michal Hocko <mhocko@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Axel Rasmussen <axelrasmussen@google.com>
 References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
- <20260421-swap-table-p4-v3-4-2f23759a76bc@tencent.com> <19f31906-d8fb-489b-8e2a-c4414c99f338@linux.alibaba.com>
-In-Reply-To: <19f31906-d8fb-489b-8e2a-c4414c99f338@linux.alibaba.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 12 May 2026 17:55:14 +0800
-X-Gm-Features: AVHnY4Kx5IWu0o7HIeraLeLyWHYiLcIgyJrwH0dsgu48foM5j58dRwqAWziHzSc
-Message-ID: <CAMgjq7CFwVkxST=Ya-B7tHEsbtYnRzf_tMXN3ctm3NALvW1LoA@mail.gmail.com>
-Subject: Re: [PATCH v3 04/12] mm, swap: add support for stable large
- allocation in swap cache directly
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, Barry Song <baohua@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, Chris Li <chrisl@kernel.org>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Youngjun Park <youngjun.park@lge.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Yosry Ahmed <yosry@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>, 
-	Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 2EF7451E274
+ <20260421-swap-table-p4-v3-5-2f23759a76bc@tencent.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20260421-swap-table-p4-v3-5-2f23759a76bc@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: E9E0151E5DB
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15843-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-15844-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,nvidia.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
 	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[baolin.wang@linux.alibaba.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,alibaba.com:email,tencent.com:email]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim,tencent.com:email]
 X-Rspamd-Action: no action
 
-On Tue, May 12, 2026 at 5:49=E2=80=AFPM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
->
->
-> On 4/21/26 2:16 PM, Kairui Song via B4 Relay wrote:
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > +/**
-> > + * swap_cache_alloc_folio - Allocate folio for swapped out slot in swa=
-p cache.
-> > + * @targ_entry: swap entry indicating the target slot
-> > + * @gfp: memory allocation flags
-> > + * @orders: allocation orders
-> > + * @vmf: fault information
-> > + * @mpol: NUMA memory allocation policy to be applied
-> > + * @ilx: NUMA interleave index, for use only when MPOL_INTERLEAVE
-> > + *
-> > + * Allocate a folio in the swap cache for one swap slot, typically bef=
-ore
-> > + * doing IO (e.g. swap in or zswap writeback). The swap slot indicated=
- by
-> > + * @targ_entry must have a non-zero swap count (swapped out).
-> > + *
-> > + * Context: Caller must protect the swap device with reference count o=
-r locks.
-> > + * Return: Returns the folio if allocation succeeded and folio is adde=
-d to
-> > + * swap cache. Returns error code if allocation failed due to race.
-> > + */
-> > +struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp=
-,
-> > +                                  unsigned long orders, struct vm_faul=
-t *vmf,
-> > +                                  struct mempolicy *mpol, pgoff_t ilx)
-> > +{
-> > +     int order, err;
-> > +     struct folio *ret;
-> > +     struct swap_cluster_info *ci;
-> > +
-> > +     /* Always allow order 0 so swap won't fail under pressure. */
-> > +     order =3D orders ? highest_order(orders |=3D BIT(0)) : 0;
->
-> This seems a bit odd here. In THP/mTHP operations, it's usually the
-> callers' responsibility to determine the allowable orders. So I think we
-> should not implicitly set order 0 here. Instead, we should let callers
-> explicitly set it. What do you think?
 
-Totally agree. I hesitated between these two designs.
 
-And Usama also needed this because some callers (PMD swapin) don't
-want the fallback.
+On 4/21/26 2:16 PM, Kairui Song via B4 Relay wrote:
+> From: Kairui Song <kasong@tencent.com>
+> 
+> Now that direct large order allocation is supported in the swap cache,
+> both anon and shmem can use it instead of implementing their own methods.
+> This unifies the fallback and swap cache check, which also reduces the
+> TOCTOU race window of swap cache state: previously, high order swapin
+> required checking swap cache states first, then allocating and falling
+> back separately. Now all these steps happen in the same compact loop.
+> 
+> Order fallback and statistics are also unified, callers just need to
+> check and pass the acceptable order bitmask.
+> 
+> There is basically no behavior change. This only makes things more
+> unified and prepares for later commits. Cgroup and zero map checks can
+> also be moved into the compact loop, further reducing race windows and
+> redundancy
+> 
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> ---
+>   mm/memory.c     |  77 ++++++------------------------
+>   mm/shmem.c      |  94 +++++++++---------------------------
+>   mm/swap.h       |  30 ++----------
+>   mm/swap_state.c | 145 ++++++++++----------------------------------------------
+>   mm/swapfile.c   |   3 +-
+>   5 files changed, 67 insertions(+), 282 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index ea6568571131..404734a5bcff 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4593,26 +4593,6 @@ static vm_fault_t handle_pte_marker(struct vm_fault *vmf)
+>   	return VM_FAULT_SIGBUS;
+>   }
+>   
+> -static struct folio *__alloc_swap_folio(struct vm_fault *vmf)
+> -{
+> -	struct vm_area_struct *vma = vmf->vma;
+> -	struct folio *folio;
+> -	softleaf_t entry;
+> -
+> -	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vmf->address);
+> -	if (!folio)
+> -		return NULL;
+> -
+> -	entry = softleaf_from_pte(vmf->orig_pte);
+> -	if (mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
+> -					   GFP_KERNEL, entry)) {
+> -		folio_put(folio);
+> -		return NULL;
+> -	}
+> -
+> -	return folio;
+> -}
+> -
+>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>   /*
+>    * Check if the PTEs within a range are contiguous swap entries
+> @@ -4642,8 +4622,6 @@ static bool can_swapin_thp(struct vm_fault *vmf, pte_t *ptep, int nr_pages)
+>   	 */
+>   	if (unlikely(swap_zeromap_batch(entry, nr_pages, NULL) != nr_pages))
+>   		return false;
+> -	if (unlikely(non_swapcache_batch(entry, nr_pages) != nr_pages))
+> -		return false;
+>   
+>   	return true;
+>   }
+> @@ -4671,16 +4649,14 @@ static inline unsigned long thp_swap_suitable_orders(pgoff_t swp_offset,
+>   	return orders;
+>   }
+>   
+> -static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+> +static unsigned long thp_swapin_suitable_orders(struct vm_fault *vmf)
+>   {
+>   	struct vm_area_struct *vma = vmf->vma;
+>   	unsigned long orders;
+> -	struct folio *folio;
+>   	unsigned long addr;
+>   	softleaf_t entry;
+>   	spinlock_t *ptl;
+>   	pte_t *pte;
+> -	gfp_t gfp;
+>   	int order;
+>   
+>   	/*
+> @@ -4688,7 +4664,7 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+>   	 * maintain the uffd semantics.
+>   	 */
+>   	if (unlikely(userfaultfd_armed(vma)))
+> -		goto fallback;
+> +		return 0;
+>   
+>   	/*
+>   	 * A large swapped out folio could be partially or fully in zswap. We
+> @@ -4696,7 +4672,7 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+>   	 * folio.
+>   	 */
+>   	if (!zswap_never_enabled())
+> -		goto fallback;
+> +		return 0;
+>   
+>   	entry = softleaf_from_pte(vmf->orig_pte);
+>   	/*
+> @@ -4710,12 +4686,12 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+>   					  vmf->address, orders);
+>   
+>   	if (!orders)
+> -		goto fallback;
+> +		return 0;
+>   
+>   	pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>   				  vmf->address & PMD_MASK, &ptl);
+>   	if (unlikely(!pte))
+> -		goto fallback;
+> +		return 0;
+>   
+>   	/*
+>   	 * For do_swap_page, find the highest order where the aligned range is
+> @@ -4731,29 +4707,12 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+>   
+>   	pte_unmap_unlock(pte, ptl);
+>   
+> -	/* Try allocating the highest of the remaining orders. */
+> -	gfp = vma_thp_gfp_mask(vma);
+> -	while (orders) {
+> -		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+> -		folio = vma_alloc_folio(gfp, order, vma, addr);
+> -		if (folio) {
+> -			if (!mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
+> -							    gfp, entry))
+> -				return folio;
+> -			count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK_CHARGE);
+> -			folio_put(folio);
+> -		}
+> -		count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK);
+> -		order = next_order(&orders, order);
+> -	}
+> -
+> -fallback:
+> -	return __alloc_swap_folio(vmf);
+> +	return orders;
+>   }
+>   #else /* !CONFIG_TRANSPARENT_HUGEPAGE */
+> -static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+> +static unsigned long thp_swapin_suitable_orders(struct vm_fault *vmf)
+>   {
+> -	return __alloc_swap_folio(vmf);
+> +	return 0;
+>   }
+>   #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>   
+> @@ -4859,21 +4818,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>   	if (folio)
+>   		swap_update_readahead(folio, vma, vmf->address);
+>   	if (!folio) {
+> -		if (data_race(si->flags & SWP_SYNCHRONOUS_IO)) {
+> -			folio = alloc_swap_folio(vmf);
+> -			if (folio) {
+> -				/*
+> -				 * folio is charged, so swapin can only fail due
+> -				 * to raced swapin and return NULL.
+> -				 */
+> -				swapcache = swapin_folio(entry, folio);
+> -				if (swapcache != folio)
+> -					folio_put(folio);
+> -				folio = swapcache;
+> -			}
+> -		} else {
+> +		/* Swapin bypasses readahead for SWP_SYNCHRONOUS_IO devices */
+> +		if (data_race(si->flags & SWP_SYNCHRONOUS_IO))
+> +			folio = swapin_entry(entry, GFP_HIGHUSER_MOVABLE,
+> +					     thp_swapin_suitable_orders(vmf),
+> +					     vmf, NULL, 0);
+> +		else
+>   			folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, vmf);
+> -		}
+>   
+>   		if (!folio) {
+>   			/*
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 5916acf594a8..17e3da11bb1d 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -159,7 +159,7 @@ static unsigned long shmem_default_max_inodes(void)
+>   
+>   static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>   			struct folio **foliop, enum sgp_type sgp, gfp_t gfp,
+> -			struct vm_area_struct *vma, vm_fault_t *fault_type);
+> +			struct vm_fault *vmf, vm_fault_t *fault_type);
+>   
+>   static inline struct shmem_sb_info *SHMEM_SB(struct super_block *sb)
+>   {
+> @@ -2017,68 +2017,24 @@ static struct folio *shmem_alloc_and_add_folio(struct vm_fault *vmf,
+>   }
+>   
+>   static struct folio *shmem_swap_alloc_folio(struct inode *inode,
+> -		struct vm_area_struct *vma, pgoff_t index,
+> +		struct vm_fault *vmf, pgoff_t index,
+>   		swp_entry_t entry, int order, gfp_t gfp)
+>   {
+> +	pgoff_t ilx;
+> +	struct folio *folio;
+> +	struct mempolicy *mpol;
+> +	unsigned long orders = BIT(order);
+>   	struct shmem_inode_info *info = SHMEM_I(inode);
+> -	struct folio *new, *swapcache;
+> -	int nr_pages = 1 << order;
+> -	gfp_t alloc_gfp = gfp;
+> -
+> -	if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+> -		if (WARN_ON_ONCE(order))
+> -			return ERR_PTR(-EINVAL);
+> -	} else if (order) {
+> -		/*
+> -		 * If uffd is active for the vma, we need per-page fault
+> -		 * fidelity to maintain the uffd semantics, then fallback
+> -		 * to swapin order-0 folio, as well as for zswap case.
+> -		 * Any existing sub folio in the swap cache also blocks
+> -		 * mTHP swapin.
+> -		 */
+> -		if ((vma && unlikely(userfaultfd_armed(vma))) ||
+> -		     !zswap_never_enabled() ||
+> -		     non_swapcache_batch(entry, nr_pages) != nr_pages)
+> -			goto fallback;
+>   
+> -		alloc_gfp = thp_limit_gfp_mask(vma_thp_gfp_mask(vma), gfp);
+> -	}
+> -retry:
+> -	new = shmem_alloc_folio(alloc_gfp, order, info, index);
+> -	if (!new) {
+> -		new = ERR_PTR(-ENOMEM);
+> -		goto fallback;
+> -	}
+> +	if ((vmf && unlikely(userfaultfd_armed(vmf->vma))) ||
+> +	     !zswap_never_enabled())
+> +		orders = 0;
+>   
+> -	if (mem_cgroup_swapin_charge_folio(new, vma ? vma->vm_mm : NULL,
+> -					   alloc_gfp, entry)) {
+> -		folio_put(new);
+> -		new = ERR_PTR(-ENOMEM);
+> -		goto fallback;
+> -	}
+> +	mpol = shmem_get_pgoff_policy(info, index, order, &ilx);
+> +	folio = swapin_entry(entry, gfp, orders, vmf, mpol, ilx);
+> +	mpol_cond_put(mpol);
+>   
+> -	swapcache = swapin_folio(entry, new);
+> -	if (swapcache != new) {
+> -		folio_put(new);
+> -		if (!swapcache) {
+> -			/*
+> -			 * The new folio is charged already, swapin can
+> -			 * only fail due to another raced swapin.
+> -			 */
+> -			new = ERR_PTR(-EEXIST);
+> -			goto fallback;
+> -		}
+> -	}
+> -	return swapcache;
+> -fallback:
+> -	/* Order 0 swapin failed, nothing to fallback to, abort */
+> -	if (!order)
+> -		return new;
+> -	entry.val += index - round_down(index, nr_pages);
+> -	alloc_gfp = gfp;
+> -	nr_pages = 1;
+> -	order = 0;
+> -	goto retry;
+> +	return folio;
+>   }
 
-I'll let the caller explicitly pass in the allowable order in v4.
+IIUC, in the __swap_cache_alloc() implementation in patch 4, when shmem 
+swapin falls back to order 0, it doesn't adjust the swap entry value 
+like here. Because the original swap entry may not correspond to the 
+swap entry for the order 0 index.
 
-Thanks for the review!
+Of course, I haven't tested this yet, just pointing it out for you to 
+double check.
 
