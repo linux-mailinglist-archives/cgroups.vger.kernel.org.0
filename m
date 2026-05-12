@@ -1,430 +1,223 @@
-Return-Path: <cgroups+bounces-15846-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15847-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CKjGKTQLA2pmzwEAu9opvQ
-	(envelope-from <cgroups+bounces-15846-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 13:12:52 +0200
+	id IKoSMtUNA2pI0AEAu9opvQ
+	(envelope-from <cgroups+bounces-15847-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 13:24:05 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 111D751F224
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 13:12:51 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F89F51F4C2
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 13:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C1E32303DAD7
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:10:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6BB5F30117F8
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF1B383998;
-	Tue, 12 May 2026 11:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7ACC4D2EC5;
+	Tue, 12 May 2026 11:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="K8Zk64+l"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VIxGfSjm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F8B395AC1;
-	Tue, 12 May 2026 11:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C8E36F90E
+	for <cgroups@vger.kernel.org>; Tue, 12 May 2026 11:23:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778584207; cv=none; b=XfXHEDL3ckfYUYgcvh3Yoko0qaLyXk9XL7hMkZ9gDBFU/lwjMEZRVi/vy1AamFkFhrk4se8/SIjZQZZHvDVk7hEC7d3dUK36CQfEHWbID/2e8tZY52VDHBWMJrM/CC63UtoVgceUu4L6YTPTy4WlkfVWLRtgowr7EB6A/ww2WDE=
+	t=1778585040; cv=none; b=okO2+pHhYrzg3sX2Q65ygwtxwZOJ138X2Rt8VCVkPmX4nYqdmd5dbWnK1b0pIQlBAMBVPUfHrIgwr5HpbUYHf8BfEh2TvA2V+5LkfW5+hdwb61JoN4veKwyGSyLA0P/QOQDSHEgteMGWAzxqksEINbNMqmNsDXpBS03JoMG6hTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778584207; c=relaxed/simple;
-	bh=3O4PQOtHj4J0uPPQ5xQqo41uzNuY+GUoVapukQZ6qKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YTs4eYkO1w8YO+HrEQqHWgPlNqEw6CuvoqIM0LhgbLz+Cr36bB+iLqYSLzNni/Y1PV2aaBAJUqwXF8DZ5xKdHoJB4yrTIgNQBIiID0GtP69e3Vx/n6XFwjp8FZc8sv7/wc9P3qxkIkzUsa/HcZ3YAEGz96Aipvk8OiWZMqsXqv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=K8Zk64+l; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZRZDhEWKxNs8eLw2VLzKVpXdb0a6fF1FWSQbLdsdFts=; b=K8Zk64+lu9JuNSxfdcfmmx9CXZ
-	wJU33ZG37nV+8/i8NxqxtwQZRfvptWoVepSJhluPukuES2CmKpQhK7gloHdkrlOQt6nw26O4MRANe
-	vQfuqzd//ggLg57jf3q6MSKyYcoiTihosO+PykEmkpKRR4a2n+E3X4oS/Z2GltGi9ss71PoUXevZL
-	q9GbVlpvRmrxUu/H9LnyN6F06oyte20KgtrkMKKNMIkmIA7O8uqDGwf62f20it3iPsqaOKHJJ4+Ji
-	Np+AdxGxkWdebNV7inT/sopMFYTNYOIeZl6CNDkK2SQVUX0g23PxaRxRmSGgJicFk/KsrWujACUJe
-	qXz9LPKQ==;
-Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wMkzW-0000000EUQs-0xOB;
-	Tue, 12 May 2026 11:09:34 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 24FCC30075A; Tue, 12 May 2026 13:09:33 +0200 (CEST)
-Date: Tue, 12 May 2026 13:09:32 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jstultz@google.com,
-	qyousef@layalina.io
-Subject: Re: [PATCH v2 10/10] sched/eevdf: Move to a single runqueue
-Message-ID: <20260512110932.GB1889694@noisy.programming.kicks-ass.net>
-References: <20260511113104.563854162@infradead.org>
- <20260511120628.206700041@infradead.org>
- <133c4d08-5dfb-4f4f-83cb-f9652d4212ef@amd.com>
+	s=arc-20240116; t=1778585040; c=relaxed/simple;
+	bh=Ii5vfft56FX4F+RKZElVmFFVKpx9tobbH8vxCfz2cG4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hX71KVCXGVa3FZrikpmhDQNKLwcMukf7O85tKYxsr5pO7t2qI9xCfzP5IHzXo8VlZ+w6dxtXfEEFFX3qmZOAPAk8ByfYkmdApfuCJualhVAwPFptTXSCdkDmmC9D73kpGIOALKruei6VCsnLM9Bl8tazpAfrG93QmwGHfst6vpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VIxGfSjm; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-36608b2f2dcso3647276a91.2
+        for <cgroups@vger.kernel.org>; Tue, 12 May 2026 04:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778585036; x=1779189836; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pj3CnjNQfUpkH+U3gC/I8KUGZmw67J04qC2DMFV41gM=;
+        b=VIxGfSjmcjUzUpbJew+AIUW4sJcq14xKnrh/GO2yGOw3UfPYn1+zBtN/bgnbnPST+b
+         ragrcUE6N/VrUQ2hsQ9QUsXTByzWuECBOENMlW6ptT4KnQ57PRmQ0k/GkyoU3NzvK2Bj
+         35+lN4j9SHEZCKMpRoMjvxcENHoQz/VsGbKbL4b60SfdMbFcMGWvEnV6mG1ao0rOwOoi
+         1W6sjwTy0YwB46aPYg/T72xrBF4hnzDcBsSVyziTvhwx4H5Z6Fk6SjYlp+PdnkjzQn5u
+         ld1lc2UGfKLzHPfj7JlW36Khk1MXrytX5gc6/hiFtZCA188YnM7UVzQWWd5nbPgZMVC7
+         ND+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778585036; x=1779189836;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Pj3CnjNQfUpkH+U3gC/I8KUGZmw67J04qC2DMFV41gM=;
+        b=FOMs0ZlSKCFjsquXt61o6qvx1ActI3rRkRCCWRMlTzaTDlcBKnAw66h32r+PpW//IE
+         XY/fGWw9qP8argD1awwyJUAiasthUTDYpNyDhPrcKZp+5XiukKdk9UTBgSpvCK4TE0Vm
+         KFlArzHwJ1T6dnGRA8rZB5RmDw3ay4CYpxCym2or4QfBjnwdIBfv8Qyq9CoUakbdHSkM
+         nSuGOM9OgGr52dhwOGrAARohQikXO+1yORkTuZWryob6ZzYcHDsSBObk1wKhPYAeL8lA
+         Qo27xD5xJv0vz5UZ77Css2afRD7tXwtRaeVWcpQP3xuAyPdmlW5NrrMSRFg/7pImwaCQ
+         q1hQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9dObeuIDmSz7jMFUHmwDceE2/12npJtZ+UBdxKLOTuvjohUndmCg9LCgccBWfeLYv3NeAKN4gg@vger.kernel.org
+X-Gm-Message-State: AOJu0YzwXSPeScpPsLWm5h34WZZYxdSUjEcsYEAAns5Y7erhT6+VTDg5
+	3eYke/dFjjbvmLN5jy4BtEM0pGmz5O4QtH91LeEer/QxnnH2XqjZcxYE
+X-Gm-Gg: Acq92OHcAD16g6t9Xln1pyiWTvbUPzepPIwKRKy6f0P3E2vF7rgmdHYt5lCAfGkSPSw
+	XZlBtYD0IpCD2EadXamNLGAzkTLMK5gcW8vqjFycXhhJ5DERX+GcCuvQ1gfkyWqL9DyySkoOBx/
+	PvRx5+D0YgKxP0iaK8EJ9RVFHGjtaFVhtN/bgkQM/05YdDH60inDYxsbNkYNmXzpw1CDAdt14Uc
+	kESTTHFqtKtIx0wpy8gEFNyf2qkdQX+Y1IfTepnKSwTb0lpm6xip+spVvZeSxBD6GLpp0kJCqCS
+	KTWUdq09oDc9xXAjuyM8KPk3V7UzQjCL9hTmfA3M1RxzqIaZZyE88azGU6arLPRgUbYkacbUDfg
+	yaNQOacW9zwR+CTBA1SwHg0+OV2wj1j9Vjl2zQ6kIzfb68IqI9kUxAtO66FLeI9Mhbza1T9yymw
+	9+YaPJ77ij3xsQb15e+U49hi3PNx78oXq2TfVHmAKQyBM=
+X-Received: by 2002:a17:90b:3808:b0:368:cff1:ed99 with SMTP id 98e67ed59e1d1-368cff20420mr1095608a91.18.1778585035935;
+        Tue, 12 May 2026 04:23:55 -0700 (PDT)
+Received: from [10.125.192.65] ([210.184.73.204])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3685d84aa55sm6286680a91.5.2026.05.12.04.23.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 May 2026 04:23:55 -0700 (PDT)
+Message-ID: <5e6cf3fe-40eb-4a57-4bbb-eda2c31b3210@gmail.com>
+Date: Tue, 12 May 2026 19:23:32 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <133c4d08-5dfb-4f4f-83cb-f9652d4212ef@amd.com>
-X-Rspamd-Queue-Id: 111D751F224
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH 0/3] mm/zswap: Implement per-cgroup proactive writeback
+To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc: akpm@linux-foundation.org, tj@kernel.org, hannes@cmpxchg.org,
+ shakeel.butt@linux.dev, mhocko@kernel.org, yosry@kernel.org,
+ nphamcs@gmail.com, chengming.zhou@linux.dev, muchun.song@linux.dev,
+ roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ Hao Jia <jiahao1@lixiang.com>
+References: <20260511105149.75584-1-jiahao.kernel@gmail.com>
+ <agG-gNEclOVf-9WA@localhost.localdomain>
+From: Hao Jia <jiahao.kernel@gmail.com>
+In-Reply-To: <agG-gNEclOVf-9WA@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 7F89F51F4C2
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15846-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,gmail.com,vger.kernel.org,kvack.org,lixiang.com];
+	TAGGED_FROM(0.00)[bounces-15847-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim,noisy.programming.kicks-ass.net:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,lixiang.com:email]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 09:51:57PM +0530, K Prateek Nayak wrote:
-> Hello Peter,
+
+
+On 2026/5/11 19:39, Michal Koutný wrote:
+> On Mon, May 11, 2026 at 06:51:46PM +0800, Hao Jia <jiahao.kernel@gmail.com> wrote:
+>> From: Hao Jia <jiahao1@lixiang.com>
+>>
+>> Zswap currently writes back pages to backing swap devices reactively,
+>> triggered either by memory pressure via the shrinker or by the pool
+>> reaching its size limit. However, this reactive approach makes writeback
+>> timing indeterminate and can disrupt latency-sensitive workloads when
+>> eviction happens to coincide with a critical execution window.
+>>
+>> Furthermore, in certain scenarios, it is desirable to trigger writeback
+>> in advance to free up memory. For example, users may want to prepare for
+>> an upcoming memory-intensive workload by flushing cold memory to the
+>> backing storage when the system is relatively idle.
 > 
-> On 5/11/2026 5:01 PM, Peter Zijlstra wrote:
-> > @@ -9291,34 +9206,25 @@ static void wakeup_preempt_fair(struct r
-> > +	se = pick_next_entity(rq, true);
-> > +	if (!se)
-> > +		goto again;
-> >  
-> >  	p = task_of(se);
-> > -	if (unlikely(throttled))
-> > +	if (unlikely(check_cfs_rq_runtime(cfs_rq_of(se))))
-> >  		task_throttle_setup_work(p);
+> I can imagine the zswap writeout can come at the least possible
+> moment...
 > 
-> I think this bit should also be replicated in set_next_task() after
-> account_cfs_rq_runtime() since any part of the hierarchy may get
-> throttled as a result of failing to grab runtime.
+>> To address these issues, this patch series introduces a per-cgroup
+>> interface that allows users to proactively write back cold compressed
+>> pages from zswap to the backing swap device.
 > 
-> Also check_cfs_rq_runtime() only sees if the cfs_rq is throttled
-> but the task can fail to run if it is on a throttled_hierarchy() too
-> so that should be the correct check here.
+> ...but I see this series is not only per-cgroup proactive reclaim but
+> it's also age-based reclaim.
 > 
-> Something like below (only build tested on queue/sched/flat):
+> The per-cg consumption and limits (and regular memory reclaim) are all
+> measured in sizes. This age-based invocations don't seem commensurable
+> (e.g. how would users in practice determine what is the desired input to
+> here).
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e54da4c6c945..950c072244b2 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9224,7 +9224,19 @@ struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
->  		goto again;
->  
->  	p = task_of(se);
-> -	if (unlikely(check_cfs_rq_runtime(cfs_rq_of(se))))
-> +	/*
-> +	 * For cases where prev is picked again after
-> +	 * being throttled, entity_tick() would have
-> +	 * already marked its hierarchy as throttled.
-> +	 *
-> +	 * Add throttle work here since
-> +	 * put_prev_set_next_task() is skipped on
-> +	 * same task's selection.
-> +	 *
-> +	 * For other case, set_next_task_fair() will
-> +	 * handle adding the throttle work.
-> +	 */
-> +	if (throttled_hierarchy(cfs_rq_of(se)))
->  		task_throttle_setup_work(p);
 
-Ah, right, because we've not accumulated runtime, it doesn't make sense
-to use check_cfs_rq_runtime() at pick time, all we need to do is check
-if the task should be throttled.
+Thanks Michal — you are right. The series is both per-memcg *and*
+age-based.
 
-However, since set_next_task_fair() will walk the entire hierarchy
-anyway, we can remove it here entirely and fully rely on that.
+The interface carries a size budget, like memory.reclaim. The two
+parameters play different roles:
 
->  	return p;
->  
-> @@ -13819,6 +13831,12 @@ static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
->  		if (on_rq)
->  			weight = __calc_prop_weight(cfs_rq, se, weight);
->  	}
-> +	/*
-> +	 * Add throttle work if the bandwidth allocation above failed
-> +	 * to grab any runtime and throttled the task's hierarchy.
-> +	 */
-> +	if (throttled_hierarchy(task_cfs_rq(p)))
-> +		task_throttle_setup_work(p);
+   "write back up to <max> bytes, chosen from entries whose residency
+    in zswap is at least <age>"
 
-We already call into account_cfs_rq_runtime(); which basically does all
-we need.
+Size stays the unit of *amount*; age is just how we describe *which*
+entries are eligible.
 
-I think the distinction between account_cfs_rq_runtime() and
-check_cfs_rq_runtime() no longer makes sense. We can throttle a cfs_rq
-at any point now, since we no longer remove the cfs_rq, but rather we
-make the tasks suspend themselves until the cfs_rq naturally dequeues
-for being empty.
 
-Something like so perhaps?
+> Could you explain more reasoning behind this design?
+> 
 
----
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -488,7 +488,7 @@ static int se_is_idle(struct sched_entit
- #endif /* !CONFIG_FAIR_GROUP_SCHED */
- 
- static __always_inline
--void account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec);
-+bool account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec);
- 
- /**************************************************************
-  * Scheduling class tree data structure manipulation methods:
-@@ -1420,12 +1420,22 @@ static void update_curr(struct cfs_rq *c
- 	}
- }
- 
-+static inline int cfs_rq_throttled(struct cfs_rq *cfs_rq);
-+static inline void task_throttle_setup_work(struct task_struct *p);
-+
- static void update_curr_fair(struct rq *rq)
- {
- 	struct sched_entity *se = &rq->donor->se;
-+	bool throttled = false;
- 
--	for_each_sched_entity(se)
--		update_curr(cfs_rq_of(se));
-+	for_each_sched_entity(se) {
-+		struct cfs_rq *cfs_rq = cfs_rq_of(se);
-+		update_curr(cfs_rq);
-+		throttled |= cfs_rq_throttled(cfs_rq);
-+	}
-+
-+	if (throttled)
-+		task_throttle_setup_work(rq->donor);
- }
- 
- static inline void
-@@ -5627,7 +5637,6 @@ place_entity(struct cfs_rq *cfs_rq, stru
- }
- 
- static void check_enqueue_throttle(struct cfs_rq *cfs_rq);
--static inline int cfs_rq_throttled(struct cfs_rq *cfs_rq);
- 
- static void
- enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-@@ -5830,8 +5839,6 @@ pick_next_entity(struct rq *rq, bool pro
- 	return se;
- }
- 
--static bool check_cfs_rq_runtime(struct cfs_rq *cfs_rq);
--
- static void put_prev_entity(struct cfs_rq *cfs_rq, struct sched_entity *prev)
- {
- 	/*
-@@ -5841,9 +5848,6 @@ static void put_prev_entity(struct cfs_r
- 	if (prev->on_rq)
- 		update_curr(cfs_rq);
- 
--	/* throttle cfs_rqs exceeding runtime */
--	check_cfs_rq_runtime(cfs_rq);
--
- 	if (prev->on_rq) {
- 		update_stats_wait_start_fair(cfs_rq, prev);
- 		/* in !on_rq case, update occurred at dequeue */
-@@ -5976,44 +5980,29 @@ static int __assign_cfs_rq_runtime(struc
- 	return cfs_rq->runtime_remaining > 0;
- }
- 
--/* returns 0 on failure to allocate runtime */
--static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
--{
--	struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(cfs_rq->tg);
--	int ret;
--
--	raw_spin_lock(&cfs_b->lock);
--	ret = __assign_cfs_rq_runtime(cfs_b, cfs_rq, sched_cfs_bandwidth_slice());
--	raw_spin_unlock(&cfs_b->lock);
--
--	return ret;
--}
-+static bool throttle_cfs_rq(struct cfs_rq *cfs_rq);
- 
--static void __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
-+static bool __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
- {
- 	/* dock delta_exec before expiring quota (as it could span periods) */
- 	cfs_rq->runtime_remaining -= delta_exec;
- 
- 	if (likely(cfs_rq->runtime_remaining > 0))
--		return;
-+		return false;
- 
- 	if (cfs_rq->throttled)
--		return;
--	/*
--	 * if we're unable to extend our runtime we resched so that the active
--	 * hierarchy can be throttled
--	 */
--	if (!assign_cfs_rq_runtime(cfs_rq) && likely(cfs_rq->h_curr))
--		resched_curr(rq_of(cfs_rq));
-+		return true;
-+
-+	return throttle_cfs_rq(cfs_rq);
- }
- 
- static __always_inline
--void account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
-+bool account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
- {
- 	if (!cfs_bandwidth_used() || !cfs_rq->runtime_enabled)
--		return;
-+		return false;
- 
--	__account_cfs_rq_runtime(cfs_rq, delta_exec);
-+	return __account_cfs_rq_runtime(cfs_rq, delta_exec);
- }
- 
- static inline int cfs_rq_throttled(struct cfs_rq *cfs_rq)
-@@ -6284,9 +6273,9 @@ static bool throttle_cfs_rq(struct cfs_r
- 		 * We have raced with bandwidth becoming available, and if we
- 		 * actually throttled the timer might not unthrottle us for an
- 		 * entire period. We additionally needed to make sure that any
--		 * subsequent check_cfs_rq_runtime calls agree not to throttle
--		 * us, as we may commit to do cfs put_prev+pick_next, so we ask
--		 * for 1ns of runtime rather than just check cfs_b.
-+		 * subsequent account_cfs_rq_runtime() calls agree not to
-+		 * throttle us, as we may commit to do cfs put_prev+pick_next,
-+		 * so we ask for 1ns of runtime rather than just check cfs_b.
- 		 */
- 		dequeue = 0;
- 	} else {
-@@ -6711,8 +6700,6 @@ static void check_enqueue_throttle(struc
- 
- 	/* update runtime allocation */
- 	account_cfs_rq_runtime(cfs_rq, 0);
--	if (cfs_rq->runtime_remaining <= 0)
--		throttle_cfs_rq(cfs_rq);
- }
- 
- static void sync_throttle(struct task_group *tg, int cpu)
-@@ -6742,25 +6729,6 @@ static void sync_throttle(struct task_gr
- 		cfs_rq->pelt_clock_throttled = 1;
- }
- 
--/* conditionally throttle active cfs_rq's from put_prev_entity() */
--static bool check_cfs_rq_runtime(struct cfs_rq *cfs_rq)
--{
--	if (!cfs_bandwidth_used())
--		return false;
--
--	if (likely(!cfs_rq->runtime_enabled || cfs_rq->runtime_remaining > 0))
--		return false;
--
--	/*
--	 * it's possible for a throttled entity to be forced into a running
--	 * state (e.g. set_curr_task), in this case we're finished.
--	 */
--	if (cfs_rq_throttled(cfs_rq))
--		return true;
--
--	return throttle_cfs_rq(cfs_rq);
--}
--
- static enum hrtimer_restart sched_cfs_slack_timer(struct hrtimer *timer)
- {
- 	struct cfs_bandwidth *cfs_b =
-@@ -7015,8 +6983,7 @@ static void sched_fair_update_stop_tick(
- 
- #else /* !CONFIG_CFS_BANDWIDTH: */
- 
--static void account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec) {}
--static bool check_cfs_rq_runtime(struct cfs_rq *cfs_rq) { return false; }
-+static bool account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec) { return false; }
- static void check_enqueue_throttle(struct cfs_rq *cfs_rq) {}
- static inline void sync_throttle(struct task_group *tg, int cpu) {}
- static __always_inline void return_cfs_rq_runtime(struct cfs_rq *cfs_rq) {}
-@@ -9208,7 +9175,6 @@ struct task_struct *pick_task_fair(struc
- {
- 	struct cfs_rq *cfs_rq = &rq->cfs;
- 	struct sched_entity *se;
--	struct task_struct *p;
- 	int new_tasks;
- 
- again:
-@@ -9223,10 +9189,7 @@ struct task_struct *pick_task_fair(struc
- 	if (!se)
- 		goto again;
- 
--	p = task_of(se);
--	if (unlikely(check_cfs_rq_runtime(cfs_rq_of(se))))
--		task_throttle_setup_work(p);
--	return p;
-+	return task_of(se);
- 
- idle:
- 	new_tasks = sched_balance_newidle(rq, rf);
-@@ -13618,6 +13581,7 @@ static void task_tick_fair(struct rq *rq
- {
- 	struct sched_entity *se = &curr->se;
- 	unsigned long weight = NICE_0_LOAD;
-+	bool throttled = false;
- 	struct cfs_rq *cfs_rq;
- 
- 	for_each_sched_entity(se) {
-@@ -13625,8 +13589,13 @@ static void task_tick_fair(struct rq *rq
- 		entity_tick(cfs_rq, se, queued);
- 
- 		weight = __calc_prop_weight(cfs_rq, se, weight);
-+
-+		throttled |= cfs_rq_throttled(cfs_rq);
- 	}
- 
-+	if (throttled)
-+		task_throttle_setup_work(curr);
-+
- 	se = &curr->se;
- 	reweight_eevdf(cfs_rq, se, weight, se->on_rq);
- 
-@@ -13800,6 +13769,7 @@ static void set_next_task_fair(struct rq
- 	struct cfs_rq *cfs_rq = &rq->cfs;
- 	unsigned long weight = NICE_0_LOAD;
- 	bool on_rq = se->on_rq;
-+	bool throttled = false;
- 
- 	clear_buddies(cfs_rq, se);
- 
-@@ -13814,12 +13784,15 @@ static void set_next_task_fair(struct rq
- 			set_next_entity(cfs_rq, se);
- 
- 		/* ensure bandwidth has been allocated on our new cfs_rq */
--		account_cfs_rq_runtime(cfs_rq, 0);
-+		throttled |= account_cfs_rq_runtime(cfs_rq, 0);
- 
- 		if (on_rq)
- 			weight = __calc_prop_weight(cfs_rq, se, weight);
- 	}
- 
-+	if (throttled)
-+		task_throttle_setup_work(p);
-+
- 	se = &p->se;
- 	cfs_rq->curr = se;
- 
+Context on the use case:
 
+Our deployment runs a userspace proactive reclaimer driven by the
+system's runtime state (memory/CPU/IO pressure, refault rate, ...)
+and workload-specific policy. It uses memory.reclaim to drive
+reclaim, which compresses cold anon pages into zswap as the first
+stage. For entries that then remain in zswap past a policy-defined
+age threshold, the reclaimer wants to write them back to the backing
+swap device at a moment of its own choosing, to further reclaim the
+DRAM still held by the compressed data.
+
+Why age is a reasonable selector at this stage:
+
+Pages in zswap have already passed a first-stage coldness judgement
+(otherwise they would not have been compressed). For second-level
+offloading, the question is which of them are cold *enough*.
+Time-in-zswap is a natural proxy for that. A swap-in invalidates the
+corresponding zswap entry and resets the clock, so by construction
+an entry that has sat in zswap for N seconds has not been faulted in
+for at least N seconds. Residency in zswap is therefore a strong
+signal that the entry is not about to refault.
+
+In our deployment the userspace reclaimer starts from a conservative 
+threshold (the starting value depends on the workload) and adjusts it 
+through closed-loop feedback:
+
+   - on one side, the age distribution of zswap entries, to see
+     whether there is a meaningful population past the threshold;
+   - on the other side, the post-writeback refault rate and related
+     signals, to confirm that entries written back were in fact cold
+     enough.
+
+Both <age> and max=<bytes> are tuned against these signals until the
+realized writeback volume matches target. This is the same
+control-loop style already used to drive the first-stage
+memory.reclaim budget.
+
+Thanks,
+Hao
 
