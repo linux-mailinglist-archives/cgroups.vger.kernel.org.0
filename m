@@ -1,185 +1,189 @@
-Return-Path: <cgroups+bounces-15822-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15823-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2MaQIDzhAmpEyQEAu9opvQ
-	(envelope-from <cgroups+bounces-15822-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:13:48 +0200
+	id iBbcORrlAmpEyQEAu9opvQ
+	(envelope-from <cgroups+bounces-15823-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:30:18 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C78C951C85F
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C4C51CB91
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:30:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EADD83026332
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:10:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4022330903BF
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E1F48BD33;
-	Tue, 12 May 2026 08:10:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7D0492508;
+	Tue, 12 May 2026 08:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YL0cslZb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JEiChFYf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183A7258CE5;
-	Tue, 12 May 2026 08:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C1FB492186;
+	Tue, 12 May 2026 08:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778573425; cv=none; b=COIgvjdDmJVV1IDtPe7lEWNyXosgUI4mt/raBA+Yvlne0+2Ycvrt12pexpTkieo2aecjcli8HL7LJrilZy127uLgxtkckvfmHRBuXd4XOnzrZCI3gCiu1CGn5kJDo/8QMF9RIhU9UTgLYUs8jS+1xARVHOn5Ri7KEjcUK5v0ZpE=
+	t=1778574275; cv=none; b=LS8DqOHa0IJTOQfl3GnGhTs4Rdp+C5rO55MwzIdk8zP8uCbz4YUtfsLe88m5iyOJrjQHc/0sTsO5oDFtRXH0oX7rbrY/imQESVK0bRZrI0XYQYda1qIalVtV2QHIx7GF1AsHv0YWMDsz7CfX2wkd5MQqcPYiGLlUveHXZas0/FA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778573425; c=relaxed/simple;
-	bh=JdtqZMJDJnp28NUJSCgytxWm0x493TYcezg01A+7jSU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iyYXKLvzXaaCxTHE0FTaEVafmBoQOvsNcaxHvMyv6vYjO/1RnDq5jWPf1kVELwZS7h4Iqp4QbR8wntV5Nldre60Il0pyQGWLYygfEQxs28UyqLrWTbK01jFJ89rXURMrAvwzhDz4nSpRU16U3qc5iUwkzscOGEAdOGdrvxQJ+NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YL0cslZb; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=19TGBtKQmhIuXSKyT51dH+VsGeOUq2ku3XDV08szO4s=; b=YL0cslZbE6ZZ/7Tz1GBQdwXMc5
-	zJQEaDoFZsjfFSnJUL72wbh2GRnZ4P5uqReFiFdFvl0505cn0lZ+ni3gsrvItJGiLR6oPY+rsqoRJ
-	ukKxsYiFGCgv5dqK+A8DoHhp0/4Kb8/P3iTy5Bw7DDzgiMYSu5mDG09nYSbssx+sBVxsD6ROkBO3s
-	tdMpPifDHo14ivNO+wV3Zpb+glGEZplZeFjhGx+A3WgPvpQUqL/Qlr777w1BNBR+pXRENg0DY8I4y
-	uMJZBS/nF1Iwz+jnSpVYsjLEWJsNfcMq9ryFtdW+fmwdUKNR4y1DAJ/3TjCiOPtHD3l2952B5fP9O
-	wm9K4BmA==;
-Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wMiBl-00000009PjW-2YTr;
-	Tue, 12 May 2026 08:10:01 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 00A7E3007E1; Tue, 12 May 2026 10:10:00 +0200 (CEST)
-Date: Tue, 12 May 2026 10:10:00 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jstultz@google.com,
-	kprateek.nayak@amd.com, qyousef@layalina.io
-Subject: Re: [PATCH v2 00/10] sched: Flatten the pick
-Message-ID: <20260512081000.GL3102624@noisy.programming.kicks-ass.net>
-References: <20260511113104.563854162@infradead.org>
- <agIswZpCxlsQ2Xdk@slm.duckdns.org>
+	s=arc-20240116; t=1778574275; c=relaxed/simple;
+	bh=xc0h2c0hTybRTSZ+FW2dCypjXJeU1NQ2RPW7zVtWjvI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lmIS5j0QquV+LbRbSClQZ9D/DcRJG7Uq0pr6IxGgZ7IIhdbLmF7fwPbOUHR6yebSNWYrmpBhbCTMNzHEiPzacJt98w0aEW1xiXEuoBiOnQm6AeG9yIjf+T/hlb7Dl8zXzoA/7IhKw3F4qOUk1n66AQVMDXh9QcrmQVvd2QH0VPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JEiChFYf; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1778574272; x=1810110272;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xc0h2c0hTybRTSZ+FW2dCypjXJeU1NQ2RPW7zVtWjvI=;
+  b=JEiChFYfpoeQSGEhgVDzKC3eoHMW6lLu4TkajUTlK5fL117broR4ILkf
+   jtUrz+mEgJh/YOk486soopxSt92r7K6bh8ybZtXeA8HAZLkMvIO7YF6zB
+   vmk7eszyzALERsWqdKkHIlsnlCC2HN3Q4q+FtVHKQjj/DOmInFEs6icd8
+   O0Y4CKlAaYm6yko1E5CDg97+qFf8vSsRW9oepPi/o/jj3PWur6via3ktb
+   ZCnX2/UCKpcdluqUCX9CploBw8KlvTtILb8MULEcT20derEdMQ8S6Iz3b
+   4LMrDaMwGm34G8l3g6buviRgWpAqjrhsl8mJVbpXisATFyrJkEi0LG6TA
+   Q==;
+X-CSE-ConnectionGUID: BRTlxmR8TOOsc3hJVOG4Xw==
+X-CSE-MsgGUID: TvyA3r63Q4qnfbpCAKL10w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11783"; a="79194946"
+X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
+   d="scan'208";a="79194946"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 01:24:31 -0700
+X-CSE-ConnectionGUID: qJawPWxjTCKRJOtEr5rDnw==
+X-CSE-MsgGUID: wG9sh6JfR2urEwoB3UyDsA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,230,1770624000"; 
+   d="scan'208";a="237945499"
+Received: from vpanait-mobl.ger.corp.intel.com (HELO fedora) ([10.245.245.172])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2026 01:24:24 -0700
+From: =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
+To: intel-xe@lists.freedesktop.org
+Cc: =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Natalie Vock <natalie.vock@gmx.de>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Tejun Heo <tj@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org,
+	Huang Rui <ray.huang@amd.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Simona Vetter <simona@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	dri-devel@lists.freedesktop.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/5] Add reclaim to the dmem cgroup controller
+Date: Tue, 12 May 2026 10:24:01 +0200
+Message-ID: <20260512082406.44470-1-thomas.hellstrom@linux.intel.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <agIswZpCxlsQ2Xdk@slm.duckdns.org>
-X-Rspamd-Queue-Id: C78C951C85F
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 38C4C51CB91
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15822-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15823-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linux.intel.com,gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim,noisy.programming.kicks-ass.net:mid]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.intel.com:mid,intel.com:email,intel.com:dkim,patchwork.freedesktop.org:url]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 09:23:45AM -1000, Tejun Heo wrote:
-> Hello, Peter.
-> 
-> On Mon, May 11, 2026 at 01:31:04PM +0200, Peter Zijlstra wrote:
-> > So cgroup scheduling has always been a pain in the arse. The problems start
-> > with weight distribution and end with hierachical picks and it all sucks.
-> > 
-> > The problems with weight distribution are related to that infernal global
-> > fraction:
-> > 
-> >              tg->w * grq_i->w
-> >    ge_i->w = ----------------
-> >              \Sum_j grq_j->w
-> > 
-> > which we've approximated reasonably well by now. However, the immediate
-> > consequence of this fraction is that the total group weight (tg->w) gets
-> > fragmented across all your CPUs. And at 64 CPUs that means your per-cpu cgroup
-> > weight ends up being a nice 19 task worth. And more CPUs more tiny. Combine
-> > with the fact that 256 CPU systems are relatively common these days, this
-> > becomes painful.
-> > 
-> > The common 'solution' is to inflate the group weight by 'nr_cpus'; the
-> > immediate problem with that is that when all load of a group gets concentrated
-> > on a single CPU, the per-cpu cgroup weight becomes insanely large, easily
-> > exceeding nice -20.
-> > 
-> > Additionally there are numerical limits on the max weight you can have before
-> > the math starts suffering overflows. As such there is a definite limit on the
-> > total group weight. Which has annoyed people ;-)
-> > 
-> > The first few patches add a knob /debug/sched/cgroup_mode and a few different
-> > options on how to deal with this. My favourite is 'concur', but obviously that
-> > is also the most expensive one :-/ It adds a tg->tasks counter which makes the
-> > update_tg_load_avg() thing more expensive.
-> 
-> Ignoring fixed math accuracy problems, isn't the root problem here that
-> every thread in the root cgroup competes as if each is its own cgroup? ie.
-> Isn't the canonical solution here to create an enveloping group, at least
-> for share calculation purposes, for root threads and then assign them some
-> weight so that they compete in the same way that other cgroups do? Then, the
-> different modes go away or rather whatever the user wants can be expressed
-> via root's weight if that's to be made configurable.
+When writing a "max" limit lower than the current usage, the
+existing code silently failed. This series aims to improve
+on that by returning -EBUSY on failure and also attempt
+to synchronously reclaim device memory to push the usage
+under the new max limit to avoid the error.
 
-As long as the total group weight is a fraction; and it sorta has to be.
-You can run into trouble by stacking that fraction.
+Patch 1 fixes a pre-existing amdgpu_vram_mgr_init() error path
+Patch 2 implements and documents a reclaim callback interface
+      for the dmem controller.
+Patch 3 implements a TTM reclaim callback.
+Patch 4-5 hooks up the reclaim callback to the dmem cgroups-
+      aware drivers xe and amdgpu.
 
-Take 256 CPUs and a group weight of 1024. Then each CPU gets a weight of
-1/256 or 4. Even if we increase the internal accuracy to 20 bits (we do
-on 64bit) then this becomes 4096, do this for 2 more levels in the
-hierarchy and you're down to scraping the barrel again.
+v2:
+- Remove the error propagation that was in a previous series (Maarten)
+- A number of updates in patch 1. See its commit message for
+  details (Maarten)
 
-So if each level runs at a fraction f of the level above, then level n
-runs at f^n. Moving root into a phantom group at level 1, only solves
-the problem against other tasks at level 1, but then you have the same
-problem again at level 2 and below.
+v3:
+- Add patch 1 fixing a pre-existing amdgpu_vram_mgr_init() error path
+  bug where drmm_cgroup_register_region() was called before
+  INIT_LIST_HEAD() and gpu_buddy_init(), causing a kernel panic on
+  failure. (Sashiko-bot)
+- Use an rwsem to protect reclaim callback registration and region
+  unregister against concurrent reclaim invocations. (Sashiko-bot)
+- Fix ttm_resource_manager_set_dmem_region() storing an error pointer
+  in man->cg unconditionally. (Sashiko-bot)
+- Fix kernel-doc function name format for ttm_bo_evict_cgroup() and
+  ttm_resource_manager_set_dmem_region().
 
-Both the numerical problems and the scale problem of the root group can
-be avoided if we can get the average/nominal fraction to be near 1.
+v4:
+- Rebased on drm-tip; dropped the XE_PL_STOLEN guard in the xe patch
+  as stolen memory uses a separate TTM manager.
 
-The 'normal' way around this is to ensure the group weight is nr_cpus *
-1024, then, when everybody is running, the per CPU weight is 1024 or 1
-and the continued fraction is also 1-ish. This is why people like to
-increase the max group weight.
+User-space tests are at
+https://patchwork.freedesktop.org/series/163935/
 
-Trouble is of course that if not all CPUs are busy, with the extreme
-being only a single CPU carrying that weight of nr_cpus*1024, this then
-causes trouble because that one CPU gets overloaded.
+Test-with: 20260428065411.4222-1-thomas.hellstrom@linux.intel.com
 
-One of the options is to simply put a max on the single CPU load; which
-is the crudest option to just make it 'work'. The one I favour though is
-the one where we scale the group weight by: 'min(cpumas, nr_tasks)'.
+Thomas Hellström (5):
+  drm/amdgpu: Fix init ordering in amdgpu_vram_mgr_init()
+  cgroup/dmem: Add reclaim callback for lowering max below current usage
+  drm/ttm: Hook up a cgroup-aware reclaim callback for the dmem
+    controller
+  drm/xe: Wire up dmem cgroup reclaim for VRAM manager
+  drm/amdgpu: Wire up dmem cgroup reclaim for VRAM manager
 
-Anyway, this is why I've been looking at these alternative weight
-schemes, to get the nominal fraction near 1 and make these problems go
-away. It is both the numerical issues and the disparity between levels
-(with root being at level 0 being the most obvious).
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c      |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c |  10 +-
+ drivers/gpu/drm/ttm/ttm_bo.c                 |  95 ++++++++++++++++-
+ drivers/gpu/drm/ttm/ttm_bo_util.c            |   3 +-
+ drivers/gpu/drm/ttm/ttm_resource.c           |  37 +++++++
+ drivers/gpu/drm/xe/xe_ttm_vram_mgr.c         |  14 ++-
+ include/drm/ttm/ttm_bo.h                     |  10 ++
+ include/drm/ttm/ttm_resource.h               |   4 +
+ include/linux/cgroup_dmem.h                  |  24 +++++
+ kernel/cgroup/dmem.c                         | 106 +++++++++++++++++--
+ 10 files changed, 283 insertions(+), 22 deletions(-)
 
+-- 
+2.54.0
 
-Does that make sense?
 
