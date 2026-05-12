@@ -1,171 +1,223 @@
-Return-Path: <cgroups+bounces-15831-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15832-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WK4NGafxAmrpywEAu9opvQ
-	(envelope-from <cgroups+bounces-15831-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:23:51 +0200
+	id oArwKLTvAmrAywEAu9opvQ
+	(envelope-from <cgroups+bounces-15832-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:15:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB82A51D963
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:23:50 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B97851D727
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 11:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C74B931A8792
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:03:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 422B8308C942
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040F73B0AC6;
-	Tue, 12 May 2026 09:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6980D3ACA5D;
+	Tue, 12 May 2026 09:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="qLwcBqvs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PWHZXjeI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5A13AF668;
-	Tue, 12 May 2026 09:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DE83AC0FD
+	for <cgroups@vger.kernel.org>; Tue, 12 May 2026 09:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778576561; cv=none; b=dBkY230AinWPYngISvZLkxU9IVIAcKrlSdRNzwbouvu23nDUvkb17S4VM5mNZ4niZCc+Q8yGmJuuezTa1ApdSx7WnNxEMcaWaBbDGUTIt471eTBSKj/+Iyw69Fds/JbhBEOWIVkVicND9xqufvX1hqLCN6japfuZeP6KPC9r8MY=
+	t=1778577098; cv=none; b=XuNWATSqe+qvpJV2djDeaTR5cmIghPXOADppRf0TaqS2oNe0vj63YPwB4YLs1DEOCzpLpWvJ9BSMWJZSE+Qb3y0ueMKu4uPCTFrTZw/4PTGpevEuP5CN2igkrzGSMzNDhkXQCqwDGsnBV8lqnozkGWvmO6uv2Flx4uOme0yRQpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778576561; c=relaxed/simple;
-	bh=cGQpnP2IE2ZPzENjOmgQRCKXBvFqmE6nGUpQ5lxszOg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XG2Sdwx65uP/yHCZqAX59LE74Qkl5OtmsbTo7b1IDUdgESUUJzRn2DIY8h1k1xAMM3o0+s2OC5i1D86+65e4PWGFTGkonmal7OkA185gL5WRJdaH0lJVFty0W0kBhfh+f7qwqFGDZQgcO0KSEhvG0wE41pP/AIO9qWkqSDveekw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=qLwcBqvs; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1778576551; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=+cyTZjQS6UqdXmYhbAizO7A1hVVtxlnJezCg5zZ803w=;
-	b=qLwcBqvsh5LD+NV8W0eg54jSIJvt0gB8CPyYvTE1RfwYD/ngDA1QozBiucuLzHAIXleQddHy4mCMh/IOfwyyN+jG/3c3YsX+35Nl/eypP1oALs2O7qlTptKoXYcX706gr1MFJ7lqAb5I2AuuIunPR4sTQE3MlZF3+6VoE7Q7mN4=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037033178;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0X2q-o6n_1778576545;
-Received: from 30.74.144.137(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0X2q-o6n_1778576545 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Tue, 12 May 2026 17:02:28 +0800
-Message-ID: <a4c22e4c-5669-4323-8229-1da261e9c72f@linux.alibaba.com>
-Date: Tue, 12 May 2026 17:02:27 +0800
+	s=arc-20240116; t=1778577098; c=relaxed/simple;
+	bh=J/qTQA7WOSp0NDpJTrrE9CeifCSS0KYK7Fhqb5IuZRE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=q9SM/QPbdZyucm5Tnzj2nd7PrXlvlWYvXkFZiuZFO/Ax5aj600kCvOshfpCRAKnDxP5q5K+8/JpL/OSTkApP3IOxmWJ/aH+bz+hPLDvFobqVCmIgl3+g3P+FpRy1uhG60iVGIx1bAT2teiTvCU8jrj0plrxNd/DxbVmPyw3ULAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PWHZXjeI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1778577095;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=p80uB9ppx8DS0thaGwc0VH0L36R/21WsbTghYE9KDbw=;
+	b=PWHZXjeIrSy+VsffKsMKeLjOC3+O1hMqczZMEHI3xV7U2mDBv55yFhaytySeHU9aIoKVEN
+	WY5rd8KpaGkNsJy7CB0fH/XRZzX7GVM+y4MMdkyOYIFwv4oM94ihSGdUsdjbXV6kPtNXbA
+	SrlVIiwKWZdxavxnvlw88cTfuc1L2pA=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-540-EieOxPp9O_ajxHZeof5XwA-1; Tue,
+ 12 May 2026 05:11:32 -0400
+X-MC-Unique: EieOxPp9O_ajxHZeof5XwA-1
+X-Mimecast-MFC-AGG-ID: EieOxPp9O_ajxHZeof5XwA_1778577088
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 228A618005B4;
+	Tue, 12 May 2026 09:11:27 +0000 (UTC)
+Received: from [192.168.1.153] (headnet01.pony-001.prod.iad2.dc.redhat.com [10.2.32.101])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 09A6130001BB;
+	Tue, 12 May 2026 09:11:17 +0000 (UTC)
+From: Albert Esteve <aesteve@redhat.com>
+Subject: [PATCH RFC 0/5] memcg: dma-buf per-cgroup accounting via pid_fd
+Date: Tue, 12 May 2026 11:10:42 +0200
+Message-Id: <20260512-v2_20230123_tjmercier_google_com-v1-0-6326701c3691@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/12] mm/huge_memory: move THP gfp limit helper into
- header
-To: Zi Yan <ziy@nvidia.com>, Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>, Barry Song <baohua@kernel.org>,
- Hugh Dickins <hughd@google.com>, Chris Li <chrisl@kernel.org>,
- Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
- Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Youngjun Park <youngjun.park@lge.com>,
- Chengming Zhou <chengming.zhou@linux.dev>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Yosry Ahmed <yosry@kernel.org>,
- Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>,
- Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>,
- Michal Hocko <mhocko@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Axel Rasmussen <axelrasmussen@google.com>
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
- <20260421-swap-table-p4-v3-3-2f23759a76bc@tencent.com>
- <D631DCC9-85F0-4E68-88A0-AD5DE328818E@nvidia.com>
- <CAMgjq7BDmGWaVWBL+52_c=jgs293bgB+Qe-MafKE7dWZRsmx9A@mail.gmail.com>
- <125AABD0-02D5-4656-9F55-4B5BFBD5BD3D@nvidia.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <125AABD0-02D5-4656-9F55-4B5BFBD5BD3D@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: BB82A51D963
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x2NQQqDMBAAvyJ7bmCTqEivhT7Aa5HQxk3cUk3Zi
+ BTEvzd4m7nM7JBJmDJcqx2ENs6cliL6UoGfnkskxWNxMGhabLBTm3GFLWpj3fqeSTyTuJhS/JD
+ zaVahroMPL902FqFkvkKBf+fiAf39BsNx/AFCOWAcdwAAAA==
+X-Change-ID: 20260508-v2_20230123_tjmercier_google_com-f44fcfb16530
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+ Sumit Semwal <sumit.semwal@linaro.org>, 
+ =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>, 
+ Brian Starkey <Brian.Starkey@arm.com>, John Stultz <jstultz@google.com>, 
+ "T.J. Mercier" <tjmercier@google.com>, 
+ Christian Brauner <brauner@kernel.org>, Paul Moore <paul@paul-moore.com>, 
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+ Stephen Smalley <stephen.smalley.work@gmail.com>, 
+ Ondrej Mosnacek <omosnace@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+ linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Albert Esteve <aesteve@redhat.com>, mripard@kernel.org, echanude@redhat.com
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1778577077; l=4167;
+ i=aesteve@redhat.com; s=20260303; h=from:subject:message-id;
+ bh=J/qTQA7WOSp0NDpJTrrE9CeifCSS0KYK7Fhqb5IuZRE=;
+ b=w9BOSU+QzmBOQFJx39er3JufOMU+NTrwANFwrY1GjbF+ilD6YeDqgSMvjLwB7Lz3uKINM9vQE
+ qrkVFKK2zfBDqr0ZUk82SaBAThNIU7vg1o9c6Q1zxh0DX4Y13wK5MeR
+X-Developer-Key: i=aesteve@redhat.com; a=ed25519;
+ pk=YSFz6sOHd2L45+Fr8DIvHTi6lSIjhLZ5T+rkxspJt1s=
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Rspamd-Queue-Id: 5B97851D727
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15831-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15832-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,amd.com,linux.dev,linux-foundation.org,collabora.com,arm.com,google.com,paul-moore.com,namei.org,hallyn.com,gmail.com,redhat.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[nvidia.com,gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[36];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[baolin.wang@linux.alibaba.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[aesteve@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,nvidia.com:email,alibaba.com:email,tencent.com:email,linux.alibaba.com:mid,linux.alibaba.com:dkim]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
+This RFC builds on T.J. Mercier's earlier series [1] which added
+a memory.stat counter for exported dma-bufs and a binder-backed
+mechanism to transfer charges between cgroups.
 
+The first commit is taken almost verbatim from TJ's series:
+it introduces MEMCG_DMABUF as a dedicated per-cgroup stat, so that
+the total exported dma-buf footprint is visible both system-wide
+(via the root cgroup) and per-application (via per-process cgroups).
+This avoids the overhead of DMABUF_SYSFS_STATS and integrates
+naturally into the existing cgroup memory hierarchy.
 
-On 4/22/26 1:23 AM, Zi Yan wrote:
-> On 21 Apr 2026, at 13:21, Kairui Song wrote:
-> 
->> On Tue, Apr 21, 2026 at 9:14 PM Zi Yan <ziy@nvidia.com> wrote:
->>>
->>> On 21 Apr 2026, at 2:16, Kairui Song via B4 Relay wrote:
->>>
->>>> From: Kairui Song <kasong@tencent.com>
->>>>
->>>> Shmem has some special requirements for THP GFP and has to limit it in
->>>> certain zones or provide a more lenient fallback.
->>>>
->>>> We'll use this helper for generic swap THP allocation, which needs to
->>>> support shmem. For a typical GFP_HIGHUSER_MOVABLE swap-in, this helper
->>>> is basically a no-op. But it's necessary for certain shmem users, mostly
->>>> drivers.
->>>>
->>>> No feature change.
->>>>
->>>> Signed-off-by: Kairui Song <kasong@tencent.com>
->>>> ---
->>>>   include/linux/huge_mm.h | 30 ++++++++++++++++++++++++++++++
->>>>   mm/shmem.c              | 30 +++---------------------------
->>>>   2 files changed, 33 insertions(+), 27 deletions(-)
->>>>
->>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>> index 2949e5acff35..ffe5a120eee4 100644
->>>> --- a/include/linux/huge_mm.h
->>>> +++ b/include/linux/huge_mm.h
->>>> @@ -237,6 +237,31 @@ static inline bool thp_vma_suitable_order(struct vm_area_struct *vma,
->>>>        return true;
->>>>   }
->>>>
->>>> +/*
->>>> + * Make sure huge_gfp is always more limited than limit_gfp.
->>>> + * Some shmem users want THP allocation to be done less aggressively
->>>> + * and only in certain zone.
->>>> + */
->>>> +static inline gfp_t thp_limit_gfp_mask(gfp_t huge_gfp, gfp_t limit_gfp)
->>>
->>> Would it be better to rename it to thp_swap_limit_gfp_mask() or something
->>> more descriptive? I am just worried about misuses in the future due to
->>> the generic thp prefix.
->>
->> Good idea, I wasn't sure if this might be helpful for any other user,
->> but for now naming it more descriptive does help to avoid misuse.
->>
->> How about thp_shmem_limit_gfp_mask? Ordinary swap is fine with thp
->> gfp, only shmem is a bit special.
->>
-> 
-> Sounds good to me. Thanks.
+The rest of the series departs from TJ's approach. While the first
+commit introduces the memcg stat infrastructure for dmabufs, the
+export-time charging it introduces in dma_buf_export() is then
+superseded: we charge at dma_heap_ioctl_allocate() time, using a
+new charge_pid_fd field in struct dma_heap_allocation_data. The
+allocator opens a pidfd for its client (e.g., from binder's
+sender_pid), passes it to the ioctl, and the kernel charges the
+buffer directly to the client's cgroup at allocation time, so no
+transfer step is needed.
 
-Sounds good to me too. Feel free to add:
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+This decouples the accounting path from binder entirely:
+any allocator that knows its client's PID can use the pid_fd
+mechanism regardless of the IPC transport in use.
+
+The cross-cgroup charging capability requires access control.
+Patches #3 and #4 add a generic LSM hook (security_dma_heap_alloc)
+and an SELinux implementation based on a new dma_heap object class
+with a charge_to permission, so policy authors can express which
+domains are allowed to charge memory to another domain's cgroup.
+
+Last patch adds some tests to verify the new charge_pid_fd field.
+
+We are sending it as an RFC to spark broader discussion. It may or
+may not be the right path forward, and we welcome feedback on the
+trade-offs.
+
+Collision note: Eric Chanudet's series [2] adds __GFP_ACCOUNT to
+system_heap page allocations as an opt-in module parameter. That
+approach charges pages to the allocator's own kmem, which overlaps with
+MEMCG_DMABUF. This series explicitly removes __GFP_ACCOUNT from system
+heap allocations and routes all accounting through the MEMCG_DMABUF
+path to avoid double-counting.
+
+[1] https://lore.kernel.org/cgroups/20230109213809.418135-1-tjmercier@google.com/
+[2] https://lore.kernel.org/r/20260113-dmabuf-heap-system-memcg-v2-0-e85722cc2f24@redhat.com
+
+Signed-off-by: Albert Esteve <aesteve@redhat.com>
+---
+Albert Esteve (4):
+      dma-heap: charge dma-buf memory via explicit memcg
+      security: dma-heap: Add dma_heap_alloc LSM hook
+      selinux: Restrict cross-cgroup dma-heap charging
+      selftests/dmabuf-heaps: Add dma-buf memcg accounting tests
+
+T.J. Mercier (1):
+      memcg: Track exported dma-buffers
+
+ Documentation/admin-guide/cgroup-v2.rst            |   5 +
+ drivers/dma-buf/dma-buf.c                          |   7 +
+ drivers/dma-buf/dma-heap.c                         |  54 +++++-
+ drivers/dma-buf/heaps/system_heap.c                |   2 -
+ include/linux/dma-buf.h                            |   4 +
+ include/linux/lsm_hook_defs.h                      |   1 +
+ include/linux/memcontrol.h                         |  37 ++++
+ include/linux/security.h                           |   7 +
+ include/uapi/linux/dma-heap.h                      |   6 +
+ mm/memcontrol.c                                    |  19 ++
+ security/security.c                                |  16 ++
+ security/selinux/hooks.c                           |   7 +
+ security/selinux/include/classmap.h                |   1 +
+ tools/testing/selftests/cgroup/Makefile            |   2 +-
+ tools/testing/selftests/cgroup/test_memcontrol.c   | 143 +++++++++++++-
+ tools/testing/selftests/dmabuf-heaps/config        |   1 +
+ tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c | 126 ++++++++++++-
+ tools/testing/selftests/dmabuf-heaps/vmtest.sh     | 205 +++++++++++++++++++++
+ 18 files changed, 633 insertions(+), 10 deletions(-)
+---
+base-commit: 74fe02ce122a6103f207d29fafc8b3a53de6abaf
+change-id: 20260508-v2_20230123_tjmercier_google_com-f44fcfb16530
+
+Best regards,
+-- 
+Albert Esteve <aesteve@redhat.com>
+
 
