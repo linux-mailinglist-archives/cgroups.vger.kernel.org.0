@@ -1,250 +1,185 @@
-Return-Path: <cgroups+bounces-15821-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15822-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kIwGMqTTAmrPxwEAu9opvQ
-	(envelope-from <cgroups+bounces-15821-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:15:48 +0200
+	id 2MaQIDzhAmpEyQEAu9opvQ
+	(envelope-from <cgroups+bounces-15822-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:13:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 723B551B9BA
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 09:15:48 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C78C951C85F
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 10:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C3427301D30D
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 07:15:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EADD83026332
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2026 08:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24FA43672AA;
-	Tue, 12 May 2026 07:15:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E1F48BD33;
+	Tue, 12 May 2026 08:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YL0cslZb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2BA368D5C;
-	Tue, 12 May 2026 07:15:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 183A7258CE5;
+	Tue, 12 May 2026 08:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778570122; cv=none; b=jtLlXIPqMrGBvYbAfX0kq+ooYG7mM/sdgcAyORETACuhpgci8imjphfMi6af3pwHYqrmFJ+ftaIXxp33CErzJLIsCNy8RhVxvGEILH/LmqNu5cAQ5eSHvjp8Q4SW1wiTMWWNIygfWPxVeIAXHf2tmluVeS8UhXtWZzEg07GiRwA=
+	t=1778573425; cv=none; b=COIgvjdDmJVV1IDtPe7lEWNyXosgUI4mt/raBA+Yvlne0+2Ycvrt12pexpTkieo2aecjcli8HL7LJrilZy127uLgxtkckvfmHRBuXd4XOnzrZCI3gCiu1CGn5kJDo/8QMF9RIhU9UTgLYUs8jS+1xARVHOn5Ri7KEjcUK5v0ZpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778570122; c=relaxed/simple;
-	bh=iLFLRbsK6t46Y6F4N+Yd13Of2BLo4wGHx/Lb2GGHcQQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rMult4q4T83UnjZkW83Z4k3gkbjyoF8FWbKSWDiwYlrNCWRm3KFWN0TY+TjlhxxdTpUex20Ntz2NQaq/HNz3zbfJ9VHypX69E2aQ0RqX+qrOn8mPiXFv0REtDGERqi8r8THOYuHU6uuIAeECR/16L+RXHQVFrPh1CV26aC2ctM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 4eef91f44dd211f1aa26b74ffac11d73-20260512
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:f9674a71-c2c8-4f0f-879b-b5182cad1869,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:5
-X-CID-INFO: VERSION:1.3.12,REQID:f9674a71-c2c8-4f0f-879b-b5182cad1869,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:5
-X-CID-META: VersionHash:e7bac3a,CLOUDID:a4fa77afa57655aead32552bc0befba1,BulkI
-	D:260512151511UXZ7AZTA,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
-	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
-	0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 4eef91f44dd211f1aa26b74ffac11d73-20260512
-X-User: lihongfu@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <lihongfu@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 588572323; Tue, 12 May 2026 15:15:08 +0800
-From: Hongfu Li <lihongfu@kylinos.cn>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	tj@kernel.org,
-	mkoutny@suse.com,
-	shuah@kernel.org,
-	vishal.moola@gmail.com
-Cc: cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hongfu Li <lihongfu@kylinos.cn>
-Subject: [PATCH v2] selftests/cgroup: check malloc return value in alloc_anon functions
-Date: Tue, 12 May 2026 15:14:24 +0800
-Message-Id: <20260512071424.59449-1-lihongfu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1778573425; c=relaxed/simple;
+	bh=JdtqZMJDJnp28NUJSCgytxWm0x493TYcezg01A+7jSU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iyYXKLvzXaaCxTHE0FTaEVafmBoQOvsNcaxHvMyv6vYjO/1RnDq5jWPf1kVELwZS7h4Iqp4QbR8wntV5Nldre60Il0pyQGWLYygfEQxs28UyqLrWTbK01jFJ89rXURMrAvwzhDz4nSpRU16U3qc5iUwkzscOGEAdOGdrvxQJ+NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YL0cslZb; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=19TGBtKQmhIuXSKyT51dH+VsGeOUq2ku3XDV08szO4s=; b=YL0cslZbE6ZZ/7Tz1GBQdwXMc5
+	zJQEaDoFZsjfFSnJUL72wbh2GRnZ4P5uqReFiFdFvl0505cn0lZ+ni3gsrvItJGiLR6oPY+rsqoRJ
+	ukKxsYiFGCgv5dqK+A8DoHhp0/4Kb8/P3iTy5Bw7DDzgiMYSu5mDG09nYSbssx+sBVxsD6ROkBO3s
+	tdMpPifDHo14ivNO+wV3Zpb+glGEZplZeFjhGx+A3WgPvpQUqL/Qlr777w1BNBR+pXRENg0DY8I4y
+	uMJZBS/nF1Iwz+jnSpVYsjLEWJsNfcMq9ryFtdW+fmwdUKNR4y1DAJ/3TjCiOPtHD3l2952B5fP9O
+	wm9K4BmA==;
+Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wMiBl-00000009PjW-2YTr;
+	Tue, 12 May 2026 08:10:01 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 00A7E3007E1; Tue, 12 May 2026 10:10:00 +0200 (CEST)
+Date: Tue, 12 May 2026 10:10:00 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jstultz@google.com,
+	kprateek.nayak@amd.com, qyousef@layalina.io
+Subject: Re: [PATCH v2 00/10] sched: Flatten the pick
+Message-ID: <20260512081000.GL3102624@noisy.programming.kicks-ass.net>
+References: <20260511113104.563854162@infradead.org>
+ <agIswZpCxlsQ2Xdk@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 723B551B9BA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <agIswZpCxlsQ2Xdk@slm.duckdns.org>
+X-Rspamd-Queue-Id: C78C951C85F
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.54 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-15822-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15821-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[kylinos.cn];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FREEMAIL_TO(0.00)[cmpxchg.org,kernel.org,linux.dev,suse.com,gmail.com];
-	NEURAL_SPAM(0.00)[0.203];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lihongfu@kylinos.cn,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,kylinos.cn:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim,noisy.programming.kicks-ass.net:mid]
 X-Rspamd-Action: no action
 
-The alloc_anon() function calls malloc() without checking for a NULL
-return. If memory allocation fails, a NULL pointer dereference will
-occur when accessing the buffer.
+On Mon, May 11, 2026 at 09:23:45AM -1000, Tejun Heo wrote:
+> Hello, Peter.
+> 
+> On Mon, May 11, 2026 at 01:31:04PM +0200, Peter Zijlstra wrote:
+> > So cgroup scheduling has always been a pain in the arse. The problems start
+> > with weight distribution and end with hierachical picks and it all sucks.
+> > 
+> > The problems with weight distribution are related to that infernal global
+> > fraction:
+> > 
+> >              tg->w * grq_i->w
+> >    ge_i->w = ----------------
+> >              \Sum_j grq_j->w
+> > 
+> > which we've approximated reasonably well by now. However, the immediate
+> > consequence of this fraction is that the total group weight (tg->w) gets
+> > fragmented across all your CPUs. And at 64 CPUs that means your per-cpu cgroup
+> > weight ends up being a nice 19 task worth. And more CPUs more tiny. Combine
+> > with the fact that 256 CPU systems are relatively common these days, this
+> > becomes painful.
+> > 
+> > The common 'solution' is to inflate the group weight by 'nr_cpus'; the
+> > immediate problem with that is that when all load of a group gets concentrated
+> > on a single CPU, the per-cpu cgroup weight becomes insanely large, easily
+> > exceeding nice -20.
+> > 
+> > Additionally there are numerical limits on the max weight you can have before
+> > the math starts suffering overflows. As such there is a definite limit on the
+> > total group weight. Which has annoyed people ;-)
+> > 
+> > The first few patches add a knob /debug/sched/cgroup_mode and a few different
+> > options on how to deal with this. My favourite is 'concur', but obviously that
+> > is also the most expensive one :-/ It adds a tg->tasks counter which makes the
+> > update_tg_load_avg() thing more expensive.
+> 
+> Ignoring fixed math accuracy problems, isn't the root problem here that
+> every thread in the root cgroup competes as if each is its own cgroup? ie.
+> Isn't the canonical solution here to create an enveloping group, at least
+> for share calculation purposes, for root threads and then assign them some
+> weight so that they compete in the same way that other cgroups do? Then, the
+> different modes go away or rather whatever the user wants can be expressed
+> via root's weight if that's to be made configurable.
 
-Add proper error handling to return -1 when malloc() fails in all
-four alloc_anon variants:
-- alloc_anon()
-- alloc_anon_50M_check()
-- alloc_anon_noexit()
-- alloc_anon_50M_check_swap()
+As long as the total group weight is a fraction; and it sorta has to be.
+You can run into trouble by stacking that fraction.
 
-Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
-Reviewed-by: Vishal Moola <vishal.moola@gmail.com>
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
----
-v2:
-- Refactored repeated malloc() patterns in alloc_anon_* into a helper
-  function.
----
- .../selftests/cgroup/test_memcontrol.c        | 53 ++++++++++---------
- 1 file changed, 27 insertions(+), 26 deletions(-)
+Take 256 CPUs and a group weight of 1024. Then each CPU gets a weight of
+1/256 or 4. Even if we increase the internal accuracy to 20 bits (we do
+on 64bit) then this becomes 4096, do this for 2 more levels in the
+hierarchy and you're down to scraping the barrel again.
 
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index b43da9bc20c4..21aedb35cc12 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -55,15 +55,31 @@ int alloc_pagecache(int fd, size_t size)
- 	return -1;
- }
- 
--int alloc_anon(const char *cgroup, void *arg)
-+static char *alloc_and_populate_anon(size_t size)
- {
--	size_t size = (unsigned long)arg;
- 	char *buf, *ptr;
- 
- 	buf = malloc(size);
-+	if (buf == NULL) {
-+		fprintf(stderr, "malloc() failed\n");
-+		return NULL;
-+	}
-+
- 	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
- 		*ptr = 0;
- 
-+	return buf;
-+}
-+
-+int alloc_anon(const char *cgroup, void *arg)
-+{
-+	size_t size = (unsigned long)arg;
-+	char *buf;
-+
-+	buf = alloc_and_populate_anon(size);
-+	if (!buf)
-+		return -1;
-+
- 	free(buf);
- 	return 0;
- }
-@@ -174,18 +190,13 @@ static int test_memcg_subtree_control(const char *root)
- static int alloc_anon_50M_check(const char *cgroup, void *arg)
- {
- 	size_t size = MB(50);
--	char *buf, *ptr;
-+	char *buf;
- 	long anon, current;
- 	int ret = -1;
- 
--	buf = malloc(size);
--	if (buf == NULL) {
--		fprintf(stderr, "malloc() failed\n");
-+	buf = alloc_and_populate_anon(size);
-+	if (!buf)
- 		return -1;
--	}
--
--	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
--		*ptr = 0;
- 
- 	current = cg_read_long(cgroup, "memory.current");
- 	if (current < size)
-@@ -406,16 +417,11 @@ static int alloc_anon_noexit(const char *cgroup, void *arg)
- {
- 	int ppid = getppid();
- 	size_t size = (unsigned long)arg;
--	char *buf, *ptr;
-+	char *buf;
- 
--	buf = malloc(size);
--	if (buf == NULL) {
--		fprintf(stderr, "malloc() failed\n");
-+	buf = alloc_and_populate_anon(size);
-+	if (!buf)
- 		return -1;
--	}
--
--	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
--		*ptr = 0;
- 
- 	while (getppid() == ppid)
- 		sleep(1);
-@@ -990,18 +996,13 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- {
- 	long mem_max = (long)arg;
- 	size_t size = MB(50);
--	char *buf, *ptr;
-+	char *buf;
- 	long mem_current, swap_current;
- 	int ret = -1;
- 
--	buf = malloc(size);
--	if (buf == NULL) {
--		fprintf(stderr, "malloc() failed\n");
-+	buf = alloc_and_populate_anon(size);
-+	if (!buf)
- 		return -1;
--	}
--
--	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
--		*ptr = 0;
- 
- 	mem_current = cg_read_long(cgroup, "memory.current");
- 	if (!mem_current || !values_close(mem_current, mem_max, 3))
--- 
-2.25.1
+So if each level runs at a fraction f of the level above, then level n
+runs at f^n. Moving root into a phantom group at level 1, only solves
+the problem against other tasks at level 1, but then you have the same
+problem again at level 2 and below.
 
+Both the numerical problems and the scale problem of the root group can
+be avoided if we can get the average/nominal fraction to be near 1.
+
+The 'normal' way around this is to ensure the group weight is nr_cpus *
+1024, then, when everybody is running, the per CPU weight is 1024 or 1
+and the continued fraction is also 1-ish. This is why people like to
+increase the max group weight.
+
+Trouble is of course that if not all CPUs are busy, with the extreme
+being only a single CPU carrying that weight of nr_cpus*1024, this then
+causes trouble because that one CPU gets overloaded.
+
+One of the options is to simply put a max on the single CPU load; which
+is the crudest option to just make it 'work'. The one I favour though is
+the one where we scale the group weight by: 'min(cpumas, nr_tasks)'.
+
+Anyway, this is why I've been looking at these alternative weight
+schemes, to get the nominal fraction near 1 and make these problems go
+away. It is both the numerical issues and the disparity between levels
+(with root being at level 0 being the most obvious).
+
+
+Does that make sense?
 
