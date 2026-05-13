@@ -1,292 +1,269 @@
-Return-Path: <cgroups+bounces-15878-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15879-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +Hy7IrMwBGo9FQIAu9opvQ
-	(envelope-from <cgroups+bounces-15878-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 10:05:07 +0200
+	id oFC7IXgyBGqNFQIAu9opvQ
+	(envelope-from <cgroups+bounces-15879-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 10:12:40 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6071A52F4DA
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 10:05:02 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 074F052F629
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 10:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9B3283026F0D
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 08:05:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 71CB83058494
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 08:10:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4892C379C21;
-	Wed, 13 May 2026 08:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8E8384CE2;
+	Wed, 13 May 2026 08:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h4NStl2j"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="eQ5j4hnO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDFF379C3D
-	for <cgroups@vger.kernel.org>; Wed, 13 May 2026 08:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E17355F54;
+	Wed, 13 May 2026 08:10:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778659498; cv=none; b=loWP4TihJIL0fzBh2zExfynk/T2jt02Ft0mfBHYMpvSdiy5C2pPxrn1Ni9bixiiaUScRMpqL60ZXJg05kFgUC+1YTYW5yd67q4CUzZz6f0ruV5TRMIKhzxy/AoORMBLzuJv5VBCNkuzR2iL+fc1lDwt732e+fVqaO0wXCoafDFI=
+	t=1778659850; cv=none; b=On+JVCdqJazH7XMSp9moNOONnIyslAXdyb1KeWV/KpV7oJTgKtka34YzcQMOnMCxSwlVOpU2Jg1r9u6WChkBe/9RGzwGfJvZmr6oc49r4yMs6I4Fz+vMh7x5pJHmTfYg0Yx8HJ+k3PYimd0jbIOO+Q1WstMjbGOOtYqUClGNaN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778659498; c=relaxed/simple;
-	bh=syLqyXWh8onmszP6ITzEgIzgnnVbMA0gxWTg9tqsQps=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZKXD3eg3TSk5rIA3y1W0ExZQEGhhBFFlEyCvo4RRlZOmCfy6fdC5G3JQLlz12CJYGVXCdSRkPHUku+EhWk7NL7cn/spKQ6NmQZrZ1Tq/FLkuGiA7ey85BKEhZzr+UikW6I+wAspRpZ7df7yIa1XXaPzMCZdezKbJ2ZceRns5c9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h4NStl2j; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-3680540a6efso2337822a91.2
-        for <cgroups@vger.kernel.org>; Wed, 13 May 2026 01:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778659495; x=1779264295; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y1dxIimePE2VOkjQz2/ma0Z1DDa/BQxq5kyPGrdKr+k=;
-        b=h4NStl2jxSMK6+B1o4jurkW9rqCadgbuX83hXb6eM/WCAOemBuWouBhdi2Y1NfOtRT
-         laQa/HXLVmkX5teleljn+oiFsFuFDls5WDsTYYR+rZA0WW24yts5cH7l8CnK4wQA3hcg
-         m3zqGWJN9ZmuyqBcqu6tt0qCjwyXdpK9+JJvGTDjt1ejiF1MqbVmF1p8vtcjOPO5TX9K
-         cUoLc993FGcDyivx9zuyk1Ej2EsEbP3og31nl/W6RXqJ8fc6WzCXy8rLN3NgRPSqE1G4
-         vyi5HZPrSnI02amtWqrN6QA02CriUyOBCdQcMLpDduO8YBgWg+aEZaQ9GSRFYXkKMg4x
-         X/jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778659495; x=1779264295;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y1dxIimePE2VOkjQz2/ma0Z1DDa/BQxq5kyPGrdKr+k=;
-        b=FpxORgXIeMbmVJ4uruefO1NXbrhpLYhR9CkQsOJyMHpXKGWi/rMx+vFHTxFZBN0I3J
-         YKy4IYsZQRWZMAVv7jU2D0eI4lRRtP7Upn8RyAwfcxQlwoAeql23ShHC22eMRyKyzRds
-         T9eMCuPN52dm+N7Aab8k5I+gU+coIfm48MQJu1PhhZGfFUAbqcTS6g1+bhCb2O2pvoji
-         XYxH/9xONqGdX8QqbudlvNWjjiqFWCWWTfzoTOAkpUzvgzj/mOkQGGcVBe6TQuXfqVEC
-         60ffF22+tC1HggNSRnWR4gkm5+YbD8Ir3v1XmCcFjF0M04sUNdAYxVaNlQe3W95/muhG
-         CTfw==
-X-Forwarded-Encrypted: i=1; AFNElJ8oBAjM+Xa7UISklSssgKWO+wGD0x6ZRu1otVIK/OtM5QFGnLD/n5HSJXn7kPTDS77rXPJKiS1q@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUC4RpARw45IzkFRPeVddVxDppt2xxEXHsAQ73y5rarcwbp7r9
-	Ol8gD/oSodrxuGxkgT9EbxRBpk7yraXOu3uMsLBPmO0c60SRpSKujhCD
-X-Gm-Gg: Acq92OFULQeCRdNqTkMM6biSwmKBQEJHRB2w9Fkabi51UMpGInWgl1bkZMpFdo2M21f
-	MpjasoPGp/K7Mw90qL9pNqbEoAjG3VJRdKCXa1QIG3ejZw+7sDsATlMK1vll4P8UorYW5jwgsnn
-	dNhWSWSbw5bTTtpoYdSiwlrk7yhUlbIikzuL7DZ7uFOBx/4SkOX4zhBCtq4Iva8XPURViDFUkNe
-	xQLdhp+Nn4VFfQK8FARrwyVWlj0xeuP/aXToCx72c8MClmq1fRWKXf7IrPlCClT5kJyHRyfBgPE
-	ZEayAKw5UAbGz2uhoyMxsOttIUEz53i8l7G1tjPGlXGv3EIapy5qEIvHlvrhTz88etXDc7ygG8p
-	FpIG+75CDeqWQAPgZHmVlRJrBj/fkRqDh3v4uSWeoJ8UapLmtUEbLPUPoyzYPQXW/CmW7lMMwiP
-	21PJHI3yatvrwt9U+tyUh8s4TgJAg5Iij46BiTscOD6Uc=
-X-Received: by 2002:a17:90b:3f8c:b0:368:ed92:6f5 with SMTP id 98e67ed59e1d1-368f77f6980mr1854188a91.4.1778659494907;
-        Wed, 13 May 2026 01:04:54 -0700 (PDT)
-Received: from [10.125.192.65] ([210.184.73.204])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-368ede2d545sm2895850a91.6.2026.05.13.01.04.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 May 2026 01:04:53 -0700 (PDT)
-Message-ID: <6fc7fdf0-368c-5129-038e-623f9db2aa88@gmail.com>
-Date: Wed, 13 May 2026 16:04:21 +0800
+	s=arc-20240116; t=1778659850; c=relaxed/simple;
+	bh=n748Yn/XBJYLt419HNlwshkRzmHb4ouIN3m4LOeFl5I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=C4h5pWTaF2xJNzff0lo3govJlNXCS6AhruMbW8RMw9AHKzodPV9de37FXEEuxj/CuTnyKIxWI/IsDFevLSbIIyQYxrFxmkMkIuNc29txsqb3EZT9uIirP1EF7qO61RgGIvCJlTGKIzwVs65aLemAi9rT4U6dgVJXJMvsxMhxVvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=eQ5j4hnO; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=0Y
+	20XQbZKCV32rGsXa4Y/6qWFrp6iiB+NtKwVZ08QDc=; b=eQ5j4hnOp6ip1cWenZ
+	WdeDTkez2r7Hotk8Slm86IAkX1HRafjrnRU6VHyKs7iAiXxPZp96C+4IlViNIU40
+	imYRt8e8mmJrU4YFy+rZ7oYZ6XYo+y/DHT50Xp7huOSmjjljj9AE2te3yAgQZS/M
+	KKrO7JlORzwox3xsdZfoERe9c=
+Received: from pek-lpg-core5.wrs.com (unknown [])
+	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wBH9tvhMQRqwvdJBA--.46014S2;
+	Wed, 13 May 2026 16:10:10 +0800 (CST)
+From: Robert Garcia <rob_garcia@163.com>
+To: stable@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>,
+	Breno Leitao <leitao@debian.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Robert Garcia <rob_garcia@163.com>,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 5.15.y] blk-cgroup: Fix NULL deref caused by blkg_policy_data being installed before init
+Date: Wed, 13 May 2026 16:10:09 +0800
+Message-Id: <20260513081009.2293360-1-rob_garcia@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH 2/3] mm/zswap: Implement proactive writeback
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, tj@kernel.org,
- hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@kernel.org,
- mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev,
- roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- Hao Jia <jiahao1@lixiang.com>, Alexandre Ghiti <alex@ghiti.fr>
-References: <20260511105149.75584-1-jiahao.kernel@gmail.com>
- <20260511105149.75584-3-jiahao.kernel@gmail.com>
- <CAKEwX=PLFRkfUvZyaYfwBv0QJ-8KAktvZvGA02Hod04H-RsS-Q@mail.gmail.com>
- <CAO9r8zNOPdpJuTmccvQ6ZAVS+tXxp-_ofA765DbnfaUZOPPO-g@mail.gmail.com>
- <12e4784e-2add-d849-7e54-bde8abfa6e78@gmail.com>
- <CAKEwX=MOixJAUGiwUcMQa0Stvg-mR-MvpDRD8WA4YMtRvnUYTg@mail.gmail.com>
-From: Hao Jia <jiahao.kernel@gmail.com>
-In-Reply-To: <CAKEwX=MOixJAUGiwUcMQa0Stvg-mR-MvpDRD8WA4YMtRvnUYTg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6071A52F4DA
+X-CM-TRANSID:_____wBH9tvhMQRqwvdJBA--.46014S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Jr1fXF48tryDuw47AFyxXwb_yoWxJrW5pF
+	43Kry5CrW0qr4xWF4jgF15uryYgan5A3WUArWfurn5AF1UKrn7Z3WDAFWUZryfAF43WF4a
+	qr4Ut3yxKwn0kaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pETmhUUUUUU=
+X-CM-SenderInfo: 5uresw5dufxti6rwjhhfrp/xtbDAgIgi2oEMeIpcwAA3M
+X-Rspamd-Queue-Id: 074F052F629
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15878-lists,cgroups=lfdr.de];
-	SEM_URIBL_UNKNOWN_FAIL(0.00)[cmu.edu:query timed out];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15879-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.dk,debian.org,toxicpanda.com,163.com,vger.kernel.org];
 	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[163.com];
 	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[rob_garcia@163.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	SEM_URIBL_FRESH15_UNKNOWN_FAIL(0.00)[lixiang.com:query timed out];
-	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_TRACE(0.00)[163.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	RBL_SEM_IPV6_FAIL(0.00)[2600:3c09:e001:a7::12fc:5321:query timed out];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lixiang.com:email,cmu.edu:url]
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kernel.dk:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
+From: Tejun Heo <tj@kernel.org>
 
+[ Upstream commit ec14a87ee1999b19d8b7ed0fa95fea80644624ae ]
 
-On 2026/5/12 23:47, Nhat Pham wrote:
-> On Tue, May 12, 2026 at 2:32 AM Hao Jia <jiahao.kernel@gmail.com> wrote:
->>
->>
->>
->> On 2026/5/12 03:57, Yosry Ahmed wrote:
->>> On Mon, May 11, 2026 at 12:49 PM Nhat Pham <nphamcs@gmail.com> wrote:
->>>>
->>>> On Mon, May 11, 2026 at 3:52 AM Hao Jia <jiahao.kernel@gmail.com> wrote:
->>>>>
->>>>> From: Hao Jia <jiahao1@lixiang.com>
->>>>>
->>>>> Zswap currently writes back pages to backing swap devices reactively,
->>>>> triggered either by memory pressure via the shrinker or by the pool
->>>>> reaching its size limit. This reactive approach offers no precise
->>>>> control over when writeback happens, which can disturb latency-sensitive
->>>>> workloads, and it cannot direct writeback at a specific memory cgroup.
->>>>> However, there are scenarios where users might want to proactively
->>>>> write back cold pages from zswap to the backing swap device, for
->>>>> example, to free up memory for other applications or to prepare for
->>>>> upcoming memory-intensive workloads.
->>>>>
->>>>> Therefore, implement a proactive writeback mechanism for zswap by
->>>>> adding a new cgroup interface file memory.zswap.proactive_writeback
->>>>> within the memory controller.
->>>>
->>
->> Thanks Nhat, Yosry — let me address both comments together.
->>
->>>>
->>>> We already have memory.reclaim, no? Would that not work to create
->>>> headroom generally for your use case? Is there a reason why we are
->>>> treating zswap memory as special here?
->>>
->>
->> Apologies for the lack of detailed explanation in the patch description,
->> which led to the confusion.
->>
->> While we are already utilizing memory.reclaim, it does not fully address
->> our requirements.
->>
->> Our deployment runs a userspace proactive reclaimer that drives
->> memory.reclaim based on the system's runtime state (memory/CPU/IO
->> pressure, refault rate, ...) and workload-specific
->> policy. That first stage compresses cold anon pages into zswap. Entries
->> that then remain in zswap past a policy-defined age threshold are
->> considered "twice cold", and the reclaimer wants
->> to write them back to the backing swap device at a moment of its own
->> choosing, to further reclaim the DRAM still held by the compressed data.
->>
->> This is the "second-level offloading" pattern described in Meta's TMO
->> paper [1]. zswap proactive writeback is what this series introduces to
->> address that second-level offloading stage.
->>
->> [1] https://www.pdl.cmu.edu/ftp/NVM/tmo_asplos22.pdf
-> 
-> Yeah that's what we've been trying to work on as well :) We are
-> working on a couple of improvements to the mechanism side of this path
-> (cc Alex) - hopefully it will help your use case too!
-> 
-> Anyway, back to my original inquiry: I understand your use case. It's
-> pretty similar to our goal. What I'm not getting is why is
-> memory.reclaim (which you already use) not sufficient for zswap ->
-> disk swap offloading too?
-> 
-> Zswap objects are organized into LRU and exposed to the shrinker
-> interface. Echo-ing to memory.reclaim should also offload some zswap
-> entries, correct? Are there still cold zswap entries that escape this,
-> somehow?
-> 
+blk-iocost sometimes causes the following crash:
 
-Yes, the memory.reclaim path does drive some zswap writeback, but
-it is not enough for our case.
+  BUG: kernel NULL pointer dereference, address: 00000000000000e0
+  ...
+  RIP: 0010:_raw_spin_lock+0x17/0x30
+  Code: be 01 02 00 00 e8 79 38 39 ff 31 d2 89 d0 5d c3 0f 1f 00 0f 1f 44 00 00 55 48 89 e5 65 ff 05 48 d0 34 7e b9 01 00 00 00 31 c0 <f0> 0f b1 0f 75 02 5d c3 89 c6 e8 ea 04 00 00 5d c3 0f 1f 84 00 00
+  RSP: 0018:ffffc900023b3d40 EFLAGS: 00010046
+  RAX: 0000000000000000 RBX: 00000000000000e0 RCX: 0000000000000001
+  RDX: ffffc900023b3d20 RSI: ffffc900023b3cf0 RDI: 00000000000000e0
+  RBP: ffffc900023b3d40 R08: ffffc900023b3c10 R09: 0000000000000003
+  R10: 0000000000000064 R11: 000000000000000a R12: ffff888102337000
+  R13: fffffffffffffff2 R14: ffff88810af408c8 R15: ffff8881070c3600
+  FS:  00007faaaf364fc0(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00000000000000e0 CR3: 00000001097b1000 CR4: 0000000000350ea0
+  Call Trace:
+   <TASK>
+   ioc_weight_write+0x13d/0x410
+   cgroup_file_write+0x7a/0x130
+   kernfs_fop_write_iter+0xf5/0x170
+   vfs_write+0x298/0x370
+   ksys_write+0x5f/0xb0
+   __x64_sys_write+0x1b/0x20
+   do_syscall_64+0x3d/0x80
+   entry_SYSCALL_64_after_hwframe+0x46/0xb0
 
-1. For a memcg that has reached steady state (a common case being
-when memory.current is below the policy target), the userspace
-reclaimer may not invoke memory.reclaim on it for a long time,
-and so no second-level offloading happens through
-memory.reclaim. In this state we want
-memory.zswap.proactive_writeback to write back entries that
-have sat in zswap past an age threshold, to further reclaim
-the DRAM still held by the compressed data.
+This happens because iocg->ioc is NULL. The field is initialized by
+ioc_pd_init() and never cleared. The NULL deref is caused by
+blkcg_activate_policy() installing blkg_policy_data before initializing it.
 
-2. Even when memory.reclaim is running, the fraction of zswap
-residency that ends up reaching the backing swap device is
-still very small for many of our workloads, and the userspace
-reclaimer has no way to participate in or control the
-granularity of zswap writeback. So in our deployment we prefer
-to leave the zswap shrinker disabled, decouple LRU -> zswap
-from zswap -> swap, and use a dedicated proactive-writeback
-interface that lifts the writeback policy into userspace where
-it can evolve independently of the kernel.
+blkcg_activate_policy() was doing the following:
 
-Thanks,
-Hao
+1. Allocate pd's for all existing blkg's and install them in blkg->pd[].
+2. Initialize all pd's.
+3. Online all pd's.
 
-> Furthermore, we already have a way to detect the "twice cold" entries
-> you mentioned: the referenced bit. This is analogous to the way we
-> treat uncompressed pages.
-> 
->>
->>
->>> +1, why do we need to specifically proactively reclaim the compressed memory?
->>>
->>> Also, if we do need to minimize the compressed memory and force higher
->>> writeback rates, we can do so with memory.zswap.max, right?
->>
->> Here are a few reasons why memory.zswap.max is not enough:
->>
->> 1. Writing memory.zswap.max itself does not trigger any writeback
->> immediately. For a memcg that has reached steady state (on which the
->> userspace reclaimer is no longer invoking
->> memory.reclaim), after enough time has passed, the reclaimer has no good
->> way to trigger proactive writeback for second-level offloading by
->> lowering memory.zswap.max, because in steady
->> state nothing drives the zswap_store() -> shrink_memcg() path. The
->> userspace reclaimer still has no control over when proactive writeback
->> happens.
->>
->> 2. memory.zswap.max currently triggers zswap writeback via zswap_store()
->> -> shrink_memcg(), and each over-limit event can write back at most
->> NR_NODES entries. If zswap residency is far
->> above memory.zswap.max, converging to the target size requires at least
->> O(over-limit pages / NR_NODES) zswap_store() events, with no batching —
->> proactive writeback therefore has
->> significant latency.
->>
->> 3. memory.zswap.max is a stateful interface. If the userspace reclaimer
->> crashes for any reason mid-operation, it may leave memory.zswap.max at
->> some set value, putting the application in a
->>    persistently throttled bad state.
->>
->> 4. Once the userspace reclaimer has lowered memory.zswap.max, if the
->> workload is rapidly expanding and triggers memory reclaim via
->> memory.high / kswapd / etc., the actual amount written
->> back can exceed what was intended.
-> 
-> One more reason: IIRC, when you set memory.zswap.max to a value other
-> than 0 max, every zswap store incurs a pretty expensive check
-> (obj_cgroup_may_zswap), which does a force flush
-> (__mem_cgroup_flush_stats). That was pretty expensive last time some
-> of our internal services played with it. So yeah, it's not ideal...
-> 
-> (if you're using this, might wanna profile this as well).
-> 
->>
->> Thanks,
->> Hao
+blkcg_activate_policy() only grabs the queue_lock and may release and
+re-acquire the lock as allocation may need to sleep. ioc_weight_write()
+grabs blkcg->lock and iterates all its blkg's. The two can race and if
+ioc_weight_write() runs during #1 or between #1 and #2, it can encounter a
+pd which is not initialized yet, leading to crash.
+
+The crash can be reproduced with the following script:
+
+  #!/bin/bash
+
+  echo +io > /sys/fs/cgroup/cgroup.subtree_control
+  systemd-run --unit touch-sda --scope dd if=/dev/sda of=/dev/null bs=1M count=1 iflag=direct
+  echo 100 > /sys/fs/cgroup/system.slice/io.weight
+  bash -c "echo '8:0 enable=1' > /sys/fs/cgroup/io.cost.qos" &
+  sleep .2
+  echo 100 > /sys/fs/cgroup/system.slice/io.weight
+
+with the following patch applied:
+
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index fc49be622e05..38d671d5e10c 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -1553,6 +1553,12 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
+> 		pd->online = false;
+> 	}
+>
+> +       if (system_state == SYSTEM_RUNNING) {
+> +               spin_unlock_irq(&q->queue_lock);
+> +               ssleep(1);
+> +               spin_lock_irq(&q->queue_lock);
+> +       }
+> +
+> 	/* all allocated, init in the same order */
+> 	if (pol->pd_init_fn)
+> 		list_for_each_entry_reverse(blkg, &q->blkg_list, q_node)
+
+I don't see a reason why all pd's should be allocated, initialized and
+onlined together. The only ordering requirement is that parent blkgs to be
+initialized and onlined before children, which is guaranteed from the
+walking order. Let's fix the bug by allocating, initializing and onlining pd
+for each blkg and holding blkcg->lock over initialization and onlining. This
+ensures that an installed blkg is always fully initialized and onlined
+removing the the race window.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Breno Leitao <leitao@debian.org>
+Fixes: 9d179b865449 ("blkcg: Fix multiple bugs in blkcg_activate_policy()")
+Link: https://lore.kernel.org/r/ZN0p5_W-Q9mAHBVY@slm.duckdns.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Robert Garcia <rob_garcia@163.com>
+---
+ block/blk-cgroup.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 61fdff5406b5..1179c4bee705 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1337,7 +1337,7 @@ int blkcg_activate_policy(struct request_queue *q,
+ retry:
+ 	spin_lock_irq(&q->queue_lock);
+ 
+-	/* blkg_list is pushed at the head, reverse walk to allocate parents first */
++	/* blkg_list is pushed at the head, reverse walk to initialize parents first */
+ 	list_for_each_entry_reverse(blkg, &q->blkg_list, q_node) {
+ 		struct blkg_policy_data *pd;
+ 
+@@ -1375,21 +1375,20 @@ int blkcg_activate_policy(struct request_queue *q,
+ 				goto enomem;
+ 		}
+ 
+-		blkg->pd[pol->plid] = pd;
++		spin_lock(&blkg->blkcg->lock);
++
+ 		pd->blkg = blkg;
+ 		pd->plid = pol->plid;
+-		pd->online = false;
+-	}
++		blkg->pd[pol->plid] = pd;
+ 
+-	/* all allocated, init in the same order */
+-	if (pol->pd_init_fn)
+-		list_for_each_entry_reverse(blkg, &q->blkg_list, q_node)
+-			pol->pd_init_fn(blkg->pd[pol->plid]);
++		if (pol->pd_init_fn)
++			pol->pd_init_fn(pd);
+ 
+-	list_for_each_entry_reverse(blkg, &q->blkg_list, q_node) {
+ 		if (pol->pd_online_fn)
+-			pol->pd_online_fn(blkg->pd[pol->plid]);
+-		blkg->pd[pol->plid]->online = true;
++			pol->pd_online_fn(pd);
++		pd->online = true;
++
++		spin_unlock(&blkg->blkcg->lock);
+ 	}
+ 
+ 	__set_bit(pol->plid, q->blkcg_pols);
+@@ -1406,14 +1405,19 @@ int blkcg_activate_policy(struct request_queue *q,
+ 	return ret;
+ 
+ enomem:
+-	/* alloc failed, nothing's initialized yet, free everything */
++	/* alloc failed, take down everything */
+ 	spin_lock_irq(&q->queue_lock);
+ 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
+ 		struct blkcg *blkcg = blkg->blkcg;
++		struct blkg_policy_data *pd;
+ 
+ 		spin_lock(&blkcg->lock);
+-		if (blkg->pd[pol->plid]) {
+-			pol->pd_free_fn(blkg->pd[pol->plid]);
++		pd = blkg->pd[pol->plid];
++		if (pd) {
++			if (pd->online && pol->pd_offline_fn)
++				pol->pd_offline_fn(pd);
++			pd->online = false;
++			pol->pd_free_fn(pd);
+ 			blkg->pd[pol->plid] = NULL;
+ 		}
+ 		spin_unlock(&blkcg->lock);
+-- 
+2.34.1
+
 
