@@ -1,223 +1,151 @@
-Return-Path: <cgroups+bounces-15898-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15899-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oBRrMGWoBGqMMgIAu9opvQ
-	(envelope-from <cgroups+bounces-15898-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 18:35:49 +0200
+	id ICyBIwCoBGogMQIAu9opvQ
+	(envelope-from <cgroups+bounces-15899-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 18:34:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3B853728E
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 18:35:48 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8D83537218
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 18:34:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 347E2302ECAA
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 16:19:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2204F3040CB7
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 16:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103694A1396;
-	Wed, 13 May 2026 16:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566C040F8C5;
+	Wed, 13 May 2026 16:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jg2dKFzv"
+	dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b="rQWbM2eM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AAD4494A19;
-	Wed, 13 May 2026 16:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E2031716B;
+	Wed, 13 May 2026 16:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778689187; cv=none; b=lv6H2BZtgCEIgxlv1eQQ4JwtJSKOO9jtmVj6saHUtoLZ4lFY0mAkS6m/A+DWHvDYS2u7Xnqq+CfCO8Ad1i2qBXcpGGK3zP6rHTRZv+02DFTcHKdS1DS+/sUDougcbt9g6XvCuExp6YJWFUGYYkmn4qyTX7I1Y8BpQXxJyhKuHyE=
+	t=1778689353; cv=none; b=Ir7dgDm+HpdGvVdfo/JpFtVSKGY6mSchNtSHoZxaKtTG5as3EU9VWwn7eOPC4IxraeunSCdPNV0V8WTHqHAAOdNKdl9nfJZRfMQWCb/EfxIuqy7YPLAxLW0Yqu11F+PAm+u36TbVqAscHiWjVTeIxd3gKyIt5FGQe1aECgMyCYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778689187; c=relaxed/simple;
-	bh=nf/EGUFlU1Lh8RetUOEO9Cf1rjcOBc9mFE8STXI1blM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G74Qq0TlRAuLC6+a7QxRUOtQ4ifx9tTp5i2SyNU9MYj+MuHl69Mef1Az9AoIF0bemSl46TfZ5N1W/8tuuIJQkmIZLMmUXj2gD9rGytIZOr9YPYsD8brfHcq2CJAXVgqnaHBkyN6CiFwTC17CBXo6kMNM3/edSPdcZN9VNpjyvT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jg2dKFzv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F64BC19425;
-	Wed, 13 May 2026 16:19:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778689186;
-	bh=nf/EGUFlU1Lh8RetUOEO9Cf1rjcOBc9mFE8STXI1blM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jg2dKFzv6okX1KYFBRwCHm2sFYiTPHsJQ5YnZWeVNvP3Zj5cWasmXNArcBkCV4FtZ
-	 Cs1BE9Q0wZLhsOlBOHrsd2IopjTPWv7NKKb7t3BoTTz8JojO679pnlUVmPg4MeiGbQ
-	 6zLYjR4CDfYOUbsDGYpd1zSuzlauUB1NRNQRe01/tTMDwm8WH7XUhi1TfmpciK5Xsf
-	 0etPp1MQrSRS+wCfMxTZ7prR6YdLs4VaDtxPfv1lXObBTEuOwElYfZR/LUXvkzIUVc
-	 BxSEVAgFShBCjO6UrdwYJmioH2S+IXaukrL/d8KUwrmrSwv0XxF4LcRi90IVGiVlC/
-	 lhGeNl4KNuwVw==
-Date: Wed, 13 May 2026 18:19:43 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-	linux-hwmon@vger.kernel.org, rcu@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Costa Shulyupin <cshulyup@redhat.com>,
-	Qiliang Yuan <realwujing@gmail.com>
-Subject: Re: [PATCH 08/23] arm64: topology: Use RCU to protect access to
- HK_TYPE_TICK cpumask
-Message-ID: <agSkn9H_Xsz3MZa6@localhost.localdomain>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-9-longman@redhat.com>
+	s=arc-20240116; t=1778689353; c=relaxed/simple;
+	bh=Plq95R/wAEP8nhKnZG1BjP5GE/BC+nUVBIIvhmbio6E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Q+ZMeFt8KDsnXIXGtc1R2y+LqjciqFZx9eWni6ke7TidyQA+ZmiUwpIpkD2LIK0u37W+JABzdHQCoZXjb2FBt03g8lolkpQIp7gYNXPb1/fSn9owG8D4bky0jAEb0M0/bkCYF9aiZSsRq9v15htawqQu99EgM8gfJ3tGYyxa/8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=rQWbM2eM; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BBAE1595;
+	Wed, 13 May 2026 09:22:23 -0700 (PDT)
+Received: from [192.168.178.6] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF6563F7B4;
+	Wed, 13 May 2026 09:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1778689348; bh=Plq95R/wAEP8nhKnZG1BjP5GE/BC+nUVBIIvhmbio6E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rQWbM2eMeI4iv8LWtmhsQ1sR/42LGPNG29QFWdtqHzlQvexunAoiEdz069c1N9fxk
+	 etvpXgU3Jli6BRuFkX6M2NiI+dDYm4X35u4dbwyJX1XsTh80cUcU7pBevfMucKeHfz
+	 PwGM2mteJDFjYBm1i7nPwiynIEnv1zbuEo7/Ff6s=
+Message-ID: <ddc8040f-2186-4c72-a69e-26b388cb7249@arm.com>
+Date: Wed, 13 May 2026 18:22:25 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260421030351.281436-9-longman@redhat.com>
-X-Rspamd-Queue-Id: DF3B853728E
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cpuset: Fix multi-source deadline task accounting and
+ bandwidth bypass
+To: Aaron Tomlin <atomlin@atomlin.com>, longman@redhat.com, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: chenridong@huaweicloud.com, neelx@suse.com, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260512010341.101419-1-atomlin@atomlin.com>
+Content-Language: en-GB
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20260512010341.101419-1-atomlin@atomlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: D8D83537218
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[arm.com,none];
+	R_DKIM_ALLOW(-0.20)[arm.com:s=foss];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,redhat.com,linaro.org,google.com,suse.de,amd.com,davemloft.net,vger.kernel.org,lists.infradead.org];
-	TAGGED_FROM(0.00)[bounces-15898-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[arm.com:+];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15899-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dietmar.eggemann@arm.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost.localdomain:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,arm.com:mid,arm.com:dkim]
 X-Rspamd-Action: no action
 
-Le Mon, Apr 20, 2026 at 11:03:36PM -0400, Waiman Long a écrit :
-> As the HK_TYPE_TICK cpumask is going to be changeable at run time, we
-> need to use RCU to protect access to the cpumask to prevent it from
-> going away in the middle of the operation.
+On 12.05.26 03:03, Aaron Tomlin wrote:
+> During a batch migration where threads in a taskset originate from
+> multiple source cpusets (e.g., via cgroup.procs), cpuset_can_attach()
+> and cpuset_attach() currently evaluate the source cpuset exactly once
+> by caching the first task's oldcs.
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  arch/arm64/kernel/topology.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+> This creates two distinct critical flaws for SCHED_DEADLINE tasks:
 > 
-> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> index b32f13358fbb..48f150801689 100644
-> --- a/arch/arm64/kernel/topology.c
-> +++ b/arch/arm64/kernel/topology.c
-> @@ -173,6 +173,7 @@ void arch_cpu_idle_enter(void)
->  	if (!amu_fie_cpu_supported(cpu))
->  		return;
->  
-> +	guard(rcu)();
->  	/* Kick in AMU update but only if one has not happened already */
->  	if (housekeeping_cpu(cpu, HK_TYPE_TICK) &&
->  	    time_is_before_jiffies(per_cpu(cpu_amu_samples.last_scale_update,
->  	cpu)))
+>     1.  oldcs->nr_deadline_tasks is decremented solely on the first
+>         source cpuset. If tasks originated from other cpusets, their
+>         counts are permanently leaked, and the first cpuset permanently
+>         underflows.
+> 
+>     2.  cpumask_intersects() is evaluated strictly against the first
+>         task's source cpuset. This allows tasks originating from
+>         entirely isolated root domains to silently bypass the
+>         dl_bw_alloc() admission control.
+> 
+> This patch refactors the deadline accounting to evaluate task_cs(task)
+> on a per-task basis during the cgroup_taskset_for_each() loops. To
+> achieve accurate accounting before the core cgroup migration actually
+> executes, the permanent nr_deadline_tasks increments/decrements are
+> shifted into cpuset_can_attach(). If the migration aborts, the counts
+> are gracefully reverted via an internal rollback loop or the
+> cpuset_cancel_attach() callback.
 
-This is called with IRQs disabled in the current CPU that is online so it's
-already guaranteed to be stable.
+Is there a testcase to provoke this issue in the current code?
 
+I tried to move a process with 6 DL tasks from one cpuset to another by:
 
-> @@ -187,11 +188,16 @@ int arch_freq_get_on_cpu(int cpu)
->  	unsigned int start_cpu = cpu;
->  	unsigned long last_update;
->  	unsigned int freq = 0;
-> +	bool hk_cpu;
->  	u64 scale;
->  
->  	if (!amu_fie_cpu_supported(cpu) || !arch_scale_freq_ref(cpu))
->  		return -EOPNOTSUPP;
->  
-> +	scoped_guard(rcu) {
-> +		hk_cpu = housekeeping_cpu(cpu, HK_TYPE_TICK);
-> +	}
-> +
->  	while (1) {
->  
->  		amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
-> @@ -204,16 +210,21 @@ int arch_freq_get_on_cpu(int cpu)
->  		 * (and thus freq scale), if available, for given policy: this boils
->  		 * down to identifying an active cpu within the same freq domain, if any.
->  		 */
-> -		if (!housekeeping_cpu(cpu, HK_TYPE_TICK) ||
-> +		if (!hk_cpu ||
->  		    time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
->  			struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> +			bool hk_intersects;
->  			int ref_cpu;
->  
->  			if (!policy)
->  				return -EINVAL;
->  
-> -			if (!cpumask_intersects(policy->related_cpus,
-> -						housekeeping_cpumask(HK_TYPE_TICK))) {
-> +			scoped_guard(rcu) {
-> +				hk_intersects = cpumask_intersects(policy->related_cpus,
-> +							housekeeping_cpumask(HK_TYPE_TICK));
-> +			}
-> +
-> +			if (!hk_intersects) {
->  				cpufreq_cpu_put(policy);
->  				return -EOPNOTSUPP;
->  			}
+echo $PID > /sys/fs/cgroup/B/cgroup.procs
 
-Ok so this is racy but it's fine because:
+but in this case old_cs is the same for all these tasks.
 
-This function is only used by cpufreq with either cpufreq_policy_write or
-cpufreq_policy_read held (that is, struct cpufreq_policy::rwsem).
+[ 1991.852034] cgroup_migrate() (7) leader=[dl_batch_cgroup 823] threadgroup=1
+[ 1991.852068] cgroup_migrate_execute() tset->nr_tasks=7
+[ 1991.852238] cpuset_can_attach() (4) [dl_batch_cgroup 832] nr_migrate_dl_tasks=1 sum_migrate_dl_bw=104857 old_cs=ffff0000c4955200
+[ 1991.852246] cpuset_can_attach() (4) [dl_batch_cgroup 833] nr_migrate_dl_tasks=2 sum_migrate_dl_bw=209714 old_cs=ffff0000c4955200
+[ 1991.852248] cpuset_can_attach() (4) [dl_batch_cgroup 834] nr_migrate_dl_tasks=3 sum_migrate_dl_bw=314571 old_cs=ffff0000c4955200
+[ 1991.852249] cpuset_can_attach() (4) [dl_batch_cgroup 835] nr_migrate_dl_tasks=4 sum_migrate_dl_bw=419428 old_cs=ffff0000c4955200
+[ 1991.852249] cpuset_can_attach() (4) [dl_batch_cgroup 836] nr_migrate_dl_tasks=5 sum_migrate_dl_bw=524285 old_cs=ffff0000c4955200
+[ 1991.852250] cpuset_can_attach() (4) [dl_batch_cgroup 837] nr_migrate_dl_tasks=6 sum_migrate_dl_bw=629142 old_cs=ffff0000c4955200
+[ 1991.852328] cpuset_attach() (5) cs=ffff0000c1e9fc00 oldcs=ffff0000c4955200 cs->nr_deadline_tasks=6 oldcs->nr_deadline_tasks=6 cs->nr_migrate_dl_tasks=6
 
-And that rwsem is write held on cpufreq_online() -> cpufreq_policy_online() and
-also offline to guarantee the policy->cpus and policy->cpu stability.
+dl_batch_cgroup     823     823  19      -   0 TS
+dl_batch_cgroup     823     832 140      0   - DLN
+dl_batch_cgroup     823     833 140      0   - DLN
+dl_batch_cgroup     823     834 140      0   - DLN
+dl_batch_cgroup     823     835 140      0   - DLN
+dl_batch_cgroup     823     836 140      0   - DLN
+dl_batch_cgroup     823     837 140      0   - DLN
 
-Therefore housekeeping_cpumask() should only deal with stable online CPUs here. So
-even if the housekeeping mask can be changed concurrently, those CPUs can't
-appear or disappear from it.
-
-Would be worth adding a comment about that.
-
--- 
-Frederic Weisbecker
-SUSE Labs
+[...]
 
