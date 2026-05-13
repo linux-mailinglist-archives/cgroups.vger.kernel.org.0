@@ -1,166 +1,182 @@
-Return-Path: <cgroups+bounces-15893-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15894-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YDc9IRx0BGprIQIAu9opvQ
-	(envelope-from <cgroups+bounces-15893-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:52:44 +0200
+	id +Kg4CPB2BGqpKAIAu9opvQ
+	(envelope-from <cgroups+bounces-15894-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 15:04:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88A315335DA
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:52:43 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1622533914
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 15:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 63FDC302FFCA
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 12:43:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CDB5B3016788
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 13:04:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAF3413240;
-	Wed, 13 May 2026 12:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A1A2798EA;
+	Wed, 13 May 2026 13:04:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ee2tYia9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGsDWVW2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9454407582;
-	Wed, 13 May 2026 12:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7669925B094;
+	Wed, 13 May 2026 13:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778676220; cv=none; b=rUutRpvE4+UCBMEw7akusKUR0/iskxr+NQOjlyowvSRtkaIShFDXF6U5wMGaaiYwfDaYhX56J8O4PJGe9mXuXhKSaWI/D4csqGQLu1Tp6ll6927JIkBAQsdcgz6cTdhTzGe8FrEgTunrQUuFP3YzxwqFCY7OqC/2aiKrusi9iwE=
+	t=1778677478; cv=none; b=ZnXhbKtPenqi8aJSpt0GetKmMoN+Jqu0CWMvOqEMj9CLei5MavoceTI/2WRizZWt7O48gUQ4UTDqP8+FUv0t6WjcxdNJr4StTxnGSC/ltgUJ+WgqBBulbRxoFEpxM35AlwfmNq5ZpJMBIRgCpx/rBMyiZAoe3BzjFTDI3euisjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778676220; c=relaxed/simple;
-	bh=gRPvs6PXPbu7knhieTEtFOxn5jJTFgZyfo5qVpi9dGI=;
+	s=arc-20240116; t=1778677478; c=relaxed/simple;
+	bh=6LEu9DtzugsPgS9zY7ikDk3PNAySaXFJrErwGthAkfU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGdr0TZDwaCL1+q1z0RQKZa38qbjNLXd5ZD5YJbxrP9aqvglGt2ZlMY3vg52kod8DENZOYLYqJ7Tu1p7wLIvZaGu/MwY3F2ugXutSETu9NKR08DyyevExj5/FKk5xdmxxBQVapZRFfOfO6rzy5CY4mvdtwN9HkVREFYJWiJ9BvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ee2tYia9; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Y3vovCO+Igd7oq8tTCnKK+WLaG5HU8hllZSY20e2fe0=; b=ee2tYia9sDjXgybttdycQlDgxX
-	JkBbvZqisnf/ZI7K2RT4gzxKzlvLfZVcO6rzLsooXHpx3TWII1ysmq3r6fjXoO7EdNeJ1CXgL3IjI
-	nL1SC3v4vuLTLHN3Arm0lpg0gY0mJ1unMxnVW/X9T4Hqu0LXopdCsEp5j9lhISBvB2CyT9G6kN8FW
-	YjwtZqCOJZAa4+cBw6nwHWJP61GU85MLDT/Rzgip+z95n6vMIruPIN/8u36LLjQXAMBwedT/D+5bo
-	bdrF/wJ9bs+AM3yPvnFHRpT+aDkZSCitP74dhXGVEaCSKmRAhs1GNyc2PdmtS1/VLQm11+1YQwZDF
-	8m0B+XKQ==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wN8vd-0000000HS4U-1Vvc;
-	Wed, 13 May 2026 12:43:09 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 82C5F300382; Wed, 13 May 2026 14:43:08 +0200 (CEST)
-Date: Wed, 13 May 2026 14:43:08 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
-	juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jstultz@google.com,
-	kprateek.nayak@amd.com, qyousef@layalina.io
-Subject: Re: [PATCH v2 00/10] sched: Flatten the pick
-Message-ID: <20260513124308.GA1283187@noisy.programming.kicks-ass.net>
-References: <20260511113104.563854162@infradead.org>
- <CAKfTPtA2aBtuBffVV02VgsRRi5mRK0G5ununzuvJ7h7buygNxg@mail.gmail.com>
- <20260513113510.GK1889694@noisy.programming.kicks-ass.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cDgAuUuuooH4DASttJopd8bADXLyLqxvHBVPZyLYTq2nrja9qkfhzuwy6fXnN6ps821Z+IAaER5vOCYTGmRy7SkIEdT1DlD/Qs5Fe7oetWSG9oD39/CE1OBDK3eTCKMmIigojT7zwfKeX0nb9oFBIGpgkiib9AfabTHsMdix9OA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGsDWVW2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F9F9C2BCC7;
+	Wed, 13 May 2026 13:04:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778677478;
+	bh=6LEu9DtzugsPgS9zY7ikDk3PNAySaXFJrErwGthAkfU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lGsDWVW2oR08PACx9KcRC8YMpUuN6oYYOvoOWllZtScTRbHp7+islHrOswbDz0e1U
+	 Rd/2lD7xK6tofxdt3rjsHrXixgEE2cEIam/CmgAPO+rVJ0EqqFFymekAQgAVcROykG
+	 /N7UobOXD+QLpx6gmP6NTOmHQYOBi0pny/Bp5nb7yAfX2fzkn+nP5WBB8+35vCpLep
+	 jh4Y8TgC1kC/ozfdDPxCBHLqgSPMWYg5w/mYxRbWDqfzsPeOwoBvd1TnZH2MG/F2uI
+	 pbR8JRRzktjhwXI6yger0M0d/hUI8h3I7h6ajlUBWmNi8Qu54RVQUXSLuoGBn6Z7hf
+	 kXJB84AOZ4pfg==
+Date: Wed, 13 May 2026 15:04:35 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, rcu@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Costa Shulyupin <cshulyup@redhat.com>,
+	Qiliang Yuan <realwujing@gmail.com>
+Subject: Re: [PATCH 04/23] tick/nohz: Allow runtime changes in full dynticks
+ CPUs
+Message-ID: <agR241twxk9UdRrg@localhost.localdomain>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-5-longman@redhat.com>
+ <87340od7ev.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260513113510.GK1889694@noisy.programming.kicks-ass.net>
-X-Rspamd-Queue-Id: 88A315335DA
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87340od7ev.ffs@tglx>
+X-Rspamd-Queue-Id: F1622533914
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15893-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net,vger.kernel.org,lists.infradead.org];
+	TAGGED_FROM(0.00)[bounces-15894-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_GT_50(0.00)[52];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[noisy.programming.kicks-ass.net:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,infradead.org:dkim]
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,localhost.localdomain:mid]
 X-Rspamd-Action: no action
 
-On Wed, May 13, 2026 at 01:35:10PM +0200, Peter Zijlstra wrote:
-> On Tue, May 12, 2026 at 10:42:33AM +0200, Vincent Guittot wrote:
+Le Tue, Apr 21, 2026 at 10:50:00AM +0200, Thomas Gleixner a écrit :
+> On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
+> > +	/*
+> > +	 * To properly enable/disable nohz_full dynticks for the affected CPUs,
+> > +	 * the new nohz_full CPUs have to be copied to tick_nohz_full_mask and
+> > +	 * ct_cpu_track_user/ct_cpu_untrack_user() will have to be called
+> > +	 * for those CPUs that have their states changed. Those CPUs should be
+> > +	 * in an offline state.
+> > +	 */
+> > +	for_each_cpu_andnot(cpu, cpumask, tick_nohz_full_mask) {
+> > +		WARN_ON_ONCE(cpu_online(cpu));
+> > +		ct_cpu_track_user(cpu);
+> > +		cpumask_set_cpu(cpu, tick_nohz_full_mask);
+> > +	}
+> > +
+> > +	for_each_cpu_andnot(cpu, tick_nohz_full_mask, cpumask) {
+> > +		WARN_ON_ONCE(cpu_online(cpu));
+> > +		ct_cpu_untrack_user(cpu);
+> > +		cpumask_clear_cpu(cpu, tick_nohz_full_mask);
+> > +	}
+> > +}
 > 
-> > I haven't reviewed the patches yet but I ran some tests with it while
-> > testing sched latency related changes for short slice wakeup
-> > preemption. I have some large hackbench regressions with this series
-> > on HMP system with and without EAS. those figures are unexpected
-> > because the benchs run on root cfs
-> > 
-> > One example with hackbench 8 groups thread pipe
-> > tip/sched/core  tip/sched/core          +this patchset          +this patchset
-> > slice 2.8ms     16ms                    2.8ms                   16ms
-> > dragonboard rb5 with EAS
-> > 0,748(+/-4,6%)  0,621(+/-3.6%) +17%     1,915(+/-7.9%) -156%
-> > 0,689(+/- 9.1%) +8%
-> > 
-> > radxa orion6 HMP without EAS
-> > 0,588(+/-5.8%)  0,677(+/-5.9%) -15%     1,505(+/-10%) -156%
-> > 1,071(+/-5.9%) -82%
-> > 
-> > Increasing the slice partly removes regressions but tis is surprising
-> > because the bench runs at root cfs and I thought that results will not
-> > change in such a case
+> So this writes to tick_nohz_full_mask while other CPUs can access
+> it. That's just wrong and I'm not at all interested in the resulting
+> KCSAN warnings.
 > 
-> D'oh :/
+> tick_nohz_full_mask needs to become a RCU protected pointer, which is
+> updated once the new mask is established in a separately allocated one.
+
+How about just dropping tick_nohz_full_mask that is just
+ ~housekeeping_cpumask(HK_TYPE_KERNEL_NOISE) which itself is becoming RCU
+protected in this patchset?
+
+Thanks.
+
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e54da4c6c945..77d0e1937f2c 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9071,7 +9071,7 @@ static void wakeup_preempt_fair(struct rq *rq, struct task_struct *p, int wake_f
->  	enum preempt_wakeup_action preempt_action = PREEMPT_WAKEUP_PICK;
->  	struct task_struct *donor = rq->donor;
->  	struct sched_entity *nse, *se = &donor->se, *pse = &p->se;
-> -	struct cfs_rq *cfs_rq = task_cfs_rq(donor);
-> +	struct cfs_rq *cfs_rq = &rq->cfs;
->  	int cse_is_idle, pse_is_idle;
->  
->  	/*
+> Thanks,
+> 
+>         tglx
+> 
+> 
 
-With that fixed, I now get:
-
-	vanilla	slice(*)
-
-FPS min	  3.0	11.1
-    avg  44.7	57.3
-    max  88.1	96.2
-
-FT  min   9.1	 8.0
-    avg  41.4	21.0
-    max 157.2   53.9
-
-FPS (Frames Per Second)
-FT  (FrameTime)
-
-
-Which I suppose shows we now preempt less. Its still significantly
-better with reduced slice, but not as good as it was.
-
+-- 
+Frederic Weisbecker
+SUSE Labs
 
