@@ -1,162 +1,162 @@
-Return-Path: <cgroups+bounces-15867-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15868-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0AXtHtLdA2qA/gEAu9opvQ
-	(envelope-from <cgroups+bounces-15867-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 04:11:30 +0200
+	id GXxFHBnkA2oRAAIAu9opvQ
+	(envelope-from <cgroups+bounces-15868-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 04:38:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD0552C280
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 04:11:29 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB0E052C48B
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 04:38:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 73F223046CC8
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 02:11:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 44DCB3029274
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 02:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9649C385D62;
-	Wed, 13 May 2026 02:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wqU8qVBO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE9438E8B4;
+	Wed, 13 May 2026 02:38:10 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF2EB3859D9
-	for <cgroups@vger.kernel.org>; Wed, 13 May 2026 02:11:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4E435DA55;
+	Wed, 13 May 2026 02:38:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778638287; cv=none; b=qgabrrGOUwGORclkH8EloqroPWjFwEVURDuBLOnAiddw1jn/6hhU7T3vG2vcqbG5xaC9aThL9pomS//wHhVT7vtS7fY7i40Y1OsnMh4cKAnRH+GncRWsqCnOLSw6j4MW5oTunn4VnD3VnKifKNBPiPd/nT7WkfhWw8IVoFknSec=
+	t=1778639890; cv=none; b=TKi64dflumOV/kI2MIjrE6pUYxc/kXqXMvTaZZIZ0+EnHHBrPkHoVSqoCgXhNkb2knZnw1rt7skfC69bjLRnIa2xCsZwbhBL+9S8Mt104e4y7BLYx6iaBSfAhS/LxrPV0WdDm1HSJCDu1A2PIQiJiNVmOamUsz15kO3361+mCtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778638287; c=relaxed/simple;
-	bh=Hm/lAQiIy+pVefFWoYgSJPXdCymAZxPad21Ew7EoX6A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pSkcGhXQE9UOxxx0vAZkP9ky914JzW501aY1gfKK6wpSuoWMZEWJEGjeo9w/RewtdQIkXr/MLaxDgtaPZUzo0jDpQb0pc5inwRtQGQRI0tgTfm7LVHOlX9H12jv2+gnockO+SR3q+Fyi4sOQ4U5ws0WPh9Ad82BGtBDp1gRKv/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wqU8qVBO; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0e1b8994-944d-4dda-8966-3cd43661796d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778638273;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Iq7jnY+N0UwU1xXxCmM5jCZ1Y+zQ9eUrIz+WkKBogEQ=;
-	b=wqU8qVBOB6nPI8tTv2ruSJGtw0S5kRmu9mGb+a0X62ASIwBhuC7sNYjp1hEHRGS3fv0Jke
-	/+WG6c1jYbL7dgRhevSmu4bdBQDFFOeMTTgqN5ZN6GRhpq6xKym1chF7TeMNfq3QClKzpJ
-	vwBwUHJpWeAQoQn7wwGJ/t8kSeSRdOE=
-Date: Wed, 13 May 2026 10:10:34 +0800
+	s=arc-20240116; t=1778639890; c=relaxed/simple;
+	bh=/EZnHq9nNnsuQQUSQoHEF72Pas3GFWEFAmrx2JPyXlk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K7ImFFa1jN+L6EC39DY7jlTCaTzw8VZqFRA0aJEs2Mn+nZ2L9SUHBEFQOSPETofgG2QXR9SCJ/ZFkSAc7SMayobupKDfah2z+aUoOgD/Jr4ogQ5Ym+4gpBdWt1ALu1t9w/V83IrhyinFOg4fduuhrfjziFvYTN1J+ILCP7VQv/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: c3fbfcb04e7411f1aa26b74ffac11d73-20260513
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
+	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD
+	HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER
+	HR_SJ_NOR_SYM, HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_CHARSET
+	HR_TO_CHARSET_NUM, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME, IP_TRUSTED
+	SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED, SA_UNFAMILIAR, SN_UNTRUSTED
+	SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:ecefcfc9-f295-4318-b6ea-fe6d35d9bf7c,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:15
+X-CID-INFO: VERSION:1.3.12,REQID:ecefcfc9-f295-4318-b6ea-fe6d35d9bf7c,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:15
+X-CID-META: VersionHash:e7bac3a,CLOUDID:e91c13234778766932006b445e033996,BulkI
+	D:260513095221EOQFH20K,BulkQuantity:2,Recheck:0,SF:19|38|66|72|78|102|127|
+	898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:40,QS:n
+	il,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC
+	:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: c3fbfcb04e7411f1aa26b74ffac11d73-20260513
+X-User: yumiao@kylinos.cn
+Received: from kylinos.cn [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <yumiao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1475918497; Wed, 13 May 2026 10:38:03 +0800
+From: Yu Miao <yumiao@kylinos.cn>
+To: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Tejun Heo <tj@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Muchun Song <muchun.song@linux.dev>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yu Miao <yumiao@kylinos.cn>
+Subject: [PATCH] selftests/cgroup: Fix error path leaks in test_percpu_basic
+Date: Wed, 13 May 2026 10:39:07 +0800
+Message-ID: <20260513023907.179097-1-yumiao@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [linus:master] [mm] 01b9da291c: stress-ng.switch.ops_per_sec
- 67.7% regression
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, David Carlier
- <devnexen@gmail.com>, Allen Pais <apais@linux.microsoft.com>,
- Axel Rasmussen <axelrasmussen@google.com>, Baoquan He <bhe@redhat.com>,
- Chengming Zhou <chengming.zhou@linux.dev>,
- Chen Ridong <chenridong@huawei.com>, David Hildenbrand <david@kernel.org>,
- Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>,
- Harry Yoo <harry.yoo@oracle.com>, Hugh Dickins <hughd@google.com>,
- Imran Khan <imran.f.khan@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Kamalesh Babulal <kamalesh.babulal@oracle.com>,
- Lance Yang <lance.yang@linux.dev>, Liam Howlett <Liam.Howlett@oracle.com>,
- Lorenzo Stoakes <ljs@kernel.org>, Michal Hocko <mhocko@suse.com>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Mike Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
- Muchun Song <songmuchun@bytedance.com>, Nhat Pham <nphamcs@gmail.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Usama Arif <usamaarif642@gmail.com>,
- Vlastimil Babka <vbabka@kernel.org>, Wei Xu <weixugc@google.com>,
- Yosry Ahmed <yosry@kernel.org>, Yuanchu Xie <yuanchu@google.com>,
- Zi Yan <ziy@nvidia.com>, Usama Arif <usama.arif@linux.dev>,
- cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <202605121641.b6a60cb0-lkp@intel.com> <agNO8G8tPnPuVrGq@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <agNO8G8tPnPuVrGq@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 0CD0552C280
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: BB0E052C48B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15867-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[lists.linux.dev,intel.com,vger.kernel.org,linux-foundation.org,gmail.com,linux.microsoft.com,google.com,redhat.com,linux.dev,huawei.com,kernel.org,oracle.com,cmpxchg.org,suse.com,bytedance.com,nvidia.com,kvack.org];
-	RCPT_COUNT_TWELVE(0.00)[39];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCVD_COUNT_THREE(0.00)[4];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-15868-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yumiao@kylinos.cn,cgroups@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.969];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,kylinos.cn:mid]
 X-Rspamd-Action: no action
 
+When cg_name_indexed() returns NULL partway through the child creation
+loop, the code returned -1 without running cleanup_children and cleanup.
+That left the `parent` pathname allocation unreleased and did not remove
+child cgroup directories already created under the parent. Fix by jumping
+to cleanup_children instead of returning.
 
+When cg_create() fails, `child` (the pathname from cg_name_indexed())
+was not freed before cleanup_children. Fix by freeing `child` before
+branching to cleanup_children.
 
-On 5/13/26 12:03 AM, Shakeel Butt wrote:
-> On Tue, May 12, 2026 at 08:56:52PM +0800, kernel test robot wrote:
->>
->>
->> Hello,
->>
->> kernel test robot noticed a 67.7% regression of stress-ng.switch.ops_per_sec on:
->>
->>
->> commit: 01b9da291c4969354807b52956f4aae1f41b4924 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
->> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> This is most probably due to shuffling of struct mem_cgroup and struct
-> mem_cgroup_per_node members.
+Signed-off-by: Yu Miao <yumiao@kylinos.cn>
+---
+ tools/testing/selftests/cgroup/test_kmem.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Another possibility is that after objcg was split into per-node, the
-slab accounting fast path is still designed assuming only one current
-objcg per CPU:
-
-struct obj_stock_pcp {
-     struct obj_cgroup *cached_objcg;
-};
-
-So it's may cause the following thrashing:
-
-  CPU stock cached = memcg/node0 objcg
-  free object tagged = memcg/node1 objcg
-  => __refill_obj_stock --> objcg mismatch
-      => drain_obj_stock()
-      => cache switches to node1 objcg
-
-  next local allocation tagged = node0 objcg
-  => mismatch again
-      => drain_obj_stock()
-
-
-> 
-> I will try to reproduce and will followup on this.
-
-Thanks! I'll also try to reproduce it locally and work on a fix.
-
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index eeabd34bf083..12f59925500b 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -368,11 +368,15 @@ static int test_percpu_basic(const char *root)
+ 
+ 	for (i = 0; i < 1000; i++) {
+ 		child = cg_name_indexed(parent, "child", i);
+-		if (!child)
+-			return -1;
++		if (!child) {
++			ret = -1;
++			goto cleanup_children;
++		}
+ 
+-		if (cg_create(child))
++		if (cg_create(child)) {
++			free(child);
+ 			goto cleanup_children;
++		}
+ 
+ 		free(child);
+ 	}
+-- 
+2.43.0
 
 
