@@ -1,241 +1,512 @@
-Return-Path: <cgroups+bounces-15891-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15892-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6CFeLuBpBGprIQIAu9opvQ
-	(envelope-from <cgroups+bounces-15891-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:09:04 +0200
+	id cOJpFudyBGprIQIAu9opvQ
+	(envelope-from <cgroups+bounces-15892-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:47:35 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 025FE532C5C
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2E85334AC
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:47:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DFDAD3053D3D
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 12:09:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 00C1330C14B7
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 12:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3763FE37E;
-	Wed, 13 May 2026 12:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED79E38757A;
+	Wed, 13 May 2026 12:41:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b="yGNgAUH2"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MWEgefCV";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sc+c1Ssd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11020097.outbound.protection.outlook.com [52.101.84.97])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD363F7A86;
-	Wed, 13 May 2026 12:08:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.84.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF70641C2E2
+	for <cgroups@vger.kernel.org>; Wed, 13 May 2026 12:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=170.10.129.124
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778674142; cv=fail; b=MOiM8nUpgAh0/8V+zvGUPcBGY90ipvzhTrrSBzXLri0b2mqgUH3j5gmDPqXW25LLJ9c834L9tBrGygLpy9kwPwFKYMHz3/wXH99SJ0NysoMvN+Hj+rHmyWvj3CX0TIBLvoOy7Xkq4Lf8N03yS4sk6CxuB1dhXMM6/2fd+x0Xr1A=
+	t=1778676115; cv=pass; b=kNk7C8Bs6s/vZ19EK7iP07KvY9Xzea/VTMYRAOwXqax9MRhHt8s2uQ/Bbaiovb7/4AQ8fcOZAbM4A9lX1c4QtGAvUX0V4FMOMALukvb4GztuFiVkkbLCSRc/SyBNBJtU5R0Jl7ht57VNGXivolzwAW0XODQVxzqQU6nhik1uXHg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778674142; c=relaxed/simple;
-	bh=CRkhJnopFc74Qn8tGUAy4+AehBYmkZmH7SrzdrTObZw=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jKnoLESljazscDhdqYdJKQDh5fng+kybX/WdTh/dRxXZ35wLAFYSYQ3nlyrzW8heBH3VWyo5FCc/23kp2BwrurqMwKHbnLvryuSxwG7DjQCfvRbzkV5GykNvn6Yb5V7xonGmDOSPBJO22e0EWqsFIWVilpHzWUXxSRZ2XgmtX4Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=yGNgAUH2; arc=fail smtp.client-ip=52.101.84.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=santannapisa.it
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pMmgY6ZhMRquWw11cc+i6Ni1m/0I1zfPgiwix8LJXr/FRlkrBSYbnUznqYn8YinFSbRHvgYFD+H6c8I5wLmEY+OzkpEb6APC1W4HCY96lcTNiSP2JKty99ihEjg9ziNG5ycv1h+AEjzVJ0anSAM7P4RG3NABY653Wdt9ivi8IRCanF1BjGPIeTITOoHJgYy8XPqyJHSR+JPQXOSwmMbNuk970T5T9FBx0qriU8053xpNv7uoXBjIdnnE+50HuHMd/8HlYg40JxAOWgrkCjBHT6m192v2/H8wGKEiWZrNgjLKUCGmu+EkUJ5MKzYuS1mzorgBc1LhP35Ah880L1UYKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mHQ6O7sWCTdBB5BWZx0TMYg/1VRHJBJxaZO0C7jOse8=;
- b=q7JqCDvOGYpPhXC7bHOMUk6WbCURMI0Ga2DANV5GkgE00sr6EjZ79ACCuRlUXkgTO8DL40/STceYX5ja6h3E3xk3iA+lWDs+HPu2BTkjgMoGjPqOHaIXexp/cZ2hULA/w2NQT+hGDFxj/MLACGPGz8dgnWa7q9Bq88kahZnjfQPVlDZgiRen6l6g0D9dXkqJi86PpgT6t+j8XjnAP/MVrQiy1UUxkFlM/SSaunQDD4PBLTdu1Sa2f+j7rEoGaq/T/Va2qpBsbTHmGtKVnam7WgiVzFrAljarRxG85fd4e1M6Gl8rAD2rUEY9O0/gNOObe1005z8v22Oxk5RTZrzvOQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=santannapisa.it; dmarc=pass action=none
- header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mHQ6O7sWCTdBB5BWZx0TMYg/1VRHJBJxaZO0C7jOse8=;
- b=yGNgAUH24Zjr3OHIKQB/WGmalE5GlnO3hQmkjbrAKyD49okiu7rPLd+0fSGkysoULeBYzwbabK5gcGQa14HwNd6yu7fuaXb+jb3vJSAlQTmz3dJRFU/mdL9sJWJ/IBOb3BawTEsI8+GZtcxdRlwwZLeDXwA/+TGbUsbx1QEJujs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=santannapisa.it;
-Received: from DBBPR03MB10258.eurprd03.prod.outlook.com (2603:10a6:10:52b::6)
- by AM9PR03MB7363.eurprd03.prod.outlook.com (2603:10a6:20b:26c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Wed, 13 May
- 2026 12:08:54 +0000
-Received: from DBBPR03MB10258.eurprd03.prod.outlook.com
- ([fe80::b7a6:58ae:c374:12d9]) by DBBPR03MB10258.eurprd03.prod.outlook.com
- ([fe80::b7a6:58ae:c374:12d9%2]) with mapi id 15.20.9913.009; Wed, 13 May 2026
- 12:08:54 +0000
-Message-ID: <0d3336a7-ae42-4359-bfe7-48a7d6796d06@santannapisa.it>
-Date: Wed, 13 May 2026 14:08:52 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
- RT cgroups
-To: Tejun Heo <tj@kernel.org>
-Cc: luca abeni <luca.abeni@santannapisa.it>,
- Peter Zijlstra <peterz@infradead.org>, Yuri Andriaccio
- <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
- cgroups@vger.kernel.org
-References: <20260430213835.62217-1-yurand2000@gmail.com>
- <20260430213835.62217-21-yurand2000@gmail.com>
- <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
- <afpLir8tD0Ycb3D8@slm.duckdns.org> <20260507163058.2c435922@nowhere>
- <agIfvZuvXEtK45em@slm.duckdns.org>
- <c446b9be-38d7-425c-9ca8-eda721fe1c9e@santannapisa.it>
- <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
- <agNvghphiv9sCJrq@slm.duckdns.org>
-Content-Language: en-US
-From: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
-In-Reply-To: <agNvghphiv9sCJrq@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MI1P293CA0008.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:2::11) To DBBPR03MB10258.eurprd03.prod.outlook.com
- (2603:10a6:10:52b::6)
+	s=arc-20240116; t=1778676115; c=relaxed/simple;
+	bh=L/wYW9IF0FeMQ8Wtbxz4pehnliZS976zGzHZnl9wEsw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FnZP9gFPLCANwdVjBrcQFJNLyiklPq6qLIxk5GyWXnzq0aGMRwuML29KGao5O/ipzDRk4PtkTG8c1K4wMBsUy2WMYkwjzMg/NQAKHABYgYQIX1aOGE3njx92GrdKEFVLtgzUw0vqOA3yX5niwqNERcZzfnnxbNvNCHEVHAflRVU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MWEgefCV; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Sc+c1Ssd; arc=pass smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1778676113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zOEhaYXxHcDCT/VWabJKKAhll1HKQfDPQhsQeGsErgM=;
+	b=MWEgefCVWkLg5T5K7hUKq842mpCLXuF1xYZc1YxGuxwTkRFi5go01TVrAJWA268mwnyUUq
+	OsSmCFQVfOsH7Y7tsr0KjxnIGP5O+AgUASyfsWL4Fi7qn34UL2iQk4qseajND9FkvtkfoO
+	Vb9+IkYtvqxzRNuCcvgNi7F27FCfXF4=
+Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
+ [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-laQI2zM0Nv6AjpfDvcnaCw-1; Wed, 13 May 2026 08:41:51 -0400
+X-MC-Unique: laQI2zM0Nv6AjpfDvcnaCw-1
+X-Mimecast-MFC-AGG-ID: laQI2zM0Nv6AjpfDvcnaCw_1778676111
+Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-7bd5c9e1826so131484737b3.1
+        for <cgroups@vger.kernel.org>; Wed, 13 May 2026 05:41:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778676111; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Q1BkPOWMQqUBa+xFvTlYI5qNnDoYlKAXKQBjlkRpzsihxgLaXJj2pg5CsGOrBEmOWr
+         saY1m+NCqKMNIaS55BPbESEUcJmUgDstkdCziC1KmnK+mvMluMe/JrVzADBzxw7wD3kR
+         gE0vvpyHtP1+EN68R+e26yl+29+HJ4SZT4tO7sjHOsLBNg3M7LbDBoGtGobmD230VQP/
+         jE4mulk8EaL1pfw4qQ5rzG6h8+eQf9GOEetpLIJMGXGZl6jP3G8Rs/eLI/ugaT39rS/c
+         IZ+MDWuhCV+x8w0JuC4WsispoIVdJyAcOBLNlbJ7tL2GfYYUMpaTo0VoqmD00N6L+JTg
+         VeIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=zOEhaYXxHcDCT/VWabJKKAhll1HKQfDPQhsQeGsErgM=;
+        fh=cyHa/IKwpkQmI6fG5hdCYjL2YbnY6P7zI2+cbsJaY9E=;
+        b=h/KedcdSu75MLlvVc9Ip7eHrXNoRC/q7Bv3GK9IMv5KlP0SAhcF7wo/jwldOsEHCWi
+         SSuCQjAse4pZfobOSuMjlqKYsADn64Gam7YbKwu4AWx/16zR7RUQmY3cxed4Xu8lQoJ1
+         YGHOv5xvosPq2bP6HjMUpzSbv3Fxa26FKYl/DEe6KIpVSTX+Rqa0SBLbSlPe7DDBLXs+
+         95gtz2V7VieIniJCO9oFRZx1aWnhKu1/YPVmLwGulKaBGrgytIJyWqLuzGPZ+57ltkhS
+         k/HBBHBQJ+QIb61fVybJ5z6sLoOFyKPFAeVKz3aKG1FLl6pIbWLGRCpPFZ3YpUQeoqDj
+         PngA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1778676111; x=1779280911; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zOEhaYXxHcDCT/VWabJKKAhll1HKQfDPQhsQeGsErgM=;
+        b=Sc+c1Ssd81aAzeuRYA4EmSUsh2NdPHcHckGiMSnZQyklXXSnC3Ve/VwJHuV22SLaZM
+         u9CqRcRCyqnVlojA8xomU2IEwTBt3FDmLgxo09E8rPL2+5ly9YGUsOiTV6sfg9J11dOI
+         OVTXAbMddiTHdPZZDeDuCClQ55uYR5Ye9cbIwI2ozNrOuCVoVyJh/olhe82uojOTApBv
+         /8h6PrvUkS2GXn4Q7OJ9jluTHLo0h03rnGa1zvCgjFH/17t5IQd6cW3k0HA915qMcpaU
+         fhl6zMM96OCwamELi/dp3J9vUT7k7I7F+F6hniEnSB25T5sb2vSYgXXnr3p32KNboMAl
+         /MrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778676111; x=1779280911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=zOEhaYXxHcDCT/VWabJKKAhll1HKQfDPQhsQeGsErgM=;
+        b=bVCPmKT8T5K3/38wfvENGsB5RVSA7s3V9bUQ/qRiUAY/tm7qTY5ZiUvupXE2Btt+b6
+         N0QUTBhVZEBM7cIGtlM33hM9E8mhSloDBWtbTsUiemhSK6DXjMHSO0QnIjRruRfFgTyA
+         QK591sDbyPSB4EuzPoKejx7pgcl29e6W0hCrfUL4LAq9+mTF9v+AeiIUgUL+ESQ7NjTx
+         2sLPKndkPOZTyAkDPZufqAsqf7AwDVTTQ08TKiG/eObcsWthUlOKDPyRV2V/zODd9K3P
+         h+jPWSTINY9am+mPNx5WscMd8wGWmMFr1V1WkEwDRuLVpALsWDjsuVS+STcsyQXKC9w4
+         47oA==
+X-Forwarded-Encrypted: i=1; AFNElJ8OZJpH39o5iHZJUMMT9rWny0X3c6agDCoZN7Mf8DUEyBMX5DggvAk+l1LNjq/qy0ct+Iu6UH8e@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSZBoeahG/Fk+RlhnFjgMbS922vRN+IKuBQaWvQr+Ym99zl5Z6
+	Or4Y+IDmz7CqX7HeEf0vFnSMFf8ws8PtCvXBrN/gJN5mxJ3L9sUWNVMALYMgIuNpgp/MqPHHa/E
+	GkE70Z9Alsx2AfODHla7ROeHcLCIgYkwNnfeuGRorBMhnNxfCKmEIQ5baz//WihdqsEDIIc7lNQ
+	+0xSxoG4xuxqDY1Gc69h+hzGXW9W06QU1Ujw==
+X-Gm-Gg: Acq92OEmdiOYTw4lO5FQ1iffLhlebPKGSmfjK6KV1wooFhiTNV52jqG9/meAJw5eoOC
+	dIC9326mpC6jnVMst4la2RmuP7kFJOqeZNgC5Y8kWWqWn7Ir658ZNA6Xvv+qVsDuBVCg5K/1Igc
+	CQckSX42ny7or1zWOukFn0/6eczav3NdsfLeglyFnYG4f18nmAtH5iElCteDr+6/DPL9XcRpO6o
+	8nLag==
+X-Received: by 2002:a05:690c:348a:b0:7bf:ff7:ea71 with SMTP id 00721157ae682-7c69ae49726mr25055117b3.17.1778676110925;
+        Wed, 13 May 2026 05:41:50 -0700 (PDT)
+X-Received: by 2002:a05:690c:348a:b0:7bf:ff7:ea71 with SMTP id
+ 00721157ae682-7c69ae49726mr25053037b3.17.1778676105682; Wed, 13 May 2026
+ 05:41:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DBBPR03MB10258:EE_|AM9PR03MB7363:EE_
-X-MS-Office365-Filtering-Correlation-Id: b81fedab-fd47-4a45-fbdb-08deb0e86744
-X-LD-Processed: d97360e3-138d-4b5f-956f-a646c364a01e,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|786006|7416014|376014|1800799024|366016|11063799003|18002099003|22082099003|56012099003;
-X-Microsoft-Antispam-Message-Info:
-	8szAIumkLkMA9TPCQJUNLezzu071Map9n0HWJJZ7Io2axDgZerScbcnZZACix9wiorZjThcX9M8FIZtD2ssmk3y7FCdYorsGyRqWVK57Fv4iEvu0J2S1ZQK1+b5QjHmLjB5i80YhRb5JzchUxY1BwTf0tTnfjGnN7DTMgaRSwfy4BFtGXA3VnjuSspM8lVNR9UkGibXQTniW0Yl972On09O9DeAjmAQ5Cmni4dW3A3G2ZKDUtv5rTAXpkLVb0aqxkjPXaHFITQe2JzjWVpBm1Qag78tGxxCPX3GubWitJOnssjXdZvUkwQJ69OUjE6u5SdPFCmbsGvQW4kRst1Ljao7CTDt4ns05DkBaA/HQ59o0PeX/07/F/Qb7PPjTvZalwE2Mk/BYwwEeHOFCINzcwd+C+stiPcjAvngMmmfhMQUYIE8qsSFfQufn7xiH5NJdTl6gXZBBgpgjbODC0TNkblvFuQf0CCU+78mZSXxVpYqiU9RA03jks55pWFjSwfiE8UahHOHdWAdwa8+5o/kozngSuHlHP+E6Li+h2Vw+wzIoG8FM1pQBY6hGGnGVt6k0DTCakynImWwFaL0eZ3BfRU01D9yQCORsbX7JsL8XR/W1mo6hEAixiWbJuRfccFuHf7mnMV7ibkS5dV7kBnXEUJKDIOljr7iJXmdfsBby85aBc+iiIi+soH7ih6tNiN6R
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR03MB10258.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(786006)(7416014)(376014)(1800799024)(366016)(11063799003)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VlQvLzkwZGQ3VG83T3NOWmZIb1NLSjE5NG1oQUhKTGQrM2svQW9BaWNUVHg4?=
- =?utf-8?B?ejNhZThiKzBZbWtRczZxN3lvcUszU3hvcEt2UjZlR2Z4WHJqa1NIZjFXeVB3?=
- =?utf-8?B?Ri9IemFDMkkwU2UvR21FTnRtejhtN3FtSG94RlA0dC82RE12RkRTMEtKc0xy?=
- =?utf-8?B?b2V5cDQ2TUl6Zk5kQW9kZlFpNEwva2ZyWHVYdzdOa1Y5VmVoZ1UxOU9iZlRG?=
- =?utf-8?B?ZElBbFRnUlVSNmxYZUpuMEhtc2xKOTV6WFl2ajVNMlRscVhHWkp0c2htajdv?=
- =?utf-8?B?TFBWTldDL09CNG80RHVIVG4rUVAxc3ROMTdmQmpFRnBlRWNxR2l2YmFPazdF?=
- =?utf-8?B?cUJZRzFjc1E2UjB2OHl1K29EcER4ak0zZ1kyakk1amNmV016VmFvRzVCUVN6?=
- =?utf-8?B?dHlzT1U3VDIrK1lKVG1oSTlBT216USt1OE41dThwU2lwS3cwc0tMcUdUZ1lX?=
- =?utf-8?B?Y1FURXBjb3lwZy8vUC8yNWtUWVVJeW1aRXRRajZ6R3paY2NYYUZjaE5FcGla?=
- =?utf-8?B?ZHVRZ1JBb2M5SE44cmNFWDRuS0QxZ1BEZ0EzV0RyYzBCNVdPaVIyL0pzQUxV?=
- =?utf-8?B?LzE0YWRQb1c5MUFoWjYrWWIwN3ZnWHlMUDdsUmNySjF2aUdKSXByK3k0N3ZN?=
- =?utf-8?B?OWoyRkJycE9qcmdod0syY21XbXg1cUt1L2twdDU5THZjU1duczIvTU1sQit5?=
- =?utf-8?B?bUpsdjllRXRhQ0pJUlo1dXRvMlNQZ1dwajJxbytBdnZ6MGZ1U3d1d0VsOGMz?=
- =?utf-8?B?aWVaUlhqWXJPWVliaHQ5dXNoUHc2YU1ZVHNubUlLRjlxTC9LWDlmTTBzM0lq?=
- =?utf-8?B?T1JERjFxRkQwdi9HUHU3MFRzemd1dk93RmV5UTQ2ZGFEMmFDUU41UnBWM011?=
- =?utf-8?B?U09QMzJoSVdyb3M0MDl1dmRYOFlZNGtCWUMyYXhwdmhwZjdCeUt6V2R1U2c2?=
- =?utf-8?B?eTg0RjFDaEtibkduS1RKUGdsQkNmdHd0TnRuSWtIOG9KZ25nQmRkNUhjL0l5?=
- =?utf-8?B?SjhPcXVLaDl2dHREMEVMNWFMbm16a29Td1h3cWNrVnhBZGRaSmxCUmFXeWNm?=
- =?utf-8?B?T0FYaVRMclorMHNaemdmdGl0ZnNBWnB1K3BBd2dvV3Yyb1AzM1VVVjVmdXZM?=
- =?utf-8?B?elFIYzU5SFQxditPWEVRSnJKMUk3VjZPRlhIVytObVNhNytXWGJCNHlMTW82?=
- =?utf-8?B?K3FWaE83cS9pc3JCdEJ2bTNxZUpWYnQ4cEkvd04rVVZSUmFJbCt3emJmNEV4?=
- =?utf-8?B?SHlRRTVzM1NCMERrbXdBQVhQT3hiamtQcktra2RneW00d0hZY2dHWCtUK0hQ?=
- =?utf-8?B?WXhReEI1bENVdDYveGY4NnpUMnE4YTMrcGh2ZUVaTytCRE1CQVRnOXJZUk9t?=
- =?utf-8?B?cUxPdXhrU3YvcHc1aFVhRDhpVFc3RXZnMGM3TUJrczFiaTh1K0htbkFaS0dT?=
- =?utf-8?B?WFRoRWdvSlNzcWF6ZXRrVHdNbG5nVVBmY0hmaDRxQ0tIL2pkWXplcVRoK2Nm?=
- =?utf-8?B?U2xDZ0NHbHdwQURPOGpjM0V0aUw3a3VNUEtkNHZ6azNOSk9UU1g1dW5Ocnhn?=
- =?utf-8?B?UnJVbnh6bHE0SDRzblkvL1BIZXR1aTNBMmxVSWZXSXVFQjc3NVdteGxvQW1o?=
- =?utf-8?B?ekRJeld2V1dTRjdDSUE0Ylh2eUVSeEJYNGQ3bzNOTk1xNS9DbDhUaFA2S00v?=
- =?utf-8?B?MHl6MFV1U3A0L2Fva3Bha3BvS2JDVGQ5VStZOEFxU0xpZWl0WkUxTFVPQzYv?=
- =?utf-8?B?ZUtuYzNCVW15c3FiY01Ccy9BTlZZakpnMEJpQk9rOGlNN2M4WTlESW1uakFX?=
- =?utf-8?B?RnhXd202SHc1WkhqYWR3bENSVTYySWpUbFpzQWtWV1E5b0t0bUtsWEpsV1N6?=
- =?utf-8?B?NFNXUklRajFvUHRSN0cySTNjQ2FqaG9ZSXZudE8vUWx0aHU4Nkp6ZnZzak5u?=
- =?utf-8?B?L2JZNDNsckVMM0Fzb3hrbnJFRjZRUFhKTVdpNnhlM2RwWERpVktScG9zWWxS?=
- =?utf-8?B?ZUcyT1h4azJZUXdqWXFmWUlsdWVNNjF2ZFQyTTlzVkY4VGZ0MDVLc3lOZWdR?=
- =?utf-8?B?ZzFRVVJBRnhUQkFVNTY5UVFpNmlCOGZZNFVGajZGQXZ4RnhQWktNd1pPdTFD?=
- =?utf-8?B?MFo2Yi9sdmNXMUN3Q1NTUUNlMmhuRTFHakZsTkxoQnVZWWNEZ2thRU4waGtE?=
- =?utf-8?B?d2J4ZlNMMUtENW1wOUVTL0VFWVVyaWhwL1ZhTXVmU1JBQmxreEZUVlRad2dZ?=
- =?utf-8?B?M05pbFBjWVVEc0VxTVQrcjVBKzdCK0ZXa2dvblVld3NlMk1peThqL2krbDZ5?=
- =?utf-8?B?T2RXNS9wM2ZMeDgrYU42a2JpT0JjZjR5R1VsK0VZR3JkdHFvcC83SkpVN0Fu?=
- =?utf-8?Q?RwH2qehG3M7ZM2sw=3D?=
-X-OriginatorOrg: santannapisa.it
-X-MS-Exchange-CrossTenant-Network-Message-Id: b81fedab-fd47-4a45-fbdb-08deb0e86744
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR03MB10258.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2026 12:08:54.6054
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wZrYRSNg0R2UCVO2768iYU+31IfKL6CFOssXvXC29eUg3DsLM9QOc8+k5OZuyh5u/awS7LGcW1FAmW7u7PrVDtcEYguW3uIDk1fny2VVbzQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB7363
-X-Rspamd-Queue-Id: 025FE532C5C
+References: <20260512-v2_20230123_tjmercier_google_com-v1-0-6326701c3691@redhat.com>
+ <20260512-v2_20230123_tjmercier_google_com-v1-2-6326701c3691@redhat.com> <8ef38815-6ae9-4359-86d4-042554357639@amd.com>
+In-Reply-To: <8ef38815-6ae9-4359-86d4-042554357639@amd.com>
+From: Albert Esteve <aesteve@redhat.com>
+Date: Wed, 13 May 2026 14:41:33 +0200
+X-Gm-Features: AVHnY4I5gWDDEj4SX_HuB44fjlMWKZYdMLtmbKqRDSeay77iEzEWghV7sNPOxmY
+Message-ID: <CADSE00KZMJFYJ92XZa=r9EeJJRGT=SNChwOW-_jTznc7F79xGw@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/5] dma-heap: charge dma-buf memory via explicit memcg
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Brian Starkey <Brian.Starkey@arm.com>, 
+	John Stultz <jstultz@google.com>, "T.J. Mercier" <tjmercier@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Paul Moore <paul@paul-moore.com>, 
+	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, mripard@kernel.org, 
+	echanude@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: CB2E85334AC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[santannapisa.it,none];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[santannapisa.it:s=selector1];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-15892-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[35];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	TAGGED_FROM(0.00)[bounces-15891-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,linux.dev,linux-foundation.org,collabora.com,arm.com,google.com,paul-moore.com,namei.org,hallyn.com,gmail.com,redhat.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,kvack.org];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yuri.andriaccio@santannapisa.it,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[santannapisa.it:+];
+	FROM_NEQ_ENVFROM(0.00)[aesteve@redhat.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,amd.com:email,mail.gmail.com:mid]
 X-Rspamd-Action: no action
 
-Hello,
+On Tue, May 12, 2026 at 12:14=E2=80=AFPM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> On 5/12/26 11:10, Albert Esteve wrote:
+> > On embedded platforms a central process often allocates dma-buf
+> > memory on behalf of client applications. Without a way to
+> > attribute the charge to the requesting client's cgroup, the
+> > cost lands on the allocator, making per-cgroup memory limits
+> > ineffective for the actual consumers.
+> >
+> > Add charge_pid_fd to struct dma_heap_allocation_data. When set to
+> > a valid pidfd, DMA_HEAP_IOCTL_ALLOC resolves the target task's
+> > memcg and charges the buffer there via mem_cgroup_charge_dmabuf()
+> > inside dma_heap_buffer_alloc(). Without charge_pid_fd, and with
+> > the mem_accounting module parameter enabled, the buffer is charged
+> > to the allocator's own cgroup.
+> >
+> > Additionally, commit 3c227be90659 ("dma-buf: system_heap: account for
+> > system heap allocation in memcg") adds __GFP_ACCOUNT to system-heap
+> > page allocations. Keeping __GFP_ACCOUNT would charge the same pages
+> > twice (once to kmem, once to MEMCG_DMABUF), thus remove it and route
+> > all accounting through a single MEMCG_DMABUF path.
+> >
+> > Usage examples:
+> >
+> >   1. Central allocator charging to a client at allocation time.
+> >      The allocator knows the client's PID (e.g., from binder's
+> >      sender_pid) and uses pidfd to attribute the charge:
+> >
+> >        pid_t client_pid =3D txn->sender_pid;
+> >        int pidfd =3D pidfd_open(client_pid, 0);
+> >
+> >        struct dma_heap_allocation_data alloc =3D {
+> >            .len             =3D buffer_size,
+> >            .fd_flags        =3D O_RDWR | O_CLOEXEC,
+> >            .charge_pid_fd   =3D pidfd,
+> >        };
+> >        ioctl(heap_fd, DMA_HEAP_IOCTL_ALLOC, &alloc);
+> >        close(pidfd);
+> >        /* alloc.fd is now charged to client's cgroup */
+> >
+> >   2. Default allocation (no pidfd, mem_accounting=3D1).
+> >      When charge_pid_fd is not set and the mem_accounting module
+> >      parameter is enabled, the buffer is charged to the allocator's
+> >      own cgroup:
+> >
+> >        struct dma_heap_allocation_data alloc =3D {
+> >            .len      =3D buffer_size,
+> >            .fd_flags =3D O_RDWR | O_CLOEXEC,
+> >        };
+> >        ioctl(heap_fd, DMA_HEAP_IOCTL_ALLOC, &alloc);
+> >        /* charged to current process's cgroup */
+> >
+> > Current limitations:
+> >
+> >  - Single-owner model: a dma-buf carries one memcg charge regardless of
+> >    how many processes share it. Means only the first owner (and exporte=
+r)
+> >    of the shared buffer bears the charge.
+> >  - Only memcg accounting supported. While this makes sense for system
+> >    heap buffers, other heaps (e.g., CMA heaps) will require selectively
+> >    charging also for the dmem controller.
+>
+> Well that doesn't looks soo bad, it at least seems to tackle the problem =
+at hand for Android and some of other embedded use cases.
+>
+> I'm just not sure if this is future prove and will work for all use cases=
+, e.g. cloud gaming, native context for automotive etc...
+>
+> Essentially the problem boils down to two limitations:
+> 1) a piece of memory can only be charged to one cgroup, the framework doe=
+sn't has a concept of charging shared memory to multiple groups
+> 2) when memory references in the form of file descriptors are passed betw=
+een applications we have no way of changing the accounting to a different c=
+group
+>
+> The passing of the memory reference already has a well defined uAPI and i=
+f we could solve those two limitations we not only solve the problem withou=
+t introducing new uAPI (with potential new security risks) but also solve i=
+t for all other use cases which uses file descriptors as well as. E.g. memf=
+d, accel and GPU drivers etc...
 
- > How is a delegated subtree prevented from setting cpu.rt.min = 'root' and
- > escaping its ancestors' cpu.rt.max budget?
+Honestly, adding a hook to fd-passing uAPI to manage charge transfers
+sounds like a promising solution requiring no uAPI changes. However,
+it still does not cover all paths, e.g., dup() or fork(). And shared
+memory sounds like a hard one to tackle, where deciding the best
+policy is more a per-usecase thing and would probably require
+userspace configuration. All in all, charge_pid_fd covers a
+well-defined and immediately practical subset. The UAPI cost is small
+and the mechanism is explicit about what it does and doesn't solve. A
+general solution, if it ever converges, would likely supersede
+charge_pid_fd for most cases, which is a fine outcome if it solves the
+problem more completely.
 
-Is it strictly required that a child cgroup must have 'less runtime' 
-than its parent? To be more precise I mean scheduling tasks on the root 
-runqueue instead of using dl-servers. Small note: given that HCBS 
-cgroups use dl-servers, and thus run at higher priority than FIFO/RR 
-scheduled on the root runqueue, if a cgroup rt.min is 'root' would yes 
-escape its ancestor budget but it may also possibly get starved because 
-of the priority levels.
+Either way, if you have a specific approach in mind for solving any of
+the above limitations, I'd be happy to look into it further.
 
-If we require that child cgroups cannot escape their parent's bandwidth, 
-even when using 'root', then the cpu.rt.max file must be disallowed in 
-the root cgroup (removing the possibility to reserve bandwidth for HCBS, 
-and so doing the admission test similarly to when SCHED_DEADLINE tasks 
-are executed), and cpu.rt.max would use either 'root' if the whole 
-subtree must be scheduled onto the root runqueue or a <runtime> <period> 
-combination to reserve bandwidth for the whole subtree. The cpu.rt.min 
-would then only be used to reserve internal bandwidth for the cgroup 
-itself. This also means that a whole subtree either uses HCBS everywhere 
-or the root runqueue everywhere.
+BR,
+Albert.
 
- > If the users on the system already started using rt, how do you 
-enable the
- > controller from the top down with budgets already being used down in the
- > hierarchy?
+>
+> On the other hand it is really nice to finally see this tackled for at le=
+ast DMA-buf heaps. On the GPU side I have seen just another try of a driver=
+ doing some kind of special driver specific accounting to solve this just a=
+ few weeks ago. And to be honest such single driver island approach have th=
+e tendency to break more often that they are working correctly.
+>
+> Regards,
+> Christian.
+>
+> >
+> > Signed-off-by: Albert Esteve <aesteve@redhat.com>
+> > ---
+> >  Documentation/admin-guide/cgroup-v2.rst |  5 ++--
+> >  drivers/dma-buf/dma-buf.c               | 16 ++++---------
+> >  drivers/dma-buf/dma-heap.c              | 42 +++++++++++++++++++++++++=
++++++---
+> >  drivers/dma-buf/heaps/system_heap.c     |  2 --
+> >  include/uapi/linux/dma-heap.h           |  6 +++++
+> >  5 files changed, 53 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/ad=
+min-guide/cgroup-v2.rst
+> > index 8bdbc2e866430..824d269531eb1 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1636,8 +1636,9 @@ The following nested keys are defined.
+> >               structures.
+> >
+> >         dmabuf (npn)
+> > -             Amount of memory used for exported DMA buffers allocated =
+by the cgroup.
+> > -             Stays with the allocating cgroup regardless of how the bu=
+ffer is shared.
+> > +             Amount of memory used for exported DMA buffers allocated =
+by or on
+> > +             behalf of the cgroup. Stays with the allocating cgroup re=
+gardless
+> > +             of how the buffer is shared.
+> >
+> >         workingset_refault_anon
+> >               Number of refaults of previously evicted anonymous pages.
+> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> > index ce02377f48908..23fb758b78297 100644
+> > --- a/drivers/dma-buf/dma-buf.c
+> > +++ b/drivers/dma-buf/dma-buf.c
+> > @@ -181,8 +181,11 @@ static void dma_buf_release(struct dentry *dentry)
+> >        */
+> >       BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
+> >
+> > -     mem_cgroup_uncharge_dmabuf(dmabuf->memcg, PAGE_ALIGN(dmabuf->size=
+) / PAGE_SIZE);
+> > -     mem_cgroup_put(dmabuf->memcg);
+> > +     if (dmabuf->memcg) {
+> > +             mem_cgroup_uncharge_dmabuf(dmabuf->memcg,
+> > +                                       PAGE_ALIGN(dmabuf->size) / PAGE=
+_SIZE);
+> > +             mem_cgroup_put(dmabuf->memcg);
+> > +     }
+> >
+> >       dmabuf->ops->release(dmabuf);
+> >
+> > @@ -764,13 +767,6 @@ struct dma_buf *dma_buf_export(const struct dma_bu=
+f_export_info *exp_info)
+> >               dmabuf->resv =3D resv;
+> >       }
+> >
+> > -     dmabuf->memcg =3D get_mem_cgroup_from_mm(current->mm);
+> > -     if (!mem_cgroup_charge_dmabuf(dmabuf->memcg, PAGE_ALIGN(dmabuf->s=
+ize) / PAGE_SIZE,
+> > -                                   GFP_KERNEL)) {
+> > -             ret =3D -ENOMEM;
+> > -             goto err_memcg;
+> > -     }
+> > -
+> >       file->private_data =3D dmabuf;
+> >       file->f_path.dentry->d_fsdata =3D dmabuf;
+> >       dmabuf->file =3D file;
+> > @@ -781,8 +777,6 @@ struct dma_buf *dma_buf_export(const struct dma_buf=
+_export_info *exp_info)
+> >
+> >       return dmabuf;
+> >
+> > -err_memcg:
+> > -     mem_cgroup_put(dmabuf->memcg);
+> >  err_file:
+> >       fput(file);
+> >  err_module:
+> > diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+> > index ac5f8685a6494..ff6e259afcdc0 100644
+> > --- a/drivers/dma-buf/dma-heap.c
+> > +++ b/drivers/dma-buf/dma-heap.c
+> > @@ -7,13 +7,17 @@
+> >   */
+> >
+> >  #include <linux/cdev.h>
+> > +#include <linux/cgroup.h>
+> >  #include <linux/device.h>
+> >  #include <linux/dma-buf.h>
+> >  #include <linux/dma-heap.h>
+> > +#include <linux/memcontrol.h>
+> > +#include <linux/sched/mm.h>
+> >  #include <linux/err.h>
+> >  #include <linux/export.h>
+> >  #include <linux/list.h>
+> >  #include <linux/nospec.h>
+> > +#include <linux/pidfd.h>
+> >  #include <linux/syscalls.h>
+> >  #include <linux/uaccess.h>
+> >  #include <linux/xarray.h>
+> > @@ -55,10 +59,12 @@ MODULE_PARM_DESC(mem_accounting,
+> >                "Enable cgroup-based memory accounting for dma-buf heap =
+allocations (default=3Dfalse).");
+> >
+> >  static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
+> > -                              u32 fd_flags,
+> > -                              u64 heap_flags)
+> > +                              u32 fd_flags, u64 heap_flags,
+> > +                              struct mem_cgroup *charge_to)
+> >  {
+> >       struct dma_buf *dmabuf;
+> > +     unsigned int nr_pages;
+> > +     struct mem_cgroup *memcg =3D charge_to;
+> >       int fd;
+> >
+> >       /*
+> > @@ -73,6 +79,22 @@ static int dma_heap_buffer_alloc(struct dma_heap *he=
+ap, size_t len,
+> >       if (IS_ERR(dmabuf))
+> >               return PTR_ERR(dmabuf);
+> >
+> > +     nr_pages =3D len / PAGE_SIZE;
+> > +
+> > +     if (memcg)
+> > +             css_get(&memcg->css);
+> > +     else if (mem_accounting)
+> > +             memcg =3D get_mem_cgroup_from_mm(current->mm);
+> > +
+> > +     if (memcg) {
+> > +             if (!mem_cgroup_charge_dmabuf(memcg, nr_pages, GFP_KERNEL=
+)) {
+> > +                     mem_cgroup_put(memcg);
+> > +                     dma_buf_put(dmabuf);
+> > +                     return -ENOMEM;
+> > +             }
+> > +             dmabuf->memcg =3D memcg;
+> > +     }
+> > +
+> >       fd =3D dma_buf_fd(dmabuf, fd_flags);
+> >       if (fd < 0) {
+> >               dma_buf_put(dmabuf);
+> > @@ -102,6 +124,9 @@ static long dma_heap_ioctl_allocate(struct file *fi=
+le, void *data)
+> >  {
+> >       struct dma_heap_allocation_data *heap_allocation =3D data;
+> >       struct dma_heap *heap =3D file->private_data;
+> > +     struct mem_cgroup *memcg =3D NULL;
+> > +     struct task_struct *task;
+> > +     unsigned int pidfd_flags;
+> >       int fd;
+> >
+> >       if (heap_allocation->fd)
+> > @@ -113,9 +138,20 @@ static long dma_heap_ioctl_allocate(struct file *f=
+ile, void *data)
+> >       if (heap_allocation->heap_flags & ~DMA_HEAP_VALID_HEAP_FLAGS)
+> >               return -EINVAL;
+> >
+> > +     if (heap_allocation->charge_pid_fd) {
+> > +             task =3D pidfd_get_task(heap_allocation->charge_pid_fd, &=
+pidfd_flags);
+> > +             if (IS_ERR(task))
+> > +                     return PTR_ERR(task);
+> > +
+> > +             memcg =3D get_mem_cgroup_from_mm(task->mm);
+> > +             put_task_struct(task);
+> > +     }
+> > +
+> >       fd =3D dma_heap_buffer_alloc(heap, heap_allocation->len,
+> >                                  heap_allocation->fd_flags,
+> > -                                heap_allocation->heap_flags);
+> > +                                heap_allocation->heap_flags,
+> > +                                memcg);
+> > +     mem_cgroup_put(memcg);
+> >       if (fd < 0)
+> >               return fd;
+> >
+> > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heap=
+s/system_heap.c
+> > index 03c2b87cb1112..95d7688167b93 100644
+> > --- a/drivers/dma-buf/heaps/system_heap.c
+> > +++ b/drivers/dma-buf/heaps/system_heap.c
+> > @@ -385,8 +385,6 @@ static struct page *alloc_largest_available(unsigne=
+d long size,
+> >               if (max_order < orders[i])
+> >                       continue;
+> >               flags =3D order_flags[i];
+> > -             if (mem_accounting)
+> > -                     flags |=3D __GFP_ACCOUNT;
+> >               page =3D alloc_pages(flags, orders[i]);
+> >               if (!page)
+> >                       continue;
+> > diff --git a/include/uapi/linux/dma-heap.h b/include/uapi/linux/dma-hea=
+p.h
+> > index a4cf716a49fa6..e02b0f8cbc6a1 100644
+> > --- a/include/uapi/linux/dma-heap.h
+> > +++ b/include/uapi/linux/dma-heap.h
+> > @@ -29,6 +29,10 @@
+> >   *                   handle to the allocated dma-buf
+> >   * @fd_flags:                file descriptor flags used when allocatin=
+g
+> >   * @heap_flags:              flags passed to heap
+> > + * @charge_pid_fd:   optional pidfd of the process whose cgroup should=
+ be
+> > + *                   charged for this allocation; 0 means charge the c=
+alling
+> > + *                   process's cgroup
+> > + * @__padding:               reserved, must be zero
+> >   *
+> >   * Provided by userspace as an argument to the ioctl
+> >   */
+> > @@ -37,6 +41,8 @@ struct dma_heap_allocation_data {
+> >       __u32 fd;
+> >       __u32 fd_flags;
+> >       __u64 heap_flags;
+> > +     __u32 charge_pid_fd;
+> > +     __u32 __padding;
+> >  };
+> >
+> >  #define DMA_HEAP_IOC_MAGIC           'H'
+> >
+>
 
-In my original idea rt tasks would only interfere with their own cgroup 
-configuration, but not with the subtree or their parents. When 
-cpu.rt.min = 'root', you are free to change cpu.rt.max values to 
-whatever you like in any place of the hierarchy, and tasks inside the 
-rt.min = 'root' cgroup would not be affected as they are run in the root 
-runqueue.
-
-If you want to switch a cgroup from/to 'root' and HCBS, you'd have to 
-either move all the RT tasks out of the cgroup, set rt.min, and then 
-move them back in, or change temporarily their scheduling policy to 
-non-rt (SCHED_OTHER, SCHED_DEADLINE, whatever) and then back.
-
-Hopefully I've answered your questions. Which solution do you think 
-makes the most sense?
-
-Yuri
 
