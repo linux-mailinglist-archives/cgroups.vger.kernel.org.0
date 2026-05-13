@@ -1,532 +1,241 @@
-Return-Path: <cgroups+bounces-15890-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15891-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qCzzFE1mBGqXIAIAu9opvQ
-	(envelope-from <cgroups+bounces-15890-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 13:53:49 +0200
+	id 6CFeLuBpBGprIQIAu9opvQ
+	(envelope-from <cgroups+bounces-15891-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:09:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82F353297D
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 13:53:48 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 025FE532C5C
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 14:09:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 62DD1312C378
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 11:50:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DFDAD3053D3D
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2026 12:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DAB03A16BE;
-	Wed, 13 May 2026 11:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3763FE37E;
+	Wed, 13 May 2026 12:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="En9FgXxq"
+	dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b="yGNgAUH2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11020097.outbound.protection.outlook.com [52.101.84.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DD83A63FE
-	for <cgroups@vger.kernel.org>; Wed, 13 May 2026 11:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD363F7A86;
+	Wed, 13 May 2026 12:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.84.97
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778673001; cv=pass; b=mhNy0GD1T1boLU8dIwA8B7iZ6+HEH5QmJ6Z74lSS/CPvGw14iabOYXl/zFzE7dVupBK7iaDa312lX2xytHis2KTmM49IRfGDr3ndhn+ZZe1WGwfigwwWcuO91mKsuF22wiIn2DRplk+k9AR2MMjN20bjTNfoysAOpveh8dc4zQU=
+	t=1778674142; cv=fail; b=MOiM8nUpgAh0/8V+zvGUPcBGY90ipvzhTrrSBzXLri0b2mqgUH3j5gmDPqXW25LLJ9c834L9tBrGygLpy9kwPwFKYMHz3/wXH99SJ0NysoMvN+Hj+rHmyWvj3CX0TIBLvoOy7Xkq4Lf8N03yS4sk6CxuB1dhXMM6/2fd+x0Xr1A=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778673001; c=relaxed/simple;
-	bh=/fEljrTCweX4VkWoYt2Q6DiehSFHwK+6LZzn2oOIyCU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CoorcfY5KHHvrTbtXrdnojRGJrvgkhy47Lr8Wt13HhzGVd4x5J3iIc078jmeaQHYhYXhAcfLczaKgvpqNC7j2PO6Z/CfHY4pf8QW0gJ37IMjlQ7IBGwWuwknXw1jBu1saPvZjKVaOXYaK9qjio9SDMgDieB7yWxNYJNMKverGkg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=En9FgXxq; arc=pass smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-6763cc8775cso13495442a12.0
-        for <cgroups@vger.kernel.org>; Wed, 13 May 2026 04:49:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778672998; cv=none;
-        d=google.com; s=arc-20240605;
-        b=YIKahdJ4edeDhNO5FSBttChseVNpqIJj6TcIrRMJfnfBlq2nlOtjTFdezRWgLR96Yc
-         yD3b+iJJdO+7mXDrV7SVoC8DWXAXcvWN1YFxcrm+Djk5/D5dljZ1m2bRWggj6xnB6LPb
-         dzshPxiYFD3c3FKKZCxtFrx1cbL0Aeb2hDY1W398/cSvGPqU7tiOeL0f4yiCf6I7U7QY
-         vAiJWKx7MIAW3D9hMHciFlgj8eUj4ZrlpX3NjAu1Gg1G41kpa7FSw/oPaV40KvKv8Ykx
-         ta/Ohb1ZNl4wbq/Y2toyXO9yFK1HnHXfcP42QSkURnemv9J/HT0Og2wZUVVSz+MvLgzo
-         8c6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=H+eyCRfvbu7d8VrqUkRV2z/MHJa96tgDU4sif/IM1p4=;
-        fh=YYCMjnFBYdISE1vw1I1fdOGzmD4pHaUTcpPRm71mUHk=;
-        b=jPSkwM/gRF/N6qJ1HlJWadfPw/iS7VOhueKYdtOfOWSyAWf/5B9H/GDFU7FOPwvlyw
-         I7l9vqxIeszs/5u+MgGc1c9zRNIaehNMsSU0tauR0Zz4kSXt0oi9+WuTH8VW49uJkd4H
-         m3tFgpMVbWm3R2JIAm7PbtBjCGuNv1tOlDNA1MbTRp26wxVeyYEPYFwja53V8zgECsor
-         IK41cxdZADQng+wRkb0vSJ7Kv6Tby36NdPThyTI0dKs+WGFmo/VF4F/KLtqBwis9Ds5G
-         YB/SwCzoFT5Eu1homoyAWFuQxusoOhnB4iAyujTcRYHUgRES123tTKIOJPp/kwA7c9nC
-         9QvA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778672998; x=1779277798; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+eyCRfvbu7d8VrqUkRV2z/MHJa96tgDU4sif/IM1p4=;
-        b=En9FgXxqBdB5tn3fyypfhGTnpLF8/7VkkusltG3BXXc/dbrE8RXUA7vImuGpwbdlS4
-         2+xHnQi2SFl/ALkgsm6N6QmivPBmbn4v5TE/UAjegTCfmdNFFDo7yGbdpQwWHEkf21/x
-         pTShVHQuL3T71tdll/5j/4pl6g1XBdF8ZeWP/aVc21CF9K4DgVpnkmnp6SyPDjKZgR/8
-         oL6ZpkrE7m5OJjmsAbyv0Tk1F7HqomDJi5kgMF38yTF8kxuAOO0Fcz0GYSOFyzL36Sb3
-         LP6wBokD1IfmJRmeAmAfRdw46dgTWUFpItKgZ+wk26jq2Hymfnd4iK0sdf7QZSIgu19A
-         lXHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778672998; x=1779277798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=H+eyCRfvbu7d8VrqUkRV2z/MHJa96tgDU4sif/IM1p4=;
-        b=RtFwEIKfdlq2CzboQy//bpgi35FnW4CZ4klowwhY+h1zRtVG4Kzgr2SwX3hdOgo01w
-         80QTjlirG/PkWxJPS+8LPRCu+vQra6g5U5TB3EVjme79RQmxHfSJB4dbNp1Ml+kfrjf+
-         V6mgOATv/2Qrc4mcNZUIonEHGvJ1pdoj36LeorcSfgtjUpDq1mNjaXxFqfoWFNPgGtbj
-         V2eSK1PZfaXyLXpwyc68F7NaeHQPBGYnD95w4g23XAzwJMLtu2CZgjOAXUi2huZ5rtZI
-         W8BGxbFHAHvDu/hF/wCE0LU4privYp8+gEiuaj9ljLKduzMk02sL8bGthYd1My0hBZWZ
-         afuQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9EfhxzDA51NU4htYqmN8uQVbgGLm7W8Cic34qqb4PXPKSjfJ2GJ2VhSJ40xG5Yc272soS9tJCk@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnjVLzbQjIST0RZ7Ow9yWc1soX6NJBTFHGc4SLUwzbsxJLIPK4
-	OuUKrfKIbnP+RQr35g6rCo5lnLb0vYAnoZ9S7nTdOEwAP67KWN6Gzt/yJaBtwNhaINjba/Sz9uD
-	xlb662WIZhyhqjXjf4KN2HLnLDA7138Q=
-X-Gm-Gg: Acq92OESapPk47gxZFUWKiw0mZo8DY/2UNq6n5vno3Q13jX01G+oPaoH2JbCBh99T/2
-	e7kDLtadJOX0p16wI3XA40qrwnQanbwprMghvn1Pduk8KG1wTCLpdm++l0WtQtgpgOJWhCycCkP
-	2MAkazFUZ2+TzeYAg9uK+Zno46zWfMPpiA2Szq7C1VW06AaXolq8ng4wodJ5I9IJJ0Pto/zNkKl
-	2gLos05qhAjWeeLLCSUmIbme4newVZ8dvIxKN7gmL0ENeqTBCr+v5y4Ca4lP2ZBqjysExj5Y5C9
-	b3evyoehYhCgKsUIH1Vi87hPXsN/rKsBKMXN/9c=
-X-Received: by 2002:a05:6402:7d0:b0:67b:7e7a:45ed with SMTP id
- 4fb4d7f45d1cf-680b2b12646mr3489347a12.6.1778672997859; Wed, 13 May 2026
- 04:49:57 -0700 (PDT)
+	s=arc-20240116; t=1778674142; c=relaxed/simple;
+	bh=CRkhJnopFc74Qn8tGUAy4+AehBYmkZmH7SrzdrTObZw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=jKnoLESljazscDhdqYdJKQDh5fng+kybX/WdTh/dRxXZ35wLAFYSYQ3nlyrzW8heBH3VWyo5FCc/23kp2BwrurqMwKHbnLvryuSxwG7DjQCfvRbzkV5GykNvn6Yb5V7xonGmDOSPBJO22e0EWqsFIWVilpHzWUXxSRZ2XgmtX4Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=yGNgAUH2; arc=fail smtp.client-ip=52.101.84.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=santannapisa.it
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pMmgY6ZhMRquWw11cc+i6Ni1m/0I1zfPgiwix8LJXr/FRlkrBSYbnUznqYn8YinFSbRHvgYFD+H6c8I5wLmEY+OzkpEb6APC1W4HCY96lcTNiSP2JKty99ihEjg9ziNG5ycv1h+AEjzVJ0anSAM7P4RG3NABY653Wdt9ivi8IRCanF1BjGPIeTITOoHJgYy8XPqyJHSR+JPQXOSwmMbNuk970T5T9FBx0qriU8053xpNv7uoXBjIdnnE+50HuHMd/8HlYg40JxAOWgrkCjBHT6m192v2/H8wGKEiWZrNgjLKUCGmu+EkUJ5MKzYuS1mzorgBc1LhP35Ah880L1UYKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mHQ6O7sWCTdBB5BWZx0TMYg/1VRHJBJxaZO0C7jOse8=;
+ b=q7JqCDvOGYpPhXC7bHOMUk6WbCURMI0Ga2DANV5GkgE00sr6EjZ79ACCuRlUXkgTO8DL40/STceYX5ja6h3E3xk3iA+lWDs+HPu2BTkjgMoGjPqOHaIXexp/cZ2hULA/w2NQT+hGDFxj/MLACGPGz8dgnWa7q9Bq88kahZnjfQPVlDZgiRen6l6g0D9dXkqJi86PpgT6t+j8XjnAP/MVrQiy1UUxkFlM/SSaunQDD4PBLTdu1Sa2f+j7rEoGaq/T/Va2qpBsbTHmGtKVnam7WgiVzFrAljarRxG85fd4e1M6Gl8rAD2rUEY9O0/gNOObe1005z8v22Oxk5RTZrzvOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=santannapisa.it; dmarc=pass action=none
+ header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mHQ6O7sWCTdBB5BWZx0TMYg/1VRHJBJxaZO0C7jOse8=;
+ b=yGNgAUH24Zjr3OHIKQB/WGmalE5GlnO3hQmkjbrAKyD49okiu7rPLd+0fSGkysoULeBYzwbabK5gcGQa14HwNd6yu7fuaXb+jb3vJSAlQTmz3dJRFU/mdL9sJWJ/IBOb3BawTEsI8+GZtcxdRlwwZLeDXwA/+TGbUsbx1QEJujs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=santannapisa.it;
+Received: from DBBPR03MB10258.eurprd03.prod.outlook.com (2603:10a6:10:52b::6)
+ by AM9PR03MB7363.eurprd03.prod.outlook.com (2603:10a6:20b:26c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Wed, 13 May
+ 2026 12:08:54 +0000
+Received: from DBBPR03MB10258.eurprd03.prod.outlook.com
+ ([fe80::b7a6:58ae:c374:12d9]) by DBBPR03MB10258.eurprd03.prod.outlook.com
+ ([fe80::b7a6:58ae:c374:12d9%2]) with mapi id 15.20.9913.009; Wed, 13 May 2026
+ 12:08:54 +0000
+Message-ID: <0d3336a7-ae42-4359-bfe7-48a7d6796d06@santannapisa.it>
+Date: Wed, 13 May 2026 14:08:52 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
+ RT cgroups
+To: Tejun Heo <tj@kernel.org>
+Cc: luca abeni <luca.abeni@santannapisa.it>,
+ Peter Zijlstra <peterz@infradead.org>, Yuri Andriaccio
+ <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
+ cgroups@vger.kernel.org
+References: <20260430213835.62217-1-yurand2000@gmail.com>
+ <20260430213835.62217-21-yurand2000@gmail.com>
+ <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
+ <afpLir8tD0Ycb3D8@slm.duckdns.org> <20260507163058.2c435922@nowhere>
+ <agIfvZuvXEtK45em@slm.duckdns.org>
+ <c446b9be-38d7-425c-9ca8-eda721fe1c9e@santannapisa.it>
+ <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
+ <agNvghphiv9sCJrq@slm.duckdns.org>
+Content-Language: en-US
+From: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
+In-Reply-To: <agNvghphiv9sCJrq@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI1P293CA0008.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:2::11) To DBBPR03MB10258.eurprd03.prod.outlook.com
+ (2603:10a6:10:52b::6)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
- <20260421-swap-table-p4-v3-10-2f23759a76bc@tencent.com> <CACePvbXeUv9g+pKW55hrEbwrFZaZ+XdBip9oSwT7pfztrG_7GA@mail.gmail.com>
-In-Reply-To: <CACePvbXeUv9g+pKW55hrEbwrFZaZ+XdBip9oSwT7pfztrG_7GA@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Wed, 13 May 2026 19:49:20 +0800
-X-Gm-Features: AVHnY4Ks2BUbReMA9gs5ZJ-uwNtvfeaDihycWWUgwEm25NTeZvjq8Y_AbMswWzo
-Message-ID: <CAMgjq7D_W5qQfNfjJ=j+YSfaQE_f=XEOY2TphOaBtmwnJZSrfQ@mail.gmail.com>
-Subject: Re: [PATCH v3 10/12] mm/memcg, swap: store cgroup id in cluster table directly
-To: Chris Li <chrisl@kernel.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Youngjun Park <youngjun.park@lge.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Yosry Ahmed <yosry@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>, 
-	Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: B82F353297D
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DBBPR03MB10258:EE_|AM9PR03MB7363:EE_
+X-MS-Office365-Filtering-Correlation-Id: b81fedab-fd47-4a45-fbdb-08deb0e86744
+X-LD-Processed: d97360e3-138d-4b5f-956f-a646c364a01e,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|786006|7416014|376014|1800799024|366016|11063799003|18002099003|22082099003|56012099003;
+X-Microsoft-Antispam-Message-Info:
+	8szAIumkLkMA9TPCQJUNLezzu071Map9n0HWJJZ7Io2axDgZerScbcnZZACix9wiorZjThcX9M8FIZtD2ssmk3y7FCdYorsGyRqWVK57Fv4iEvu0J2S1ZQK1+b5QjHmLjB5i80YhRb5JzchUxY1BwTf0tTnfjGnN7DTMgaRSwfy4BFtGXA3VnjuSspM8lVNR9UkGibXQTniW0Yl972On09O9DeAjmAQ5Cmni4dW3A3G2ZKDUtv5rTAXpkLVb0aqxkjPXaHFITQe2JzjWVpBm1Qag78tGxxCPX3GubWitJOnssjXdZvUkwQJ69OUjE6u5SdPFCmbsGvQW4kRst1Ljao7CTDt4ns05DkBaA/HQ59o0PeX/07/F/Qb7PPjTvZalwE2Mk/BYwwEeHOFCINzcwd+C+stiPcjAvngMmmfhMQUYIE8qsSFfQufn7xiH5NJdTl6gXZBBgpgjbODC0TNkblvFuQf0CCU+78mZSXxVpYqiU9RA03jks55pWFjSwfiE8UahHOHdWAdwa8+5o/kozngSuHlHP+E6Li+h2Vw+wzIoG8FM1pQBY6hGGnGVt6k0DTCakynImWwFaL0eZ3BfRU01D9yQCORsbX7JsL8XR/W1mo6hEAixiWbJuRfccFuHf7mnMV7ibkS5dV7kBnXEUJKDIOljr7iJXmdfsBby85aBc+iiIi+soH7ih6tNiN6R
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR03MB10258.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(786006)(7416014)(376014)(1800799024)(366016)(11063799003)(18002099003)(22082099003)(56012099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VlQvLzkwZGQ3VG83T3NOWmZIb1NLSjE5NG1oQUhKTGQrM2svQW9BaWNUVHg4?=
+ =?utf-8?B?ejNhZThiKzBZbWtRczZxN3lvcUszU3hvcEt2UjZlR2Z4WHJqa1NIZjFXeVB3?=
+ =?utf-8?B?Ri9IemFDMkkwU2UvR21FTnRtejhtN3FtSG94RlA0dC82RE12RkRTMEtKc0xy?=
+ =?utf-8?B?b2V5cDQ2TUl6Zk5kQW9kZlFpNEwva2ZyWHVYdzdOa1Y5VmVoZ1UxOU9iZlRG?=
+ =?utf-8?B?ZElBbFRnUlVSNmxYZUpuMEhtc2xKOTV6WFl2ajVNMlRscVhHWkp0c2htajdv?=
+ =?utf-8?B?TFBWTldDL09CNG80RHVIVG4rUVAxc3ROMTdmQmpFRnBlRWNxR2l2YmFPazdF?=
+ =?utf-8?B?cUJZRzFjc1E2UjB2OHl1K29EcER4ak0zZ1kyakk1amNmV016VmFvRzVCUVN6?=
+ =?utf-8?B?dHlzT1U3VDIrK1lKVG1oSTlBT216USt1OE41dThwU2lwS3cwc0tMcUdUZ1lX?=
+ =?utf-8?B?Y1FURXBjb3lwZy8vUC8yNWtUWVVJeW1aRXRRajZ6R3paY2NYYUZjaE5FcGla?=
+ =?utf-8?B?ZHVRZ1JBb2M5SE44cmNFWDRuS0QxZ1BEZ0EzV0RyYzBCNVdPaVIyL0pzQUxV?=
+ =?utf-8?B?LzE0YWRQb1c5MUFoWjYrWWIwN3ZnWHlMUDdsUmNySjF2aUdKSXByK3k0N3ZN?=
+ =?utf-8?B?OWoyRkJycE9qcmdod0syY21XbXg1cUt1L2twdDU5THZjU1duczIvTU1sQit5?=
+ =?utf-8?B?bUpsdjllRXRhQ0pJUlo1dXRvMlNQZ1dwajJxbytBdnZ6MGZ1U3d1d0VsOGMz?=
+ =?utf-8?B?aWVaUlhqWXJPWVliaHQ5dXNoUHc2YU1ZVHNubUlLRjlxTC9LWDlmTTBzM0lq?=
+ =?utf-8?B?T1JERjFxRkQwdi9HUHU3MFRzemd1dk93RmV5UTQ2ZGFEMmFDUU41UnBWM011?=
+ =?utf-8?B?U09QMzJoSVdyb3M0MDl1dmRYOFlZNGtCWUMyYXhwdmhwZjdCeUt6V2R1U2c2?=
+ =?utf-8?B?eTg0RjFDaEtibkduS1RKUGdsQkNmdHd0TnRuSWtIOG9KZ25nQmRkNUhjL0l5?=
+ =?utf-8?B?SjhPcXVLaDl2dHREMEVMNWFMbm16a29Td1h3cWNrVnhBZGRaSmxCUmFXeWNm?=
+ =?utf-8?B?T0FYaVRMclorMHNaemdmdGl0ZnNBWnB1K3BBd2dvV3Yyb1AzM1VVVjVmdXZM?=
+ =?utf-8?B?elFIYzU5SFQxditPWEVRSnJKMUk3VjZPRlhIVytObVNhNytXWGJCNHlMTW82?=
+ =?utf-8?B?K3FWaE83cS9pc3JCdEJ2bTNxZUpWYnQ4cEkvd04rVVZSUmFJbCt3emJmNEV4?=
+ =?utf-8?B?SHlRRTVzM1NCMERrbXdBQVhQT3hiamtQcktra2RneW00d0hZY2dHWCtUK0hQ?=
+ =?utf-8?B?WXhReEI1bENVdDYveGY4NnpUMnE4YTMrcGh2ZUVaTytCRE1CQVRnOXJZUk9t?=
+ =?utf-8?B?cUxPdXhrU3YvcHc1aFVhRDhpVFc3RXZnMGM3TUJrczFiaTh1K0htbkFaS0dT?=
+ =?utf-8?B?WFRoRWdvSlNzcWF6ZXRrVHdNbG5nVVBmY0hmaDRxQ0tIL2pkWXplcVRoK2Nm?=
+ =?utf-8?B?U2xDZ0NHbHdwQURPOGpjM0V0aUw3a3VNUEtkNHZ6azNOSk9UU1g1dW5Ocnhn?=
+ =?utf-8?B?UnJVbnh6bHE0SDRzblkvL1BIZXR1aTNBMmxVSWZXSXVFQjc3NVdteGxvQW1o?=
+ =?utf-8?B?ekRJeld2V1dTRjdDSUE0Ylh2eUVSeEJYNGQ3bzNOTk1xNS9DbDhUaFA2S00v?=
+ =?utf-8?B?MHl6MFV1U3A0L2Fva3Bha3BvS2JDVGQ5VStZOEFxU0xpZWl0WkUxTFVPQzYv?=
+ =?utf-8?B?ZUtuYzNCVW15c3FiY01Ccy9BTlZZakpnMEJpQk9rOGlNN2M4WTlESW1uakFX?=
+ =?utf-8?B?RnhXd202SHc1WkhqYWR3bENSVTYySWpUbFpzQWtWV1E5b0t0bUtsWEpsV1N6?=
+ =?utf-8?B?NFNXUklRajFvUHRSN0cySTNjQ2FqaG9ZSXZudE8vUWx0aHU4Nkp6ZnZzak5u?=
+ =?utf-8?B?L2JZNDNsckVMM0Fzb3hrbnJFRjZRUFhKTVdpNnhlM2RwWERpVktScG9zWWxS?=
+ =?utf-8?B?ZUcyT1h4azJZUXdqWXFmWUlsdWVNNjF2ZFQyTTlzVkY4VGZ0MDVLc3lOZWdR?=
+ =?utf-8?B?ZzFRVVJBRnhUQkFVNTY5UVFpNmlCOGZZNFVGajZGQXZ4RnhQWktNd1pPdTFD?=
+ =?utf-8?B?MFo2Yi9sdmNXMUN3Q1NTUUNlMmhuRTFHakZsTkxoQnVZWWNEZ2thRU4waGtE?=
+ =?utf-8?B?d2J4ZlNMMUtENW1wOUVTL0VFWVVyaWhwL1ZhTXVmU1JBQmxreEZUVlRad2dZ?=
+ =?utf-8?B?M05pbFBjWVVEc0VxTVQrcjVBKzdCK0ZXa2dvblVld3NlMk1peThqL2krbDZ5?=
+ =?utf-8?B?T2RXNS9wM2ZMeDgrYU42a2JpT0JjZjR5R1VsK0VZR3JkdHFvcC83SkpVN0Fu?=
+ =?utf-8?Q?RwH2qehG3M7ZM2sw=3D?=
+X-OriginatorOrg: santannapisa.it
+X-MS-Exchange-CrossTenant-Network-Message-Id: b81fedab-fd47-4a45-fbdb-08deb0e86744
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR03MB10258.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2026 12:08:54.6054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wZrYRSNg0R2UCVO2768iYU+31IfKL6CFOssXvXC29eUg3DsLM9QOc8+k5OZuyh5u/awS7LGcW1FAmW7u7PrVDtcEYguW3uIDk1fny2VVbzQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB7363
+X-Rspamd-Queue-Id: 025FE532C5C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[santannapisa.it,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[santannapisa.it:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15890-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-15891-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[yuri.andriaccio@santannapisa.it,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[santannapisa.it:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,tencent.com:email]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Sat, May 9, 2026 at 6:46=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote:
->
-> On Tue, Apr 21, 2026 at 2:16=E2=80=AFAM Kairui Song via B4 Relay
-> <devnull+kasong.tencent.com@kernel.org> wrote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > Drop the usage of the swap_cgroup_ctrl, and use the dynamic cluster
-> > table instead.
->
-> Nice! It takes so many steps to finally drop the static allocated swap
-> cgroup ctrl array. Thank you for making it happen.
->
-> >
-> > The per-cluster memcg table is 1024 / 512 bytes on most archs, and does
-> > not need RCU protection: the cgroup data is only read and written under
-> > the cluster lock. That keeps things simple, lets the allocation use
-> > plain kmalloc with immediate kfree (no deferred free), and keeps
-> > fragmentation acceptable.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
->
-> Overall looks good, with some nitpick and question follows.
->
-> Acked-by: Chris Li <chrisl@kernel.org>
->
-> > ---
-> >  include/linux/memcontrol.h |  6 ++++--
-> >  include/linux/swap.h       |  8 +++----
-> >  mm/memcontrol-v1.c         | 42 +++++++++++++++++++++++-------------
-> >  mm/memcontrol.c            | 14 +++++++-----
-> >  mm/swap.h                  |  4 ++++
-> >  mm/swap_state.c            |  6 ++----
-> >  mm/swap_table.h            | 54 ++++++++++++++++++++++++++++++++++++++=
-++++++++
-> >  mm/swapfile.c              | 35 +++++++++++++++++++-----------
-> >  mm/vmscan.c                |  2 +-
-> >  9 files changed, 128 insertions(+), 43 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index a013f37f24aa..bf1a6e131eca 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -29,6 +29,7 @@ struct obj_cgroup;
-> >  struct page;
-> >  struct mm_struct;
-> >  struct kmem_cache;
-> > +struct swap_cluster_info;
-> >
-> >  /* Cgroup-specific page state, on top of universal node page state */
-> >  enum memcg_stat_item {
-> > @@ -1899,7 +1900,7 @@ static inline void mem_cgroup_exit_user_fault(voi=
-d)
-> >         current->in_user_fault =3D 0;
-> >  }
-> >
-> > -void __memcg1_swapout(struct folio *folio);
-> > +void __memcg1_swapout(struct folio *folio, struct swap_cluster_info *c=
-i);
-> >  void memcg1_swapin(struct folio *folio);
-> >
-> >  #else /* CONFIG_MEMCG_V1 */
-> > @@ -1929,7 +1930,8 @@ static inline void mem_cgroup_exit_user_fault(voi=
-d)
-> >  {
-> >  }
-> >
-> > -static inline void __memcg1_swapout(struct folio *folio)
-> > +static inline void __memcg1_swapout(struct folio *folio,
-> > +               struct swap_cluster_info *ci)
-> >  {
-> >  }
-> >
-> > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > index f2949f5844a6..57af4647d432 100644
-> > --- a/include/linux/swap.h
-> > +++ b/include/linux/swap.h
-> > @@ -582,12 +582,12 @@ static inline int mem_cgroup_try_charge_swap(stru=
-ct folio *folio)
-> >         return __mem_cgroup_try_charge_swap(folio);
-> >  }
-> >
-> > -extern void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int=
- nr_pages);
-> > -static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigne=
-d int nr_pages)
-> > +extern void __mem_cgroup_uncharge_swap(unsigned short id, unsigned int=
- nr_pages);
-> > +static inline void mem_cgroup_uncharge_swap(unsigned short id, unsigne=
-d int nr_pages)
-> >  {
-> >         if (mem_cgroup_disabled())
-> >                 return;
-> > -       __mem_cgroup_uncharge_swap(entry, nr_pages);
-> > +       __mem_cgroup_uncharge_swap(id, nr_pages);
-> >  }
-> >
-> >  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> > @@ -598,7 +598,7 @@ static inline int mem_cgroup_try_charge_swap(struct=
- folio *folio)
-> >         return 0;
-> >  }
-> >
-> > -static inline void mem_cgroup_uncharge_swap(swp_entry_t entry,
-> > +static inline void mem_cgroup_uncharge_swap(unsigned short id,
-> >                                             unsigned int nr_pages)
-> >  {
-> >  }
-> > diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> > index 36c507d81dc5..494e7b9adc60 100644
-> > --- a/mm/memcontrol-v1.c
-> > +++ b/mm/memcontrol-v1.c
-> > @@ -14,6 +14,7 @@
-> >
-> >  #include "internal.h"
-> >  #include "swap.h"
-> > +#include "swap_table.h"
-> >  #include "memcontrol-v1.h"
-> >
-> >  /*
-> > @@ -606,14 +607,15 @@ void memcg1_commit_charge(struct folio *folio, st=
-ruct mem_cgroup *memcg)
-> >  /**
-> >   * __memcg1_swapout - transfer a memsw charge to swap
-> >   * @folio: folio whose memsw charge to transfer
-> > + * @ci: the locked swap cluster holding the swap entries
-> >   *
-> >   * Transfer the memsw charge of @folio to the swap entry stored in
-> >   * folio->swap.
-> >   *
-> > - * Context: folio must be isolated, unmapped, locked and is just about
-> > - * to be freed, and caller must disable IRQs.
-> > + * Context: folio must be isolated, unmapped, locked and is just about=
- to
-> > + * be freed, and caller must disable IRQs and hold the swap cluster lo=
-ck.
-> >   */
-> > -void __memcg1_swapout(struct folio *folio)
-> > +void __memcg1_swapout(struct folio *folio, struct swap_cluster_info *c=
-i)
-> >  {
-> >         struct mem_cgroup *memcg, *swap_memcg;
-> >         struct obj_cgroup *objcg;
-> > @@ -646,7 +648,8 @@ void __memcg1_swapout(struct folio *folio)
-> >         swap_memcg =3D mem_cgroup_private_id_get_online(memcg, nr_entri=
-es);
-> >         mod_memcg_state(swap_memcg, MEMCG_SWAP, nr_entries);
-> >
-> > -       swap_cgroup_record(folio, mem_cgroup_private_id(swap_memcg), fo=
-lio->swap);
-> > +       __swap_cgroup_set(ci, swp_cluster_offset(folio->swap), nr_entri=
-es,
-> > +                         mem_cgroup_private_id(swap_memcg));
-> >
-> >         folio_unqueue_deferred_split(folio);
-> >         folio->memcg_data =3D 0;
-> > @@ -661,8 +664,7 @@ void __memcg1_swapout(struct folio *folio)
-> >         }
-> >
-> >         /*
-> > -        * Interrupts should be disabled here because the caller holds =
-the
-> > -        * i_pages lock which is taken with interrupts-off. It is
-> > +        * The caller must hold the swap cluster lock with IRQ off. It =
-is
-> >          * important here to have the interrupts disabled because it is=
- the
-> >          * only synchronisation we have for updating the per-CPU variab=
-les.
-> >          */
-> > @@ -677,7 +679,7 @@ void __memcg1_swapout(struct folio *folio)
-> >  }
-> >
-> >  /**
-> > - * memcg1_swapin - uncharge swap slot
-> > + * memcg1_swapin - uncharge swap slot on swapin
-> >   * @folio: folio being swapped in
-> >   *
-> >   * Call this function after successfully adding the charged
-> > @@ -687,6 +689,10 @@ void __memcg1_swapout(struct folio *folio)
-> >   */
-> >  void memcg1_swapin(struct folio *folio)
-> >  {
-> > +       struct swap_cluster_info *ci;
-> > +       unsigned long nr_pages;
-> > +       unsigned short id;
-> > +
-> >         VM_WARN_ON_ONCE_FOLIO(!folio_test_swapcache(folio), folio);
-> >         VM_WARN_ON_ONCE_FOLIO(!folio_test_locked(folio), folio);
-> >
-> > @@ -702,14 +708,20 @@ void memcg1_swapin(struct folio *folio)
-> >          * correspond 1:1 to page and swap slot lifetimes: we charge th=
-e
-> >          * page to memory here, and uncharge swap when the slot is free=
-d.
-> >          */
-> > -       if (do_memsw_account()) {
-> > -               /*
-> > -                * The swap entry might not get freed for a long time,
-> > -                * let's not wait for it.  The page already received a
-> > -                * memory+swap charge, drop the swap entry duplicate.
-> > -                */
-> > -               mem_cgroup_uncharge_swap(folio->swap, folio_nr_pages(fo=
-lio));
-> > -       }
-> > +       if (!do_memsw_account())
-> > +               return;
-> > +
-> > +       /*
-> > +        * The swap entry might not get freed for a long time,
-> > +        * let's not wait for it.  The page already received a
-> > +        * memory+swap charge, drop the swap entry duplicate.
-> > +        */
-> > +       nr_pages =3D folio_nr_pages(folio);
-> > +       ci =3D swap_cluster_get_and_lock(folio);
-> > +       id =3D __swap_cgroup_clear(ci, swp_cluster_offset(folio->swap),
-> > +                                nr_pages);
-> > +       swap_cluster_unlock(ci);
-> > +       mem_cgroup_uncharge_swap(id, nr_pages);
-> >  }
-> >
-> >  void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgp=
-gout,
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 641706fa47bf..193c8eb73be7 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -64,6 +64,8 @@
-> >  #include <linux/sched/isolation.h>
-> >  #include <linux/kmemleak.h>
-> >  #include "internal.h"
-> > +#include "swap.h"
-> > +#include "swap_table.h"
-> >  #include <net/sock.h>
-> >  #include <net/ip.h>
-> >  #include "slab.h"
-> > @@ -5462,6 +5464,7 @@ int __init mem_cgroup_init(void)
-> >  int __mem_cgroup_try_charge_swap(struct folio *folio)
-> >  {
-> >         unsigned int nr_pages =3D folio_nr_pages(folio);
-> > +       struct swap_cluster_info *ci;
-> >         struct page_counter *counter;
-> >         struct mem_cgroup *memcg;
-> >         struct obj_cgroup *objcg;
-> > @@ -5495,22 +5498,23 @@ int __mem_cgroup_try_charge_swap(struct folio *=
-folio)
-> >         }
-> >         mod_memcg_state(memcg, MEMCG_SWAP, nr_pages);
-> >
-> > -       swap_cgroup_record(folio, mem_cgroup_private_id(memcg), folio->=
-swap);
-> > +       ci =3D swap_cluster_get_and_lock(folio);
-> > +       __swap_cgroup_set(ci, swp_cluster_offset(folio->swap), nr_pages=
-,
-> > +                         mem_cgroup_private_id(memcg));
-> > +       swap_cluster_unlock(ci);
-> >
-> >         return 0;
-> >  }
-> >
-> >  /**
-> >   * __mem_cgroup_uncharge_swap - uncharge swap space
-> > - * @entry: swap entry to uncharge
-> > + * @id: cgroup id to uncharge
-> >   * @nr_pages: the amount of swap space to uncharge
-> >   */
-> > -void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pag=
-es)
-> > +void __mem_cgroup_uncharge_swap(unsigned short id, unsigned int nr_pag=
-es)
-> >  {
-> >         struct mem_cgroup *memcg;
-> > -       unsigned short id;
-> >
-> > -       id =3D swap_cgroup_clear(entry, nr_pages);
-> >         rcu_read_lock();
-> >         memcg =3D mem_cgroup_from_private_id(id);
-> >         if (memcg) {
-> > diff --git a/mm/swap.h b/mm/swap.h
-> > index 80c2f1bf7a57..e4ac7dbc1080 100644
-> > --- a/mm/swap.h
-> > +++ b/mm/swap.h
-> > @@ -5,6 +5,7 @@
-> >  #include <linux/atomic.h> /* for atomic_long_t */
-> >  struct mempolicy;
-> >  struct swap_iocb;
-> > +struct swap_memcg_table;
-> >
-> >  extern int page_cluster;
-> >
-> > @@ -38,6 +39,9 @@ struct swap_cluster_info {
-> >         u8 order;
-> >         atomic_long_t __rcu *table;     /* Swap table entries, see mm/s=
-wap_table.h */
-> >         unsigned int *extend_table;     /* For large swap count, protec=
-ted by ci->lock */
-> > +#ifdef CONFIG_MEMCG
-> > +       struct swap_memcg_table *memcg_table;   /* Swap table entries' =
-cgroup record */
-> > +#endif
-> >         struct list_head list;
-> >  };
-> >
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index 86d517a33a55..71a3f128fcf0 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -176,21 +176,19 @@ static int __swap_cache_add_check(struct swap_clu=
-ster_info *ci,
-> >         if (shadowp && swp_tb_is_shadow(old_tb))
-> >                 *shadowp =3D swp_tb_to_shadow(old_tb);
-> >         if (memcg_id)
-> > -               *memcg_id =3D lookup_swap_cgroup_id(targ_entry);
-> > +               *memcg_id =3D __swap_cgroup_get(ci, ci_off);
-> >
-> >         if (nr =3D=3D 1)
-> >                 return 0;
-> >
-> > -       targ_entry.val =3D round_down(targ_entry.val, nr);
-> >         ci_off =3D round_down(ci_off, nr);
-> >         ci_end =3D ci_off + nr;
-> >         do {
-> >                 old_tb =3D __swap_table_get(ci, ci_off);
-> >                 if (unlikely(swp_tb_is_folio(old_tb) ||
-> >                              !__swp_tb_get_count(old_tb) ||
-> > -                            (memcg_id && *memcg_id !=3D lookup_swap_cg=
-roup_id(targ_entry))))
-> > +                            (memcg_id && *memcg_id !=3D __swap_cgroup_=
-get(ci, ci_off))))
-> >                         return -EBUSY;
-> > -               targ_entry.val++;
-> >         } while (++ci_off < ci_end);
-> >
-> >         return 0;
-> > diff --git a/mm/swap_table.h b/mm/swap_table.h
-> > index 8415ffbe2b9c..b2b02ee161b1 100644
-> > --- a/mm/swap_table.h
-> > +++ b/mm/swap_table.h
-> > @@ -11,6 +11,11 @@ struct swap_table {
-> >         atomic_long_t entries[SWAPFILE_CLUSTER];
-> >  };
-> >
-> > +/* For storing memcg private id */
-> > +struct swap_memcg_table {
-> > +       unsigned short id[SWAPFILE_CLUSTER];
-> > +};
-> > +
-> >  #define SWP_TABLE_USE_PAGE (sizeof(struct swap_table) =3D=3D PAGE_SIZE=
-)
-> >
-> >  /*
-> > @@ -247,4 +252,53 @@ static inline unsigned long swap_table_get(struct =
-swap_cluster_info *ci,
-> >
-> >         return swp_tb;
-> >  }
-> > +
-> > +#ifdef CONFIG_MEMCG
-> > +static inline void __swap_cgroup_set(struct swap_cluster_info *ci,
-> > +               unsigned int ci_off, unsigned long nr, unsigned short i=
-d)
-> > +{
-> > +       lockdep_assert_held(&ci->lock);
-> > +       VM_WARN_ON_ONCE(ci_off >=3D SWAPFILE_CLUSTER);
-> > +       do {
-> > +               ci->memcg_table->id[ci_off++] =3D id;
->
-> Do you need to check the memcg_table is not NULL here? Because this
-> function is no longer static. Another caller might invoke this when
-> the cluster hasn't allocated the memcg_table. They shouldn't. We might
-> want some check and complain here.
+Hello,
 
-Good idea, a NULL check seems good to be defensive. I also noticed
-that I should skip memcg table allocation as well if
-mem_cgroup_disabled() is true to save some memory. I will update this.
+ > How is a delegated subtree prevented from setting cpu.rt.min = 'root' and
+ > escaping its ancestors' cpu.rt.max budget?
+
+Is it strictly required that a child cgroup must have 'less runtime' 
+than its parent? To be more precise I mean scheduling tasks on the root 
+runqueue instead of using dl-servers. Small note: given that HCBS 
+cgroups use dl-servers, and thus run at higher priority than FIFO/RR 
+scheduled on the root runqueue, if a cgroup rt.min is 'root' would yes 
+escape its ancestor budget but it may also possibly get starved because 
+of the priority levels.
+
+If we require that child cgroups cannot escape their parent's bandwidth, 
+even when using 'root', then the cpu.rt.max file must be disallowed in 
+the root cgroup (removing the possibility to reserve bandwidth for HCBS, 
+and so doing the admission test similarly to when SCHED_DEADLINE tasks 
+are executed), and cpu.rt.max would use either 'root' if the whole 
+subtree must be scheduled onto the root runqueue or a <runtime> <period> 
+combination to reserve bandwidth for the whole subtree. The cpu.rt.min 
+would then only be used to reserve internal bandwidth for the cgroup 
+itself. This also means that a whole subtree either uses HCBS everywhere 
+or the root runqueue everywhere.
+
+ > If the users on the system already started using rt, how do you 
+enable the
+ > controller from the top down with budgets already being used down in the
+ > hierarchy?
+
+In my original idea rt tasks would only interfere with their own cgroup 
+configuration, but not with the subtree or their parents. When 
+cpu.rt.min = 'root', you are free to change cpu.rt.max values to 
+whatever you like in any place of the hierarchy, and tasks inside the 
+rt.min = 'root' cgroup would not be affected as they are run in the root 
+runqueue.
+
+If you want to switch a cgroup from/to 'root' and HCBS, you'd have to 
+either move all the RT tasks out of the cgroup, set rt.min, and then 
+move them back in, or change temporarily their scheduling policy to 
+non-rt (SCHED_OTHER, SCHED_DEADLINE, whatever) and then back.
+
+Hopefully I've answered your questions. Which solution do you think 
+makes the most sense?
+
+Yuri
 
