@@ -1,190 +1,239 @@
-Return-Path: <cgroups+bounces-15939-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15940-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EGSXNTCGBWqiXwIAu9opvQ
-	(envelope-from <cgroups+bounces-15939-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 10:22:08 +0200
+	id QJAwIuWVBWpLYwIAu9opvQ
+	(envelope-from <cgroups+bounces-15940-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 11:29:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D304A53F35C
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 10:22:07 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078AA53FC5D
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 11:29:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BF657301B4DF
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 08:22:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 090C5302DA09
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 09:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3883D6CBE;
-	Thu, 14 May 2026 08:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACAD3A3E70;
+	Thu, 14 May 2026 09:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nOfz7pAZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T/7n6ouW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5893A75A9
-	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 08:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79C139EB59
+	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 09:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778746920; cv=none; b=WxPNNcKXDP4v4YXnwVUUDnIL9peiXEgweVlsHZeOU0wq2GvSbcHG9Vp26qKiTJMfW26oYNc/VRnUx1eEeCPWuEi1Jg3ITIt0Qodl1+FPra2HG67VxMNQKLRSMDWkqjYT0AInJNAPNcj5Gft/bdVdLQtQkqDUYqgCI+lnOdp/Rn8=
+	t=1778750887; cv=none; b=iKIOtyx1JDQ2CvALq316UPMb6NE03HSBccvFo+ON8UATbsSoxjUdwWU5cFCM0DH1QX+dLTNcO1VvEmgNR6OvSCnDlAm1FrQYEvdHGm5kofgYYmpClmTgdu4DnULI0it7RsbWcc3a1TVBU32LJB/jtkoCSLst4s0x/w+f7vGOIr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778746920; c=relaxed/simple;
-	bh=07Y/lkJkc1NqyJU8Q9kOlXnWNjntrNfFsId/nM9O38s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IipadTI7MRcZwdtEu7BIsSexYA6Lho9BbRbBw9ETz//ed3M6a40JOfiejIxRP/mSX+ZN6sqDQpBlxlpJ/DRdyGwXTvUBlLXOFJQHq/JMgK06eYdruK3SNeupJWhWwvNua213LduOUGbAtMtqk9gCBncgtkp8E7wpCvnCh0zIdPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nOfz7pAZ; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-8353ca0f1f1so4007633b3a.1
-        for <cgroups@vger.kernel.org>; Thu, 14 May 2026 01:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778746919; x=1779351719; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WYXEDQETkSsL5D7C5JReu+GaAzOCViwf5QXVSoBOuE0=;
-        b=nOfz7pAZCrokzB1f5KihG8/R+Gx7t3Yi2Enqsqm6vFey4AXggvt+/l/8OM/bn1Xcq/
-         jWadVBRW6mEoTkOG/IlM4KqJtDI04q+CSIBT28tvn2HrAtOKKZcp/dy6mbCjqy8OwR+w
-         mmJWu4rLvVj2siBNJvjW9X7ms/MxT5R0VXU2yICwjIID75boOPqdIGkeymEbjzmayn+5
-         e1qglovgiXtdhmZDuxCUXHa/zrWPnlFpGJ1cQhc9cW2q6v0NGhieBrS9WIvZXtkSrM1V
-         4Qqb2YwfbuDZ1uXccHRoMkPs5N25a7cw4PTZKmMrC7TXOPrpoWg6ZUWAwhF6okxd7FbV
-         fMDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778746919; x=1779351719;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WYXEDQETkSsL5D7C5JReu+GaAzOCViwf5QXVSoBOuE0=;
-        b=qwVieKN+3kQeSHNIXBVyXcwXSVlMVOmEKptZfU1UkgLIJAGMjG5wbWYFa7uIvbbLgb
-         DdT+ARsSsqDk+cHW1gLBoj6zhlhqg8jbbmKTmNmHwsTNZ3dUOjLLx1G2Q2j2pMRZEdNr
-         NUpIYI3TRtNA0rEHlAAZ2A6sw4SmySw5mdnmCpeiDnPTV5+BOmnWXtBwO/ycAEbL9lM4
-         RmCMwbb9Xe2TSVU6nBkjY4Xm0gnDmWAzubSrwjM50RXbrJskmlKnYh8rjohldliAOm89
-         /o6WJxr9ezXRMnvTnnKULJ0Wz0GekhXBjZ9xwzwyjzV/ejpjey00vZS6f6BAo0GBbWR6
-         LOrg==
-X-Forwarded-Encrypted: i=1; AFNElJ8V1c61Ow+DA2bG0np3BFcOnfkY8PCWED6XXlb4bt9638YLSyftuq4HM71xxPtxVTfBrtOyWETQ@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzoj41XVwbHaQj0fXGHQo3+Q5PkN/wwBjl5P+/HS+B9i1cNU7PC
-	mgODhKLdEwHtmYn/YJYnapeWz2P4NySl7ktY9XW4+KO/5DUnW2XzHzes
-X-Gm-Gg: Acq92OGWroQC3V6muC/4i4a+SUBD+98n4QHyuKy5zaGiLTUtR31ZoOJVAgiLd83RHga
-	TItTrDGTGdkBezf3uI9qKn6sG6j+X0tgC1vuk6NMrXBMgSwx0PxEUgJJqcPXirtQaPKQljMAI5j
-	l610EFy2u92eXJFwBZx0vHd67Koq7niK8/ZnnWMf8H9rAgxwWrn+sNVSVYIzf9VUslLGEIRbBYM
-	8z7+3b13wY267DgJmlOjOYrwktcugyodp0Sn5EccqcMRCxPvm7ScAbd3MzYlfPie1FSw10cZE79
-	DufMk40zQZrOUyriWlttuD4VBsD/rylysZ6h2dCcpGXrMB4aQGpwj7ELzjarV6PX1Kj4IMscalY
-	Q+Lplro/lEZk/5eZJ71HDyWwT06RjSCoB43S+sFXxabn9FCsA8NCw1CMHtMdSMfAR/2i0Gecjm4
-	sPP2KI+6LoBJZHglTFILmm+5wWk2gW1jbIcbuNDqeeeMJKbJBTsSBQ6Q==
-X-Received: by 2002:a05:6a00:10cf:b0:82f:49b5:cfc3 with SMTP id d2e1a72fcca58-83f18e6700dmr2504897b3a.18.1778746918343;
-        Thu, 14 May 2026 01:21:58 -0700 (PDT)
-Received: from [10.125.192.65] ([210.184.73.204])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-83f1977a570sm1804344b3a.20.2026.05.14.01.21.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 May 2026 01:21:57 -0700 (PDT)
-Message-ID: <59a55147-b2c6-c5ff-64ae-07da4792958a@gmail.com>
-Date: Thu, 14 May 2026 16:21:49 +0800
+	s=arc-20240116; t=1778750887; c=relaxed/simple;
+	bh=26CCMIa6mol2RAIfYvwothGstPSJelXcUI9BGLHuGfQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=iL418+HHJQ0TiWpPJk1/XN9+jS2vntdeNW8WLOqgBWzPTnrzLrL0X8RV0avYc6g3HlL/C1Bvv61D68qnZF+3bkYpDOijQ77FUUmk1+SLjLcToskVGr3qaGd46K5OzDj3VC3yJqUIw6pr3MZ52ARu/7iLqGrY1tDFFsb2LYLK+Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T/7n6ouW; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1778750886; x=1810286886;
+  h=date:from:to:cc:subject:message-id;
+  bh=26CCMIa6mol2RAIfYvwothGstPSJelXcUI9BGLHuGfQ=;
+  b=T/7n6ouWGM+efF7rzvor61dXW69cMn1NAOp2Z9j2Wny0cez+XP9bH2UN
+   oBGijMXs7R5Sc1+Ot/uyvGRwFgi3UMpSu+G7k6PLzswW21UadI6yqrtcF
+   4W/1P3yWCwSkSDAi6pKQMXF5P2gBUenno8ucSJvtsPa7Dyzx9di6mh+QM
+   oOVC9eBFV/Wi1MBZfeqpR1G6g/dzuClB4aghQ2NBkHGXEH0izN2AQAHBJ
+   x2kBYmgDbU5TieGvFoNa46kV2aC6S9wkuBPyas6atcKeUkNNB016EPNaX
+   dSUUOfDfKmCLAOFOT6Vu3XnUYjDT3nprlc+tFr/XZMddhrelZ0hf+/hri
+   Q==;
+X-CSE-ConnectionGUID: QWCVBgxoQqy7fTxXapeCtQ==
+X-CSE-MsgGUID: Pid7oM1ST1G3qkpnPuvqXw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11785"; a="105148496"
+X-IronPort-AV: E=Sophos;i="6.23,234,1770624000"; 
+   d="scan'208";a="105148496"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 May 2026 02:28:06 -0700
+X-CSE-ConnectionGUID: ZANzFLAKS4eNaYIhLN+vww==
+X-CSE-MsgGUID: m5KcKZ8FT+GY2ULYLt0TMw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,234,1770624000"; 
+   d="scan'208";a="240175236"
+Received: from lkp-server01.sh.intel.com (HELO dca79079c3eb) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 14 May 2026 02:28:04 -0700
+Received: from kbuild by dca79079c3eb with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wNSMM-000000006Hl-0e6e;
+	Thu, 14 May 2026 09:28:02 +0000
+Date: Thu, 14 May 2026 17:27:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ a234764e334b01b4b4a631b1c94df3458f3f57cb
+Message-ID: <202605141752.A11u7KKR-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH 3/3] mm/zswap: Add per-memcg stat for proactive writeback
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, hannes@cmpxchg.org,
- shakeel.butt@linux.dev, mhocko@kernel.org, yosry@kernel.org,
- mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev,
- roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- Hao Jia <jiahao1@lixiang.com>
-References: <20260511105149.75584-1-jiahao.kernel@gmail.com>
- <20260511105149.75584-4-jiahao.kernel@gmail.com>
- <CAKEwX=OigngmcNo1OU-apCFG2hebt5yZwXQxZQHqgC7SwH_HAQ@mail.gmail.com>
-From: Hao Jia <jiahao.kernel@gmail.com>
-In-Reply-To: <CAKEwX=OigngmcNo1OU-apCFG2hebt5yZwXQxZQHqgC7SwH_HAQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D304A53F35C
+X-Rspamd-Queue-Id: 078AA53FC5D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15939-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15940-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lixiang.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: a234764e334b01b4b4a631b1c94df3458f3f57cb  Merge branch 'for-7.1-fixes' into for-next
 
+elapsed time: 869m
 
-On 2026/5/14 05:21, Nhat Pham wrote:
-> On Mon, May 11, 2026 at 3:52 AM Hao Jia <jiahao.kernel@gmail.com> wrote:
->>
->> From: Hao Jia <jiahao1@lixiang.com>
->>
->> Currently, zswap writeback can be triggered by either the pool limit
->> being hit or by the proactive writeback mechanism. However, the
->> existing 'zswpwb' metric in memory.stat and /proc/vmstat counts all
->> written back pages, making it difficult to distinguish between pages
->> written back due to the pool limit and those written back proactively.
->>
->> Add a new statistic 'zswpwb_proactive' to memory.stat and /proc/vmstat.
->> This counter tracks the number of pages written back due to proactive
->> writeback. This allows users to better monitor and tune the proactive
->> writeback mechanism.
->>
->> Signed-off-by: Hao Jia <jiahao1@lixiang.com>
->> ---
->>   Documentation/admin-guide/cgroup-v2.rst |  4 ++++
->>   include/linux/vm_event_item.h           |  1 +
->>   mm/memcontrol.c                         |  1 +
->>   mm/vmstat.c                             |  1 +
->>   mm/zswap.c                              | 11 +++++++++--
->>   5 files changed, 16 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->> index 05b664b3b3e8..29a189b18efc 100644
->> --- a/Documentation/admin-guide/cgroup-v2.rst
->> +++ b/Documentation/admin-guide/cgroup-v2.rst
->> @@ -1734,6 +1734,10 @@ The following nested keys are defined.
->>            zswpwb
->>                  Number of pages written from zswap to swap.
->>
->> +         zswpwb_proactive
->> +               Number of pages written from zswap to swap by proactive
->> +               writeback. This is a subset of zswpwb.
->> +
->>            zswap_incomp
->>                  Number of incompressible pages currently stored in zswap
->>                  without compression. These pages could not be compressed to
-> 
-> nit: once we have reached consensus on an interface, can you add
-> documentation for the new knob in cgroup v2 doc and zswap doc too, and
-> how it interacts with the other interface (memory.zswap.writeback,
-> shrinker_enabled sysfs knob).
-> 
-> A kselftest would be very much appreciated too :)
+configs tested: 114
+configs skipped: 14
 
-Thanks, will do in v2
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Hao
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    gcc-15.2.0
+arm                               allnoconfig    clang-23
+arm                              allyesconfig    gcc-15.2.0
+arm64                             allnoconfig    gcc-15.2.0
+arm64                 randconfig-001-20260514    clang-23
+arm64                 randconfig-002-20260514    gcc-8.5.0
+arm64                 randconfig-003-20260514    clang-23
+arm64                 randconfig-004-20260514    clang-23
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                  randconfig-001-20260514    gcc-15.2.0
+csky                  randconfig-002-20260514    gcc-15.2.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-23
+hexagon               randconfig-001-20260514    clang-16
+hexagon               randconfig-002-20260514    clang-23
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-004-20260514    clang-20
+i386                           randconfig-015    gcc-14
+i386                           randconfig-016    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-23
+loongarch             randconfig-001-20260514    gcc-14.3.0
+loongarch             randconfig-002-20260514    clang-23
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    gcc-15.2.0
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                 randconfig-001-20260514    gcc-11.5.0
+nios2                 randconfig-002-20260514    gcc-10.5.0
+openrisc                          allnoconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    gcc-15.2.0
+parisc                randconfig-001-20260514    gcc-13.4.0
+parisc                randconfig-002-20260514    gcc-15.2.0
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc               randconfig-001-20260514    gcc-8.5.0
+powerpc               randconfig-002-20260514    gcc-13.4.0
+powerpc64             randconfig-002-20260514    gcc-8.5.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                 randconfig-001-20260514    gcc-12.5.0
+riscv                 randconfig-002-20260514    clang-20
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                  randconfig-001-20260514    gcc-11.5.0
+s390                  randconfig-002-20260514    gcc-8.5.0
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    gcc-15.2.0
+sh                                  defconfig    gcc-15.2.0
+sh                    randconfig-001-20260514    gcc-10.5.0
+sh                    randconfig-002-20260514    gcc-14.3.0
+sparc                             allnoconfig    gcc-15.2.0
+sparc                 randconfig-001-20260514    gcc-15.2.0
+sparc                 randconfig-002-20260514    gcc-13.4.0
+sparc64                          allmodconfig    clang-23
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20260514    clang-23
+sparc64               randconfig-002-20260514    gcc-10.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-14
+um                                  defconfig    clang-23
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260514    gcc-14
+um                    randconfig-002-20260514    gcc-14
+um                           x86_64_defconfig    clang-23
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260514    gcc-14
+x86_64      buildonly-randconfig-002-20260514    clang-20
+x86_64      buildonly-randconfig-003-20260514    gcc-14
+x86_64      buildonly-randconfig-004-20260514    clang-20
+x86_64      buildonly-randconfig-005-20260514    clang-20
+x86_64      buildonly-randconfig-006-20260514    gcc-14
+x86_64                              defconfig    gcc-14
+x86_64                randconfig-001-20260514    clang-20
+x86_64                randconfig-002-20260514    clang-20
+x86_64                randconfig-003-20260514    gcc-14
+x86_64                randconfig-004-20260514    gcc-14
+x86_64                randconfig-005-20260514    clang-20
+x86_64                randconfig-006-20260514    gcc-14
+x86_64                randconfig-011-20260514    clang-20
+x86_64                randconfig-012-20260514    gcc-14
+x86_64                randconfig-013-20260514    clang-20
+x86_64                randconfig-014-20260514    clang-20
+x86_64                randconfig-015-20260514    clang-20
+x86_64                randconfig-016-20260514    clang-20
+x86_64                randconfig-071-20260514    clang-20
+x86_64                randconfig-072-20260514    gcc-14
+x86_64                randconfig-073-20260514    clang-20
+x86_64                randconfig-074-20260514    gcc-14
+x86_64                randconfig-075-20260514    clang-20
+x86_64                randconfig-076-20260514    gcc-13
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                  audio_kc705_defconfig    gcc-15.2.0
+xtensa                randconfig-001-20260514    gcc-13.4.0
+xtensa                randconfig-002-20260514    gcc-8.5.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
