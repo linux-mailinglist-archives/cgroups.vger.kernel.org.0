@@ -1,418 +1,285 @@
-Return-Path: <cgroups+bounces-15923-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15924-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6DsCDLMlBWq3SwIAu9opvQ
-	(envelope-from <cgroups+bounces-15923-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 03:30:27 +0200
+	id oDFkHysnBWq3SwIAu9opvQ
+	(envelope-from <cgroups+bounces-15924-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 03:36:43 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88C8753CB56
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 03:30:26 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1244853CC06
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 03:36:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A54633013D66
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 01:30:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8B5C3302F76F
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 01:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0914A30F815;
-	Thu, 14 May 2026 01:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B6731ED7C;
+	Thu, 14 May 2026 01:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="V2XoUq65"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tGo4vDaM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f42.google.com (mail-dl1-f42.google.com [74.125.82.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D234E31D757;
-	Thu, 14 May 2026 01:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778722223; cv=none; b=RGdnDPtnF4NHSomg8aoehYjKpWmXUnS8IqVXwAlJ3r7M18XVzprVumdJdSV8dFDftbfw8tEh4kffKAOgfYwkTSBy0ppp9sEdkDQYqddHNVV8RJZSWdhKGiFqNoChAylFIgCrY0hDkAV9hZ3GB6F807haepyKpShsMfICSDr+mXo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778722223; c=relaxed/simple;
-	bh=WtKw12bxLYnKHSYnx3XgM2NJIQHkfaYKeKJZT86UcAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mJaizlyAkSRi25+ahqSHDAQ1QTP6c9Po6X5VRU3G/wpA8heWJxA1+oFG2uMAm2PPlMxDxcUbUP3CZUs0SVwbkYnHKkIn+jX5SheJx8uisZsUNCqqxm+3Cn2h5R/fRt7FRymNfv3kojUcZYBXuZ3Dtd0l4uW+EEBss5GLMJ0taD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=V2XoUq65; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1778722212; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=CPUnOzhXDvJECTdzvl+JQVf7/fcb7TGaIsHe9vA4Gaw=;
-	b=V2XoUq65TSuZ4ZYbnnHLPsbPvsh0oEOPSxEo3w2r3gWsMrdSh4GlRfhfWkF0FVW5TtxcuxuJee2K8reZq4+mmV6dGEPbYaCuxxu7SYRIeoIpTN54AJpG7yVw452AIfZiE68rrficOWluAJztMrIGDQWfBSjk/yDu+/gL4e7XFss=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=28;SR=0;TI=SMTPD_---0X2vCe.v_1778722209;
-Received: from 30.74.144.136(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0X2vCe.v_1778722209 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Thu, 14 May 2026 09:30:10 +0800
-Message-ID: <e6b8a27b-afd2-4004-9393-687ba8796188@linux.alibaba.com>
-Date: Thu, 14 May 2026 09:30:09 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345FE31E840
+	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 01:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778722600; cv=pass; b=UC9slzAbnmmbmzxznO7xVctd6T1Mwk6ipZ5eEUyBGQedT1r4LpXpZ7b/CakRZ+vFmJangMxvID7eOjHl/iJQN++iNR35KWHy3cTDo3PaOkBstgm9P2O/JKNAGzd4KG8H1SYlklAECIDnPivWVajVMjJD97+Z7yEHiqNhXdxiJpM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778722600; c=relaxed/simple;
+	bh=Bx63wQK/dLfFiGwXscuCBUwEs/wx/605mPG3tTesGqs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ce3tbYqUodCgnm9WWl7MsJ150dp8lI8Fl+rwKYkjSjItT8XBG9/2IvyEq5tYX/Fu1TPx2pHy+qv+Idyev1b1rjKcdbPmJlQ+qqIBPhWJT2K4Gj6Ph0AwvTUN4KfV2yljZdCfrOvvdA1cG6HLu6nu/qGMyAMFSkHzsOSfuLF29nM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tGo4vDaM; arc=pass smtp.client-ip=74.125.82.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-dl1-f42.google.com with SMTP id a92af1059eb24-1329fc4bf77so159972c88.1
+        for <cgroups@vger.kernel.org>; Wed, 13 May 2026 18:36:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778722598; cv=none;
+        d=google.com; s=arc-20240605;
+        b=kjzTM1zTu1O6+nSPQ/kRewTx2/Rf2WZE+zWJezNXQQJrmWSReekkLGfsUhknzVN3Yj
+         uQk5sYWdi7uugio3o+cidASEScYQ8I05ULcozIgOLuOVoGXZk9f0ADwJZVLDLMGECOBh
+         g10DEoL0TNvDN+zq2EK08ylG7kzvXZF6LqB6G7S6zQ82BZVYrYErHBNDwkoVdpYcexWN
+         KS6A/QjnSf2m/mPehxWikGYtFOTxemRTyzgAuNiOX+5SLrkYdM/2Jxy3aG3lhu00pPGk
+         sHd+o9QHqStGm4lgqoy3iDWGYSFN/g7IlVyEjFixQzgc7a5EksVUpKoEnuUIUcEcVzdA
+         Ns/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=ZEH9v8Rjc8efpJ4WwSjt3IUcl27Na7rmXqWgvC4OtAY=;
+        fh=qYkpDut8yWKkUKYz5GpGiphExlR4+5p4/JUw+L/zc50=;
+        b=YFoYzDshUaMaO2TUG1NYqN2Cxi0ZIpPVrjh1VeQ7qS7x02lEsJHfLLetj4iacuGXIl
+         ttghA/Ys9bWSPkobqN3qXwb2RZazVgWI8POo1X6fxK59ivNLvjp75ZX4saN8j00FGcch
+         KLWj6A5aHteUznSS9o2dNg0uPWInkYPUo9QzKLyZb2TUk2xFCz09rHcoGgwF9oj/dKef
+         S5Ixu8nf1B/GCr8/TUt9Bb1JzzRbNKEDm1BwcURc2twmzEqZXcM+9k65C/r7Duan4geb
+         ISlWUSbxnn9tcuwVVbvFXqKB83Ds+VHsmEl+NWBjaAH1BmK0BgVrnYeARJNKLt3aZFh7
+         o/Gg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1778722598; x=1779327398; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZEH9v8Rjc8efpJ4WwSjt3IUcl27Na7rmXqWgvC4OtAY=;
+        b=tGo4vDaMDcPc65ZHx/D/nAClU3V4t/GbiwGdsjr3Hj9Os3BpHMFsZ/i++BMLgpPSE+
+         zm8dzVyUEtySaYDH2ww3DNOwtDwcoGDTZKV0s64vvz1J7Do1Lcf5lW4x8f4/Kgkk1bK5
+         cKn3VVGpf61xr0k3dlHVqJYfsegR9S6G+Yf6cCVl91NB4ymO6/iaSdov5zJ1h68Fdtwx
+         2edSiiO8pOGMRoxKGvU/D2E9Az8AOUcyd4SV+/i+lYu/lC4crlAq1lbAmQ1CBqoZ2Ln3
+         ed8vFBF+CzYrARv8WrAM22jQfWIBXc0FfxEpxwU0UmHsz6viAot+cPjqoPncQAFETCww
+         1KGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778722598; x=1779327398;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ZEH9v8Rjc8efpJ4WwSjt3IUcl27Na7rmXqWgvC4OtAY=;
+        b=BEEUz0dogPcF0rRo+70sNgmYQuW9HxwOFeomYPBaKinT8tLvmL90NvWb5XzmG5VZQS
+         HvzWSGXZAhQWy4BiBaNKky7HKXgr+Zmuk0eywBX0/EMc/wvIp0cl4cH0dwZXS28WetxZ
+         30ptNBFt9BDGLGVWko98/BS2pvspFQ9piCwg+8r0sMsQUYqAhST/OJjMPOJp/tU+n6A/
+         0oJQ1+2Hb7SsVi9HFXpS09tivF7TVlSVZq1KEEsJD3V/7KUp3cmxWBjNr72TPfRqjs3j
+         hdYDN2Kud1ZCYUBIgrY8lFOgaQtdhGPXnZgSuS5amlvclKQLTa/ZnpGJs17WMUIOja28
+         YeDw==
+X-Forwarded-Encrypted: i=1; AFNElJ+2eGTDcsVQqbp8Z8x3OpKmcaRzmgkNOFF7OSHeoVq7/28Dvoly6Hm3EeEf5SrLytIHL4n92Omq@vger.kernel.org
+X-Gm-Message-State: AOJu0YxS9qsh9LhVd8rEjamqweil2LofeFZYe6RGCTw0pAvPrYXZZwCg
+	Ruh60LsWbXA7IfPaZWo6DQ3Xr89CwQOwumXQ0T5UxveTRNowZ2iDWzWmxgzBx4DZ4CSNaalWh/a
+	iVkMgflhNtkyhC1ybWgy1e7v/f9RU4h7sMFHKHuI=
+X-Gm-Gg: Acq92OGzWWFwaGUSf54Gx9uQkUr7wTLq7kswOcJbCwHdNEN48sEB5lDVCrEmSPrIor6
+	prsSF0luOZfJfnY41GmB97ItR1nvoIp1BvTkqk5UBV/1QWbuTijDeETmj9hFr5h8qQ3AhgwuKls
+	SJkz9ehC6iG0+zx39aJYydSyjD0q60xo28DjX+MMGYpJdlZwH7krb1SdOJfJQDeCnw4KQsBntxO
+	yblMwSbuNYeH/o4B7rnGLWxxx+kEHYYeyhI4wtufId7LB8lmLuFTLBy3ZZ8LGxkWCYokJHRcMtK
+	wrxAnOvF5109DYlvFKLUgbvBgGUsvDObhkbPRmPWSANQxG2jIyDlDXPMtp8yG3LTruEGhm5CMDz
+	PQQnfTjWiDC7rt39qovNQKo3K5YtF22zJ/qckvC4KWDoV1Q==
+X-Received: by 2002:a05:7022:691:b0:11a:e426:911a with SMTP id
+ a92af1059eb24-1342ef45730mr3376146c88.15.1778722597633; Wed, 13 May 2026
+ 18:36:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/12] mm, swap: unify large folio allocation
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
- Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
- Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>,
- Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Youngjun Park <youngjun.park@lge.com>,
- Chengming Zhou <chengming.zhou@linux.dev>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Yosry Ahmed <yosry@kernel.org>,
- Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>,
- Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>,
- Michal Hocko <mhocko@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Axel Rasmussen <axelrasmussen@google.com>
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
- <20260421-swap-table-p4-v3-5-2f23759a76bc@tencent.com>
- <d5341d37-5644-4446-a406-9a7251b83399@linux.alibaba.com>
- <CAMgjq7CPDk4hP-5hnV4Bth523W_Z+9hvg7Wo_upE-5rYCA0Mpw@mail.gmail.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <CAMgjq7CPDk4hP-5hnV4Bth523W_Z+9hvg7Wo_upE-5rYCA0Mpw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 88C8753CB56
+References: <20260511113104.563854162@infradead.org> <20260511120628.206700041@infradead.org>
+ <CANDhNCp1rcNYg29Fe66G6cuqHhDyXQ0oqccheSwfMuiNV-7Bgw@mail.gmail.com> <CANDhNCqWJ=Q3LxazK_ioo_39aFfR+yVbPEV+MQHC8_QvadhuTg@mail.gmail.com>
+In-Reply-To: <CANDhNCqWJ=Q3LxazK_ioo_39aFfR+yVbPEV+MQHC8_QvadhuTg@mail.gmail.com>
+From: John Stultz <jstultz@google.com>
+Date: Wed, 13 May 2026 18:36:26 -0700
+X-Gm-Features: AVHnY4J6T9HAANrp0kIY2IKkXIXPDZagx9-HL7rdfBk-KGgX5EGRtBGBtzVHn-g
+Message-ID: <CANDhNCqsZVsWygBA7m2F_w2r3DnQkFDXfd95Lc4ny-zjQQE7Qg@mail.gmail.com>
+Subject: Re: [PATCH v2 10/10] sched/eevdf: Move to a single runqueue
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
+	tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kprateek.nayak@amd.com, qyousef@layalina.io
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 1244853CC06
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15923-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	TAGGED_FROM(0.00)[bounces-15924-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[baolin.wang@linux.alibaba.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	FROM_NEQ_ENVFROM(0.00)[jstultz@google.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,alibaba.com:email,tencent.com:email]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email]
 X-Rspamd-Action: no action
 
+On Tue, May 12, 2026 at 10:00=E2=80=AFPM John Stultz <jstultz@google.com> w=
+rote:
+> On Tue, May 12, 2026 at 9:51=E2=80=AFPM John Stultz <jstultz@google.com> =
+wrote:
+> >
+> > On Mon, May 11, 2026 at 5:07=E2=80=AFAM Peter Zijlstra <peterz@infradea=
+d.org> wrote:
+> > >
+> > > Change fair/cgroup to a single runqueue.
+> > >
+> ...
+> >
+> > I know Vincent was having some perf troubles with this patch, but
+> > booting on a 64 vCPU qemu environment, I'm seeing:
+> >
+> > [    5.688490] Oops: divide error: 0000 [#1] SMP NOPTI
+> > [    5.689457] CPU: 47 UID: 0 PID: 0 Comm: swapper/47 Not tainted
+> > 7.1.0-rc2-00026-g82a8ec6fb3f9 #38 PREEMPT(full)
+> > [    5.689457] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > BIOS 1.17.0-debian-1.17.0-1 04/01/2014
+> > [    5.689457] RIP: 0010:wakeup_preempt_fair+0x1b7/0x430
+> > [    5.689457] Code: 74 0b 48 8b 52 28 48 39 d0 48 0f 47 c2 48 8b b9
+> > 90 00 00 00 48 8b b1 08 01 00 00 48 81 ff 00 00 10 00 74 09 48 c1 e0
+> > 14 31 9
+> > [    5.689457] RSP: 0000:ffffc9000021fd70 EFLAGS: 00010046
+> > [    5.689457] RAX: 000002ab98000000 RBX: ffff8881b8e2db40 RCX: fffffff=
+f83022a80
+> > [    5.689457] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000=
+000000000
+> > [    5.689457] RBP: 0000000000000001 R08: ffff88810cb14380 R09: fffffff=
+f83022b00
+> > [    5.689457] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
+000000002
+> > [    5.689457] R13: 0000000000000000 R14: ffff88810cb14300 R15: ffff888=
+1b8e2da00
+> > [    5.689457] FS:  0000000000000000(0000) GS:ffff888235c2e000(0000)
+> > knlGS:0000000000000000
+> > [    5.689457] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    5.689457] CR2: 0000000000000000 CR3: 000000000304c001 CR4: 0000000=
+000370ef0
+> > [    5.689457] Call Trace:
+> > [    5.689457]  <TASK>
+> > [    5.689457]  wakeup_preempt+0xa8/0xd0
+> > [    5.689457]  attach_one_task+0xec/0x150
+> > [    5.689457]  __schedule+0x1ad8/0x21c0
+> > [    5.689457]  schedule_idle+0x22/0x40
+> > [    5.689457]  cpu_startup_entry+0x29/0x30
+> > [    5.689457]  start_secondary+0xf7/0x100
+> > [    5.689457]  common_startup_64+0x13e/0x148
+> > [    5.689457]  </TASK>
+> > [    5.689457] Dumping ftrace buffer:
+> > [    5.689457]    (ftrace buffer empty)
+> > [    5.689457] ---[ end trace 0000000000000000 ]---
+> > [    5.689457] RIP: 0010:wakeup_preempt_fair+0x1b7/0x430
+> > [    5.689457] Code: 74 0b 48 8b 52 28 48 39 d0 48 0f 47 c2 48 8b b9
+> > 90 00 00 00 48 8b b1 08 01 00 00 48 81 ff 00 00 10 00 74 09 48 c1 e0
+> > 14 31 9
+> > [    5.689457] RSP: 0000:ffffc9000021fd70 EFLAGS: 00010046
+> > [    5.689457] RAX: 000002ab98000000 RBX: ffff8881b8e2db40 RCX: fffffff=
+f83022a80
+> > [    5.689457] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000=
+000000000
+> > [    5.689457] RBP: 0000000000000001 R08: ffff88810cb14380 R09: fffffff=
+f83022b00
+> > [    5.689457] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
+000000002
+> > [    5.689457] R13: 0000000000000000 R14: ffff88810cb14300 R15: ffff888=
+1b8e2da00
+> > [    5.689457] FS:  0000000000000000(0000) GS:ffff888235c2e000(0000)
+> > knlGS:0000000000000000
+> > [    5.689457] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    5.689457] CR2: 0000000000000000 CR3: 000000000304c001 CR4: 0000000=
+000370ef0
+> > [    5.689457] Kernel panic - not syncing: Fatal exception
+> >
+> > Which I bisected down to this last patch in the series.
+> >
+> > faddr2line gave me:
+> > __calc_delta at kernel/sched/fair.c:290
+> > (inlined by) calc_delta_fair at kernel/sched/fair.c:300
+> > (inlined by) update_protect_slice at kernel/sched/fair.c:1070
+> > (inlined by) wakeup_preempt_fair at kernel/sched/fair.c:9193
+> >
+> > This usually trips as the ww_mutex selftest starts at bootup.
+> >
+> > Unfortunately I still see it with the add-on changes you proposed to K
+> > Prateek's feedback here.
+> >
+> > I'll try to narrow it down further tomorrow.
+>
+> As karma would have it, this does seem to depend on CONFIG_SCHED_PROXY_EX=
+EC. :)
+> I'm guessing the switch in calc_delta_fair() to use se->h_load is
+> uncovering something proxy isn't handling properly with that value.
+>
 
+So looking at the callstack when I see the failure:
+proxy_find_task()
+  proxy_force_return()
+    proxy_resched_idle()  <- sets rq->donor to idle
+    attach_one_task()
+      wakeup_preempt()
+        wakeup_preempt_fair()
+          update_protect_slice() <- called with the donor's se
+            calc_delta_fair()
+              __calc_delta() <- div by zero
 
-On 5/13/26 2:47 PM, Kairui Song wrote:
-> On Tue, May 12, 2026 at 6:14 PM Baolin Wang
-> <baolin.wang@linux.alibaba.com> wrote:
->>
->> On 4/21/26 2:16 PM, Kairui Song via B4 Relay wrote:
->>> From: Kairui Song <kasong@tencent.com>
->>>
->>> Now that direct large order allocation is supported in the swap cache,
->>> both anon and shmem can use it instead of implementing their own methods.
->>> This unifies the fallback and swap cache check, which also reduces the
->>> TOCTOU race window of swap cache state: previously, high order swapin
->>> required checking swap cache states first, then allocating and falling
->>> back separately. Now all these steps happen in the same compact loop.
->>>
->>> Order fallback and statistics are also unified, callers just need to
->>> check and pass the acceptable order bitmask.
->>>
->>> There is basically no behavior change. This only makes things more
->>> unified and prepares for later commits. Cgroup and zero map checks can
->>> also be moved into the compact loop, further reducing race windows and
->>> redundancy
->>>
->>> Signed-off-by: Kairui Song <kasong@tencent.com>
->>> ---
->>>    mm/memory.c     |  77 ++++++------------------------
->>>    mm/shmem.c      |  94 +++++++++---------------------------
->>>    mm/swap.h       |  30 ++----------
->>>    mm/swap_state.c | 145 ++++++++++----------------------------------------------
->>>    mm/swapfile.c   |   3 +-
->>>    5 files changed, 67 insertions(+), 282 deletions(-)
->>>
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index ea6568571131..404734a5bcff 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -4593,26 +4593,6 @@ static vm_fault_t handle_pte_marker(struct vm_fault *vmf)
->>>        return VM_FAULT_SIGBUS;
->>>    }
->>>
->>> -static struct folio *__alloc_swap_folio(struct vm_fault *vmf)
->>> -{
->>> -     struct vm_area_struct *vma = vmf->vma;
->>> -     struct folio *folio;
->>> -     softleaf_t entry;
->>> -
->>> -     folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vmf->address);
->>> -     if (!folio)
->>> -             return NULL;
->>> -
->>> -     entry = softleaf_from_pte(vmf->orig_pte);
->>> -     if (mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
->>> -                                        GFP_KERNEL, entry)) {
->>> -             folio_put(folio);
->>> -             return NULL;
->>> -     }
->>> -
->>> -     return folio;
->>> -}
->>> -
->>>    #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>>    /*
->>>     * Check if the PTEs within a range are contiguous swap entries
->>> @@ -4642,8 +4622,6 @@ static bool can_swapin_thp(struct vm_fault *vmf, pte_t *ptep, int nr_pages)
->>>         */
->>>        if (unlikely(swap_zeromap_batch(entry, nr_pages, NULL) != nr_pages))
->>>                return false;
->>> -     if (unlikely(non_swapcache_batch(entry, nr_pages) != nr_pages))
->>> -             return false;
->>>
->>>        return true;
->>>    }
->>> @@ -4671,16 +4649,14 @@ static inline unsigned long thp_swap_suitable_orders(pgoff_t swp_offset,
->>>        return orders;
->>>    }
->>>
->>> -static struct folio *alloc_swap_folio(struct vm_fault *vmf)
->>> +static unsigned long thp_swapin_suitable_orders(struct vm_fault *vmf)
->>>    {
->>>        struct vm_area_struct *vma = vmf->vma;
->>>        unsigned long orders;
->>> -     struct folio *folio;
->>>        unsigned long addr;
->>>        softleaf_t entry;
->>>        spinlock_t *ptl;
->>>        pte_t *pte;
->>> -     gfp_t gfp;
->>>        int order;
->>>
->>>        /*
->>> @@ -4688,7 +4664,7 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
->>>         * maintain the uffd semantics.
->>>         */
->>>        if (unlikely(userfaultfd_armed(vma)))
->>> -             goto fallback;
->>> +             return 0;
->>>
->>>        /*
->>>         * A large swapped out folio could be partially or fully in zswap. We
->>> @@ -4696,7 +4672,7 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
->>>         * folio.
->>>         */
->>>        if (!zswap_never_enabled())
->>> -             goto fallback;
->>> +             return 0;
->>>
->>>        entry = softleaf_from_pte(vmf->orig_pte);
->>>        /*
->>> @@ -4710,12 +4686,12 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
->>>                                          vmf->address, orders);
->>>
->>>        if (!orders)
->>> -             goto fallback;
->>> +             return 0;
->>>
->>>        pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
->>>                                  vmf->address & PMD_MASK, &ptl);
->>>        if (unlikely(!pte))
->>> -             goto fallback;
->>> +             return 0;
->>>
->>>        /*
->>>         * For do_swap_page, find the highest order where the aligned range is
->>> @@ -4731,29 +4707,12 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
->>>
->>>        pte_unmap_unlock(pte, ptl);
->>>
->>> -     /* Try allocating the highest of the remaining orders. */
->>> -     gfp = vma_thp_gfp_mask(vma);
->>> -     while (orders) {
->>> -             addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
->>> -             folio = vma_alloc_folio(gfp, order, vma, addr);
->>> -             if (folio) {
->>> -                     if (!mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
->>> -                                                         gfp, entry))
->>> -                             return folio;
->>> -                     count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK_CHARGE);
->>> -                     folio_put(folio);
->>> -             }
->>> -             count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK);
->>> -             order = next_order(&orders, order);
->>> -     }
->>> -
->>> -fallback:
->>> -     return __alloc_swap_folio(vmf);
->>> +     return orders;
->>>    }
->>>    #else /* !CONFIG_TRANSPARENT_HUGEPAGE */
->>> -static struct folio *alloc_swap_folio(struct vm_fault *vmf)
->>> +static unsigned long thp_swapin_suitable_orders(struct vm_fault *vmf)
->>>    {
->>> -     return __alloc_swap_folio(vmf);
->>> +     return 0;
->>>    }
->>>    #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->>>
->>> @@ -4859,21 +4818,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->>>        if (folio)
->>>                swap_update_readahead(folio, vma, vmf->address);
->>>        if (!folio) {
->>> -             if (data_race(si->flags & SWP_SYNCHRONOUS_IO)) {
->>> -                     folio = alloc_swap_folio(vmf);
->>> -                     if (folio) {
->>> -                             /*
->>> -                              * folio is charged, so swapin can only fail due
->>> -                              * to raced swapin and return NULL.
->>> -                              */
->>> -                             swapcache = swapin_folio(entry, folio);
->>> -                             if (swapcache != folio)
->>> -                                     folio_put(folio);
->>> -                             folio = swapcache;
->>> -                     }
->>> -             } else {
->>> +             /* Swapin bypasses readahead for SWP_SYNCHRONOUS_IO devices */
->>> +             if (data_race(si->flags & SWP_SYNCHRONOUS_IO))
->>> +                     folio = swapin_entry(entry, GFP_HIGHUSER_MOVABLE,
->>> +                                          thp_swapin_suitable_orders(vmf),
->>> +                                          vmf, NULL, 0);
->>> +             else
->>>                        folio = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE, vmf);
->>> -             }
->>>
->>>                if (!folio) {
->>>                        /*
->>> diff --git a/mm/shmem.c b/mm/shmem.c
->>> index 5916acf594a8..17e3da11bb1d 100644
->>> --- a/mm/shmem.c
->>> +++ b/mm/shmem.c
->>> @@ -159,7 +159,7 @@ static unsigned long shmem_default_max_inodes(void)
->>>
->>>    static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
->>>                        struct folio **foliop, enum sgp_type sgp, gfp_t gfp,
->>> -                     struct vm_area_struct *vma, vm_fault_t *fault_type);
->>> +                     struct vm_fault *vmf, vm_fault_t *fault_type);
->>>
->>>    static inline struct shmem_sb_info *SHMEM_SB(struct super_block *sb)
->>>    {
->>> @@ -2017,68 +2017,24 @@ static struct folio *shmem_alloc_and_add_folio(struct vm_fault *vmf,
->>>    }
->>>
->>>    static struct folio *shmem_swap_alloc_folio(struct inode *inode,
->>> -             struct vm_area_struct *vma, pgoff_t index,
->>> +             struct vm_fault *vmf, pgoff_t index,
->>>                swp_entry_t entry, int order, gfp_t gfp)
->>>    {
->>> +     pgoff_t ilx;
->>> +     struct folio *folio;
->>> +     struct mempolicy *mpol;
->>> +     unsigned long orders = BIT(order);
->>>        struct shmem_inode_info *info = SHMEM_I(inode);
->>> -     struct folio *new, *swapcache;
->>> -     int nr_pages = 1 << order;
->>> -     gfp_t alloc_gfp = gfp;
->>> -
->>> -     if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
->>> -             if (WARN_ON_ONCE(order))
->>> -                     return ERR_PTR(-EINVAL);
->>> -     } else if (order) {
->>> -             /*
->>> -              * If uffd is active for the vma, we need per-page fault
->>> -              * fidelity to maintain the uffd semantics, then fallback
->>> -              * to swapin order-0 folio, as well as for zswap case.
->>> -              * Any existing sub folio in the swap cache also blocks
->>> -              * mTHP swapin.
->>> -              */
->>> -             if ((vma && unlikely(userfaultfd_armed(vma))) ||
->>> -                  !zswap_never_enabled() ||
->>> -                  non_swapcache_batch(entry, nr_pages) != nr_pages)
->>> -                     goto fallback;
->>>
->>> -             alloc_gfp = thp_limit_gfp_mask(vma_thp_gfp_mask(vma), gfp);
->>> -     }
->>> -retry:
->>> -     new = shmem_alloc_folio(alloc_gfp, order, info, index);
->>> -     if (!new) {
->>> -             new = ERR_PTR(-ENOMEM);
->>> -             goto fallback;
->>> -     }
->>> +     if ((vmf && unlikely(userfaultfd_armed(vmf->vma))) ||
->>> +          !zswap_never_enabled())
->>> +             orders = 0;
->>>
->>> -     if (mem_cgroup_swapin_charge_folio(new, vma ? vma->vm_mm : NULL,
->>> -                                        alloc_gfp, entry)) {
->>> -             folio_put(new);
->>> -             new = ERR_PTR(-ENOMEM);
->>> -             goto fallback;
->>> -     }
->>> +     mpol = shmem_get_pgoff_policy(info, index, order, &ilx);
->>> +     folio = swapin_entry(entry, gfp, orders, vmf, mpol, ilx);
->>> +     mpol_cond_put(mpol);
->>>
->>> -     swapcache = swapin_folio(entry, new);
->>> -     if (swapcache != new) {
->>> -             folio_put(new);
->>> -             if (!swapcache) {
->>> -                     /*
->>> -                      * The new folio is charged already, swapin can
->>> -                      * only fail due to another raced swapin.
->>> -                      */
->>> -                     new = ERR_PTR(-EEXIST);
->>> -                     goto fallback;
->>> -             }
->>> -     }
->>> -     return swapcache;
->>> -fallback:
->>> -     /* Order 0 swapin failed, nothing to fallback to, abort */
->>> -     if (!order)
->>> -             return new;
->>> -     entry.val += index - round_down(index, nr_pages);
->>> -     alloc_gfp = gfp;
->>> -     nr_pages = 1;
->>> -     order = 0;
->>> -     goto retry;
->>> +     return folio;
->>>    }
->>
->> IIUC, in the __swap_cache_alloc() implementation in patch 4, when shmem
->> swapin falls back to order 0, it doesn't adjust the swap entry value
->> like here. Because the original swap entry may not correspond to the
->> swap entry for the order 0 index.
->>
->> Of course, I haven't tested this yet, just pointing it out for you to
->> double check.
-> 
-> Thanks for pointing it out. No worry, we have the below change in this
-> commit already:
-> 
->                          /* Direct swapin skipping swap cache & readahead */
-> -                       folio = shmem_swap_alloc_folio(inode, vma, index,
-> -                                                      index_entry, order, gfp);
-> -                       if (IS_ERR(folio)) {
-> -                               error = PTR_ERR(folio);
-> -                               folio = NULL;
-> -                               goto failed;
-> -                       }
-> +                       folio = shmem_swap_alloc_folio(inode, vmf, index,
-> +                                                      swap, order, gfp);
-> 
-> It's using swap instead of index_entry now, so __swap_cache_alloc will
-> do the round down for large order instead and skip the round_down if
-> ordedr is zero. So we are fine here.
+Basically we end up in wakeup_preempt_fair() with rq->donor =3D=3D
+rq->idle because we earlier called proxy_resched_idle().
 
-OK. I overlooked this change here, then the shmem part looks good to me. 
-I will do some testing once this patchset lands in the mm-new branch.
+Without proxy, if we call wakeup_preempt_fair() when rq->donor (and
+rq->curr) is rq->idle, we usually end up taking the `if
+(test_tsk_need_resched(rq->curr))` early exit and we don't hit this.
+
+But with proxy, rq->curr isn't idle at this point. So we end up
+continuing on. Despite the se_is_idle(se) checks (where se is the
+&donor->se), those don't catch because rq->idle (maybe unintuitvely)
+has a SCHED_NORMAL policy.
+
+So we end up getting down to update_protect_slice() with rq->idle as
+the se and the idle h_load.weight is zero.
+
+Not sure what the best approach might be, but adding:
+  if (donor =3D=3D rq->idle) {
+    /* don't give rq->idle slice protection */
+    preempt_action =3D PREEMPT_WAKEUP_SHORT;
+    goto preempt;
+  }
+
+similar to the `if (cse_is_idle && !pse_is_idle)` check seems to resolve th=
+is.
+
+Anyway, if you have thoughts on better approach, I'd be happy to work
+up a patch to add on top of this one.
+
+thanks
+-john
 
