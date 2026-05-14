@@ -1,37 +1,38 @@
-Return-Path: <cgroups+bounces-15930-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15931-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +FtxEjVxBWoTXAIAu9opvQ
-	(envelope-from <cgroups+bounces-15930-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 08:52:37 +0200
+	id kJwEJDlxBWoTXAIAu9opvQ
+	(envelope-from <cgroups+bounces-15931-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 08:52:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A260053E8D6
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 08:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0263153E8DD
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 08:52:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C1F6C3034A99
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 06:50:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 865713036614
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 06:51:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC7D3ABD8E;
-	Thu, 14 May 2026 06:50:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39C43AB480;
+	Thu, 14 May 2026 06:50:59 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD21D3A4F51
-	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 06:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0C03AC0F1
+	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 06:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778741456; cv=none; b=Vv5wvTGBSfJjzJR1JNnXq2Zd88oGkYadR6NgrKZuiWOKC/Inrt8OKMH/U5E0o+qQqczJyTKmolgxiOMWtDy08f0iPVCFhBFna4T/XxEyNu2tqM7wqwNqTEGR3MtDEy+Tg+hvOtobGX5gKOWQTUJuwEYPgLS/i6RcQQzHrny64eo=
+	t=1778741459; cv=none; b=luERU/g5tbK21T1mnqsSQXiCUIjfL7uhNKsyozztSLkho6hSSIU86U1O8gEJ9lJG2KSXFh8YMy5k5arUASJ7sEGAXxCVLw1cbrEOpDwUQMWKpVNu8cb8JEkvDUESoWKXBsGc1MfersuMUqbyfuXOdXhMzb/C9LYknIK5WKlCkFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778741456; c=relaxed/simple;
-	bh=YFI56x5vTjqfxlEpo/mpbEkFxndcCuGIuWDwhJDSxpE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TT9EoojF9M/wFdwchXUjSexaZYUTOsg62SIgzmGmNFOMx39uFFPWEjZPkjGNMarepiQzirMrAm6LAhb6N+qAAMkABBaAj8bxsYJZd2dzkDhg38axd2o90/iCeI3B7wTvI0TTWfDUofcuLNwjpHrx2nW4kPfiJBTA8QltrQ0aJ5s=
+	s=arc-20240116; t=1778741459; c=relaxed/simple;
+	bh=GtL32Vjb3XVUO1QjRW0eKQHChPDM/Zw6hYaivhpgY8I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=aGpr4l9ks+MqYPesyBg+e/nWBaimx1NfZLil/dpFxiw+KRJvbUGcbGxeIrS2tHYh9ls1cU7mkmEzsV9j0udlW1uEPFojdglrOhJfPOiBaWUWw6pO3XhCB7oSjYU4l39tqPs2aNLpcAHqB4NHo1/WuQhpvJZxGVE9zI4YHVBtDy0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 3d7aa55e4f6111f1aa26b74ffac11d73-20260514
+X-UUID: 3ef2b00c4f6111f1aa26b74ffac11d73-20260514
 X-CTIC-Tags:
 	HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B
 	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
@@ -39,40 +40,42 @@ X-CTIC-Tags:
 	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
 	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
 	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_C_CI
-	GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:b67603c7-1e86-4e26-91d9-9ed65899d7fb,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:30
-X-CID-INFO: VERSION:1.3.12,REQID:b67603c7-1e86-4e26-91d9-9ed65899d7fb,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:30
-X-CID-META: VersionHash:e7bac3a,CLOUDID:72eefe5db10bae2ae779a59ac769785c,BulkI
-	D:260514145051X9P3K9S3,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	898,TC:nil,Content:0|15|50,EDM:5,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil,Q
-	S:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,
-	ARC:0
+X-CID-O-INFO: VERSION:1.3.12,REQID:57476bc1-3fc2-429f-a354-52ef963260f1,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:5
+X-CID-INFO: VERSION:1.3.12,REQID:57476bc1-3fc2-429f-a354-52ef963260f1,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:5
+X-CID-META: VersionHash:e7bac3a,CLOUDID:4be129f35417bf12fc29872e8a71c66b,BulkI
+	D:260513185119W6M7OQMS,BulkQuantity:1,Recheck:0,SF:17|19|38|66|78|81|82|10
+	2|127|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:4
+	1,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE
+	:0,ARC:0
 X-CID-BVR: 2,SSN|SDN
 X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
 X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 3d7aa55e4f6111f1aa26b74ffac11d73-20260514
+X-UUID: 3ef2b00c4f6111f1aa26b74ffac11d73-20260514
 X-User: cuitao@kylinos.cn
 Received: from ctao-book.. [(223.70.159.239)] by mailgw.kylinos.cn
 	(envelope-from <cuitao@kylinos.cn>)
 	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1283525578; Thu, 14 May 2026 14:50:48 +0800
+	with ESMTP id 2118488462; Thu, 14 May 2026 14:50:51 +0800
 From: Tao Cui <cuitao@kylinos.cn>
 To: tj@kernel.org,
 	hannes@cmpxchg.org,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org
 Cc: Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH v3 0/4] cgroup/rdma: add rdma.peak and rdma.events[.local]
-Date: Thu, 14 May 2026 14:50:30 +0800
-Message-ID: <20260514065034.387197-1-cuitao@kylinos.cn>
+Subject: [PATCH v3 1/4] cgroup/rdma: add rdma.peak for per-device peak usage tracking
+Date: Thu, 14 May 2026 14:50:31 +0800
+Message-ID: <20260514065034.387197-2-cuitao@kylinos.cn>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260514065034.387197-1-cuitao@kylinos.cn>
+References: <20260514065034.387197-1-cuitao@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -80,7 +83,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A260053E8D6
+X-Rspamd-Queue-Id: 0263153E8DD
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -97,104 +100,129 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15930-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15931-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.968];
+	NEURAL_HAM(-0.00)[-0.966];
 	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email,kylinos.cn:mid]
 X-Rspamd-Action: no action
 
-Hi,
+rdma.peak tracks the high watermark of resource usage per device,
+giving a better baseline on which to set rdma.max. Polling
+rdma.current isn't feasible since it would miss short-lived spikes.
 
-This is v3 of the RDMA cgroup observability series.  Thanks to the
-reviewers for the detailed feedback on v1 and v2.
+This interface is analogous to memory.peak.
 
-This series adds new cgroup interface files to the RDMA controller
-to improve observability of resource usage and limit enforcement:
-
-  - rdma.peak:        per-device high watermark of resource usage
-  - rdma.events:      hierarchical max and alloc_fail event counters
-  - rdma.events.local: per-cgroup local max and alloc_fail counters
-
-rdma.peak tracks the historical high watermark so administrators can
-determine a sensible rdma.max based on actual peak demand rather than
-guesswork.  This is directly analogous to memory.peak.
-
-rdma.events and rdma.events.local provide per-device counters that
-track how often resource limits block allocations, and can be monitored
-via poll/epoll for real-time alerting.  Both files expose the same
-keys (max and alloc_fail); rdma.events aggregates hierarchically while
-rdma.events.local shows per-cgroup values.  This follows the
-pids.events / pids.events.local design.
-
-Patch overview:
-  Patch 1 introduces rdma.peak, adding a per-resource peak field to track
-  the high watermark of usage, updated only after a full hierarchical
-  charge succeeds, and extends rpool lifetime to preserve non-zero
-  peak values.
-  Patch 2 adds rdma.events, which introduces rdmacg_event_locked() to
-  propagate hierarchical max counters upward from the over-limit
-  cgroup using get_cg_rpool_locked() to ensure full hierarchical
-  coverage even for ancestors without a prior rpool, with poll/epoll
-  notification via cgroup_file_notify().
-  Patch 3 adds rdma.events.local and hierarchical alloc_fail, extending
-  the event framework with per-cgroup local counters (local_max for
-  the over-limit cgroup, local_alloc_fail for the requesting cgroup)
-  and a hierarchical alloc_fail counter propagated from the requestor
-  upward.  It also extracts the duplicated rpool-keep predicate into
-  a rpool_has_persistent_state() helper and replaces the non-error
-  goto dev_err in rdmacg_resource_set_max() with an if-guard.
-  Patch 4 documents all three new interface files in cgroup-v2.rst.
-
-Tao Cui (4):
-  cgroup/rdma: add rdma.peak for per-device peak usage tracking
-  cgroup/rdma: add rdma.events to track resource limit exhaustion
-  cgroup/rdma: add rdma.events.local for per-cgroup allocation failure
-    attribution
-  cgroup/rdma: document rdma.peak, rdma.events and rdma.events.local
-
- Documentation/admin-guide/cgroup-v2.rst |  54 +++++++
- include/linux/cgroup_rdma.h             |   4 +
- kernel/cgroup/rdma.c                    | 199 ++++++++++++++++++++++--
- 3 files changed, 247 insertions(+), 10 deletions(-)
-
+Signed-off-by: Tao Cui <cuitao@kylinos.cn>
 ---
-Changes in v3:
-  - Switch rdmacg_event_locked() from find_ to get_cg_rpool_locked()
-    in hierarchical propagation loops (events_max and events_alloc_fail)
-    to ensure full hierarchical coverage; the rpool-keep check now
-    covers event counters, so spurious-rpool concern from v1 no longer
-    applies.
-  - Extract the duplicated rpool-keep predicate (peak + 4 event
-    counters) into rpool_has_persistent_state() helper.
-  - Replace the non-error goto dev_err in rdmacg_resource_set_max()
-    with an if-guard so dev_err is only used for real error paths.
-  - Fix commit message of rdma.events.local patch to mention the
-    rdma.events hierarchical alloc_fail extension.
-  - Use %llu and drop (s64) cast in rdmacg_events_show() and
-    rdmacg_events_local_show() to match u64 counter type.
+ kernel/cgroup/rdma.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-Changes in v2:
-  - Fix peak updated before full hierarchical charge succeeds.
-  - Use find_cg_rpool_locked() to avoid creating spurious rpools.
-  - Replace atomic64_t with u64 + READ_ONCE (all under rdmacg_mutex).
-  - Use key=value output format, remove trailing spaces.
-  - Always list all devices, show zero for devices without an rpool.
-  - Extend rpool-free condition to preserve non-zero event counters.
-  - Rename "failcnt" to "alloc_fail" (cgroup v2 naming convention).
-  - Fix alloc_fail semantics: local to the requesting cgroup only.
-  - Add hierarchical alloc_fail to rdma.events for key consistency.
-  - Add documentation in Documentation/admin-guide/cgroup-v2.rst.
-
-v1:
-  https://lore.kernel.org/all/20260512031719.273507-1-cuitao@kylinos.cn/
-v2:
-  https://lore.kernel.org/all/20260513104956.373216-1-cuitao@kylinos.cn/
+diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
+index 3df7c38ce481..4e3bf0bade18 100644
+--- a/kernel/cgroup/rdma.c
++++ b/kernel/cgroup/rdma.c
+@@ -44,6 +44,7 @@ static LIST_HEAD(rdmacg_devices);
+ enum rdmacg_file_type {
+ 	RDMACG_RESOURCE_TYPE_MAX,
+ 	RDMACG_RESOURCE_TYPE_STAT,
++	RDMACG_RESOURCE_TYPE_PEAK,
+ };
+ 
+ /*
+@@ -60,6 +61,7 @@ static char const *rdmacg_resource_names[] = {
+ struct rdmacg_resource {
+ 	int max;
+ 	int usage;
++	int peak;
+ };
+ 
+ /*
+@@ -204,6 +206,17 @@ uncharge_cg_locked(struct rdma_cgroup *cg,
+ 	rpool->usage_sum--;
+ 	if (rpool->usage_sum == 0 &&
+ 	    rpool->num_max_cnt == RDMACG_RESOURCE_MAX) {
++		int i;
++
++		/*
++		 * Keep the rpool alive if any peak value is non-zero,
++		 * so that rdma.peak persists as a historical high-
++		 * watermark even after all resources are freed.
++		 */
++		for (i = 0; i < RDMACG_RESOURCE_MAX; i++) {
++			if (rpool->resources[i].peak)
++				return;
++		}
+ 		/*
+ 		 * No user of the rpool and all entries are set to max, so
+ 		 * safe to delete this rpool.
+@@ -310,6 +323,12 @@ int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
+ 			}
+ 		}
+ 	}
++	/* Update peak only after all charges succeed */
++	for (p = cg; p; p = parent_rdmacg(p)) {
++		rpool = find_cg_rpool_locked(p, device);
++		if (rpool && rpool->resources[index].usage > rpool->resources[index].peak)
++			rpool->resources[index].peak = rpool->resources[index].usage;
++	}
+ 	mutex_unlock(&rdmacg_mutex);
+ 
+ 	*rdmacg = cg;
+@@ -472,6 +491,12 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
+ 
+ 	if (rpool->usage_sum == 0 &&
+ 	    rpool->num_max_cnt == RDMACG_RESOURCE_MAX) {
++		int i;
++
++		for (i = 0; i < RDMACG_RESOURCE_MAX; i++) {
++			if (rpool->resources[i].peak)
++				goto dev_err;
++		}
+ 		/*
+ 		 * No user of the rpool and all entries are set to max, so
+ 		 * safe to delete this rpool.
+@@ -506,6 +531,8 @@ static void print_rpool_values(struct seq_file *sf,
+ 				value = rpool->resources[i].max;
+ 			else
+ 				value = S32_MAX;
++		} else if (sf_type == RDMACG_RESOURCE_TYPE_PEAK) {
++			value = rpool ? rpool->resources[i].peak : 0;
+ 		} else {
+ 			if (rpool)
+ 				value = rpool->resources[i].usage;
+@@ -556,6 +583,12 @@ static struct cftype rdmacg_files[] = {
+ 		.private = RDMACG_RESOURCE_TYPE_STAT,
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 	},
++	{
++		.name = "peak",
++		.seq_show = rdmacg_resource_read,
++		.private = RDMACG_RESOURCE_TYPE_PEAK,
++		.flags = CFTYPE_NOT_ON_ROOT,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+@@ -575,6 +608,13 @@ rdmacg_css_alloc(struct cgroup_subsys_state *parent)
+ static void rdmacg_css_free(struct cgroup_subsys_state *css)
+ {
+ 	struct rdma_cgroup *cg = css_rdmacg(css);
++	struct rdmacg_resource_pool *rpool, *tmp;
++
++	/* Clean up rpools kept alive by non-zero peak values */
++	mutex_lock(&rdmacg_mutex);
++	list_for_each_entry_safe(rpool, tmp, &cg->rpools, cg_node)
++		free_cg_rpool_locked(rpool);
++	mutex_unlock(&rdmacg_mutex);
+ 
+ 	kfree(cg);
+ }
 -- 
 2.43.0
 
