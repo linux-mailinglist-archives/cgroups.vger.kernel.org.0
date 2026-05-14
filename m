@@ -1,285 +1,212 @@
-Return-Path: <cgroups+bounces-15924-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15925-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oDFkHysnBWq3SwIAu9opvQ
-	(envelope-from <cgroups+bounces-15924-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 03:36:43 +0200
+	id 4C3qGzE5BWrVTQIAu9opvQ
+	(envelope-from <cgroups+bounces-15925-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 04:53:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1244853CC06
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 03:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4EA553D2EF
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 04:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8B5C3302F76F
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 01:36:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AED9F3035A96
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 02:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B6731ED7C;
-	Thu, 14 May 2026 01:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 689562E7185;
+	Thu, 14 May 2026 02:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tGo4vDaM"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3DBjM3yc"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f42.google.com (mail-dl1-f42.google.com [74.125.82.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11010013.outbound.protection.outlook.com [52.101.201.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 345FE31E840
-	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 01:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.82.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8C9219A8A;
+	Thu, 14 May 2026 02:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.201.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778722600; cv=pass; b=UC9slzAbnmmbmzxznO7xVctd6T1Mwk6ipZ5eEUyBGQedT1r4LpXpZ7b/CakRZ+vFmJangMxvID7eOjHl/iJQN++iNR35KWHy3cTDo3PaOkBstgm9P2O/JKNAGzd4KG8H1SYlklAECIDnPivWVajVMjJD97+Z7yEHiqNhXdxiJpM=
+	t=1778727212; cv=fail; b=q96HndGZ8z72RCWIL07vNCtNPtd34zr0Bbv/S5ImvTAyERjPVVqCNU6remDXZdylSX91KiqMsy6QubJ2y31C/z8YPeGshlSL2dNnYJnVJbJFelTwFfaWuyXxYzGs8cQmZCR0tLbFMR/17E/07G3kO5mwRo45hI+VXeJii5u573M=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778722600; c=relaxed/simple;
-	bh=Bx63wQK/dLfFiGwXscuCBUwEs/wx/605mPG3tTesGqs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ce3tbYqUodCgnm9WWl7MsJ150dp8lI8Fl+rwKYkjSjItT8XBG9/2IvyEq5tYX/Fu1TPx2pHy+qv+Idyev1b1rjKcdbPmJlQ+qqIBPhWJT2K4Gj6Ph0AwvTUN4KfV2yljZdCfrOvvdA1cG6HLu6nu/qGMyAMFSkHzsOSfuLF29nM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tGo4vDaM; arc=pass smtp.client-ip=74.125.82.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-dl1-f42.google.com with SMTP id a92af1059eb24-1329fc4bf77so159972c88.1
-        for <cgroups@vger.kernel.org>; Wed, 13 May 2026 18:36:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778722598; cv=none;
-        d=google.com; s=arc-20240605;
-        b=kjzTM1zTu1O6+nSPQ/kRewTx2/Rf2WZE+zWJezNXQQJrmWSReekkLGfsUhknzVN3Yj
-         uQk5sYWdi7uugio3o+cidASEScYQ8I05ULcozIgOLuOVoGXZk9f0ADwJZVLDLMGECOBh
-         g10DEoL0TNvDN+zq2EK08ylG7kzvXZF6LqB6G7S6zQ82BZVYrYErHBNDwkoVdpYcexWN
-         KS6A/QjnSf2m/mPehxWikGYtFOTxemRTyzgAuNiOX+5SLrkYdM/2Jxy3aG3lhu00pPGk
-         sHd+o9QHqStGm4lgqoy3iDWGYSFN/g7IlVyEjFixQzgc7a5EksVUpKoEnuUIUcEcVzdA
-         Ns/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=ZEH9v8Rjc8efpJ4WwSjt3IUcl27Na7rmXqWgvC4OtAY=;
-        fh=qYkpDut8yWKkUKYz5GpGiphExlR4+5p4/JUw+L/zc50=;
-        b=YFoYzDshUaMaO2TUG1NYqN2Cxi0ZIpPVrjh1VeQ7qS7x02lEsJHfLLetj4iacuGXIl
-         ttghA/Ys9bWSPkobqN3qXwb2RZazVgWI8POo1X6fxK59ivNLvjp75ZX4saN8j00FGcch
-         KLWj6A5aHteUznSS9o2dNg0uPWInkYPUo9QzKLyZb2TUk2xFCz09rHcoGgwF9oj/dKef
-         S5Ixu8nf1B/GCr8/TUt9Bb1JzzRbNKEDm1BwcURc2twmzEqZXcM+9k65C/r7Duan4geb
-         ISlWUSbxnn9tcuwVVbvFXqKB83Ds+VHsmEl+NWBjaAH1BmK0BgVrnYeARJNKLt3aZFh7
-         o/Gg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1778722598; x=1779327398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZEH9v8Rjc8efpJ4WwSjt3IUcl27Na7rmXqWgvC4OtAY=;
-        b=tGo4vDaMDcPc65ZHx/D/nAClU3V4t/GbiwGdsjr3Hj9Os3BpHMFsZ/i++BMLgpPSE+
-         zm8dzVyUEtySaYDH2ww3DNOwtDwcoGDTZKV0s64vvz1J7Do1Lcf5lW4x8f4/Kgkk1bK5
-         cKn3VVGpf61xr0k3dlHVqJYfsegR9S6G+Yf6cCVl91NB4ymO6/iaSdov5zJ1h68Fdtwx
-         2edSiiO8pOGMRoxKGvU/D2E9Az8AOUcyd4SV+/i+lYu/lC4crlAq1lbAmQ1CBqoZ2Ln3
-         ed8vFBF+CzYrARv8WrAM22jQfWIBXc0FfxEpxwU0UmHsz6viAot+cPjqoPncQAFETCww
-         1KGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778722598; x=1779327398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZEH9v8Rjc8efpJ4WwSjt3IUcl27Na7rmXqWgvC4OtAY=;
-        b=BEEUz0dogPcF0rRo+70sNgmYQuW9HxwOFeomYPBaKinT8tLvmL90NvWb5XzmG5VZQS
-         HvzWSGXZAhQWy4BiBaNKky7HKXgr+Zmuk0eywBX0/EMc/wvIp0cl4cH0dwZXS28WetxZ
-         30ptNBFt9BDGLGVWko98/BS2pvspFQ9piCwg+8r0sMsQUYqAhST/OJjMPOJp/tU+n6A/
-         0oJQ1+2Hb7SsVi9HFXpS09tivF7TVlSVZq1KEEsJD3V/7KUp3cmxWBjNr72TPfRqjs3j
-         hdYDN2Kud1ZCYUBIgrY8lFOgaQtdhGPXnZgSuS5amlvclKQLTa/ZnpGJs17WMUIOja28
-         YeDw==
-X-Forwarded-Encrypted: i=1; AFNElJ+2eGTDcsVQqbp8Z8x3OpKmcaRzmgkNOFF7OSHeoVq7/28Dvoly6Hm3EeEf5SrLytIHL4n92Omq@vger.kernel.org
-X-Gm-Message-State: AOJu0YxS9qsh9LhVd8rEjamqweil2LofeFZYe6RGCTw0pAvPrYXZZwCg
-	Ruh60LsWbXA7IfPaZWo6DQ3Xr89CwQOwumXQ0T5UxveTRNowZ2iDWzWmxgzBx4DZ4CSNaalWh/a
-	iVkMgflhNtkyhC1ybWgy1e7v/f9RU4h7sMFHKHuI=
-X-Gm-Gg: Acq92OGzWWFwaGUSf54Gx9uQkUr7wTLq7kswOcJbCwHdNEN48sEB5lDVCrEmSPrIor6
-	prsSF0luOZfJfnY41GmB97ItR1nvoIp1BvTkqk5UBV/1QWbuTijDeETmj9hFr5h8qQ3AhgwuKls
-	SJkz9ehC6iG0+zx39aJYydSyjD0q60xo28DjX+MMGYpJdlZwH7krb1SdOJfJQDeCnw4KQsBntxO
-	yblMwSbuNYeH/o4B7rnGLWxxx+kEHYYeyhI4wtufId7LB8lmLuFTLBy3ZZ8LGxkWCYokJHRcMtK
-	wrxAnOvF5109DYlvFKLUgbvBgGUsvDObhkbPRmPWSANQxG2jIyDlDXPMtp8yG3LTruEGhm5CMDz
-	PQQnfTjWiDC7rt39qovNQKo3K5YtF22zJ/qckvC4KWDoV1Q==
-X-Received: by 2002:a05:7022:691:b0:11a:e426:911a with SMTP id
- a92af1059eb24-1342ef45730mr3376146c88.15.1778722597633; Wed, 13 May 2026
- 18:36:37 -0700 (PDT)
+	s=arc-20240116; t=1778727212; c=relaxed/simple;
+	bh=CIT3dDV9pNrdgQwBzbYJUzRW7uMwB4nzkVuwO58LzJY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=X27qG4O/K+NhW/24kC9l6CjjRWOA+WGryqYsnVouIWvd+b/PW3AXs9g1M/eHnceQvAkQp5ITi5ZDfx2+bVjXZJ2HWeWufY98vk2THInCbUQtQCpI77usiVgwpfwOrowoah7HzN51YfQoPCBfq62/BIbAcm70W1I3OSoPRlPvoks=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3DBjM3yc; arc=fail smtp.client-ip=52.101.201.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Cm588rWovRmmpeaRbrOhLLaKSx8PK5e+1/aMloi1BxW41bqyDrIM4nw2Gym3HLzprP50OPl76k7pOE5nH7Hc+Hwvqkf0JOoCg/JAGyFdhplVHz310+CuPIpgYU3Sk8ss+d4MRHHjqJMgrZN6EneO+tTjgEU7rLTRglHwKs4q38293l+jbkamNZUpQ0LH6I7VxZu3M6pVVVYReESt9oEL6gX3yXCUUKPhmFLv2AQNHSkeQxeuZNL7zNVfxq2B1N4wWGdbo4EoXORKaC2mDAppWyvHtZ+8cVvFbfhc/2FCUr9u2/yxXrf7fIj251/Fe1L7ddi0YkzMdHYycYsGH1TEyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kWvB9sOmPe6xIAz8izSSqL6r4CJDh2BJLPR+NsMrQic=;
+ b=c8sDyns8K2Q+xf+0pn8pFytjKTed5ZVORZdlH+CgJOyyWKyf6xZAmn2pFuULenBP/LubCyO57fNBa+MOX1pCOo5owj6bISnsRv/oMkxiZ0UDbxqOtD7RBuaAzmcY+2tQP4eXaFxo6ni8LawtTsU9xMX1kl5VCACkrgQAw9L6u4tKa7xche0+f28Q6X2/c6JXHyIDjMRc3FMlAfNcEdKz+PeT1T2aAgQKjDcYQnn4ZGYC8lzLU6/GS0NW3jOQor6IHaUWb+PqQ91oxuL/AtHwW2cl4EHQsedDtAfXh+AxFim1+J59l/6ZDvdxX5fkN3x58ia9gwViySWHFpDD1T5BFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kWvB9sOmPe6xIAz8izSSqL6r4CJDh2BJLPR+NsMrQic=;
+ b=3DBjM3ycsFktxvtlh2OzaCQ1FrEuUaG4+w0d3rlksO9O1DNm0l21hNfrQggeBhGxWecoww/XZaZhbMynHTPGNCFt1WnlOSpzGWMGTcl4sK0Ji3Ds7MR8P3I2HSkjU74GNrWv2EDHWNLMzAULot4+6dv2bt/CZqZuSclyC2MS/lM=
+Received: from DS1PR06CA0005.namprd06.prod.outlook.com (2603:10b6:8:458::18)
+ by DS7PR12MB8082.namprd12.prod.outlook.com (2603:10b6:8:e6::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Thu, 14 May
+ 2026 02:53:23 +0000
+Received: from DS2PEPF00003445.namprd04.prod.outlook.com
+ (2603:10b6:8:458:cafe::44) by DS1PR06CA0005.outlook.office365.com
+ (2603:10b6:8:458::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.25.18 via Frontend Transport; Thu, 14
+ May 2026 02:53:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
+Received: from satlexmb07.amd.com (165.204.84.17) by
+ DS2PEPF00003445.mail.protection.outlook.com (10.167.17.72) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.25.13 via Frontend Transport; Thu, 14 May 2026 02:53:23 +0000
+Received: from satlexmb10.amd.com (10.181.42.219) by satlexmb07.amd.com
+ (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Wed, 13 May
+ 2026 21:53:22 -0500
+Received: from satlexmb08.amd.com (10.181.42.217) by satlexmb10.amd.com
+ (10.181.42.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Wed, 13 May
+ 2026 21:53:22 -0500
+Received: from [10.136.44.57] (10.180.168.240) by satlexmb08.amd.com
+ (10.181.42.217) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
+ Transport; Wed, 13 May 2026 21:53:18 -0500
+Message-ID: <f28220a8-955f-4bf2-9981-855816519ea6@amd.com>
+Date: Thu, 14 May 2026 08:23:17 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260511113104.563854162@infradead.org> <20260511120628.206700041@infradead.org>
- <CANDhNCp1rcNYg29Fe66G6cuqHhDyXQ0oqccheSwfMuiNV-7Bgw@mail.gmail.com> <CANDhNCqWJ=Q3LxazK_ioo_39aFfR+yVbPEV+MQHC8_QvadhuTg@mail.gmail.com>
-In-Reply-To: <CANDhNCqWJ=Q3LxazK_ioo_39aFfR+yVbPEV+MQHC8_QvadhuTg@mail.gmail.com>
-From: John Stultz <jstultz@google.com>
-Date: Wed, 13 May 2026 18:36:26 -0700
-X-Gm-Features: AVHnY4J6T9HAANrp0kIY2IKkXIXPDZagx9-HL7rdfBk-KGgX5EGRtBGBtzVHn-g
-Message-ID: <CANDhNCqsZVsWygBA7m2F_w2r3DnQkFDXfd95Lc4ny-zjQQE7Qg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 10/10] sched/eevdf: Move to a single runqueue
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com, 
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
-	tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kprateek.nayak@amd.com, qyousef@layalina.io
+To: John Stultz <jstultz@google.com>, Peter Zijlstra <peterz@infradead.org>
+CC: <mingo@kernel.org>, <longman@redhat.com>, <chenridong@huaweicloud.com>,
+	<juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+	<dietmar.eggemann@arm.com>, <rostedt@goodmis.org>, <bsegall@google.com>,
+	<mgorman@suse.de>, <vschneid@redhat.com>, <tj@kernel.org>,
+	<hannes@cmpxchg.org>, <mkoutny@suse.com>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <qyousef@layalina.io>
+References: <20260511113104.563854162@infradead.org>
+ <20260511120628.206700041@infradead.org>
+ <CANDhNCp1rcNYg29Fe66G6cuqHhDyXQ0oqccheSwfMuiNV-7Bgw@mail.gmail.com>
+ <CANDhNCqWJ=Q3LxazK_ioo_39aFfR+yVbPEV+MQHC8_QvadhuTg@mail.gmail.com>
+ <CANDhNCqsZVsWygBA7m2F_w2r3DnQkFDXfd95Lc4ny-zjQQE7Qg@mail.gmail.com>
+Content-Language: en-US
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <CANDhNCqsZVsWygBA7m2F_w2r3DnQkFDXfd95Lc4ny-zjQQE7Qg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 1244853CC06
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003445:EE_|DS7PR12MB8082:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84ce0a02-92c0-40d7-138d-08deb163f6c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|36860700016|82310400026|18002099003|22082099003|56012099003|11063799003|4143699003;
+X-Microsoft-Antispam-Message-Info:
+	k3wgjbJSehCJdo/ecyr3MndaePtPXIC6noA4qgSnhghcyp4FhNX9FNHMtjlOrHZmII8jgRcNH+V4x/STWhrURUqmwvQUv6JZAevUc5UJ8QEW43EpO7pq/HRiPehqBlpzNLC0LnA2vmCQeh6ACK9liQijeY+Qfo/Wl08TgutajEOPIUugSvtLDh16H8DzoK6S8njnSCKWHOPP6QJCShCXUPl1p66dWRukuplV8gVb/nlbUEEu128R2k3uiYojggLA/YHr3Xf/V/L4gXGK0vBh10SXWIEel+k3qS8/REZ5qF08hN6dqpWodqdRasQEuEHFKkEZPl/s9QfonbSzTtIT8bPod3ieMD286sCiuviamlfS/KlEC8XJhP0e1Adda1EibH4RbKZNEA5DJ/voprTH1XGMizeWVczZvNgjaRPyFOY1m+C3nON4KnfqxOBmy14wz7KXxwytBtuCp55MC283BleC2ZSrFy0y9SBjlb22/cwO3BnfEpMzdeF2pEQY5lt2QoTVGZULlcvRHWBX+NDmHuDP2EHyWiw4wQS/5EV78FJW9vvsIkFCnjtFFVFGGFXcht+PfHqNXwpI+SQVy/OJ7/cRtJ6xwjIGJMjSTy9Qn1NGKXJ6lwDnFgXQ0LrgZ77R4cmqwCP7XMI4nQ64YDDjBRWilifObH9JK35/DVrhk+yg40+iW8ZTXqMH5orn29XWZs6eOiu2ZMymCiNemvWzzIha0XSpFjnDb/ciyPfRyW4=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(36860700016)(82310400026)(18002099003)(22082099003)(56012099003)(11063799003)(4143699003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	38Qf/y+kasLvE0mjJ0EZZOvR0qdFb5oOUbpzTEq+KspMXlLEmUYiTqhX4SGqYjXyXaQ0BiHoH89IP9f0UN7aVhpgGHmrkpbV2eKBWnA44IQL8IZrHcUhKIYVYXkMNN9O4CeliG9RIRUQ7g75ZsDWo1ex+j0Eup/m15osnBt0yH9M7I9lTELop9KyFTTltRORc6TVxnp2ZbaBUtwS2hleF0mDJUv8ufqwMohH/69liXvehXfsPUvlo2oM5n4+Hjq+8B8+r/1X+9wJBg6+ywiyc5Fsz5eNMGItY652rloXtt87xEVqzbaz+GT5GmdWShG817ybaoyrjDyfCTkB8dzQrFIaw4hMK3FSog/yTPrLzvd0F7Can8C1y65oBsK09xhfV5NO0lYp+W94nx/hswmxTuNoYbGpdTXTrrjV6LSN9brgFDd0LgOUj2sqblwAY7IC
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2026 02:53:23.2432
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84ce0a02-92c0-40d7-138d-08deb163f6c6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003445.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8082
+X-Rspamd-Queue-Id: D4EA553D2EF
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-15925-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15924-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:mid,amd.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	DKIM_TRACE(0.00)[amd.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kprateek.nayak@amd.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jstultz@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email]
+	RCVD_COUNT_SEVEN(0.00)[9]
 X-Rspamd-Action: no action
 
-On Tue, May 12, 2026 at 10:00=E2=80=AFPM John Stultz <jstultz@google.com> w=
-rote:
-> On Tue, May 12, 2026 at 9:51=E2=80=AFPM John Stultz <jstultz@google.com> =
-wrote:
-> >
-> > On Mon, May 11, 2026 at 5:07=E2=80=AFAM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
-> > >
-> > > Change fair/cgroup to a single runqueue.
-> > >
-> ...
-> >
-> > I know Vincent was having some perf troubles with this patch, but
-> > booting on a 64 vCPU qemu environment, I'm seeing:
-> >
-> > [    5.688490] Oops: divide error: 0000 [#1] SMP NOPTI
-> > [    5.689457] CPU: 47 UID: 0 PID: 0 Comm: swapper/47 Not tainted
-> > 7.1.0-rc2-00026-g82a8ec6fb3f9 #38 PREEMPT(full)
-> > [    5.689457] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > BIOS 1.17.0-debian-1.17.0-1 04/01/2014
-> > [    5.689457] RIP: 0010:wakeup_preempt_fair+0x1b7/0x430
-> > [    5.689457] Code: 74 0b 48 8b 52 28 48 39 d0 48 0f 47 c2 48 8b b9
-> > 90 00 00 00 48 8b b1 08 01 00 00 48 81 ff 00 00 10 00 74 09 48 c1 e0
-> > 14 31 9
-> > [    5.689457] RSP: 0000:ffffc9000021fd70 EFLAGS: 00010046
-> > [    5.689457] RAX: 000002ab98000000 RBX: ffff8881b8e2db40 RCX: fffffff=
-f83022a80
-> > [    5.689457] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000=
-000000000
-> > [    5.689457] RBP: 0000000000000001 R08: ffff88810cb14380 R09: fffffff=
-f83022b00
-> > [    5.689457] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
-000000002
-> > [    5.689457] R13: 0000000000000000 R14: ffff88810cb14300 R15: ffff888=
-1b8e2da00
-> > [    5.689457] FS:  0000000000000000(0000) GS:ffff888235c2e000(0000)
-> > knlGS:0000000000000000
-> > [    5.689457] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    5.689457] CR2: 0000000000000000 CR3: 000000000304c001 CR4: 0000000=
-000370ef0
-> > [    5.689457] Call Trace:
-> > [    5.689457]  <TASK>
-> > [    5.689457]  wakeup_preempt+0xa8/0xd0
-> > [    5.689457]  attach_one_task+0xec/0x150
-> > [    5.689457]  __schedule+0x1ad8/0x21c0
-> > [    5.689457]  schedule_idle+0x22/0x40
-> > [    5.689457]  cpu_startup_entry+0x29/0x30
-> > [    5.689457]  start_secondary+0xf7/0x100
-> > [    5.689457]  common_startup_64+0x13e/0x148
-> > [    5.689457]  </TASK>
-> > [    5.689457] Dumping ftrace buffer:
-> > [    5.689457]    (ftrace buffer empty)
-> > [    5.689457] ---[ end trace 0000000000000000 ]---
-> > [    5.689457] RIP: 0010:wakeup_preempt_fair+0x1b7/0x430
-> > [    5.689457] Code: 74 0b 48 8b 52 28 48 39 d0 48 0f 47 c2 48 8b b9
-> > 90 00 00 00 48 8b b1 08 01 00 00 48 81 ff 00 00 10 00 74 09 48 c1 e0
-> > 14 31 9
-> > [    5.689457] RSP: 0000:ffffc9000021fd70 EFLAGS: 00010046
-> > [    5.689457] RAX: 000002ab98000000 RBX: ffff8881b8e2db40 RCX: fffffff=
-f83022a80
-> > [    5.689457] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000=
-000000000
-> > [    5.689457] RBP: 0000000000000001 R08: ffff88810cb14380 R09: fffffff=
-f83022b00
-> > [    5.689457] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
-000000002
-> > [    5.689457] R13: 0000000000000000 R14: ffff88810cb14300 R15: ffff888=
-1b8e2da00
-> > [    5.689457] FS:  0000000000000000(0000) GS:ffff888235c2e000(0000)
-> > knlGS:0000000000000000
-> > [    5.689457] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    5.689457] CR2: 0000000000000000 CR3: 000000000304c001 CR4: 0000000=
-000370ef0
-> > [    5.689457] Kernel panic - not syncing: Fatal exception
-> >
-> > Which I bisected down to this last patch in the series.
-> >
-> > faddr2line gave me:
-> > __calc_delta at kernel/sched/fair.c:290
-> > (inlined by) calc_delta_fair at kernel/sched/fair.c:300
-> > (inlined by) update_protect_slice at kernel/sched/fair.c:1070
-> > (inlined by) wakeup_preempt_fair at kernel/sched/fair.c:9193
-> >
-> > This usually trips as the ww_mutex selftest starts at bootup.
-> >
-> > Unfortunately I still see it with the add-on changes you proposed to K
-> > Prateek's feedback here.
-> >
-> > I'll try to narrow it down further tomorrow.
->
-> As karma would have it, this does seem to depend on CONFIG_SCHED_PROXY_EX=
-EC. :)
-> I'm guessing the switch in calc_delta_fair() to use se->h_load is
-> uncovering something proxy isn't handling properly with that value.
->
+Hello John,
 
-So looking at the callstack when I see the failure:
-proxy_find_task()
-  proxy_force_return()
-    proxy_resched_idle()  <- sets rq->donor to idle
-    attach_one_task()
-      wakeup_preempt()
-        wakeup_preempt_fair()
-          update_protect_slice() <- called with the donor's se
-            calc_delta_fair()
-              __calc_delta() <- div by zero
+On 5/14/2026 7:06 AM, John Stultz wrote:
+> So looking at the callstack when I see the failure:
+> proxy_find_task()
+>   proxy_force_return()
+>     proxy_resched_idle()  <- sets rq->donor to idle
+>     attach_one_task()
+>       wakeup_preempt()
+>         wakeup_preempt_fair()
 
-Basically we end up in wakeup_preempt_fair() with rq->donor =3D=3D
-rq->idle because we earlier called proxy_resched_idle().
+After this point, I would have expected we called idle class's
+wakeup_preempt() since that is the donor context ...
 
-Without proxy, if we call wakeup_preempt_fair() when rq->donor (and
-rq->curr) is rq->idle, we usually end up taking the `if
-(test_tsk_need_resched(rq->curr))` early exit and we don't hit this.
+>           update_protect_slice() <- called with the donor's se
+>             calc_delta_fair()
+>               __calc_delta() <- div by zero
+> 
+> Basically we end up in wakeup_preempt_fair() with rq->donor ==
+> rq->idle because we earlier called proxy_resched_idle().
 
-But with proxy, rq->curr isn't idle at this point. So we end up
-continuing on. Despite the se_is_idle(se) checks (where se is the
-&donor->se), those don't catch because rq->idle (maybe unintuitvely)
-has a SCHED_NORMAL policy.
+Could you check if following makes things better:
 
-So we end up getting down to update_protect_slice() with rq->idle as
-the se and the idle h_load.weight is zero.
+  (Only build tested)
 
-Not sure what the best approach might be, but adding:
-  if (donor =3D=3D rq->idle) {
-    /* don't give rq->idle slice protection */
-    preempt_action =3D PREEMPT_WAKEUP_SHORT;
-    goto preempt;
-  }
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 3ae5f19c1b7e..77f4ebe8f5c7 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6653,6 +6653,7 @@ static inline void proxy_set_task_cpu(struct task_struct *p, int cpu)
+ static inline struct task_struct *proxy_resched_idle(struct rq *rq)
+ {
+ 	put_prev_set_next_task(rq, rq->donor, rq->idle);
++	rq->next_class = &idle_sched_class;
+ 	rq_set_donor(rq, rq->idle);
+ 	set_tsk_need_resched(rq->idle);
+ 	return rq->idle;
+---
 
-similar to the `if (cse_is_idle && !pse_is_idle)` check seems to resolve th=
-is.
+I'm just getting started for the day so it'll be a while before I
+actually get to test this on top of flat cgroup bits which I haven't yet
+run with SCHED_PROXY_EXEC enabled.
 
-Anyway, if you have thoughts on better approach, I'd be happy to work
-up a patch to add on top of this one.
+-- 
+Thanks and Regards,
+Prateek
 
-thanks
--john
 
