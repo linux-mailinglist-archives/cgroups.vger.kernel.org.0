@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-15953-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15954-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QL0tAl0+BmqmggIAu9opvQ
-	(envelope-from <cgroups+bounces-15953-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 23:27:57 +0200
+	id 4N/pMmA+BmqmggIAu9opvQ
+	(envelope-from <cgroups+bounces-15954-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 23:28:00 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C3A5470B6
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 23:27:56 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55EB15470BD
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 23:28:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 75B853021E64
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 21:26:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 465843038ACD
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 21:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E3F3B8406;
-	Thu, 14 May 2026 21:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86083BF696;
+	Thu, 14 May 2026 21:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JCa/hBaY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mU9vmmce"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7AB25B094
-	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 21:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD6B25B094
+	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 21:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778794018; cv=none; b=WEdphJpC5FmVaawZPqWZibsU5d/YshL62pzUfIj60JJMqQZNxop1bbGuIsfRT5X/mi3lnH3bVQHRntmMe2paByUR45LIHAZaNn27HA3BLPwE2ZsB/lEYqo5p6Dza6DG7QKYv4JRF0cBVqG5xr8/WWcAef0CS9zMUICfq2QHAfEA=
+	t=1778794023; cv=none; b=nbEGoW5NGr49Jk9+TqD7yPLOnfPzZcISJNN4K2mE9ygYQ73hs7jGhpl4ikSHCeeYcRnqG+vKwzTMwAIm1fS/DRatK8797NYTXr+ZqYjY01auH/f1jpljrEGa2gW8giQTJBWLqXZ//lUt7tRMJ3LBRVR8jStdhDBFgJAB2dvDtH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778794018; c=relaxed/simple;
+	s=arc-20240116; t=1778794023; c=relaxed/simple;
 	bh=ICqq6yT6L0OzuLwOLkwbzZUQ1wutvXU4NnOmK1n5JFc=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=WAfy+KN3P2MTgMxl1hhQTz79H0DiJvzvkRwAbtwXNBnc71xxpxFs9CffMWwEqg45pqA1vIrZWJZ3P6SfXx6fI7hF9VDF5illYefjeaugTutImHs/iRTOYY1WlyZxawIpPDQdqYpn3nbY/f+85PtJUJT8Wyb4HU36uzbGUivA/Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JCa/hBaY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B1AC2BCB3;
-	Thu, 14 May 2026 21:26:57 +0000 (UTC)
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=EeOPbVi6zPInoONpiXtL7YQuQy9e565S4wluhbmDQHlm42q6drv5BueeCvvWFjxXoJ0/KcTDc3uYtT62vPqqbw9ipiY0kaT0tZeyQDmRPmxCchybVPMdMk0yiguTO96bfrwJL3WgzMCFZwMk+ERWvleCTfoh6uI64XoJ/zEAPEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mU9vmmce; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 331EDC2BCB3;
+	Thu, 14 May 2026 21:27:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778794018;
+	s=k20201202; t=1778794023;
 	bh=ICqq6yT6L0OzuLwOLkwbzZUQ1wutvXU4NnOmK1n5JFc=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=JCa/hBaYstQu8mlPmiFKdz3Tn/I/TpXrkdVY+QLN6BguNlL/GrZOUq2+hxCj5cbRG
-	 z8gOAe77YZmmImPkShlCGoRH3C/i18bdXIAKh3BBY4u14gp714Z8Bd+YR3HNIHnYQW
-	 YzOEakFnO128VnP+gJ8cVBhc1y6rKwXD8xcqdxiAeCWOK032QgTlG1zt00vYSozT0E
-	 N0sSMc6GRQ2oUo76XhZQg4W2wdYrDeAkQ7ozuDN1SyDvOog+iTy50h67eNlxBd05o5
-	 4g++KNUuphevX3va6myPIX9Vf+6uJ8fR5VUlhY0bpl9nn0uVGXgyMJwW7Ytn0hpVne
-	 9MbzQv6sPW2qw==
-Date: Thu, 14 May 2026 11:26:56 -1000
-Message-ID: <1d47de9b305b1576a24c242aa9e72c28@kernel.org>
+	b=mU9vmmcerkvEbDgsSovMmNra+bNI261jPWBtQB43Zd1kdXrHzqXRWPl/XzbbRO8qc
+	 g4dWlQeIequua16/Ze9P4juMNC5bodpVgwfbPFeVmYKt9Ekvw1UFAcx18Y6v72NMbR
+	 L7BKZbULL3MVofMLjMFz+PVomDljSNh7FyJ2z2rMY9uFNvJVbFuC3axNd2fnev2m6g
+	 /Hmzok1BERHkyQOwZdestfS4TJ3Yd/bZdf4zr8FBDyEKvvNP3CCFARH/8zEraE7NbM
+	 PaImAarP1k4j8O6odAcHNykmGW9TG4UaTGHjGGE/yJwdoyzDgdgpJjw1vmQsN8gnOO
+	 s8kRUxQlCuQew==
+Date: Thu, 14 May 2026 11:27:02 -1000
+Message-ID: <895a3faf86b3f9661fbcae7a8a91f318@kernel.org>
 From: Tejun Heo <tj@kernel.org>
 To: Tao Cui <cuitao@kylinos.cn>
 Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
@@ -56,13 +56,13 @@ X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: 91C3A5470B6
+X-Rspamd-Queue-Id: 55EB15470BD
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -72,10 +72,10 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15953-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15954-lists,cgroups=lfdr.de];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
