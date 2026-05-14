@@ -1,232 +1,149 @@
-Return-Path: <cgroups+bounces-15927-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15928-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6IdJBT5LBWreUQIAu9opvQ
-	(envelope-from <cgroups+bounces-15927-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 06:10:38 +0200
+	id GCWyOBBPBWrcUgIAu9opvQ
+	(envelope-from <cgroups+bounces-15928-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 06:26:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D13153D8E8
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 06:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D24C53DA6E
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 06:26:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BD58D3031CE8
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 04:10:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8B4B83032F73
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 04:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E75EE3A7F47;
-	Thu, 14 May 2026 04:10:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4EE3A6B9A;
+	Thu, 14 May 2026 04:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uber.com header.i=@uber.com header.b="K8c0tnOQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a8fOUTSe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED312DB7B8
-	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 04:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778731832; cv=pass; b=ldZJl8+Bz/ybuFwwUWKDOPurKUWYtvLyjNwMK2XCidgSmNpawIkMw/cdmlp3zNrJs+0pjYAPp7tFrjYYTbMmphkc/tJHEAz2ivjrGUNm4tzXqV8ir+ogxEeNeFgW+QBE0wcjb/FEBH4zSpnqp39PDeFygQWNVcSwIs/TIHTRMi4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778731832; c=relaxed/simple;
-	bh=JVPabDDdvKrn7EBLPEmOyiSJdaBZOZuyzIIogirfsgk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M1hCnLBLbskgnQis2k9k0Kdy9ro7eh4YKdpHfJAQVP9KaL+L9joK/vC9PgDjq59PswWRZNlTkDRBZr4g4j2kTFPPAU7pxrrVyv/VhIkFOa0ZA1ZNmUsiRyF+hUG5iNVY70607wD+a7yICzIPmVHW2FDyGfqweJYadt/xsRYKB+8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=uber.com; spf=fail smtp.mailfrom=uber.com; dkim=pass (1024-bit key) header.d=uber.com header.i=@uber.com header.b=K8c0tnOQ; arc=pass smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=uber.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=uber.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-67c4aaf76ecso1213214a12.3
-        for <cgroups@vger.kernel.org>; Wed, 13 May 2026 21:10:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1778731830; cv=none;
-        d=google.com; s=arc-20240605;
-        b=UH/u7YyRNPA9QlJj22Y4whnWXKTLU9ke6skhGysqX5evSnFpElc8jg/LH+BdZbdjHi
-         SWU6lTq2mmRIUUZr1t1B18dBrn3AoZeLSLm9w+M040gMCxe266pPwncM++7vW2qO+rTl
-         VaXPQYkEprEbX0DAjA7dbFY/Ai+bByVK9RBk8fN/SBl66yFxHtwKkx3kcUXrM22zl2v8
-         210GAsp5xD2+NHvD1tpcY4sXSwsRa6v0M/zpBlMgDHbAU25wyZdA8upPvDaSlVIeswHM
-         Clj0gmi5D3ffNG93zoIetDsaU38bDcpk2LCv/SRn1ZdaGeAIm/DsugvsIbwaFq14fL3z
-         RzjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=IZyvinl3RBbw0wPTvpYB5i7OkQNZ8q30qzuT9enN60E=;
-        fh=DMCDlTe0Ic/oXZZET55bqoLBfPHZYdr8CDuZNXHRtwQ=;
-        b=CDZYtSCSK4KmpJfjOYsSS0ATuWTghzeO4BwxjKBgWyRgMOgKm04ncJDuUL06LKa7ht
-         Vllk8iqXy8A2Kz6wfKZ3DtuKGkMen4Tc9O2siuLeHd9CN3emKGHTY8l4F5fccwLX3jk/
-         NnT3njJH6tO+1vTZ9cOzSpF4bJ08GqEuo3QucrDCIHcI/EnvcSUuFBZOFukhPCHex7Qa
-         sIVyXCiWAuImV9zBYNUU1X7gO7bjfHsYSNiVGwZtVtRhMGOcGw1H6EubiqzFpAKJxxRS
-         8f0dEvmk7wrK1k2gywNgED2g9xl4iQ+JeJMmNoFazvZ9g6/1jDFLycyQ8UnXVRQmwQzT
-         C84A==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uber.com; s=google; t=1778731830; x=1779336630; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZyvinl3RBbw0wPTvpYB5i7OkQNZ8q30qzuT9enN60E=;
-        b=K8c0tnOQLhYaTS8okfAQ5cEJTL9+VNQ4KIPaZLw+Y+RLY0pCKPhN+4bqsoolkPRuY/
-         SfHtq+uGC2DNpQ3v//a+5HWYEiuGCQvGU50GuudpoNnJVuJJBKqAf8nwkqcVThQ3pnm3
-         S0sM7zKm/ChGa1icP4xnRYb5iz61VMJq4dWUQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778731830; x=1779336630;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IZyvinl3RBbw0wPTvpYB5i7OkQNZ8q30qzuT9enN60E=;
-        b=CwrhiAiet/vF+9rJ7HNXQfk7Hex2fFNB3RAif4+qf1Gr01OlDt1ZfR/bdlkZru+7Se
-         UBoeCLOE8bmvOWv1I/iEEZITi/sr7KhBYUoNsO6wl8JU1PUgwnHA8E+BSdbGRNat/1Wi
-         3MT1Na/4cabVzCCflE5C3UtjjTa+PwlhUqVDVk2wGFQ92vPxtO41Q5+zIleMTIbFn6B3
-         Fp2gsLAKrm+2AHazM7Mn2e/vtl6phz6PiBCXaAemCezVAZCUCP4GJu9giv2vV2estmRF
-         sxeiEYJ3Kq/K5fVVh/f76ny+0Js6gHI1Xm5QLvLIbNgkNMYEjJj6YFV0xN+xMETa7dF0
-         W4zA==
-X-Forwarded-Encrypted: i=1; AFNElJ/btQ5CuDO3JD2S0v3zkSEGwMWsDYhViFnKNbBQBF4RNPEd8UDd0YFJZKOrPDy33ISvDQMgiEX6@vger.kernel.org
-X-Gm-Message-State: AOJu0Yye2dfmqIVPHPit+TVj9yudChfmx7leOSmifh/AIRas0RXqP73J
-	BJvkRx4SXArS44ibYX9r8yRZ7mxgDvfve/pkyq3rCha5e7gaYw6AsAqvwxrkbyCl2KoZL7n49Ey
-	WBufzwGFJdFwfKfvfSwXfgRXaEgr4JqG8lJVdLM7W+w==
-X-Gm-Gg: Acq92OFFCanqO6XVZU+PzUD3Ta5j76VLJgEzqRoI9GiscBvHEPy2MmdEf5eOL2rioB5
-	g4wil1l97NKhAvoBPfI2GzVx6zOKjHTsIQOkbZwc7C8mNHaLZeMqCLhSlRLJGUPT8xWC7pK0RMx
-	Gt1jU1yaHBYhmqKYwcqEeGpkAgbLkHAapAkT4GPrapZiD2Y2pzAHJd1Mmuj4Vqbvxu/dIzN7FtE
-	qrfNQv614NV15xj4YKOg7lIOqgoJtdwo8UgG//8tTxPQ0iR3p4HFrYvPNZkqkxPIJ+/su9XdmbD
-	6CoO75OOakEeVQ/BgtnGFvqT6kCwctfkOX+ZUBhg
-X-Received: by 2002:a05:6402:4284:b0:67c:2674:a57 with SMTP id
- 4fb4d7f45d1cf-682a64e44ddmr3155758a12.0.1778731829214; Wed, 13 May 2026
- 21:10:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCB3836604C
+	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 04:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778732808; cv=none; b=imbyLgpnaF92k8kYheZHp2hq5Kwe+faoAOba+bNUvxb+Ayt3LCkEz35y60bVgtC6HlSVTqPzjPCdiwSP+AwFqJf7jyGpv4F8+N6+Rl0Zeb7B601SDACL/Y4Vue/h/LyPskTRAepgbaTGkyYUJzn/5qibucNQeuIWlA6l5bEY7nw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778732808; c=relaxed/simple;
+	bh=H+QTUiaHx8+v++cYc5L7w1Z6hyfvNCmGKDJXCtgS/l0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bfD4mwFpK22fyjhJnaxbbn3ha5Xe+iWohdsMfJQxn7yjOkmELdtumClViJKbhAML3C96EMrcIj6WaaBESJ8YoqkLDUxyPp0Kp1bhp0mGfSCcmg54DMQ9tRjvfNWyPwGxyDj4IY6ngNr80k0GmfbedtmF7tcNSBdcmwSiTL0ikXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a8fOUTSe; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1778732805;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rsS1TwMGUD2Gx+sJxdKIX/0hmaBzXUjdGlntTlTmgZ8=;
+	b=a8fOUTSehVHXVkTQ7qWf+fLEVYQUhnfiXy6ctMujxBc2Hb9mT7sPZDzfnuEQKqZx9Yiegy
+	PBpAOz3Jzai0nSzhMl3uDh7CA+1ub2rwPMTwV9HQJbM/KBQQgbr27CMxvEdK0RftHh5FeP
+	EIrPOCxIY4jk03w1lD1nBN5nRNdvBwM=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-680-t0OQj1KpM8yQy6SBBPOmDw-1; Thu,
+ 14 May 2026 00:26:42 -0400
+X-MC-Unique: t0OQj1KpM8yQy6SBBPOmDw-1
+X-Mimecast-MFC-AGG-ID: t0OQj1KpM8yQy6SBBPOmDw_1778732800
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F0F85195609E;
+	Thu, 14 May 2026 04:26:39 +0000 (UTC)
+Received: from [10.2.16.30] (unknown [10.2.16.30])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 405061800347;
+	Thu, 14 May 2026 04:26:36 +0000 (UTC)
+Message-ID: <bda91fbe-e14f-45b1-8c61-27f16122bcc1@redhat.com>
+Date: Thu, 14 May 2026 00:26:35 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260501-rfc-memcg-dirty-v1-v1-1-9a8c80036ec1@uber.com> <pbwzmyglpz33d3k63aopi5vlghz4jmur2k2g4res6mhktuujhh@rmqooz6bqaao>
-In-Reply-To: <pbwzmyglpz33d3k63aopi5vlghz4jmur2k2g4res6mhktuujhh@rmqooz6bqaao>
-From: Alireza Haghdoost <haghdoost@uber.com>
-Date: Wed, 13 May 2026 21:10:10 -0700
-X-Gm-Features: AVHnY4J5GZ7JBzfRkA-sfCo1uEK-ixoCcB3uvVHBJUoZ4dZkaVGCZkTX2MJ_bAU
-Message-ID: <CA+w=M=RkewNB0Fc=KNXTrOnt-YABFy+7ZALLmp1wQOP5k_=13Q@mail.gmail.com>
-Subject: Re: [PATCH RFC] memcg: add per-cgroup dirty page controls
- (dirty_ratio, dirty_min)
-To: Jan Kara <jack@suse.cz>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Kshitij Doshi <kshitijd@uber.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 6D13153D8E8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cpuset: Fix multi-source deadline task accounting and
+ bandwidth bypass
+To: Aaron Tomlin <atomlin@atomlin.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com, chenridong@huaweicloud.com,
+ neelx@suse.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260512010341.101419-1-atomlin@atomlin.com>
+ <ddc8040f-2186-4c72-a69e-26b388cb7249@arm.com>
+ <7ae7fe29-6405-41e3-9f3b-6c1d0255dc9e@redhat.com>
+ <djbtucfusnpngys2nritqsi7stjq243zchel45ahfgaruba7el@4rtk534mfq4j>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <djbtucfusnpngys2nritqsi7stjq243zchel45ahfgaruba7el@4rtk534mfq4j>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Rspamd-Queue-Id: 2D24C53DA6E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[uber.com:D:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[uber.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[uber.com:s=google];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15927-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[haghdoost@uber.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[uber.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15928-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,uber.com:dkim]
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Wed 06-05-26 16:21:00, Jan Kara wrote:
-> Things like motivation actually belong to the changelog itself, measured
-> results how the patch helps as well. On the other hand stuff like history
-> is largely irrelevant here, frankly I don't have a bandwidth to carefully
-> read the huge amount of text LLM has generated below so please try to make
-> it more concise for next time.
+On 5/13/26 7:39 PM, Aaron Tomlin wrote:
+> On Wed, May 13, 2026 at 07:19:18PM -0400, Waiman Long wrote:
+>> Multiple source or destination cpusets in task migration can only happens
+>> when the cpuset controller is enabled or disabled in a cgroup subtree. If
+>> there are DL tasks in 2 or more child cgroups, enabling or disabling of the
+>> cpuset controller for those child cgroups may lead to incorrect DL task
+>> accounting. This patch will probably fix the DL accounting aspect. However,
+>> there are also other issues unrelated to DL tasks that need to be addressed
+>> as well. So this patch is incomplete in this regard. I am working on a patch
+>> series to address these issues. Hopefully I can send it out in a day or 2.
+>>
+> Hi Longman,
+>
+> Acknowledged.
+>
+> Also, the Sashiko AI review reported: "TOCTOU race on dl_task(task) during
+> rollback causes state corruption."
+>
+> A concurrent sched_setscheduler() could alter the scheduling class of a
+> task between the initial pass and a rollback. This assertion seems valid to
+> me. Currently, neither cgroup_mutex or cpuset_mutex prevents scheduling
+> class changes.
+>
+> Should I let you handle this too?
 
-Understood. Will trim for the non-RFC posting; apologies for the
-volume.
+No, you can handle it if you want. I am more familiar with the cpuset 
+code, but scheduler is much more complex. I don't think I have enough 
+understanding of the code to handle it correctly.
 
-> ... I quite don't see how a multisecond stalls you are describing would
-> happen [...] If we are below freerun in the memcg, the task dirtying
-> folios from that memcg shouldn't be throttled at all, once we get above
-> freerun we throttle by maximum of throttling delay decided from global
-> and memcg situation [...]
+Cheers,
+Longman
 
-The stall is reachable even with the victim's memcg well below its
-own freerun. The freerun shortcut in balance_dirty_pages() is an AND,
-not OR:
-
-  if (gdtc->freerun && (!mdtc || mdtc->freerun))
-          goto free_running;
-
-Once gdtc is over freerun (because the noisy neighbour pushed it
-there) the shortcut does not fire, even when mdtc->freerun is true.
-After the shortcut fails, the per-task pause is computed from the
-dtc with the smaller pos_ratio:
-
-  if (mdtc->pos_ratio < gdtc->pos_ratio)
-          sdtc = mdtc;
-
-When global is the worse domain, the victim sleeps against global
-state, not memcg state.
-
-> So can you perhaps share more details about the configuration where
-> you observe these delays to innocent tasks due to another task
-> dirtying a lot of memory? How many page cache in total and dirty
-> pages are there in each memcg [...]? Is the delayed task really
-> throttled in balance_dirty_pages()?
-
-Yes. Re-ran the reproducer: stock 7.0-rc5, ext4 on virtio-blk
-throttled to 256 KB/s, dirty_bytes=32M, dirty_background_bytes=16M
-(freerun = 24 MB), noisy = single fio job doing unlimited buffered
-randwrite, victim = single fio job doing 4 KiB sequential write
-rate-limited to 500 KB/s.
-
-Per-memcg snapshot during the contended phase, ~10 s into the run:
-
-                       noisy memcg     victim memcg     global
-  memory.current        47 MB            21 MB           --
-  file (cache)          38 MB            14 MB           --
-  file_dirty            26 MB           1.7 MB           27 MB
-  file_writeback       1.5 MB           4.0 MB          5.3 MB
-
-Victim memcg holds 1.7 MB dirty, far below any reasonable per-memcg
-freerun. Global dirty (NR_FILE_DIRTY + NR_WRITEBACK ~ 32 MB) is over
-the 24 MB freerun ceiling, driven entirely by noisy.
-
-The victim writer (fio with psync) is in fact sleeping in
-balance_dirty_pages(). One stack snapshot during a stall:
-
-  [<0>] balance_dirty_pages+0x5c5/0xac0
-  [<0>] balance_dirty_pages_ratelimited_flags+0x2a1/0x380
-  [<0>] generic_perform_write+0x194/0x280
-  [<0>] ext4_buffered_write_iter+0x63/0x110
-  [<0>] vfs_write+0x28d/0x450
-  [<0>] __x64_sys_pwrite64+0x8c/0xc0
-  [<0>] do_syscall_64+0xfa/0x520
-  [<0>] entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Sampling /proc/<pid>/wchan at 100 Hz across the contended phase
-yields the histogram:
-
-  104  balance_dirty_pages
-   88  hrtimer_nanosleep    (the fio rate-limit sleep between writes)
-   12  RUNNING
-    4  p9_client_rpc        (virtfs, host-guest filesystem RPC)
-    3  d_alloc_parallel
-
-The vast majority of non-rate-limit samples have the writer parked
-in balance_dirty_pages(). Victim per-IO clat in this run reaches a
-3 s tail (worst single 4 KiB pwrite blocked ~3.0 s) while its own
-memcg holds < 2 MB dirty.
-
-I'm happy to share the full traces and the reproducer if useful.
-
-Thanks for the review,
-Alireza
 
