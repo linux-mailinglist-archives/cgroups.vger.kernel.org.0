@@ -1,223 +1,217 @@
-Return-Path: <cgroups+bounces-15935-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15936-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YP+4AAl5BWoaXgIAu9opvQ
-	(envelope-from <cgroups+bounces-15935-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 09:26:01 +0200
+	id qLtjBOB9BWrjXgIAu9opvQ
+	(envelope-from <cgroups+bounces-15936-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 09:46:40 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B89D53ED87
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 09:25:59 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8876F53EEF3
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 09:46:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5F1D9301BC12
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 07:25:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0312E300C000
+	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 07:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B171F3D7D99;
-	Thu, 14 May 2026 07:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852333C553A;
+	Thu, 14 May 2026 07:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b="grByfLhn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LnuxCmOE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from AM0PR02CU008.outbound.protection.outlook.com (mail-westeuropeazon11023085.outbound.protection.outlook.com [52.101.72.85])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C6211DF748;
-	Thu, 14 May 2026 07:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.72.85
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778743557; cv=fail; b=cnkWxMOGmN98oFFsedOODZqNOVEwFhFsSdjU39yRvQLuq//hVoqeXfkvjUyKH1kyTyXaqHi72mGYeydx6yg/YV+590TZ1MwxQGRWlc6iz3OdshW4KERvZmF9FB5JBi8C0EQmzJrzUl1s4a5kUplCeDHe4sI9FM8npGHo5X8nOV8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778743557; c=relaxed/simple;
-	bh=mkdr3WANnI8pFQ/lOJS2yZPi/5I7wgVHVvP0wLox1Yo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bQwLEXlwi3aspGoCIkyx1J5eFwZFloKBwTsCZBhEDjMpRcicweuNj2SCEaunx7VbKzVpXtDjVQNFrUw2aFaEnySW7KW0eokJZ2ejdkioomcV2cexxma1+dOMPD5btspwmyJNpMmfdaWjS3g29XMKmXRPkzxfpg16rwSaCE5P5qk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=grByfLhn; arc=fail smtp.client-ip=52.101.72.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=santannapisa.it
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FfsmLQLUJQXYxiNYGKjiTd0X5P1DVGsQFNZnPd56JazZhER5nf/BZ2wX8uerHRBsNnEmo2Bbia66jVXc6K0Myd2Hy9r8u9jzDiyn3F2FH0DYgu8l1Srl2GmuhiOpTx9pfGQqefZw0PJwHNYacWj03gjy7BfAtYDzkjdnZV53uZ8ADwGZ8xXOxPUxpPvZnjrDC7GvBgoTnsaiZGcedvxE/JHmPNw0NJeSXINS+bujv15eKf04IMk6nIQvZm+cYWZOz+c4BUh+feYwmGVzmV6SCC7b/+qoLcpu07Wur2AxUs93ucrhDvaT5vDI0Niqg03d60q4KjMqNH+aEQENQPJ0mA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=egnNFI5eQBHvXMIzwTeDtQbJyRE9lwVLcV5X3Of5p0I=;
- b=tmyAaVCejpIP5msA4iGXPB0TVbPQ5ROn51gGK0kZ9zCxg1nFt+CNaJypJoThdtYsAwTnRD5FVWfFiKtxjavRMDeHC4z+FaSqz0S5zTlz+N9wvANOd7jVzbTPJhTF0uBCeUdoz2ESIpBUsz9Vx1ET5NeqDE2wsHo6s1tzikHO54M2kG4PJomVN73h0pwPCfSf6L0u50+jSpip7NbqK/oP8LoYAvwzG8/SQqQ+g+DCMPnlE0UsMTBPV/hfnMpJbMBCXa+xAsses5WtGx2erIhhm5R49r8LiQkhk7SMaJm40UUCGl1yxphgktSwM1Jq0gBQUqzrzUTbWlbn3xjVU4+O/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=santannapisa.it; dmarc=pass action=none
- header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=egnNFI5eQBHvXMIzwTeDtQbJyRE9lwVLcV5X3Of5p0I=;
- b=grByfLhn4+Q56YTR9P3qu7sdqDCmmFTj9iH79c6WYUVH3KewCd9Os0d2/XR0YJK+X1n5VqsQCJaoCKtkdWVSMVWxrfklWm6qxKYRgiwv6LkYXNbdgZaa2VKq29bRfY14w+mpGPG7WqUArXZpYJY6BWPfoM1tacaQIo/LDWpiGn0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=santannapisa.it;
-Received: from PAVPR03MB8969.eurprd03.prod.outlook.com (2603:10a6:102:32e::7)
- by AS8PR03MB6984.eurprd03.prod.outlook.com (2603:10a6:20b:29e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9913.11; Thu, 14 May
- 2026 07:25:49 +0000
-Received: from PAVPR03MB8969.eurprd03.prod.outlook.com
- ([fe80::26c1:111c:f60d:f9b9]) by PAVPR03MB8969.eurprd03.prod.outlook.com
- ([fe80::26c1:111c:f60d:f9b9%6]) with mapi id 15.20.9913.009; Thu, 14 May 2026
- 07:25:49 +0000
-Date: Thu, 14 May 2026 09:25:46 +0200
-From: luca abeni <luca.abeni@santannapisa.it>
-To: Tejun Heo <tj@kernel.org>
-Cc: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>, Peter Zijlstra
- <peterz@infradead.org>, Yuri Andriaccio <yurand2000@gmail.com>, Ingo Molnar
- <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
- Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
- cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies
- of RT cgroups
-Message-ID: <20260514092546.4265d486@luca64>
-In-Reply-To: <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
-References: <20260430213835.62217-1-yurand2000@gmail.com>
-	<20260430213835.62217-21-yurand2000@gmail.com>
-	<20260505151523.GF3102624@noisy.programming.kicks-ass.net>
-	<afpLir8tD0Ycb3D8@slm.duckdns.org>
-	<20260507163058.2c435922@nowhere>
-	<agIfvZuvXEtK45em@slm.duckdns.org>
-	<c446b9be-38d7-425c-9ca8-eda721fe1c9e@santannapisa.it>
-	<b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
-Organization: Scuola Superiore S. Anna
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.50; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MI1P293CA0014.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:2::17) To PAVPR03MB8969.eurprd03.prod.outlook.com
- (2603:10a6:102:32e::7)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EE23B5E15
+	for <cgroups@vger.kernel.org>; Thu, 14 May 2026 07:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778744792; cv=none; b=dlQhZkk1ju+96cUbkqgH0kTg95kB1J5hQ/HFKIM8DJvy5riQFpyimHl6hCJK+eDQQ1pv/+4BWSlL9s0zD8V+cr/J0WXM9YhCR1e+abiuPIgBiHdj/VK9mLcRFlgCgVU+THpgcx6mu/wv4240VCfgMU0x1CICWs9GrZb3zLnZA5U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778744792; c=relaxed/simple;
+	bh=QTXfmFdDXFBYEfG6I6dRnP123e7jkN4kr88HIs+Au0U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BvT0fEw32fgZTuHdGv8BtZjiOwb4FJopp27YWogTPIO3lO+vpoHss4m/M5svYwjdk2om5JlCB2KdLbJDZKjkC/Inwn+qEQPxcp90Axte/P5gOo/tr9pt0gSe5rgDP96dgp6K75Ho4pLhGxioVNgf4zYYmdu50x0VK3WZOVMHRwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LnuxCmOE; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <46e9f5cf-34cb-466d-a53a-5778768af4d9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1778744786;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7BXh7Wq3QIg5RrVVGGpiWPGFI8Di4Dx49OSkadeSPsk=;
+	b=LnuxCmOE/Gt9rOs6iQDfu++nrJdD3Dr7snau9TxwVon6wjjgXBsx51tlvO4SmGP6EL18mF
+	UfdVt2E/i4rSLYRU1nZWUUFNi7Qc81c236yHMNGcbcyDu4gUdcTv30xImxIisvC0R9zWkW
+	Qx+0qbUp/x29Tjx6uP8IyFf1sgCBAfA=
+Date: Thu, 14 May 2026 15:46:06 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAVPR03MB8969:EE_|AS8PR03MB6984:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3481ff81-6476-4f24-7e6e-08deb18a0591
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|786006|366016|1800799024|11063799003|18002099003|56012099003|22082099003|4143699003;
-X-Microsoft-Antispam-Message-Info:
-	XMD8lWuba6vS15xobRiwM9z6p7wi7cSIdJ5B1ajM6w3NIZEUoJcDuK+pkwuh/NALxSOPR35bthQkPu3Zufi58pQyFSfr189ssEQT6YXrrRxKqOSzAA9gdPpD1v+7SBN8r6GOLnE62E2zt081ycSbKgu+5hpq/YdbHs0QSyPmR8dJNJ+H0aQ0sXujjLsnIuEN8SUKmZkMzRiJXkyz7v/s3HM0kX/Qt+T1yo+nWSaGg33uvYL0AlmOSVqBtshVumymQBMHNLhlW5qMrm6rIKzZHyQb0zq7xnpEafQgTCP5StBdYg9eTSrQnlv/U1oGMBbWQF+mt4IWKSzNo/05teK1+GEp1OfYkaR/tMmQJtoio3AzL/LkNXTX9snI49ttt/5hGgqagxDHpNDUkwUAwlR7CKdlLFZ+yDnrEje0czT0E5Nq2X3pdqQfOwMhsexkm0COMaBTBTEPU0+hs1+gBLhkcWxLPb3SXSmCHCNIvLjaMFbH23/eB/kW69qkYlKLJJEc5o2S+Xc+Y6QGV/YF1ULOgoIoI2/ZVa4X7RTRqCKKnhEr34J1cr7DhDs54kj1YvgCRCj8Kyjb1b20K2XlcLp80YA6sz8CUmpYMgfBW/K8jLHv+fBIfZLqqn0qlciNrJ465eJ4+DtNPMwgRgtesDPJhgOy2AX08uPSrgxr88AEWodC417nFbH2viHqAq8ybfjG
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAVPR03MB8969.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(786006)(366016)(1800799024)(11063799003)(18002099003)(56012099003)(22082099003)(4143699003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?nBp7SjuhqMVgmVka3bafOHLS5GOF4g05f3IiiPzqngKUzj1SrcOyB3RHGh6/?=
- =?us-ascii?Q?XymwjjqemAJBMvgQRuhBELX4RzxuUNVC6QmGnVkyNtoxKlLCSUHFPL4E1VMC?=
- =?us-ascii?Q?KRu/jTHVgZr1uVrE1UuC7b0yTyTjgva8uiisJJk2jeyfkw9oB3Q6xZBDyr22?=
- =?us-ascii?Q?GY8cjFW2M2yOEmgIQMBzNfWefiLyOqbQM3YSjKYI9znQxqk6Xeu28xV8FLds?=
- =?us-ascii?Q?JQqnjbp873mFCkDW/F31HfSv+51JBTuPGty/DL0CKW46oDJw4b8RmlhL5cG9?=
- =?us-ascii?Q?PNShnH3Z7GuPeOnlgOeJ4uoBUg1w1NfJuxlzytRgo7X3+/Pd0r0cQ6PCGG0H?=
- =?us-ascii?Q?sv9n0Et1TmbKFH5t6V0DENqGX3009hfA6LehE+YmmPx0vAeSafskH/GB9ndH?=
- =?us-ascii?Q?vEXnhNnyEHaYuPbX+0VZ7rtDCb2XgyCtfi58qCAy0KdAOX4aguLa0jzo65Kr?=
- =?us-ascii?Q?IYRUnKe/KR6dUVeZ6wJz+RJVw1im5LnpWORbGxeZTCxJGPEozWsvhpv4rPep?=
- =?us-ascii?Q?/e405IsyPz4ayxILzGMUJMexVHKBdGY2HaEm72SX4d6T8eFaszyBFoBrTmU6?=
- =?us-ascii?Q?ZHUsqJnijpGVWGCK/KUxxqMW//fngi+9+W3qLxWQhd7OPZg3y6QrEO3praR/?=
- =?us-ascii?Q?+pLPmIBZqiaeXz0B/+RcuuzK2udi1bRHJWuXRfyiEOGln1C+57nJlsxMBwFH?=
- =?us-ascii?Q?eR9Uv/6GNTvZIVzB662asSBnzi+Tx/S2JSxndxktxXlqrRCvp/fp0N4MMOUE?=
- =?us-ascii?Q?vyckhNHjah8JqZUMvPTBDgOVFIrs9GPDAf4d+9aIO2i4v6f6YM/CicGEv5Lu?=
- =?us-ascii?Q?7GHzRbqYf0zfuCoEKnzsyrT/eTmy8d38ufoEdxe848UwKUK+doQIrN/kpkNc?=
- =?us-ascii?Q?PGio9BZuoQBIxmYuDMcdpajS41XM3AodTs0tmqzy7TnrM3SF62niID8Yffr3?=
- =?us-ascii?Q?NaWcHRpp4ZwKhAFVvWAHvKKScdVe5WykM4/abFRzvCVFaGkAC7WZNggFaGV4?=
- =?us-ascii?Q?Ra69z2iqnnt9qnAhX+BHWp9fvmAOtTfJhwRlxV65MdXaelRcDKYyIWiQZewt?=
- =?us-ascii?Q?2IbZGRutdskXlCe7X/IwFENKIb8ZzhXOvWXN6MiThLkk8D7zOejk5FRM+SC+?=
- =?us-ascii?Q?p6Qz6zcBmWTqvyYQI6t2RaHxyyQ3aQV1DrDake3pGeaP9AdKVxUbcyyVoY/k?=
- =?us-ascii?Q?zyFFyaiLjSziX6s8e0dozgUQoeZq7ydO6B7Aiz7ezbSscgotbAXW2NXMURnP?=
- =?us-ascii?Q?/XZDUmwZDv7snDJjDrv9CbaU23poPOeuIzTglBdVVawT05cNVZtfmF9OScmg?=
- =?us-ascii?Q?y3101EuS4AHFMO/BEyPv4kgEn4Wzk9a4PATQJiGo4g+zrOUZlfuq47+aDRkA?=
- =?us-ascii?Q?OlCeNF++zcYLapmqKp1yXayWnh+/VLf6ua/Wi4+9O6MeAIL4jp/MqT0fihtl?=
- =?us-ascii?Q?nmxhOK6oSkGUHwP6Ip5Qmetf9aF3a0Us72L499sQHRpEHKP15TzS7vRWHx9y?=
- =?us-ascii?Q?98RBpd/0O/jaN11xt0iVcBdOYUbcx7m+q7vYC5UzCuLutq+K8XaMHXwZp1yd?=
- =?us-ascii?Q?CDkA4XxKUFct1YS+2g8KI72CBD3qTO0K4PLzI1/ZY+QYt234akpg7z8Cy+ZK?=
- =?us-ascii?Q?McMCbOdDW8DK+yRIGo0ZqFRZqjmCEnePhM988tRZ73nnz6GMt2Ce/NpGPFjj?=
- =?us-ascii?Q?xIA8j/vzZkB4Kwx3t3gSJ+P/Zkiw/UC6n5+tDArw0q4erEHmhvOYZRQNNPqg?=
- =?us-ascii?Q?5ICZUFFSmoUkg+4yShs1PKXdMezUt8Q=3D?=
-X-OriginatorOrg: santannapisa.it
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3481ff81-6476-4f24-7e6e-08deb18a0591
-X-MS-Exchange-CrossTenant-AuthSource: PAVPR03MB8969.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2026 07:25:49.2128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RNXwhU8jYQ7egyZ7rVX+cTp7ec+OI/QuGllDEOK+TnH1mcoCaXgHFxUops5AM9PcRAQ60nFI6kary5mJKcaz12OVuC+RXlkKIG6hpVVRouI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR03MB6984
-X-Rspamd-Queue-Id: 5B89D53ED87
+Subject: Re: [linus:master] [mm] 01b9da291c: stress-ng.switch.ops_per_sec
+ 67.7% regression
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, David Carlier
+ <devnexen@gmail.com>, Allen Pais <apais@linux.microsoft.com>,
+ Axel Rasmussen <axelrasmussen@google.com>, Baoquan He <bhe@redhat.com>,
+ Chengming Zhou <chengming.zhou@linux.dev>,
+ Chen Ridong <chenridong@huawei.com>, David Hildenbrand <david@kernel.org>,
+ Hamza Mahfooz <hamzamahfooz@linux.microsoft.com>,
+ Harry Yoo <harry.yoo@oracle.com>, Hugh Dickins <hughd@google.com>,
+ Imran Khan <imran.f.khan@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+ Lance Yang <lance.yang@linux.dev>, Liam Howlett <Liam.Howlett@oracle.com>,
+ Lorenzo Stoakes <ljs@kernel.org>, Michal Hocko <mhocko@suse.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Mike Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+ Muchun Song <songmuchun@bytedance.com>, Nhat Pham <nphamcs@gmail.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Suren Baghdasaryan <surenb@google.com>, Usama Arif <usamaarif642@gmail.com>,
+ Vlastimil Babka <vbabka@kernel.org>, Wei Xu <weixugc@google.com>,
+ Yosry Ahmed <yosry@kernel.org>, Yuanchu Xie <yuanchu@google.com>,
+ Zi Yan <ziy@nvidia.com>, Usama Arif <usama.arif@linux.dev>,
+ cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <202605121641.b6a60cb0-lkp@intel.com> <agNO8G8tPnPuVrGq@linux.dev>
+ <0e1b8994-944d-4dda-8966-3cd43661796d@linux.dev> <agSAT4ldp3dzKWPl@linux.dev>
+ <agSJ4ulNDZ17ah8H@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <agSJ4ulNDZ17ah8H@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 8876F53EEF3
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[santannapisa.it,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[santannapisa.it:s=selector1];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15935-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15936-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[luca.abeni@santannapisa.it,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[lists.linux.dev,intel.com,vger.kernel.org,linux-foundation.org,gmail.com,linux.microsoft.com,google.com,redhat.com,linux.dev,huawei.com,kernel.org,oracle.com,cmpxchg.org,suse.com,bytedance.com,nvidia.com,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[39];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[santannapisa.it:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,santannapisa.it:dkim]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:mid,linux.dev:dkim]
 X-Rspamd-Action: no action
 
-Hi Tejun,
 
-On Tue, 12 May 2026 08:19:02 -1000
-Tejun Heo <tj@kernel.org> wrote:
-
-> Hello,
+On 5/13/26 10:27 PM, Shakeel Butt wrote:
+> On Wed, May 13, 2026 at 06:49:45AM -0700, Shakeel Butt wrote:
+>> On Wed, May 13, 2026 at 10:10:34AM +0800, Qi Zheng wrote:
+>>>
+>>>
+>>> On 5/13/26 12:03 AM, Shakeel Butt wrote:
+>>>> On Tue, May 12, 2026 at 08:56:52PM +0800, kernel test robot wrote:
+>>>>>
+>>>>>
+>>>>> Hello,
+>>>>>
+>>>>> kernel test robot noticed a 67.7% regression of stress-ng.switch.ops_per_sec on:
+>>>>>
+>>>>>
+>>>>> commit: 01b9da291c4969354807b52956f4aae1f41b4924 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
+>>>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>>>
+>>>> This is most probably due to shuffling of struct mem_cgroup and struct
+>>>> mem_cgroup_per_node members.
+>>>
+>>> Another possibility is that after objcg was split into per-node, the
+>>> slab accounting fast path is still designed assuming only one current
+>>> objcg per CPU:
+>>>
+>>> struct obj_stock_pcp {
+>>>      struct obj_cgroup *cached_objcg;
+>>> };
+>>>
+>>> So it's may cause the following thrashing:
+>>>
+>>>   CPU stock cached = memcg/node0 objcg
+>>>   free object tagged = memcg/node1 objcg
+>>>   => __refill_obj_stock --> objcg mismatch
+>>>       => drain_obj_stock()
+>>>       => cache switches to node1 objcg
+>>>
+>>>   next local allocation tagged = node0 objcg
+>>>   => mismatch again
+>>>       => drain_obj_stock()
+>>
+>> Actually I think this is the issue, we have ping pong threads running on
+>> different nodes where though theu are in same cgroup but their current->obcg is
+>> for local node and thus this ping pong is thrashing the per-cpu objcg stock.
+>>
+>> The easier fix would be to compare objcg->memcg instead of just objcg during
+>> draining and caching. In addition we can add support for multiple objcg per-cpu
+>> stock caching.
 > 
-> How is a delegated subtree prevented from setting cpu.rt.min = 'root'
-> and escaping its ancestors' cpu.rt.max budget?
+> Something like the following:
+> 
+>  From d756abe831a905d6fe32bad9a984fc619dafb7e0 Mon Sep 17 00:00:00 2001
+> From: Shakeel Butt <shakeel.butt@linux.dev>
+> Date: Wed, 13 May 2026 07:24:55 -0700
+> Subject: [PATCH] mm/memcontrol: skip obj_stock drain when refilled objcg
+>   shares memcg
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>   mm/memcontrol.c | 14 +++++++++++++-
+>   1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d978e18b9b2d..01ed7a8e18ac 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3318,6 +3318,7 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
+>   			       unsigned int nr_bytes,
+>   			       bool allow_uncharge)
+>   {
+> +	struct obj_cgroup *cached;
+>   	unsigned int nr_pages = 0;
+>   
+>   	if (!stock) {
+> @@ -3327,7 +3328,18 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
+>   		goto out;
+>   	}
+>   
+> -	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+> +	cached = READ_ONCE(stock->cached_objcg);
+> +	if (cached != objcg &&
+> +	    (!cached || obj_cgroup_memcg(cached) != obj_cgroup_memcg(objcg))) {
+>   		drain_obj_stock(stock);
+>   		obj_cgroup_get(objcg);
+>   		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
 
-If I understand well (please correct me :), the following strategy
-should address this concern (and the ones expressed in successive
-emails):
-- cpu.rt.max can be "runtime, period" (or "runtime, period, deadline")
-  or "root". "root" gives the current behaviour when RT cgroup
-  scheduling is not enabled (so, no need to disable it at build time :)
-  - if cpu.rt.max is "root", the cgroup's FIFO/RR tasks are scheduled in
-    the root cgroup
-  - if cpu.rt.max is "root", the children cgroups can only have "root"
-    in cpu.rt.max
-- if cpu.rt.max is not "root", then cpu.rt.min (or cpu.rt.internal)
-  is "runtime, period" and describes the dl server for this cgroup's
-  FIFO/RR tasks.
-- The default value for cpu.rt.min is copied from cpu.rt.max, so as a
-  default all the CPU utilization of the cgroup is dedicated it its RT
-  tasks
-- the admission test is: cpu.rt.min utilization plus the sum of the
-  children's cpu.rt.max utilizations must be <= cpu.rt.max utilization;
-  children can have cpu.rt.max="root" only if cpu.rt.max="root"
+This change looks like it should be able to fix the ping-pong issue, but
+I stiil haven't reproduced the performance regression locally. I'll
+continue testing it.
 
-Can this work? I think it avoids escaping the parents' cpu.rt.max,
-allows for a reasonable default (no-one should be forced to disable this
-feature), and should respect all the requirements... Or am I missing
-something?
+Hi kernel-test-robot, could you help check if the patch above fixes the
+issue on your end?
+
+Thanks,
+Qi
 
 
-
-			Thanks,
-				Luca
 
