@@ -1,120 +1,214 @@
-Return-Path: <cgroups+bounces-15958-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15959-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +OlTGttuBmqFjgIAu9opvQ
-	(envelope-from <cgroups+bounces-15958-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 02:54:51 +0200
+	id 4EtEIdG8BmqMnQIAu9opvQ
+	(envelope-from <cgroups+bounces-15959-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 08:27:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01201548373
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 02:54:50 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B706549FC7
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 08:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B40E6307E499
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 00:50:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 53C5A3027F44
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 06:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7937F361DB5;
-	Fri, 15 May 2026 00:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EEFA37CD5F;
+	Fri, 15 May 2026 06:20:17 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5405E367F2E
-	for <cgroups@vger.kernel.org>; Fri, 15 May 2026 00:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C66C34846A;
+	Fri, 15 May 2026 06:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778806161; cv=none; b=f/DNm10caXEyZYmiy+QeREcbR1ixfrmW278edXlyMsMw9lEox0ZCh1N2+r59oEB00qvJ4DoIDItIgC8yYiNcWzliR5BVAtGamXC0aUs9ITBMcUTGSExmL9yUFQtRCG0G7dkyyO0j3837eKexpgWv4kskIVZHg2yD+qyjR3X2X9M=
+	t=1778826016; cv=none; b=OS3sd4juuQIAOUpd6DQw7osKSMZm7sW9ARvfG9X252ayZgDLzJ7S340Mq+u3TeQDGrU03sQGOIdpyxu7tVEMtcWsEaaV9d6xMrI+awDOEQHXUr0w6XgWbVXXXQUJBV2N9V5pZbxXXQMGK+nmLw+0YjMPGmTNbNqbgCL5PtPj7DI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778806161; c=relaxed/simple;
-	bh=mbosFEBxCA4Xh/6AZGkwurdKo8PPMtDwxwIbWYlSx+w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uo3iZAOpa4kTlpkLwj37TKsHa+TLFCwaPNXN/MIk9CSFJHynH3PwcxRXRSRAlBZ5OAd7YOjLHK1ze6CzHsUPvb4ZvxtTlCaZixOJwkD5MZWdgy2oirNiSWwUQxSXqQJCodFWZ101L882SY1Sv8iUfzhf6kKXde0vZXZpvVvYi60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: e429ab7a4ff711f1aa26b74ffac11d73-20260515
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:5ffe5130-a28a-493a-9962-8e7fe0022a7b,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:5
-X-CID-INFO: VERSION:1.3.12,REQID:5ffe5130-a28a-493a-9962-8e7fe0022a7b,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:5
-X-CID-META: VersionHash:e7bac3a,CLOUDID:d8ab2f6064ca9085b30c6d9bb3fb9e9f,BulkI
-	D:260515052705WKFGLB18,BulkQuantity:1,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|127|841|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:0,File:nil,RT:
-	nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
-	,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: e429ab7a4ff711f1aa26b74ffac11d73-20260515
-X-User: cuitao@kylinos.cn
-Received: from [192.168.108.130] [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <cuitao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
-	with ESMTP id 103907716; Fri, 15 May 2026 08:49:12 +0800
-Message-ID: <e3c8d6d5-58d4-46b7-9455-f8fd70ed3c96@kylinos.cn>
-Date: Fri, 15 May 2026 08:48:57 +0800
+	s=arc-20240116; t=1778826016; c=relaxed/simple;
+	bh=3yPrfoANyQmKeJuhJDp9wwM8WcOIh7n+6swmluYjRIY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ucWL/QhmKfBTe0IpG72T7K3oaBvE74OAF+BqJ9FDjn8gqIBm8mhvluXadhWuXBVPeJpvjpRlZIvn8yt1TmjSFvuyCVm5vcGyhY87tnu7Ovd+CWbnQXylvdtK15Rd52B34uYpiWMKuUeyUqH86ZqHQL1jJgEDIcDWcJsuaNOAU0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4gGxqZ32fnzYQtp3;
+	Fri, 15 May 2026 14:19:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id D064540593;
+	Fri, 15 May 2026 14:19:57 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP4 (Coremail) with SMTP id gCh0CgAHz1oMuwZqGVhxCQ--.2903S4;
+	Fri, 15 May 2026 14:19:57 +0800 (CST)
+From: Zizhi Wo <wozizhi@huaweicloud.com>
+To: axboe@kernel.dk,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	yukuai@fnnas.com,
+	linux-block@vger.kernel.org
+Cc: cgroups@vger.kernel.org,
+	yangerkun@huawei.com,
+	chengzhihao1@huawei.com,
+	wozizhi@huaweicloud.com
+Subject: [PATCH] blk-cgroup: Fix UAF in blkcg_activate_policy() by using blkg_tryget()
+Date: Fri, 15 May 2026 14:15:16 +0800
+Message-ID: <20260515061516.3461291-1-wozizhi@huaweicloud.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/4] cgroup/rdma: add rdma.peak and rdma.events[.local]
-To: Tejun Heo <tj@kernel.org>
-Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-References: <20260514065034.387197-1-cuitao@kylinos.cn>
- <1d47de9b305b1576a24c242aa9e72c28@kernel.org>
-From: Tao Cui <cuitao@kylinos.cn>
-In-Reply-To: <1d47de9b305b1576a24c242aa9e72c28@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 01201548373
+X-CM-TRANSID:gCh0CgAHz1oMuwZqGVhxCQ--.2903S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw1fZw18XFy7Gw45GFy3Arb_yoW5AF4xpF
+	Z8GrZayrykXryq9an09a47X34Fga10gr4rtFWxGrZIkF43Zw13XF1DCrWDurZ7uFsrArs0
+	yF45J3yjkF48Cw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	tVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUU
+	UU=
+X-CM-SenderInfo: pzr2x6tkl6x35dzhxuhorxvhhfrp/
+X-Rspamd-Queue-Id: 5B706549FC7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+X-Spamd-Result: default: False [4.84 / 15.00];
+	SEM_URIBL(3.50)[huaweicloud.com:email];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	MAILLIST(-0.15)[generic];
+	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kylinos.cn:mid];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.987];
-	MID_RHS_MATCH_FROM(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15958-lists,cgroups=lfdr.de];
-	RCPT_COUNT_THREE(0.00)[4]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-15959-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	GREYLIST(0.00)[pass,body];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_NA(0.00)[huaweicloud.com];
+	R_SPF_ALLOW(0.00)[+ip4:172.232.135.74:c];
+	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-0.976];
+	TO_DN_NONE(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,huaweicloud.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Hello，
+[BUG]
+Our fuzz testing triggered a blkg use-after-free issue:
 
-在 2026/5/15 5:26, Tejun Heo 写道:
-> 
-> One follow-up: the new event counters use READ_ONCE() on reads but plain
-> ++ on writes, and all accesses are under rdmacg_mutex. Please send a
-> follow-up patch dropping the READ_ONCE()s.
-> 
+  BUG: KASAN: slab-use-after-free in percpu_ref_put_many.constprop.0+0xbe/0xe0
+  Call Trace:
+  ...
+  blkcg_activate_policy+0x347/0xfa0
+  bfq_create_group_hierarchy+0x5b/0x140
+  bfq_init_queue+0xc1b/0x1470
+  ? mutex_init_generic+0x9f/0x100
+  ? elevator_alloc+0x166/0x2b0
+  blk_mq_init_sched+0x2b0/0x730
+  elevator_switch+0x188/0x450
+  elevator_change+0x290/0x470
+  elv_iosched_store+0x30a/0x3a0
+  ...
 
-Thanks for your suggestions and help throughout this process. 
-I will handle the follow-up on my side later.
+[CAUSE]
+process1						process2
+cgroup_rmdir
+...
+  blkcg_destroy_blkgs
+    spin_trylock(&q->queue_lock)
+    blkg_destroy
+      percpu_ref_kill(&blkg->refcnt)
+      ...
+        blkg_free
+	  INIT_WORK(xxx, blkg_free_workfn)
+	  schedule_work
+    spin_unlock(&q->queue_lock)
+====================================schedule_work
+            blkg_free_workfn
+							elevator_change
+							...
+							  bfq_create_group_hierarchy
+							    blkcg_activate_policy
+							      spin_lock_irq(&q->queue_lock)
+							      blkg_get		// get dead ref !!
+							      pinned_blkg = blkg
+							      spin_unlock_irq(&q->queue_lock)
+	      spin_lock_irq(&q->queue_lock)
+	      list_del_init(&blkg->q_node)
+	      spin_unlock_irq(&q->queue_lock)
+	      kfree(blkg)
+							      blkg_put(pinned_blkg)	// UAF !!
 
-Thanks.
+A blkg killed by blkg_destroy() stays on q->blkg_list until
+blkg_free_workfn() grabs queue_lock and unlinks it. blkg_get() on a dead
+percpu_ref does not resurrect the blkg, so the later blkg_put() hits freed
+memory and triggers this issue.
 
---
-Tao
+[Fix]
+Replace blkg_get() with blkg_tryget(), which fails on a dead ref and lets
+the loop skip dying blkgs.
+
+Also hoist the ref acquisition to the top of the loop so dying blkgs are
+filtered out before a pd is allocated and attached. Otherwise a pd attached
+to an already-destroyed blkg would never called pd_offline_fn().
+
+Fixes: 9d179b865449 ("blkcg: Fix multiple bugs in blkcg_activate_policy()")
+Signed-off-by: Zizhi Wo <wozizhi@huaweicloud.com>
+---
+ block/blk-cgroup.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 554c87bb4a86..03b6ce934848 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1621,6 +1621,10 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
+ 		if (blkg->pd[pol->plid])
+ 			continue;
+ 
++		/* a destroyed blkg may still be on q->blkg_list; skip it via tryget */
++		if (!blkg_tryget(blkg))
++			continue;
++
+ 		/* If prealloc matches, use it; otherwise try GFP_NOWAIT */
+ 		if (blkg == pinned_blkg) {
+ 			pd = pd_prealloc;
+@@ -1637,7 +1641,6 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
+ 			 */
+ 			if (pinned_blkg)
+ 				blkg_put(pinned_blkg);
+-			blkg_get(blkg);
+ 			pinned_blkg = blkg;
+ 
+ 			spin_unlock_irq(&q->queue_lock);
+@@ -1666,6 +1669,8 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol)
+ 		pd->online = true;
+ 
+ 		spin_unlock(&blkg->blkcg->lock);
++
++		blkg_put(blkg);
+ 	}
+ 
+ 	__set_bit(pol->plid, q->blkcg_pols);
+-- 
+2.52.0
+
 
