@@ -1,144 +1,120 @@
-Return-Path: <cgroups+bounces-15957-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15958-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6Jz5MLZKBmo/iQIAu9opvQ
-	(envelope-from <cgroups+bounces-15957-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 00:20:38 +0200
+	id +OlTGttuBmqFjgIAu9opvQ
+	(envelope-from <cgroups+bounces-15958-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 02:54:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34435547651
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 00:20:38 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01201548373
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 02:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 246113016930
-	for <lists+cgroups@lfdr.de>; Thu, 14 May 2026 22:20:32 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B40E6307E499
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 00:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC8893D0C17;
-	Thu, 14 May 2026 22:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TCOsHtGZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7937F361DB5;
+	Fri, 15 May 2026 00:49:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F67C32572F;
-	Thu, 14 May 2026 22:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5405E367F2E
+	for <cgroups@vger.kernel.org>; Fri, 15 May 2026 00:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778797231; cv=none; b=dEKi/yKxEbv2UblxHXluuveB2XfeJRDwPnXkJPsgLo/7lBWmAUtogjeqtDx+fYrmoLunPSowuH2lHGFvEQi0/eSUhOpPHfaHc84/uSMEPjHxT6G3YLsHl7Roqi2wxGw/SS1+Ks+xYIvsdze/WZ/WqGBvQl52mVDpLWfMlkBudr4=
+	t=1778806161; cv=none; b=f/DNm10caXEyZYmiy+QeREcbR1ixfrmW278edXlyMsMw9lEox0ZCh1N2+r59oEB00qvJ4DoIDItIgC8yYiNcWzliR5BVAtGamXC0aUs9ITBMcUTGSExmL9yUFQtRCG0G7dkyyO0j3837eKexpgWv4kskIVZHg2yD+qyjR3X2X9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778797231; c=relaxed/simple;
-	bh=6Eaq2f+J/zWvVEzvWYmoFBIswIN1eoI1PJywJCiqFaM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=oPKp3prvsZZ3gryN0DxCXPcV5140cXMlnzrKXOfQXiwbnN/k64pjU4LW7LwoT3s8WQIgPRW/vLrauh9atn5AmyDfh3maxPvrYNiDaSCepX3cmP7KCuRMNA/v2srv19njKPFVXh0AwFu4oDjE6/kvTyoHu3JYp/L5PRXiQWXdJqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TCOsHtGZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2100AC2BCC7;
-	Thu, 14 May 2026 22:20:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778797231;
-	bh=6Eaq2f+J/zWvVEzvWYmoFBIswIN1eoI1PJywJCiqFaM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TCOsHtGZXR9IFUa3/QvVtv1UGZ9KEJH/GjjPlRCQq6eAcYYbJAMsm9jpfuiWzMTPj
-	 YVVCPDy85+q+h6FAdwqP9AQ8rl0tf7RV+fm67NN4ZTTxCt+mFp+KSn+J+gcRu7mwLh
-	 RCP3R3RC35dbbqcTeilfcFL9yxR77xt/6BY1f3J+xE4Ev9ZWW6LXfkeihp1t66lUwt
-	 ps9p2VvZp6ONZvo2fvIMCuLrDI6A/qHfRDKk3h/SF28Q/bdSBIdS0navCbf54awAKC
-	 YSGpF9DG81I1DDnUjV3+dM0Q1CtMXnepufzRz434W+wehM5FNzWbaAo4WC/QfVKZf7
-	 hG83NQRaPb2ow==
-Date: Thu, 14 May 2026 12:20:30 -1000
-Message-ID: <8672eb9e7bbd6abde7762feb267799c5@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: luca abeni <luca.abeni@santannapisa.it>
-Cc: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
- Peter Zijlstra <peterz@infradead.org>,
- Yuri Andriaccio <yurand2000@gmail.com>,
- Ingo Molnar <mingo@redhat.com>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org,
- hannes@cmpxchg.org,
- mkoutny@suse.com,
- cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies
- of RT cgroups
-In-Reply-To: <20260514092546.4265d486@luca64>
-References: <20260430213835.62217-1-yurand2000@gmail.com>
- <20260430213835.62217-21-yurand2000@gmail.com>
- <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
- <afpLir8tD0Ycb3D8@slm.duckdns.org>
- <20260507163058.2c435922@nowhere>
- <agIfvZuvXEtK45em@slm.duckdns.org>
- <c446b9be-38d7-425c-9ca8-eda721fe1c9e@santannapisa.it>
- <b549b3cb062f2823ba6d4723b7b9260b@kernel.org>
- <20260514092546.4265d486@luca64>
+	s=arc-20240116; t=1778806161; c=relaxed/simple;
+	bh=mbosFEBxCA4Xh/6AZGkwurdKo8PPMtDwxwIbWYlSx+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uo3iZAOpa4kTlpkLwj37TKsHa+TLFCwaPNXN/MIk9CSFJHynH3PwcxRXRSRAlBZ5OAd7YOjLHK1ze6CzHsUPvb4ZvxtTlCaZixOJwkD5MZWdgy2oirNiSWwUQxSXqQJCodFWZ101L882SY1Sv8iUfzhf6kKXde0vZXZpvVvYi60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: e429ab7a4ff711f1aa26b74ffac11d73-20260515
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:5ffe5130-a28a-493a-9962-8e7fe0022a7b,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:5
+X-CID-INFO: VERSION:1.3.12,REQID:5ffe5130-a28a-493a-9962-8e7fe0022a7b,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:5
+X-CID-META: VersionHash:e7bac3a,CLOUDID:d8ab2f6064ca9085b30c6d9bb3fb9e9f,BulkI
+	D:260515052705WKFGLB18,BulkQuantity:1,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|127|841|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:0,File:nil,RT:
+	nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+	,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: e429ab7a4ff711f1aa26b74ffac11d73-20260515
+X-User: cuitao@kylinos.cn
+Received: from [192.168.108.130] [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <cuitao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
+	with ESMTP id 103907716; Fri, 15 May 2026 08:49:12 +0800
+Message-ID: <e3c8d6d5-58d4-46b7-9455-f8fd70ed3c96@kylinos.cn>
+Date: Fri, 15 May 2026 08:48:57 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: 34435547651
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/4] cgroup/rdma: add rdma.peak and rdma.events[.local]
+To: Tejun Heo <tj@kernel.org>
+Cc: hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
+References: <20260514065034.387197-1-cuitao@kylinos.cn>
+ <1d47de9b305b1576a24c242aa9e72c28@kernel.org>
+From: Tao Cui <cuitao@kylinos.cn>
+In-Reply-To: <1d47de9b305b1576a24c242aa9e72c28@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 01201548373
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15957-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kylinos.cn:mid];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
+	NEURAL_HAM(-0.00)[-0.987];
 	MID_RHS_MATCH_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15958-lists,cgroups=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[4]
 X-Rspamd-Action: no action
 
-Hello, Luca.
+Hello，
 
-Yes, the admission rule prevents subtrees from escaping ancestors'
-cpu.rt.max, which addresses the main concern.
+在 2026/5/15 5:26, Tejun Heo 写道:
+> 
+> One follow-up: the new event counters use READ_ONCE() on reads but plain
+> ++ on writes, and all accesses are under rdmacg_mutex. Please send a
+> follow-up patch dropping the READ_ONCE()s.
+> 
 
-Two interface simplifications worth considering on top:
-
-1. Drop cpu.rt.min. The parent already owns the partitioning of its
-   cpu.rt.max via the children's cpu.rt.max values, so the local share
-   is just the leftover. Admission collapses to Sum(children.max.util)
-   <= max.util, and the cgroup's own DL server runs at cpu.rt.max's
-   period with the remaining utilization. One fewer knob, no
-   information lost.
-
-2. Use "max" as the off/inherit sentinel instead of "root". Matches the
-   existing cpu.max convention. At the root cgroup, "max" means the
-   feature is off and behavior matches today; at non-root cgroups,
-   "max" means tasks bubble up to the nearest configured ancestor.
-   "root" reads oddly at the root cgroup, where it really just means
-   "no DL server".
-
-Auto-revert falls out for free: writing "max" at the root cascades
-descendants back to "max", since manual tear-down isn't reachable
-anyway (you can't set a leaf to "max" while its parent isn't).
+Thanks for your suggestions and help throughout this process. 
+I will handle the follow-up on my side later.
 
 Thanks.
 
 --
-tejun
+Tao
 
