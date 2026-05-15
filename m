@@ -1,99 +1,72 @@
-Return-Path: <cgroups+bounces-15978-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15979-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CMmlOFYlB2oEsQIAu9opvQ
-	(envelope-from <cgroups+bounces-15978-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 15:53:26 +0200
+	id IAv7GqQoB2ppsQIAu9opvQ
+	(envelope-from <cgroups+bounces-15979-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 16:07:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C8AB550CF5
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 15:53:26 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23080551010
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 16:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 018BC3022BAF
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 13:47:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7DA5A3058E44
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2026 13:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA05481A97;
-	Fri, 15 May 2026 13:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383AE47ECDD;
+	Fri, 15 May 2026 13:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MVgWIxs+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A1yx1trM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDFE47ECFE
-	for <cgroups@vger.kernel.org>; Fri, 15 May 2026 13:46:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E749C2DEA6B;
+	Fri, 15 May 2026 13:53:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778852803; cv=none; b=TdqTOYOcIiiXmRfEgGzduXCZyzjZJMBBkPKkyCVxtyCv8GDhLrAg1c2bW5/VXo4N4PZpTA7qJpvJrvyRHpVYCBffZkDKBkkxRErwSj3AubRTLlN2aufglZcjtYvFXMJHwSo+DcHReTrAJ+QoMpQWV/DBbiV/FYIilHiKtwuwP9w=
+	t=1778853234; cv=none; b=Emm0QtJyao7D0sMO/LN7JWIojhOHYwlJLPsSRI8DVJ6RBihcEf75j+IW/HLDUvb4q1q26XUkHz67ewFDRamj9jExMS+PXk6qFtYfhMxBkChSq3a604H2BPIC+aGRr9fVE40riJpu9+y+CiIk54jKQQQ/i1RzIXjhz0VAPvajj04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778852803; c=relaxed/simple;
-	bh=JmBp5Byszf4L6kKNFjnLTsmD9Zk1LUl3NxrOfhWZX+Q=;
+	s=arc-20240116; t=1778853234; c=relaxed/simple;
+	bh=Y1gyeosz2qkHMid+rX2ftXz6wmVUtQk3hZVNk9+H5Ew=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UFraFAHfGlhpqx1tVJRYyLh1nU0B0oCJnwDlp2GONxLguAykkE2qLjOWxjTqR/9Ono+Yk6XTJgvl0dQ8d0cdeyJOHxZUmL95E0jKbp+2qwbKRgVTBNUfMJStG2ng+42U3enFq3AvDTNwe3RGOVdAHwLQRz9R15k1ISgpnoQw3uI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MVgWIxs+; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-c736261ee8dso4340667a12.1
-        for <cgroups@vger.kernel.org>; Fri, 15 May 2026 06:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778852798; x=1779457598; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UQQlXEojFrhAWvISNt7oswBAwMsNYhE0qQ6ZhcIht6A=;
-        b=MVgWIxs+1WklAMDXFNdHx4AGAbTHRiKubzPJGMfmDFFs6MPRdSDmxIVu70HTbqW17Y
-         b06k/igxYsuS+21k8nMnNZyl97DqpfAmJRdWmPzMNjqwyUIpoux7VI7Ds1hFyaP4BKsV
-         FGFgthV0O1pcS8bGvzRrpzXnxtXyU2AxDvOMzlI7FR0a8y4sFZxLfwLv8hlmr7rvBxZl
-         UKtpl+86yhSctfFFUrokhY6nTvuL4VtsVTZB/PoOS3WYa52XFhulzmFCTODZvop/bAUA
-         ZmgrY4owxSdGv5h4K2KQNsKYL2Kv8N9dLkxM/4TVEVzfoY4ZlDaHrVzo8JzOqI6oC5yt
-         ejlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778852798; x=1779457598;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UQQlXEojFrhAWvISNt7oswBAwMsNYhE0qQ6ZhcIht6A=;
-        b=gPmNIVQXdehUDF4rkh48tmqqM27wgmFQYFbfELCCuPmfzEysebFLsoB2AvVzzObNLo
-         v+0e0HGWGUGZtSkwOMSZh/Hg+FFFKnp/imMDqiRk4QvQfHCvE8pSfR/7V5CfWXscP8XY
-         97oc3DddckHyUfJBCAZckcesG60nQevLcU8FmeHatCR2xQ87Ny5wp+TsH70oOa4FFegP
-         Gt9y1ey59cPV8/bSrRsHss+LiUupmb5SaRHlPhWypgDsS8Amq5zwNbKDWXiq/fj8H+IY
-         y1do7/bsVVCkp362aro4uKn5urgqGOsmwzskUviEGqDD7gBaPQAyYfB0XppSLq4I+W+D
-         1mNA==
-X-Forwarded-Encrypted: i=1; AFNElJ8wM2qzl0yL8jizYMxCcG59Cllpc8JqITkCj4f0bd+ublmpk+we3FSwCvd/54nA2Gc/RiXCVFwn@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMTA0Pj+I+Aqxag6zRi1LhiqXxeYGs44BtYXAGICCtLe+qSFXy
-	YomkAvYtfEaFmb0FqKWM+UqBNNSEVmseEzcjJc0BgzBFbHT5RtCqVw9H
-X-Gm-Gg: Acq92OGm/hR2lO5Hf8iwpWR9ktEUxH+ytdcMMz4rD/tnzldUWZAfUg6gZKvvZ523Bkg
-	y8tmtYvwSO5XEJw0HhvtqLmiAXhVpXid2MgBTiizkA12RVN/3SQ3WC3bkRU/jB1IcnvvEf+gNTx
-	K6YzJI2cCtUkJ2/DvVYeqKWp/QXELNo85sPwOGeAw24i09ZQgA2veP0RYruvJGLOFg2hEtUXV+f
-	48FwFtiJT2aLvonNah90aoDUbypOpcSuwgDFShk+68xkdp5nxvTEnrGn6Iab1dWLMnVu0MQi6TR
-	ICnsR7LXL8VJwkuzyouXx8yuFCKqsfb9pBcrFU6fzRvbRtfQ2bf568/ArrGSmsPkWpBYraGAuf4
-	obsk/JHtwnsY9b4GBP+mW2QtV+jYX02H64CfjjJIiIn51o8a8Pg2EQ6Mb63PfJdvynfmthhl6tR
-	fCFP9haPHfpXMbivfUYdmYXXl47r73NRb1Y+Hb9YOEqIrsHz4r8AjSQSdpuf0=
-X-Received: by 2002:a05:6a20:748b:b0:3a2:edff:297c with SMTP id adf61e73a8af0-3b22e13754amr4680422637.0.1778852798288;
-        Fri, 15 May 2026 06:46:38 -0700 (PDT)
-Received: from KASONG-MC4 ([101.32.222.185])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-83f19776733sm6017763b3a.13.2026.05.15.06.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2026 06:46:37 -0700 (PDT)
-Date: Fri, 15 May 2026 21:46:30 +0800
-From: Kairui Song <ryncsn@gmail.com>
-To: kasong@tencent.com
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Youngjun Park <youngjun.park@lge.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>, 
-	Yosry Ahmed <yosry@kernel.org>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH v4 04/12] mm, swap: add support for stable large
- allocation in swap cache directly
-Message-ID: <agcdxIFQ8QBI9R6z@KASONG-MC4>
-References: <20260515-swap-table-p4-v4-0-f1b49e845a8d@tencent.com>
- <20260515-swap-table-p4-v4-4-f1b49e845a8d@tencent.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VCJmx+BWP4QOgVFq8b64jVrdWSnYonVSsX2t7CBdSps4MZN2XfYuNdr5pXVeSgQqBLiGwt42BQKJDto94UOJ/sbtUmpb2MuT8olrrTTG+7dhGmiA6vFn4XtYiXq3x/c0vUmHjDzV5787naX7lHmyV3/SCwnf8tzDy60DWvqXU7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A1yx1trM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33BFFC2BCB0;
+	Fri, 15 May 2026 13:53:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778853233;
+	bh=Y1gyeosz2qkHMid+rX2ftXz6wmVUtQk3hZVNk9+H5Ew=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A1yx1trMAuX4uPgzq30KugkFgBWvGkQ00OTXt4fD7QZY9PIT7MWK279StfLyH0/ZK
+	 wR0mCQGAASYvb7XRaKka7b3eG8xalsI55aG1urnDe8Xf2zeqgl1tKvsweZ6RBSz4du
+	 Q3dLgvgGJpG//hSbnYPnx4RlJvQyFnt4udgMSCIdKH90bPm2vP3+wpECg63GzaGLE/
+	 Ckf/8qWWNBeLmb5/xKUFUR/o+ko9JQJ1t42RauAVv7nFmWoC3C+QX/AZ5TCI9Y/omB
+	 70ruKCdTp3nOv0v8ubEIYX1iGJeLH0F4V/f3kALZbYJe19fguIjBCczEgBZZxKDaAz
+	 1ZHsw2Kh1vAlg==
+Date: Fri, 15 May 2026 15:53:42 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Albert Esteve <aesteve@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Brian Starkey <Brian.Starkey@arm.com>, 
+	John Stultz <jstultz@google.com>, "T.J. Mercier" <tjmercier@google.com>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	mripard@kernel.org, echanude@redhat.com
+Subject: Re: [PATCH RFC 2/5] dma-heap: charge dma-buf memory via explicit
+ memcg
+Message-ID: <20260515-hinschauen-effizient-9e3a05a94f2e@brauner>
+References: <20260512-v2_20230123_tjmercier_google_com-v1-0-6326701c3691@redhat.com>
+ <20260512-v2_20230123_tjmercier_google_com-v1-2-6326701c3691@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -102,346 +75,309 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260515-swap-table-p4-v4-4-f1b49e845a8d@tencent.com>
-X-Rspamd-Queue-Id: 9C8AB550CF5
+In-Reply-To: <20260512-v2_20230123_tjmercier_google_com-v1-2-6326701c3691@redhat.com>
+X-Rspamd-Queue-Id: 23080551010
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [3.84 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15978-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,vger.kernel.org];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	TAGGED_FROM(0.00)[bounces-15979-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,amd.com,linux.dev,linux-foundation.org,collabora.com,arm.com,google.com,paul-moore.com,namei.org,hallyn.com,gmail.com,redhat.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,kvack.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,tencent.com:email]
+	NEURAL_HAM(-0.00)[-0.987];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[brauner@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Fri, May 15, 2026 at 05:54:17PM +0800, Kairui Song via B4 Relay wrote:
-> From: Kairui Song <kasong@tencent.com>
+On Tue, May 12, 2026 at 11:10:44AM +0200, Albert Esteve wrote:
+> On embedded platforms a central process often allocates dma-buf
+> memory on behalf of client applications. Without a way to
+> attribute the charge to the requesting client's cgroup, the
+> cost lands on the allocator, making per-cgroup memory limits
+> ineffective for the actual consumers.
 > 
-> To make it possible to allocate large folios directly in swap cache,
-> provide a new infrastructure helper to handle the swap cache status
-> check, allocation, and order fallback in the swap cache layer
+> Add charge_pid_fd to struct dma_heap_allocation_data. When set to
+
+Please be aware that pidfds come in two flavors:
+
+thread-group pidfds and thread-specific pidfds. Make sure that your API
+doesn't implicitly depend on this distinction not existing.
+
+
+> a valid pidfd, DMA_HEAP_IOCTL_ALLOC resolves the target task's
+> memcg and charges the buffer there via mem_cgroup_charge_dmabuf()
+> inside dma_heap_buffer_alloc(). Without charge_pid_fd, and with
+> the mem_accounting module parameter enabled, the buffer is charged
+> to the allocator's own cgroup.
 > 
-> The new helper replaces the existing swap_cache_alloc_folio. Based on
-> this, all the separate swap folio allocation that is being done by anon
-> / shmem before is converted to use this helper directly, unifying folio
-> allocation for anon, shmem, and readahead.
+> Additionally, commit 3c227be90659 ("dma-buf: system_heap: account for
+> system heap allocation in memcg") adds __GFP_ACCOUNT to system-heap
+> page allocations. Keeping __GFP_ACCOUNT would charge the same pages
+> twice (once to kmem, once to MEMCG_DMABUF), thus remove it and route
+> all accounting through a single MEMCG_DMABUF path.
 > 
-> This slightly consolidates how allocation is synchronized, making it
-> more stable and less prone to errors. The slot-count and cache-conflict
-> check is now always performed with the cluster lock held before
-> allocation, and repeated under the same lock right before cache
-> insertion. This double check produces a stable result compared to the
-> previous anon and shmem mTHP allocation implementation,  avoids the
-> false-negative conflict checks that the lockless path can return — large
-> allocations no longer have to be unwound because the range turned out to
-> be occupied — and aborts early for already-freed slots, which helps
-> ordinary swapin and especially readahead, with only a marginal increase
-> in cluster-lock contention (the lock is very lightly contended and stays
-> local in the first place). Hence, callers of swap_cache_alloc_folio() no
-> longer need to check the swap slot count or swap cache status
-> themselves.
+> Usage examples:
 > 
-> And now whoever first successfully allocates a folio in the swap cache
-> will be the one who charges it and performs the swap-in. The race window
-> of swapping is also reduced since the loop is much more compact.
+>   1. Central allocator charging to a client at allocation time.
+>      The allocator knows the client's PID (e.g., from binder's
+>      sender_pid) and uses pidfd to attribute the charge:
 > 
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+>        pid_t client_pid = txn->sender_pid;
+>        int pidfd = pidfd_open(client_pid, 0);
+> 
+>        struct dma_heap_allocation_data alloc = {
+>            .len             = buffer_size,
+>            .fd_flags        = O_RDWR | O_CLOEXEC,
+>            .charge_pid_fd   = pidfd,
+>        };
+>        ioctl(heap_fd, DMA_HEAP_IOCTL_ALLOC, &alloc);
+>        close(pidfd);
+>        /* alloc.fd is now charged to client's cgroup */
+> 
+>   2. Default allocation (no pidfd, mem_accounting=1).
+>      When charge_pid_fd is not set and the mem_accounting module
+>      parameter is enabled, the buffer is charged to the allocator's
+>      own cgroup:
+> 
+>        struct dma_heap_allocation_data alloc = {
+>            .len      = buffer_size,
+>            .fd_flags = O_RDWR | O_CLOEXEC,
+>        };
+>        ioctl(heap_fd, DMA_HEAP_IOCTL_ALLOC, &alloc);
+>        /* charged to current process's cgroup */
+> 
+> Current limitations:
+> 
+>  - Single-owner model: a dma-buf carries one memcg charge regardless of
+>    how many processes share it. Means only the first owner (and exporter)
+>    of the shared buffer bears the charge.
+>  - Only memcg accounting supported. While this makes sense for system
+>    heap buffers, other heaps (e.g., CMA heaps) will require selectively
+>    charging also for the dmem controller.
+> 
+> Signed-off-by: Albert Esteve <aesteve@redhat.com>
 > ---
->  mm/swap.h       |   3 +-
->  mm/swap_state.c | 234 +++++++++++++++++++++++++++++++++++++++-----------------
->  mm/zswap.c      |   2 +-
->  3 files changed, 168 insertions(+), 71 deletions(-)
+>  Documentation/admin-guide/cgroup-v2.rst |  5 ++--
+>  drivers/dma-buf/dma-buf.c               | 16 ++++---------
+>  drivers/dma-buf/dma-heap.c              | 42 ++++++++++++++++++++++++++++++---
+>  drivers/dma-buf/heaps/system_heap.c     |  2 --
+>  include/uapi/linux/dma-heap.h           |  6 +++++
+>  5 files changed, 53 insertions(+), 18 deletions(-)
 > 
-> diff --git a/mm/swap.h b/mm/swap.h
-> index ad8b17a93758..6774af10a943 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -280,7 +280,8 @@ bool swap_cache_has_folio(swp_entry_t entry);
->  struct folio *swap_cache_get_folio(swp_entry_t entry);
->  void *swap_cache_get_shadow(swp_entry_t entry);
->  void swap_cache_del_folio(struct folio *folio);
-> -struct folio *swap_cache_alloc_folio(swp_entry_t entry, gfp_t gfp_flags,
-> +struct folio *swap_cache_alloc_folio(swp_entry_t target_entry, gfp_t gfp_mask,
-> +				     unsigned long orders, struct vm_fault *vmf,
->  				     struct mempolicy *mpol, pgoff_t ilx);
->  /* Below helpers require the caller to lock and pass in the swap cluster. */
->  void __swap_cache_add_folio(struct swap_cluster_info *ci,
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 89fa19ec13f6..cd4543ff5e47 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -139,10 +139,10 @@ void *swap_cache_get_shadow(swp_entry_t entry)
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 8bdbc2e866430..824d269531eb1 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1636,8 +1636,9 @@ The following nested keys are defined.
+>  		structures.
 >  
->  /**
->   * __swap_cache_add_check - Check if a range is suitable for adding a folio.
-> - * @ci: The locked swap cluster.
-> - * @ci_off: Range start offset.
-> - * @nr: Number of slots to check.
-> - * @shadow: Returns the shadow value if one exists in the range.
-> + * @ci: The locked swap cluster
-> + * @targ_entry: The target swap entry to check, will be rounded down by @nr
-> + * @nr: Number of slots to check, must be a power of 2
-> + * @shadowp: Returns the shadow value if one exists in the range.
->   *
->   * Check if all slots covered by given range have a swap count >= 1.
->   * Retrieves the shadow if there is one.
-> @@ -151,26 +151,40 @@ void *swap_cache_get_shadow(swp_entry_t entry)
->   * Return: 0 if success, error code if failed.
->   */
->  static int __swap_cache_add_check(struct swap_cluster_info *ci,
-> -				  unsigned int ci_off, unsigned int nr,
-> -				  void **shadow)
-> +				  swp_entry_t targ_entry,
-> +				  unsigned long nr, void **shadowp)
->  {
-> -	unsigned int ci_end = ci_off + nr;
-> +	unsigned int ci_off, ci_end;
->  	unsigned long old_tb;
+>  	  dmabuf (npn)
+> -		Amount of memory used for exported DMA buffers allocated by the cgroup.
+> -		Stays with the allocating cgroup regardless of how the buffer is shared.
+> +		Amount of memory used for exported DMA buffers allocated by or on
+> +		behalf of the cgroup. Stays with the allocating cgroup regardless
+> +		of how the buffer is shared.
 >  
->  	lockdep_assert_held(&ci->lock);
-> -	if (WARN_ON_ONCE(ci_off >= SWAPFILE_CLUSTER))
-> -		return -EINVAL;
+>  	  workingset_refault_anon
+>  		Number of refaults of previously evicted anonymous pages.
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index ce02377f48908..23fb758b78297 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -181,8 +181,11 @@ static void dma_buf_release(struct dentry *dentry)
+>  	 */
+>  	BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
 >  
-> +	/*
-> +	 * If the target slot is not swapped out or already cached, return
-> +	 * -ENOENT or -EEXIST. If the batch is not suitable, could be a
-> +	 * race with concurrent free or cache add, return -EBUSY.
-> +	 */
->  	if (unlikely(!ci->table))
->  		return -ENOENT;
-> +	ci_off = swp_cluster_offset(targ_entry);
-> +	old_tb = __swap_table_get(ci, ci_off);
-> +	if (swp_tb_is_folio(old_tb))
-> +		return -EEXIST;
-> +	if (!__swp_tb_get_count(old_tb))
-> +		return -ENOENT;
-> +	if (swp_tb_is_shadow(old_tb) && shadowp)
-> +		*shadowp = swp_tb_to_shadow(old_tb);
-> +
-> +	if (nr == 1)
-> +		return 0;
-> +
-> +	ci_off = round_down(ci_off, nr);
-> +	ci_end = ci_off + nr;
->  	do {
->  		old_tb = __swap_table_get(ci, ci_off);
-> -		if (unlikely(swp_tb_is_folio(old_tb)))
-> -			return -EEXIST;
-> -		if (unlikely(!__swp_tb_get_count(old_tb)))
-> -			return -ENOENT;
-> -		if (swp_tb_is_shadow(old_tb))
-> -			*shadow = swp_tb_to_shadow(old_tb);
-> +		if (unlikely(swp_tb_is_folio(old_tb) ||
-> +			     !__swp_tb_get_count(old_tb)))
-> +			return -EBUSY;
->  	} while (++ci_off < ci_end);
+> -	mem_cgroup_uncharge_dmabuf(dmabuf->memcg, PAGE_ALIGN(dmabuf->size) / PAGE_SIZE);
+> -	mem_cgroup_put(dmabuf->memcg);
+> +	if (dmabuf->memcg) {
+> +		mem_cgroup_uncharge_dmabuf(dmabuf->memcg,
+> +					  PAGE_ALIGN(dmabuf->size) / PAGE_SIZE);
+> +		mem_cgroup_put(dmabuf->memcg);
+> +	}
 >  
->  	return 0;
-> @@ -241,15 +255,13 @@ static int swap_cache_add_folio(struct folio *folio, swp_entry_t entry,
->  {
->  	int err;
->  	void *shadow = NULL;
-> -	unsigned int ci_off;
->  	struct swap_info_struct *si;
->  	struct swap_cluster_info *ci;
->  	unsigned long nr_pages = folio_nr_pages(folio);
+>  	dmabuf->ops->release(dmabuf);
 >  
->  	si = __swap_entry_to_info(entry);
->  	ci = swap_cluster_lock(si, swp_offset(entry));
-> -	ci_off = swp_cluster_offset(entry);
-> -	err = __swap_cache_add_check(ci, ci_off, nr_pages, &shadow);
-> +	err = __swap_cache_add_check(ci, entry, nr_pages, &shadow);
->  	if (err) {
->  		swap_cluster_unlock(ci);
->  		return err;
-> @@ -404,6 +416,140 @@ void __swap_cache_replace_folio(struct swap_cluster_info *ci,
+> @@ -764,13 +767,6 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+>  		dmabuf->resv = resv;
 >  	}
->  }
 >  
-> +/*
-> + * Try to allocate a folio of given order in the swap cache.
-> + *
-> + * This helper resolves the potential races of swap allocation
-> + * and prepares a folio to be used for swap IO. May return following
-> + * value:
-> + *
-> + * -ENOMEM / -EBUSY: Order is too large or in conflict with sub slot,
-> + *                   caller should shrink the order and retry
-> + * -ENOENT / -EEXIST: Target swap entry is unavailable or cached, the caller
-> + *                    should abort or try to use the cached folio instead
-> + */
-> +static struct folio *__swap_cache_alloc(struct swap_cluster_info *ci,
-> +					swp_entry_t targ_entry, gfp_t gfp,
-> +					unsigned int order, struct vm_fault *vmf,
-> +					struct mempolicy *mpol, pgoff_t ilx)
-> +{
-> +	int err;
-> +	swp_entry_t entry;
-> +	struct folio *folio;
-> +	void *shadow = NULL;
-> +	unsigned long address, nr_pages = 1UL << order;
-> +	struct vm_area_struct *vma = vmf ? vmf->vma : NULL;
+> -	dmabuf->memcg = get_mem_cgroup_from_mm(current->mm);
+> -	if (!mem_cgroup_charge_dmabuf(dmabuf->memcg, PAGE_ALIGN(dmabuf->size) / PAGE_SIZE,
+> -				      GFP_KERNEL)) {
+> -		ret = -ENOMEM;
+> -		goto err_memcg;
+> -	}
+> -
+>  	file->private_data = dmabuf;
+>  	file->f_path.dentry->d_fsdata = dmabuf;
+>  	dmabuf->file = file;
+> @@ -781,8 +777,6 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+>  
+>  	return dmabuf;
+>  
+> -err_memcg:
+> -	mem_cgroup_put(dmabuf->memcg);
+>  err_file:
+>  	fput(file);
+>  err_module:
+> diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+> index ac5f8685a6494..ff6e259afcdc0 100644
+> --- a/drivers/dma-buf/dma-heap.c
+> +++ b/drivers/dma-buf/dma-heap.c
+> @@ -7,13 +7,17 @@
+>   */
+>  
+>  #include <linux/cdev.h>
+> +#include <linux/cgroup.h>
+>  #include <linux/device.h>
+>  #include <linux/dma-buf.h>
+>  #include <linux/dma-heap.h>
+> +#include <linux/memcontrol.h>
+> +#include <linux/sched/mm.h>
+>  #include <linux/err.h>
+>  #include <linux/export.h>
+>  #include <linux/list.h>
+>  #include <linux/nospec.h>
+> +#include <linux/pidfd.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/xarray.h>
+> @@ -55,10 +59,12 @@ MODULE_PARM_DESC(mem_accounting,
+>  		 "Enable cgroup-based memory accounting for dma-buf heap allocations (default=false).");
+>  
+>  static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
+> -				 u32 fd_flags,
+> -				 u64 heap_flags)
+> +				 u32 fd_flags, u64 heap_flags,
+> +				 struct mem_cgroup *charge_to)
+>  {
+>  	struct dma_buf *dmabuf;
+> +	unsigned int nr_pages;
+> +	struct mem_cgroup *memcg = charge_to;
+>  	int fd;
+>  
+>  	/*
+> @@ -73,6 +79,22 @@ static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
+>  	if (IS_ERR(dmabuf))
+>  		return PTR_ERR(dmabuf);
+>  
+> +	nr_pages = len / PAGE_SIZE;
 > +
-> +	VM_WARN_ON_ONCE(nr_pages > SWAPFILE_CLUSTER);
-> +	entry.val = round_down(targ_entry.val, nr_pages);
+> +	if (memcg)
+> +		css_get(&memcg->css);
+> +	else if (mem_accounting)
+> +		memcg = get_mem_cgroup_from_mm(current->mm);
 > +
-> +	/* Check if the slot and range are available, skip allocation if not */
-> +	spin_lock(&ci->lock);
-> +	err = __swap_cache_add_check(ci, targ_entry, nr_pages, NULL);
-> +	spin_unlock(&ci->lock);
-> +	if (unlikely(err))
-> +		return ERR_PTR(err);
-> +
-> +	/*
-> +	 * Limit THP gfp. The limitation is a no-op for typical
-> +	 * GFP_HIGHUSER_MOVABLE but matters for shmem.
-> +	 */
-> +	if (order)
-> +		gfp = thp_shmem_limit_gfp_mask(vma_thp_gfp_mask(vma), gfp);
-> +
-> +	if (mpol || !vmf) {
-> +		folio = folio_alloc_mpol(gfp, order, mpol, ilx, numa_node_id());
-> +	} else {
-> +		address = round_down(vmf->address, PAGE_SIZE << order);
-> +		folio = vma_alloc_folio(gfp, order, vmf->vma, address);
+> +	if (memcg) {
+> +		if (!mem_cgroup_charge_dmabuf(memcg, nr_pages, GFP_KERNEL)) {
+> +			mem_cgroup_put(memcg);
+> +			dma_buf_put(dmabuf);
+> +			return -ENOMEM;
+> +		}
+> +		dmabuf->memcg = memcg;
 > +	}
-> +	if (unlikely(!folio))
-> +		return ERR_PTR(-ENOMEM);
 > +
-> +	/* Double check the range is still not in conflict */
-> +	spin_lock(&ci->lock);
-> +	err = __swap_cache_add_check(ci, targ_entry, nr_pages, &shadow);
-> +	if (unlikely(err)) {
-> +		spin_unlock(&ci->lock);
-> +		folio_put(folio);
-> +		return ERR_PTR(err);
+>  	fd = dma_buf_fd(dmabuf, fd_flags);
+>  	if (fd < 0) {
+>  		dma_buf_put(dmabuf);
+> @@ -102,6 +124,9 @@ static long dma_heap_ioctl_allocate(struct file *file, void *data)
+>  {
+>  	struct dma_heap_allocation_data *heap_allocation = data;
+>  	struct dma_heap *heap = file->private_data;
+> +	struct mem_cgroup *memcg = NULL;
+> +	struct task_struct *task;
+> +	unsigned int pidfd_flags;
+>  	int fd;
+>  
+>  	if (heap_allocation->fd)
+> @@ -113,9 +138,20 @@ static long dma_heap_ioctl_allocate(struct file *file, void *data)
+>  	if (heap_allocation->heap_flags & ~DMA_HEAP_VALID_HEAP_FLAGS)
+>  		return -EINVAL;
+>  
+> +	if (heap_allocation->charge_pid_fd) {
+> +		task = pidfd_get_task(heap_allocation->charge_pid_fd, &pidfd_flags);
+
+Will always get a thread-group leader pidfd and will fail if this is a
+thread-specific pidfd. pidfd_open(1234, PIDFD_THREAD) can be used to
+open a thread-specific pidfd.
+
+> +		if (IS_ERR(task))
+> +			return PTR_ERR(task);
+> +
+> +		memcg = get_mem_cgroup_from_mm(task->mm);
+> +		put_task_struct(task);
 > +	}
 > +
-> +	__folio_set_locked(folio);
-> +	__folio_set_swapbacked(folio);
-> +	__swap_cache_do_add_folio(ci, folio, entry);
-> +	spin_unlock(&ci->lock);
-> +
-> +	if (mem_cgroup_swapin_charge_folio(folio, vmf ? vmf->vma->vm_mm : NULL,
-> +					   gfp, entry)) {
-> +		spin_lock(&ci->lock);
-> +		__swap_cache_do_del_folio(ci, folio, entry, shadow);
-> +		spin_unlock(&ci->lock);
-> +		folio_unlock(folio);
-> +		/* nr_pages refs from swap cache, 1 from allocation */
-> +		folio_put_refs(folio, nr_pages + 1);
-> +		count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK_CHARGE);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
-> +	/* For memsw accounting, swap is uncharged when folio is added to swap cache */
-> +	memcg1_swapin(entry, 1 << order);
-> +	if (shadow)
-> +		workingset_refault(folio, shadow);
-> +
-> +	node_stat_mod_folio(folio, NR_FILE_PAGES, nr_pages);
-> +	lruvec_stat_mod_folio(folio, NR_SWAPCACHE, nr_pages);
-> +
-> +	/* Caller will initiate read into locked new_folio */
-> +	folio_add_lru(folio);
-> +	return folio;
-> +}
-> +
-> +/**
-> + * swap_cache_alloc_folio - Allocate folio for swapped out slot in swap cache.
-> + * @targ_entry: swap entry indicating the target slot
-> + * @gfp: memory allocation flags
-> + * @orders: allocation orders, must be non zero
-> + * @vmf: fault information
-> + * @mpol: NUMA memory allocation policy to be applied
-> + * @ilx: NUMA interleave index, for use only when MPOL_INTERLEAVE
-> + *
-> + * Allocate a folio in the swap cache for one swap slot, typically before
-> + * doing IO (e.g. swap in or zswap writeback). The swap slot indicated by
-> + * @targ_entry must have a non-zero swap count (swapped out).
-> + *
-> + * Context: Caller must protect the swap device with reference count or locks.
-> + * Return: Returns the folio if allocation succeeded and folio is in the swap
-> + * cache. Returns error code if failed due to race, OOM or invalid arguments.
-> + */
-> +struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp,
-> +				     unsigned long orders, struct vm_fault *vmf,
-> +				     struct mempolicy *mpol, pgoff_t ilx)
-> +{
-> +	int order, err;
-> +	struct folio *ret;
-> +	struct swap_cluster_info *ci;
-> +
-> +	if (WARN_ON_ONCE(!orders))
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	ci = __swap_entry_to_cluster(targ_entry);
-> +	order = highest_order(orders);
-> +	while (orders) {
-> +		ret = __swap_cache_alloc(ci, targ_entry, gfp, order,
-> +					 vmf, mpol, ilx);
-> +		if (!IS_ERR(ret))
-> +			break;
-> +		err = PTR_ERR(ret);
-> +		if (err && err != -EBUSY && err != -ENOMEM)
-> +			break;
-> +		count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK);
-> +		order = next_order(&orders, order);
-> +	}
-
-I just realized that with !CONFIG_TRANSPARENT_HUGEPAGE,
-next_order(&orders, order) won't modify orders so this loop won't
-break properly for !CONFIG_TRANSPARENT_HUGEPAGE build.
-
-So V4 is not correct here. I did a "cleanup" since V4 removed
-the forced order 0 fallback. The cleanup is wrong. We need to revert
-this loop part back to V3 by squashing this:
-
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 7701fa4b981c..60f93995e492 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -508,13 +508,13 @@ struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp,
- 
-        ci = __swap_entry_to_cluster(targ_entry);
-        order = highest_order(orders);
--       while (orders) {
-+       for (;;) {
-                ret = __swap_cache_alloc(ci, targ_entry, gfp, order,
-                                         vmf, mpol, ilx);
-                if (!IS_ERR(ret))
-                        break;
-                err = PTR_ERR(ret);
--               if (err && err != -EBUSY && err != -ENOMEM)
-+               if (!order || (err && err != -EBUSY && err != -ENOMEM))
-                        break;
-                count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK);
-                order = next_order(&orders, order);
-
----
-
-Other than that this should be good.
+>  	fd = dma_heap_buffer_alloc(heap, heap_allocation->len,
+>  				   heap_allocation->fd_flags,
+> -				   heap_allocation->heap_flags);
+> +				   heap_allocation->heap_flags,
+> +				   memcg);
+> +	mem_cgroup_put(memcg);
+>  	if (fd < 0)
+>  		return fd;
+>  
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
+> index 03c2b87cb1112..95d7688167b93 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -385,8 +385,6 @@ static struct page *alloc_largest_available(unsigned long size,
+>  		if (max_order < orders[i])
+>  			continue;
+>  		flags = order_flags[i];
+> -		if (mem_accounting)
+> -			flags |= __GFP_ACCOUNT;
+>  		page = alloc_pages(flags, orders[i]);
+>  		if (!page)
+>  			continue;
+> diff --git a/include/uapi/linux/dma-heap.h b/include/uapi/linux/dma-heap.h
+> index a4cf716a49fa6..e02b0f8cbc6a1 100644
+> --- a/include/uapi/linux/dma-heap.h
+> +++ b/include/uapi/linux/dma-heap.h
+> @@ -29,6 +29,10 @@
+>   *			handle to the allocated dma-buf
+>   * @fd_flags:		file descriptor flags used when allocating
+>   * @heap_flags:		flags passed to heap
+> + * @charge_pid_fd:	optional pidfd of the process whose cgroup should be
+> + *			charged for this allocation; 0 means charge the calling
+> + *			process's cgroup
+> + * @__padding:		reserved, must be zero
+>   *
+>   * Provided by userspace as an argument to the ioctl
+>   */
+> @@ -37,6 +41,8 @@ struct dma_heap_allocation_data {
+>  	__u32 fd;
+>  	__u32 fd_flags;
+>  	__u64 heap_flags;
+> +	__u32 charge_pid_fd;
+> +	__u32 __padding;
+>  };
+>  
+>  #define DMA_HEAP_IOC_MAGIC		'H'
+> 
+> -- 
+> 2.53.0
+> 
 
