@@ -1,180 +1,166 @@
-Return-Path: <cgroups+bounces-15995-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15996-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CG9dCGT0B2q6RQMAu9opvQ
-	(envelope-from <cgroups+bounces-15995-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 06:36:52 +0200
+	id Fk8JMuv/B2qXUQMAu9opvQ
+	(envelope-from <cgroups+bounces-15996-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 07:26:03 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821D955A35D
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 06:36:50 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD5855A466
+	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 07:26:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 32044301DAE0
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 04:36:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D868430089BA
+	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 05:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B552D7D59;
-	Sat, 16 May 2026 04:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BjIV4Emo"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D14299931;
+	Sat, 16 May 2026 05:26:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98EE9242D6B
-	for <cgroups@vger.kernel.org>; Sat, 16 May 2026 04:36:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210CA28686
+	for <cgroups@vger.kernel.org>; Sat, 16 May 2026 05:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778906179; cv=none; b=PyiA49CwIJ1YZw7+8oPV5c6Xpcv1SW59gB6Sa8lQW/zXGcfRxNER3VFcv89x1bHQAD4WUWu9rTzpq+wsYjXZ6YQBubWLB2r1pai3+Hg7lf1Ot0H+Im7D7rEJFWB0dctwyiKJy5+7QIB+OJQS+DdODbti/KeHNgZ3zjfGoSpmjfo=
+	t=1778909160; cv=none; b=kOBw/FkcunVPrLVCRYJNOeTtRTQVjDyOtTaNDGb8tBe7d0fAHtpPPItMXlkb02IBN+InoSpbM3riL+oXhYAJK4lpswAc9gotId2N3BEY7olfBOSxbrTTAHjDQgs98fJ3aX52i9InDi27tjH43r2c6zcf0teFNNDEivYqb/4j5S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778906179; c=relaxed/simple;
-	bh=EumMv958u6WFgQoAbYddJahq8sxAYgschaxIgCjxmI4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fds1kKxLOTVTW6MazqGgJiYe3Rb74IU+QTX6H2DY+AKUrGtqCETXePoqAJ34p8Cdn8xT75P8iLK20zNd9pRIAYKi3BAxDpm/LB4vJNcK7RtruT0zJIwirgoaKPCxN7OKxz2//5ry4Y+5uvdvZeMzFKS+jh7E9TxnGpchbXH6oJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BjIV4Emo; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778906177;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bgnrVTKye5LKooEivoS4UZIbyKmBRGGYjO2dcA8RwEg=;
-	b=BjIV4EmotOkdcqkhplTAMz5XlQ3NLtW8KuhJn7P6BpFXH9/ugHTW9KAsMkK/CFFBtupu5D
-	krEbsw0BF9fcXBqMUq+FwapwBHYBjl0QvFMfD02llasYZlr7zwvMrXQs9t3/58q2B2NAIF
-	2+1IEtLucaWk3Xn3wUZw0MqROL2FsMQ=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-43-TqtxovQTM8Ktmk-2YBmC6w-1; Sat,
- 16 May 2026 00:36:12 -0400
-X-MC-Unique: TqtxovQTM8Ktmk-2YBmC6w-1
-X-Mimecast-MFC-AGG-ID: TqtxovQTM8Ktmk-2YBmC6w_1778906168
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0F7EE1956080;
-	Sat, 16 May 2026 04:36:08 +0000 (UTC)
-Received: from [10.2.16.156] (unknown [10.2.16.156])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 796001956053;
-	Sat, 16 May 2026 04:36:02 +0000 (UTC)
-Message-ID: <318fc8b9-87d1-4288-9881-7a83a521b2c2@redhat.com>
-Date: Sat, 16 May 2026 00:36:02 -0400
+	s=arc-20240116; t=1778909160; c=relaxed/simple;
+	bh=fXyhZ2BvGa9rnz4w5iiYXktW/Js9hCvW6EcC/DS5ohE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f7k3XuLsIW7Jv2ikWa8AqWbKP57oplzpruFaSHp1tzkbdGfjA8YUAr04BTZBkovH8Ylpa8bOFPqhpgVqTUR1loZp4W4EGyDLGROmRDDphmSrQg9sVdvzeE4D9SzZqRU6TzdwxeW2uNM4OrzXT91CB/PQELnhfYCAaNk9mCmcuY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b35f0cb050e711f1aa26b74ffac11d73-20260516
+X-CTIC-Tags:
+	HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
+	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:09ca0fd4-fddd-4e60-ad66-557fcba73fa0,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:20
+X-CID-INFO: VERSION:1.3.12,REQID:09ca0fd4-fddd-4e60-ad66-557fcba73fa0,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:20
+X-CID-META: VersionHash:e7bac3a,CLOUDID:b5b6690e91e241b0ced1904908f90158,BulkI
+	D:260516132551YMT9YNIF,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
+	865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
+	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
+	0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: b35f0cb050e711f1aa26b74ffac11d73-20260516
+X-User: cuitao@kylinos.cn
+Received: from ctao-book.. [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <cuitao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1400751814; Sat, 16 May 2026 13:25:50 +0800
+From: Tao Cui <cuitao@kylinos.cn>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	cgroups@vger.kernel.org
+Cc: Tao Cui <cuitao@kylinos.cn>
+Subject: [PATCH] cgroup/rdma: drop unnecessary READ_ONCE() on event counters
+Date: Sat, 16 May 2026 13:25:37 +0800
+Message-ID: <20260516052537.450732-1-cuitao@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH cgroup/for-next v2 0/5] cgroup/cpuset: Support multiple
- source/destination cpusets for cpuset_*attach()
-To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Aaron Tomlin <atomlin@atomlin.com>
-References: <20260516042448.698216-1-longman@redhat.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20260516042448.698216-1-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Rspamd-Queue-Id: 821D955A35D
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 3BD5855A466
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-15995-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCVD_COUNT_THREE(0.00)[4];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15996-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.968];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kylinos.cn:email,kylinos.cn:mid]
 X-Rspamd-Action: no action
 
-On 5/16/26 12:24 AM, Waiman Long wrote:
-> Sashiko AI review of another cpuset patch had found that cpuset_attach()
-> and cpuset_can_attach() can be passed a cgroup_taskset with tasks
-> migrating from one source cpuset to multiple destination cpusets and
-> vice versa.  Further testing of the cpuset code indicates that this is
-> indeed the case when the v2 cpuset controller is enabled or disabled.
->
-> Unfortunately, cpuset_attach() and cpuset_can_attach() still assume that
-> there will be one source and one destinaton cpuset which may result in
-> inocrrect behavior.
->
-> This patch series is created to fix this issue. The first 2 patches are
-> just preparatory patches to make the remaining patches easier to review.
->
-> Patch 3 adds a new attach_old_cs field into task_struct to track the
-> old cpuset to be used in case when cpuset_migrate_mm() needs to be
-> called in cpuset_attach().
->
-> Patch 4 moves mpol_rebind_mm() and cpuset_migrate_mm() inside
-> cpuset_attach_task() to make CLONE_INTO_CGROUP flag of clone(2) works
-> more like moving task from one cpuset to another one, while also make
-> supporting multiple source and destination cpusets easier.
->
-> Patch 5 makes the necessary changes to enable the support of multiple
-> source and destination cpusets by keeping all the source and destination
-> cpusets found during task iterations in two singly linked lists for
-> source and destination cpusets respectively.
+All accesses to the event counters are serialized by rdmacg_mutex,
+making the READ_ONCE() annotations unnecessary. Remove them.
 
-Sorry, I forgot to add the change log. It is basically to address all 
-the AI review comments [1] for my v1 patch.
+Signed-off-by: Tao Cui <cuitao@kylinos.cn>
+---
+ kernel/cgroup/rdma.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-The 2 major changes are to move cpuset_migrate_mm() into 
-cpuset_attach_task() and add a new field in task_struct to record the 
-old cpuset to be used by cpuset_migrate_mm(). There also some other 
-minor changes.
-
-[1] 
-https://lore.kernel.org/lkml/4f49602d35d987e029b8e92a577f0c60@kernel.org/
-
-Cheers,
-Longman
-
->
-> Waiman Long (5):
->    cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
->    cgroup/cpuset: Expand the scope of cpuset_can_attach_check()
->    cgroup/cpuset: Replace cpuset_attach_old_cs by a new attach_old_cs
->      field in task_struct
->    cgroup/cpuset: Move mpol_rebind_mm/cpuset_migrate_mm() calls inside
->      cpuset_attach_task()
->    cgroup/cpuset: Support multiple source/destination cpusets for
->      cpuset_*attach()
->
->   include/linux/sched.h           |   3 +
->   kernel/cgroup/cpuset-internal.h |   6 +
->   kernel/cgroup/cpuset.c          | 358 +++++++++++++++++++++-----------
->   3 files changed, 249 insertions(+), 118 deletions(-)
->
+diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
+index 7c238a9d64d4..5e82a03b3270 100644
+--- a/kernel/cgroup/rdma.c
++++ b/kernel/cgroup/rdma.c
+@@ -145,10 +145,10 @@ static bool rpool_has_persistent_state(struct rdmacg_resource_pool *rpool)
+ 	 */
+ 	for (i = 0; i < RDMACG_RESOURCE_MAX; i++) {
+ 		if (rpool->resources[i].peak ||
+-		    READ_ONCE(rpool->events_max[i]) ||
+-		    READ_ONCE(rpool->events_local_max[i]) ||
+-		    READ_ONCE(rpool->events_alloc_fail[i]) ||
+-		    READ_ONCE(rpool->events_local_alloc_fail[i]))
++		    rpool->events_max[i] ||
++		    rpool->events_local_max[i] ||
++		    rpool->events_alloc_fail[i] ||
++		    rpool->events_local_alloc_fail[i])
+ 			return true;
+ 	}
+ 	return false;
+@@ -654,9 +654,9 @@ static int rdmacg_events_show(struct seq_file *sf, void *v)
+ 		for (i = 0; i < RDMACG_RESOURCE_MAX; i++) {
+ 			seq_printf(sf, "%s.max=%llu %s.alloc_fail=%llu",
+ 				   rdmacg_resource_names[i],
+-				   rpool ? READ_ONCE(rpool->events_max[i]) : 0ULL,
++				   rpool ? rpool->events_max[i] : 0ULL,
+ 				   rdmacg_resource_names[i],
+-				   rpool ? READ_ONCE(rpool->events_alloc_fail[i]) : 0ULL);
++				   rpool ? rpool->events_alloc_fail[i] : 0ULL);
+ 			if (i < RDMACG_RESOURCE_MAX - 1)
+ 				seq_putc(sf, ' ');
+ 		}
+@@ -683,9 +683,9 @@ static int rdmacg_events_local_show(struct seq_file *sf, void *v)
+ 		for (i = 0; i < RDMACG_RESOURCE_MAX; i++) {
+ 			seq_printf(sf, "%s.max=%llu %s.alloc_fail=%llu",
+ 				   rdmacg_resource_names[i],
+-				   rpool ? READ_ONCE(rpool->events_local_max[i]) : 0ULL,
++				   rpool ? rpool->events_local_max[i] : 0ULL,
+ 				   rdmacg_resource_names[i],
+-				   rpool ? READ_ONCE(rpool->events_local_alloc_fail[i]) : 0ULL);
++				   rpool ? rpool->events_local_alloc_fail[i] : 0ULL);
+ 			if (i < RDMACG_RESOURCE_MAX - 1)
+ 				seq_putc(sf, ' ');
+ 		}
+-- 
+2.43.0
 
 
