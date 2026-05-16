@@ -1,187 +1,312 @@
-Return-Path: <cgroups+bounces-15999-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16000-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id Ym9uA6IVCGqYYgMAu9opvQ
-	(envelope-from <cgroups+bounces-15999-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 08:58:42 +0200
+	id YNhcBlMYCGpwZAMAu9opvQ
+	(envelope-from <cgroups+bounces-16000-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 09:10:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C5D255A885
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 08:58:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61B8255A912
+	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 09:10:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6228D301691E
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 06:58:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 59CA830191B9
+	for <lists+cgroups@lfdr.de>; Sat, 16 May 2026 07:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4614D2DF15C;
-	Sat, 16 May 2026 06:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E2137E2E5;
+	Sat, 16 May 2026 07:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="oyMB6gsV";
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="o9uuHquk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-y-111.mailbox.org (mout-y-111.mailbox.org [91.198.250.236])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCC41A682E
-	for <cgroups@vger.kernel.org>; Sat, 16 May 2026 06:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818E618DB1A;
+	Sat, 16 May 2026 07:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.198.250.236
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778914716; cv=none; b=G5SyoqzA4/WFjUvLcsMhca9/jUQWeyNIgMAHqAX8eBSkV3KX7r1QYVwY4YWutPROF5d7D8mhrmbyuy3GAcPw7mbVGzm1zE1OkZKi0wL2tXunEO+TiDCkeR7jVij6B4qERG5UNiDkDhzFsxOztlkN5ylFIWHDC/8Mm7xGvmf20I8=
+	t=1778915400; cv=none; b=e+xn140VjBcCFfLHG4yNVYS6pPPluxEI1XRVNqztSLhVjPOEiL5QLBP7Ow/LfaeLUpuVeOA167vrQSiS+nlhJuT4Vfg6F4566PJl7BZ5MG2ciiWODUNJqWI2jpBQVims2TU5fgxAfLuELl6Jwa39TGCGpqEf7CLLZiqc65tqZNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778914716; c=relaxed/simple;
-	bh=SnPn74b/33tT3dWdo4L6P/haSV8WjrzDDwDyO/dAMgs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=m7/cwWKzdGZCF8HBV4G2vpi3hGq62ZXlKEYaw00KyobOHxPbZVrkOwMFV6wSZiOC8BQxl8qBZCbN+SR5cygx5321BkbVPvRizyIFtZAxGeTbPBn+UGY+MrsTT3+hT9kdcAMLQ+ilpxyiA+JyDKLQvYeDvcUd6+ujEAXhPwKuJ6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-6853c2438b9so736094eaf.3
-        for <cgroups@vger.kernel.org>; Fri, 15 May 2026 23:58:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778914714; x=1779519514;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lwSP8NA9NX4+ziNnxsMZYgv7MI6qgmjM/3UjebHnW6A=;
-        b=c5QNHTkla1oSZ0ENgfG0Avjc3PNVhwOUymMhAmbbL5ZKwQWk0gRu31A9xzcHkKakDv
-         Pzyt6h2FJq2xpqko042tkF0HhNCRhdW8yvH1U8zmW1k3BkhuWgUK6DZuIjJK79t46mYH
-         f0epmz811dNhaVwqevjmKSYWVxUP7pmFOLl2d/NQjLTR7U9ABULm8MeVvQ5NzTFlnTFr
-         ig94Y45L0kOno1DiOVW6uPvSbkgrle4arG5nkmKIeyujmfJoqyqwr6AlOO7w34mBWgNA
-         3iYZQ46wa4rLkQkZ56WbJQaTAjHqhzAN+lRXARbmRhc6+4NhfDiRK7+ijO5o1FtSfq22
-         htug==
-X-Forwarded-Encrypted: i=1; AFNElJ9j02ux3EO9ZwdeBPj1K4uPQ55qmz71rGK9o46+BSwlqlmJ7eeepKNeuOu87L7XX9OhFyFHBrZ0@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxa+fTc5qQPIINgDcmUltQ4j7EiiX5LGlC6qyLdAFI87BbeEkMU
-	3ige8g46/OK/2lvecwWScfm4NFnGNQzZ7PMpcFQ28kXAYDsm4Hox+PaFTm2XvarCT0eCrqHYJqW
-	B50C9LGRVTCmawpQq+THLZkGMChaLXwD/YNoIBzOKUntVqbW9+71s+tPQrHQ=
+	s=arc-20240116; t=1778915400; c=relaxed/simple;
+	bh=lV+w0Ac36wFq4l4XxOkdZ/XAMtSjX2uErz74FJbKIPY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TD/D0A8P6Mvb17isoTnRg/0KGXZ3iYp9DXhaJ/kjJhpLuKKL3j1dT/zwxeCwwUHQLX2JcMm0UWKDUwQx281fW06nAsvQqI7eVmkpGWBHqZ/a79A4XynTZ8zW56lrbZV1GmHRXwub3ooz4t9BPXSSi7kw0iFvYJbdfgKVgYplFqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=oyMB6gsV; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=o9uuHquk; arc=none smtp.client-ip=91.198.250.236
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-y-111.mailbox.org (Postfix) with ESMTPS id 4gHZvR0sf8z9yVt;
+	Sat, 16 May 2026 09:09:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1778915395;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bCTRR472fL00L0PSNs+VkKzuj6RmTK8wIoiHmuNbRls=;
+	b=oyMB6gsVSD0ghwtNlOgdOxR8dM0Of2tddz2PEWv3N8MIoaEjSebnHERYYcq3/gnchTcMW7
+	T1oChKRRnHRPLdCXaKdleZKIGLRUo3GkaJTeq1MKKEil+Nt1CX4q3YXWgMl0DkERVKbEt2
+	jRQNb5Cg9VsxFS+my5b4Ig/Nnb2kZtbAouXZTANHYJnkuyBeJauoN/+9Iw7ziENHkcSBB5
+	pDv4sGl7MWL7BZZ5qS9w3Usqwb7h1YkpR+Ze3Zs7UuacZsDSuPAlq68SWfGwHnG1sNDKO8
+	kRIeKLD+Y5/OmOtLYevI4oxcOquYxHNl3Q+d18UM1iwuPkvQasRo11cQnINejw==
+Authentication-Results: outgoing_mbo_mout;
+	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b=o9uuHquk;
+	spf=pass (outgoing_mbo_mout: domain of a0yami@mailbox.org designates 2001:67c:2050:b231:465::2 as permitted sender) smtp.mailfrom=a0yami@mailbox.org
+From: Qing Ming <a0yami@mailbox.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1778915393;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bCTRR472fL00L0PSNs+VkKzuj6RmTK8wIoiHmuNbRls=;
+	b=o9uuHqukR5PEQQJ2wmOSoCVU49Sf+2P0LanFGDJ1Vs4UlaAct3i8mlyULrcgLtxUz8Sccg
+	f0gFs8TK3rxPTv5xa9eRo1V6u2Pj5LfAReUtz96izGOfWkrQsNRxF1iObIB0CkCf6bT0i6
+	oRvkCOs7WSHRIZhjlEIG1ttQOE6po/yis1KP5wlg/yaHkrcfyOgW08A03yfC5JxyAN3tWL
+	0LwBsasx8OA6hfCsqD2r3t0KURdbvUChc/4JAJJzSdACQ7Gz6tIZpXCBUHgvm7a+yNnLf9
+	c3ALg4HSYfGARle732btOo3bC46xx1Wwj4P3Nx6spKWf1oetBdqh91OoQo6oNg==
+To: Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yosry Ahmed <yosry@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	bpf@vger.kernel.org,
+	Qing Ming <a0yami@mailbox.org>
+Subject: [PATCH v2] cgroup/rstat: validate cpu before css_rstat_cpu() access
+Date: Sat, 16 May 2026 15:08:49 +0800
+Message-ID: <20260516070849.106141-1-a0yami@mailbox.org>
+In-Reply-To: <20260515122952.59209-1-a0yami@mailbox.org>
+References: <20260515122952.59209-1-a0yami@mailbox.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:f005:b0:696:8c3f:d7d8 with SMTP id
- 006d021491bc7-69c9437be21mr4084981eaf.37.1778914713816; Fri, 15 May 2026
- 23:58:33 -0700 (PDT)
-Date: Fri, 15 May 2026 23:58:33 -0700
-In-Reply-To: <20260515171953.2224503-1-shakeel.butt@linux.dev>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a081599.170a0220.4530d.0003.GAE@google.com>
-Subject: [syzbot ci] Re: memcg: cache obj_stock by memcg, not by objcg pointer
-From: syzbot ci <syzbot+cid9f726b45197a5e5@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	kernel-team@meta.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	mhocko@kernel.org, muchun.song@linux.dev, oliver.sang@intel.com, 
-	qi.zheng@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 4C5D255A885
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-META: cqjtyprk1mgmjgi3m5anood8wjajaezk
+X-MBO-RS-ID: 2e6ac942611f7cd341e
+X-Rspamd-Queue-Id: 61B8255A912
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[mailbox.org,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[mailbox.org:s=mail20150812];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlesource.com:url,appspotmail.com:email,syzbot.org:url];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	TAGGED_FROM(0.00)[bounces-16000-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15999-lists,cgroups=lfdr.de,cid9f726b45197a5e5];
-	TO_DN_NONE(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+	RCPT_COUNT_TWELVE(0.00)[19];
+	RCVD_COUNT_THREE(0.00)[4];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[a0yami@mailbox.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[mailbox.org:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mailbox.org:email,mailbox.org:mid,mailbox.org:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-syzbot ci has tested the following series
+css_rstat_updated() is exposed as a BPF kfunc and accepts a
+caller-provided cpu argument. The function uses cpu for per-cpu rstat
+lookups without checking whether it refers to a valid possible CPU.
 
-[v1] memcg: cache obj_stock by memcg, not by objcg pointer
-https://lore.kernel.org/all/20260515171953.2224503-1-shakeel.butt@linux.dev
-* [PATCH] memcg: cache obj_stock by memcg, not by objcg pointer
+A BPF iter/cgroup program with CAP_BPF and CAP_PERFMON can pass an
+invalid cpu value. On an unfixed UBSCAN_BOUNDS test kernel, cpu ==
+0x7fffffff triggers:
 
-and found the following issue:
-WARNING in __refill_obj_stock
+  UBSAN: array-index-out-of-bounds in kernel/cgroup/rstat.c:31:9
+  index 2147483647 is out of range for type 'long unsigned int [64]'
+  Call Trace:
+    css_rstat_updated
+    bpf_iter_run_prog
+    cgroup_iter_seq_show
+    bpf_seq_read
 
-Full report is available here:
-https://ci.syzbot.org/series/8efc6e46-4b2e-43ab-90a0-62552bdc14a6
+Add cpu validation to the BPF-facing css_rstat_updated() kfunc and
+move the common implementation to __css_rstat_updated() for in-kernel
+callers.
 
-***
-
-WARNING in __refill_obj_stock
-
-tree:      mm-new
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/akpm/mm.git
-base:      0cec77cfd5314c0b3b03530abe1a4b32e991f639
-arch:      amd64
-compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-config:    https://ci.syzbot.org/builds/fda0a69d-af56-4b9f-8b30-b63ea4756923/config
-
-------------[ cut here ]------------
-debug_locks && !(rcu_read_lock_held() || lock_is_held(&(&cgroup_mutex)->dep_map))
-WARNING: ./include/linux/memcontrol.h:380 at __refill_obj_stock+0x4fd/0x610, CPU#0: syz.1.48/5712
-Modules linked in:
-
-CPU: 0 UID: 0 PID: 5712 Comm: syz.1.48 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:__refill_obj_stock+0x4fd/0x610
-Code: 89 e7 48 83 c4 18 5b 41 5c 41 5d 41 5e 41 5f 5d e9 d8 ba 00 00 48 83 c4 18 5b 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc cc 90 <0f> 0b 90 e9 a8 fb ff ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 60
-RSP: 0018:ffffc9000483f4b0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88810beb0f80 RCX: 0000000080000001
-RDX: 0000000000000110 RSI: ffffffff8e21e93e RDI: ffffffff8c28b8e0
-RBP: 0000000000000001 R08: ffffffff8239a83c R09: ffff88812103c600
-R10: dffffc0000000000 R11: ffffed102d89bae9 R12: 1ffff110242078c8
-R13: ffff88810beb0d80 R14: dffffc0000000000 R15: ffff88812103c600
-FS:  0000000000000000(0000) GS:ffff88818dc89000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f80ad948060 CR3: 000000000e74a000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- __memcg_slab_free_hook+0x2ed/0x4b0
- kmem_cache_free+0x381/0x650
- __put_anon_vma+0x12b/0x2d0
- unlink_anon_vmas+0x58b/0x730
- free_pgtables+0x802/0xb40
- exit_mmap+0x490/0x9e0
- __mmput+0x118/0x430
- exit_mm+0x18e/0x250
- do_exit+0x6a2/0x22c0
- do_group_exit+0x21b/0x2d0
- get_signal+0x1284/0x1330
- arch_do_signal_or_restart+0xbc/0x840
- exit_to_user_mode_loop+0x8c/0x4d0
- do_syscall_64+0x33e/0xf80
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6eea99ce59
-Code: Unable to access opcode bytes at 0x7f6eea99ce2f.
-RSP: 002b:00007f6eeb8240e8 EFLAGS: 00000246
- ORIG_RAX: 00000000000000ca
-RAX: 0000000000000001 RBX: 00007f6eeac15fa8 RCX: 00007f6eea99ce59
-RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007f6eeac15fac
-RBP: 00007f6eeac15fa0 R08: 3fffffffffffffff R09: 0000000000000000
-R10: 0000200001000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f6eeac16038 R14: 00007fffdc60cea0 R15: 00007fffdc60cf88
- </TASK>
-
-
-***
-
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
-
+Fixes: a319185be9f5 ("cgroup: bpf: enable bpf programs to integrate with rstat")
+Signed-off-by: Qing Ming <a0yami@mailbox.org>
 ---
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+v2:
+- Split css_rstat_updated() into a BPF-visible wrapper and an internal
+  __css_rstat_updated() helper.
+- Switch internal callers to __css_rstat_updated().
 
-To test a patch for this bug, please reply with `#syz test`
-(should be on a separate line).
+ block/blk-cgroup.c     |  2 +-
+ include/linux/cgroup.h |  1 +
+ kernel/cgroup/rstat.c  | 30 ++++++++++++++++++++----------
+ mm/memcontrol.c        |  6 +++---
+ 4 files changed, 25 insertions(+), 14 deletions(-)
 
-The patch should be attached to the email.
-Note: arguments like custom git repos and branches are not supported.
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 554c87bb4a86..bc63bd220865 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -2241,7 +2241,7 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 	}
+ 
+ 	u64_stats_update_end_irqrestore(&bis->sync, flags);
+-	css_rstat_updated(&blkcg->css, cpu);
++	__css_rstat_updated(&blkcg->css, cpu);
+ 	put_cpu();
+ }
+ 
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index f6d037a30fd8..c5648fcf74e2 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -777,6 +777,7 @@ static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, size_t buflen)
+ /*
+  * cgroup scalable recursive statistics.
+  */
++void __css_rstat_updated(struct cgroup_subsys_state *css, int cpu);
+ void css_rstat_updated(struct cgroup_subsys_state *css, int cpu);
+ void css_rstat_flush(struct cgroup_subsys_state *css);
+ 
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 150e5871e66f..ed60ba119c68 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ #include "cgroup-internal.h"
+ 
++#include <linux/cpumask.h>
+ #include <linux/sched/cputime.h>
+ 
+ #include <linux/bpf.h>
+@@ -53,7 +54,7 @@ static inline struct llist_head *ss_lhead_cpu(struct cgroup_subsys *ss, int cpu)
+ }
+ 
+ /**
+- * css_rstat_updated - keep track of updated rstat_cpu
++ * __css_rstat_updated - keep track of updated rstat_cpu
+  * @css: target cgroup subsystem state
+  * @cpu: cpu on which rstat_cpu was updated
+  *
+@@ -63,20 +64,17 @@ static inline struct llist_head *ss_lhead_cpu(struct cgroup_subsys *ss, int cpu)
+  *
+  * NOTE: if the user needs the guarantee that the updater either add itself in
+  * the lockless list or the concurrent flusher flushes its updated stats, a
+- * memory barrier is needed before the call to css_rstat_updated() i.e. a
++ * memory barrier is needed before the call to __css_rstat_updated() i.e. a
+  * barrier after updating the per-cpu stats and before calling
+- * css_rstat_updated().
++ * __css_rstat_updated().
+  */
+-__bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
++void __css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+ {
+ 	struct llist_head *lhead;
+ 	struct css_rstat_cpu *rstatc;
+ 	struct llist_node *self;
+ 
+-	/*
+-	 * Since bpf programs can call this function, prevent access to
+-	 * uninitialized rstat pointers.
+-	 */
++	/* Prevent access to uninitialized rstat pointers. */
+ 	if (!css_uses_rstat(css))
+ 		return;
+ 
+@@ -125,6 +123,18 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+ 	llist_add(&rstatc->lnode, lhead);
+ }
+ 
++/*
++ * BPF-facing wrapper for __css_rstat_updated(). Validate the caller-provided
++ * CPU before passing it to the internal rstat updater.
++ */
++__bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
++{
++	if (unlikely(cpu < 0 || cpu >= nr_cpu_ids || !cpu_possible(cpu)))
++		return;
++
++	__css_rstat_updated(css, cpu);
++}
++
+ static void __css_process_update_tree(struct cgroup_subsys_state *css, int cpu)
+ {
+ 	/* put @css and all ancestors on the corresponding updated lists */
+@@ -170,7 +180,7 @@ static void css_process_update_tree(struct cgroup_subsys *ss, int cpu)
+ 		 * flusher flush the stats updated by the updater who have
+ 		 * observed that they are already on the list. The
+ 		 * corresponding barrier pair for this one should be before
+-		 * css_rstat_updated() by the user.
++		 * __css_rstat_updated() by the user.
+ 		 *
+ 		 * For now, there aren't any such user, so not adding the
+ 		 * barrier here but if such a use-case arise, please add
+@@ -614,7 +624,7 @@ static void cgroup_base_stat_cputime_account_end(struct cgroup *cgrp,
+ 						 unsigned long flags)
+ {
+ 	u64_stats_update_end_irqrestore(&rstatbc->bsync, flags);
+-	css_rstat_updated(&cgrp->self, smp_processor_id());
++	__css_rstat_updated(&cgrp->self, smp_processor_id());
+ 	put_cpu_ptr(rstatbc);
+ }
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c03d4787d466..749c128b4fad 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -679,7 +679,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, long val,
+ 	if (!val)
+ 		return;
+ 
+-	css_rstat_updated(&memcg->css, cpu);
++	__css_rstat_updated(&memcg->css, cpu);
+ 	statc_pcpu = memcg->vmstats_percpu;
+ 	for (; statc_pcpu; statc_pcpu = statc->parent_pcpu) {
+ 		statc = this_cpu_ptr(statc_pcpu);
+@@ -2796,7 +2796,7 @@ static inline void account_slab_nmi_safe(struct mem_cgroup *memcg,
+ 		struct mem_cgroup_per_node *pn = memcg->nodeinfo[pgdat->node_id];
+ 
+ 		/* preemption is disabled in_nmi(). */
+-		css_rstat_updated(&memcg->css, smp_processor_id());
++		__css_rstat_updated(&memcg->css, smp_processor_id());
+ 		if (idx == NR_SLAB_RECLAIMABLE_B)
+ 			atomic_add(nr, &pn->slab_reclaimable);
+ 		else
+@@ -3019,7 +3019,7 @@ static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int val)
+ 		mod_memcg_state(memcg, MEMCG_KMEM, val);
+ 	} else {
+ 		/* preemption is disabled in_nmi(). */
+-		css_rstat_updated(&memcg->css, smp_processor_id());
++		__css_rstat_updated(&memcg->css, smp_processor_id());
+ 		atomic_add(val, &memcg->kmem_stat);
+ 	}
+ }
+-- 
+2.53.0
+
 
