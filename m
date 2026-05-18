@@ -1,132 +1,255 @@
-Return-Path: <cgroups+bounces-16059-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16060-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2GGfCIukC2qRKQUAu9opvQ
-	(envelope-from <cgroups+bounces-16059-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 01:45:15 +0200
+	id eMhAC5amC2p2KgUAu9opvQ
+	(envelope-from <cgroups+bounces-16060-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 01:53:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43B55751CB
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 01:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7197575403
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 01:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 434EB30AF173
-	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 23:40:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0F70E311FFD3
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 23:44:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF9A9338906;
-	Mon, 18 May 2026 23:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8996D338906;
+	Mon, 18 May 2026 23:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a+qmVCE/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="puQ78vfx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713F21EB5C2;
-	Mon, 18 May 2026 23:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5075F338925
+	for <cgroups@vger.kernel.org>; Mon, 18 May 2026 23:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779147622; cv=none; b=RMqLS3pTwW0/WXLHIfwkJL3Q5+o8vq2DbiCT+UxjNeBNEiMDaQmDVvTea5w7a9UVv4yKawordS4z7459EYIIguSsyakYOvP/z+dj/p2jLx0fPwXZ9y/aJ0VrNf1UK54LYtoVjkQFRfWqlffNbucWzjTGgwY2xybmQpzhEKirN4w=
+	t=1779147733; cv=none; b=B126gHtSnR/xUehFGDaMPaej+NvolkBqGuiXGCoajpi0ZMJMJGHacO3jHI0IuZKyCcBDF2HQUZH3hj1Frz8/Uys2Y4/+njSNUBfZYGFBnrj7e4JzoUSw4wVz6gh+LQKozer/T6YBYFyeeiK/OkWbh4kYy56bAzpoXLeX2I+U4/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779147622; c=relaxed/simple;
-	bh=C+JMDHUVVD60YcGR5zmrR9UL2s11oEuADwRAF7SCQWM=;
+	s=arc-20240116; t=1779147733; c=relaxed/simple;
+	bh=DKAhZBOJgMVQ0Xkz3R7SYHeIFYTpInBm9CFf+t08UhI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tuszwkLe9Edhl3OwfCTbBDPkXXZonuI/gjKnXTxUeI6VygOGyWUgqHot9NnmdYXZsCCY7i0J0yfNCv0kjMibn772NiuRPRnI9mNqOKGgju2mns2il7iTCF4lJlS/H/XRmtPQ+w/7h4jDKq2uqGIgO/H7noTkSX/oP9m120VfJdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a+qmVCE/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC47EC2BCB7;
-	Mon, 18 May 2026 23:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779147622;
-	bh=C+JMDHUVVD60YcGR5zmrR9UL2s11oEuADwRAF7SCQWM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=a+qmVCE/3+9Znr3QmO2vIumpfiUM6icTB69SyrJ9ZYeM+2i3C/j+CGAFqyhQQwTQs
-	 /xY/55qNdEkUeyVVj8FroHP4h2/bbJuJ+J82p8nSNslAZifUst94LkXHdmD03AQBiM
-	 RIqMwWoykmJwf5qGtTs3UmkBwaK6xOVDJv1KpbGmKq03E0MWjKLXKoyXbO//NdMub3
-	 SrrlVqM+/xZl2cM5NRqdd9PZ79B9wZlB1PQa2myFMucvBw7ed3TbrG7tJx480iY10O
-	 Ak3CTyfHHx6KaXiuiM6JmnT1MUEjRWAUsRX7fVwUADqzz5C4u10JtVzLXhIxy1+LXa
-	 ySbcTli2Z9Xvw==
-Date: Mon, 18 May 2026 13:40:20 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Qing Ming <a0yami@mailbox.org>, Josef Bacik <josef@toxicpanda.com>,
-	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexei Starovoitov <ast@kernel.org>, Hao Luo <haoluo@google.com>,
-	Yosry Ahmed <yosry@kernel.org>, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup/rstat: validate cpu before css_rstat_cpu()
- access
-Message-ID: <agujZIpmHm8n6-ox@slm.duckdns.org>
-References: <20260515122952.59209-1-a0yami@mailbox.org>
- <20260516070849.106141-1-a0yami@mailbox.org>
- <64f59b64664f769661a8b8cd587c85f8@kernel.org>
- <agubZePrBmStHxhH@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QBDio/3CsyTAF4erwC1nKIGoLJijN0sgmkeOQh8ih08zB6NSrldnkdChpnaIfqvdL3YNi8DQtl5dMA1dBqqkFTy4f49dUY3TviUk9bfnsbDGbN6xTD1v1Lp/PZNeM8wo+wcZ2X2sTEdqW0sh8BMWiq91KndMOz6u0G+iKTVH/bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=puQ78vfx; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 18 May 2026 16:41:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779147728;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+QCtoP4NRudV33pIm9zRDQzZGMwbm5GmlU6HPmH5vp0=;
+	b=puQ78vfxlavN/DowBTm+ommhrlzC3UKWVldJ5ENuibRKIrQ1q1IbR/KdkiqcpmkggUEn+V
+	o7AIm6kvbDP7Zt3TGA18ExumKlQkRoRfOQJxJzWMAs+igS0iUlEIsSrEAMezb+rg/puubX
+	p7/Q39B6ZaDa1AOoF8sYlB180hq/vl0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Qi Zheng <qi.zheng@linux.dev>, Alexandre Ghiti <alex@ghiti.fr>, 
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v3] memcg: cache obj_stock by memcg, not by objcg pointer
+Message-ID: <aguiSnY3ie1y4nEl@linux.dev>
+References: <20260518222827.110696-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <agubZePrBmStHxhH@linux.dev>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260518222827.110696-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16059-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-16060-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[slm.duckdns.org:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: B43B55751CB
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,linux.dev:email,linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:email]
+X-Rspamd-Queue-Id: A7197575403
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello,
-
-On Mon, May 18, 2026 at 04:07:44PM -0700, Shakeel Butt wrote:
-> On Mon, May 18, 2026 at 09:36:36AM -1000, Tejun Heo wrote:
-> > Hello,
-> > 
-> > > Qing Ming (1):
-> > >   cgroup/rstat: validate cpu before css_rstat_cpu() access
-> > 
-> > Applied to cgroup/for-7.1-fixes.
-> > 
-> > In hindsight, we should have added a separate kfunc wrapper from the
-> > start instead of tagging css_rstat_updated() with __bpf_kfunc directly,
-> > which would have avoided the rename. Oh well, it is what it is.
+On Mon, May 18, 2026 at 03:28:27PM -0700, Shakeel Butt wrote:
+> Commit 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg
+> per-node type") split a memcg's single obj_cgroup into one per NUMA
+> node, but the per-CPU obj_stock_pcp still keys cached_objcg by
+> pointer. Cross-NUMA workloads now see a drain on every refill and a
+> miss on every consume that targets a sibling per-node objcg of the
+> same memcg, producing the 67.7% stress-ng switch-mq regression
+> reported by LKP.
 > 
-> Is it frown upon to change the kfunc signature or remove __bpf_kfunc from a
-> function? I am assuming we can but better not to, correct?
+> stock->nr_bytes are fungible across per-node objcgs of one memcg.
+> Treat the cache as keyed by memcg in __consume_obj_stock() and
+> __refill_obj_stock() so siblings share the reserve. Compare via
+> READ_ONCE(objcg->memcg) directly: pointer-compare only, no deref, so
+> the rcu_read_lock contract on obj_cgroup_memcg() does not apply.
+> 
+> Sharing the reserve without re-caching means bytes funded by one
+> per-node objcg's slow path can be consumed/freed under a different
+> sibling, leaving sub-page residue on whichever sibling was cached at
+> drain time. The pre-existing obj_cgroup_release() path would WARN and
+> silently drop that residue, leaking up to nr_node_ids * (PAGE_SIZE - 1)
+> bytes per memcg lifecycle from the page_counter. Forward the residue
+> into a per-node objcg of the same (post-reparent) memcg at release time
+> instead, so it can be reconciled later via a refill atomic_xchg or
+> another release; the chain terminates at root_mem_cgroup, whose
+> page_counter has no enforced limit.
+> 
+> Please note that this is temporary fix and will be reverted when
+> per-node kmem accounting is introduced.
+> 
+> Update the stale invariant comment on __account_obj_stock().
+> 
+> Qi Zheng built a specialized reproducer [1] for the corner case and
+> confirmed the fix.
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202605121641.b6a60cb0-lkp@intel.com
+> Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
+> Link: https://lore.kernel.org/19693be6-7132-446e-b3fc-b7e9f56e5949@linux.dev/ [1]
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Debugged-by: Qi Zheng <qi.zheng@linux.dev>
 
-We can. It's just a bit gratuitous and causes unnecessary churn. Let's just
-leave it be for now. We can clean up later when e.g. more meaningful
-restructuring is necessary.
+Sashiko's review below and my response.
 
-Thanks.
 
--- 
-tejun
+> 
+> Thank you for your contribution! Sashiko AI review found 2 potential issue(s)
+> to consider:
+> - [High] Race condition during memcg offlining causes a permanent page counter
+> leak when forwarding `sub_bytes`.
+> - [High] Unbounded accumulation of `sub_bytes` in a non-allocating parent
+> memcg causes a permanent page counter leak and integer overflow.
+> --
+> 
+> commit e90ccbfce3bb9538bf1cdf185a1c10a7269e0939
+> Author: Shakeel Butt <shakeel.butt@linux.dev>
+> 
+> memcg: cache obj_stock by memcg, not by objcg pointer
+> 
+> This commit changes obj_stock_pcp caching from pointer-based to memcg-based
+> so sibling per-node objcgs share the reserve. It also forwards sub-page
+> residue into a per-node objcg of the same memcg during release so it can be
+> reconciled later instead of being lost.
+> 
+> Link: https://lore.kernel.org/19693be6-7132-446e-b3fc-b7e9f56e5949@linux.dev/
+> [1]
+> 
+> > 
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >  index d978e18b9b2d0..a547ec7c42d16 100644
+> >  --- a/mm/memcontrol.c
+> >  +++ b/mm/memcontrol.c
+> > 
+> [ ... ]
+> 
+> > 
+> > @@ -160,23 +170,33 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+> >  */
+> >  nr_bytes = atomic_read(&objcg->nr_charged_bytes);
+> >  - WARN_ON_ONCE(nr_bytes & (PAGE_SIZE - 1));
+> >  nr_pages = nr_bytes >> PAGE_SHIFT;
+> >  + sub_bytes = nr_bytes & (PAGE_SIZE - 1);
+> >  
+> >  - if (nr_pages) {
+> >  + if (nr_pages || sub_bytes) {
+> >  struct mem_cgroup *memcg;
+> >  
+> >  - memcg = get_mem_cgroup_from_objcg(objcg);
+> >  - mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
+> >  - memcg1_account_kmem(memcg, -nr_pages);
+> >  - if (!mem_cgroup_is_root(memcg))
+> >  - memcg_uncharge(memcg, nr_pages);
+> >  - mem_cgroup_put(memcg);
+> >  + rcu_read_lock();
+> >  + memcg = obj_cgroup_memcg(objcg);
+> >  +
+> >  + if (nr_pages) {
+> >  + mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
+> >  + memcg1_account_kmem(memcg, -nr_pages);
+> >  + if (!mem_cgroup_is_root(memcg))
+> >  + memcg_uncharge(memcg, nr_pages);
+> >  + }
+> >  +
+> >  + if (sub_bytes && !mem_cgroup_is_root(memcg)) {
+> >  + struct obj_cgroup *fwd;
+> >  +
+> >  + fwd = rcu_dereference(
+> >  + memcg->nodeinfo[numa_node_id()]->objcg);
+> >  + if (fwd)
+> > 
+> Could there be a race condition during memcg offlining here that leads to a
+> page counter leak?
+> 
+> If this executes concurrently with the offlining of the memcg,
+> memcg_reparent_objcgs() might have already replaced the nodeinfo objcg
+> pointer with NULL. In this race window, fwd evaluates to NULL, and the
+> sub_bytes would be dropped.
+> 
+> Since they are dropped without being uncharged or forwarded, it seems the
+> page counter would permanently leak these charges.
+
+This is not much a concern as it is bounded (i.e. nr_nodes * PAGE_SIZE - 1) and
+previously for the warning case, we were already dropping the sub-page charges.
+
+> 
+> > 
+> > + atomic_add(sub_bytes, &fwd->nr_charged_bytes);
+> > 
+> Does this unbounded addition create a risk of integer overflow and page
+> counter leaks if the parent memcg never allocates?
+> 
+> If the parent memcg is used strictly as a hierarchical container (like
+> system.slice) and performs no kernel allocations, its objcg is never cached
+> in any CPU's obj_stock_pcp.
+> 
+> Because __refill_obj_stock() relies on the cache to periodically drain
+> nr_charged_bytes, it would never be invoked for the parent. Could child
+> residues continuously accumulate in the parent's nr_charged_bytes without
+> ever being uncharged, eventually overflowing the 32-bit atomic_t?
+> 
+
+This can be a concern for a long running cgroup. However fixing this would add
+complexity not worth it. This is a temporary fix and will be reverted in newer
+kernels.
+
+> > 
+> > + }
+> >  + rcu_read_unlock();
+> >  }
+> > 
+> -- 
+> Sashiko AI review ·
+> https://sashiko.dev/#/patchset/20260518222827.110696-1-shakeel.butt@linux.dev?part=1
+>
 
