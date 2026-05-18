@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-16053-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16054-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aBQRNlGWC2rXJgUAu9opvQ
-	(envelope-from <cgroups+bounces-16053-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 00:44:33 +0200
+	id UOBDNg2aC2rWJwUAu9opvQ
+	(envelope-from <cgroups+bounces-16054-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 01:00:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9208D574C03
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 00:44:33 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82C71574D8E
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 01:00:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5854E30433E2
-	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 22:43:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C8E6530160FB
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 23:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712BF3AF641;
-	Mon, 18 May 2026 22:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79642F9985;
+	Mon, 18 May 2026 23:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jnLwwkQM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GKBaQ9DW"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331F03AD50D
-	for <cgroups@vger.kernel.org>; Mon, 18 May 2026 22:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6632E19E819
+	for <cgroups@vger.kernel.org>; Mon, 18 May 2026 23:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779144219; cv=none; b=aZ8z742QCAt2Vh/OAZUlxW2nQrdAJSXwSLT5N/JJJhLxfaJDnB5Qg+S1vk4qdSvgn/JJO6fpmeAmOzHPRyyUxdX8kJvK/EZrKMMhoOHRn/L3RkKiNZQB2DK6sctjWcG6ztUssGglRQPBIo3sim99fXJlDX6qnqY8L51W0mJs0WY=
+	t=1779145220; cv=none; b=UppZPK/Mv1LBCTFdDflyE4O8s/oLbySmR6hgER2oSbW9EIiUUMMckjNUrmLSXZdnRVB+7SP1ge4ADhyVwOJal/yP7/Vx7cUZa3/iPtVkVlD2Cp7snXbRbRWg9OGgPHjOhmfLr4uStWDsmVEoACsGI97EyavVTcUpF1e5YbzjnLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779144219; c=relaxed/simple;
-	bh=ZqxlUv6AphBiZDSxvrCBSCRC+/VdjzoWlIzND7rNfMs=;
+	s=arc-20240116; t=1779145220; c=relaxed/simple;
+	bh=IdMsK7+qqBktFYOQdPjrszNAWNg59HWQ7/X9tF03+KA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q3mcpdYvzb5rgvf4WSj5VRkFuwOvq6q77OcTA5NIGQLOOeC6cg2d67CFpi/5Wdwf7h+rVav8U2T8jdj8TzF9XKxDQ4/eVEeiqqb6Qr0EPjFuynmgKjFbnOv8yAuK2ORBDSnEXoYSw4qPoZgJn14hcpV3VHXGD1Ium+37ybOzlIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jnLwwkQM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04C64C2BCFB
-	for <cgroups@vger.kernel.org>; Mon, 18 May 2026 22:43:39 +0000 (UTC)
+	 To:Cc:Content-Type; b=MIU4FWlB6DfUhCht0e01I/dndtrX0IBwxBtMDvBd9/PU6lRe6VlHY701+vQ0O4lATPqgku5RPol/p0N2yPKsozbe0tlLESy0WZDjrZDf+NOQdcIRSY+8jgLHV5b3DrZbHwPf5WM721GHe1ljNl94wH08FYJSazWNcmPBT/jrA1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GKBaQ9DW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08D7CC2BCF7
+	for <cgroups@vger.kernel.org>; Mon, 18 May 2026 23:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779144219;
-	bh=ZqxlUv6AphBiZDSxvrCBSCRC+/VdjzoWlIzND7rNfMs=;
+	s=k20201202; t=1779145220;
+	bh=IdMsK7+qqBktFYOQdPjrszNAWNg59HWQ7/X9tF03+KA=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jnLwwkQMSrXKmuTYoC8kFb+1DJ/go3KnenQZXQbnnWDMKKe8Jj3Fzm3HyLrQ0zheV
-	 fWwkQt3ckMrypK82sqP40r4dWhy/Sug1Az8mk5wtdqdi3B8OH285juzi22vXh0j4B4
-	 DUVPFgA0b1KVuKWxy8+/+DaAhru/iD/G3ca5MZBV4Onpr+/jbrySCFfaO++5TDEQvu
-	 3ogI98oJYBqD1C8zrDhoJ1leceekpoRlJDlxh07BKnKkng2BxQy7E7S80tlFJqWAgt
-	 IM9QYwIjrjB+uI75Gi/whUG4uhXcOaQc7yM0/nstduFPa55V4lKsPsP3u1KqoxhIWm
-	 csQ6T9UwG2PSg==
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-6314287380bso2059761137.3
-        for <cgroups@vger.kernel.org>; Mon, 18 May 2026 15:43:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ/NOUdCXxVVHylOKaQyCIFsVQJ0sxEgjWD4cPyBTlknWUARoCmc8pxnb+nwtHeANyOcmWG3UOMu@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQ0Y2vERLdp1YCDroVDgN129DfcT2jXfuB4i0wWbfuOe8BtoQN
-	MhpKXuG/j2kfci8O0DGF777rISlXJu1tIdMx38x3M5x+b/WHFNA3qCnuPOu7i5OKFtfxLMttwxY
-	2+dhsOhF9rbIbEY6aJ+NyJGIfWrG2B5I=
-X-Received: by 2002:a05:6102:1497:b0:632:eef7:4b7f with SMTP id
- ada2fe7eead31-63a3f38ed3dmr9090434137.22.1779144217888; Mon, 18 May 2026
- 15:43:37 -0700 (PDT)
+	b=GKBaQ9DWHDRe9+tG++ZPlIoQ4CugNvI5+ftXhfTi6txThm87onadLleybQl4vz+Fx
+	 sv91RZTsVD3QK0BlRLPvGh7h1DhdF80k0Lok7aGRNy2DCOziFvTd98IBLPvVCl8feD
+	 SSQcbGvHwkJ312D/2okkCTyEYk9E+ZwtFGmc1IKWyasVecqiBKSNe7CtdrP9kZoroC
+	 15bohK+iE5wRBtNNUs3c52ZfMsZqNg8ZSZzeuYL4/R44GCKrcSK4BCI6CTHKf0nH0n
+	 IMU+jccKSztoDoclFBGrt/8LSp8aFKReAOTI9T0eTq9oNQ176bY7MH0VEHiaSuhcon
+	 GbWWlR1F98aGQ==
+Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-63329e1c77aso753600137.3
+        for <cgroups@vger.kernel.org>; Mon, 18 May 2026 16:00:19 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+8P4rDeeo6mmuabjK+GfAvA0ADfOi9yWqNIbgwbW3/N6BLjjNO2s2ixdztOo2v9ZAVPHpgyIDU@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEXkGMyjDgulQSsOlznS6tdlbeKkLL1lRPjxEL9H+QMCKv5EDs
+	KB4/59GCWn1QM1VC337jJ/QcZBHGrbWLPpNPSNjK673euRkiX8r8ix/DSE8DPikn9thedSpmG6N
+	ap+bN4tgRc35NUG9wHZMB69QJ74PByes=
+X-Received: by 2002:a05:6102:8649:10b0:65a:fcea:5a4 with SMTP id
+ ada2fe7eead31-65afcea0ff6mr1668580137.4.1779145219252; Mon, 18 May 2026
+ 16:00:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -61,49 +61,51 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260512-v2_20230123_tjmercier_google_com-v1-0-6326701c3691@redhat.com>
  <20260512-v2_20230123_tjmercier_google_com-v1-2-6326701c3691@redhat.com>
- <CAGsJ_4xfznffbjOaNKwnN6oZk_H6pqOzYqd1zx4Q9XrocdzV8A@mail.gmail.com> <CADSE00LjJcL8P5M-UPEpzZijU70uEmUirnin29N8YR5W5D-oFg@mail.gmail.com>
-In-Reply-To: <CADSE00LjJcL8P5M-UPEpzZijU70uEmUirnin29N8YR5W5D-oFg@mail.gmail.com>
+ <8ef38815-6ae9-4359-86d4-042554357639@amd.com> <CABdmKX2uwZ12kYJYPJGfWxuMBOJS=64b1GRj72tfB5D=NKM22w@mail.gmail.com>
+ <CADSE00Jq_uvNgvxgPze0mEdUd+hF4-DPZkHy0KroWHZzygf4WA@mail.gmail.com>
+ <CABdmKX3DhejYBis9htLDnzPrG7vuF3R3URLVNEbnyd61SSsx=g@mail.gmail.com>
+ <CAGsJ_4zyecY6E-=Tm4_couT7uoM9LMcFdTMUPkZAjj4zUKE-dQ@mail.gmail.com> <cb84c2ee-9de1-4565-b2e0-60984721228f@amd.com>
+In-Reply-To: <cb84c2ee-9de1-4565-b2e0-60984721228f@amd.com>
 From: Barry Song <baohua@kernel.org>
-Date: Tue, 19 May 2026 06:43:26 +0800
-X-Gmail-Original-Message-ID: <CAGsJ_4xwJ7SAhKPJyRtMTw6psTO7H1EcFFpDw0po1W8PX4FE8g@mail.gmail.com>
-X-Gm-Features: AVHnY4KEVuNU5LGUxbEGufPnQvVfof22PSDgrj8C9uNhmMZb-wsisqSstH9JT8s
-Message-ID: <CAGsJ_4xwJ7SAhKPJyRtMTw6psTO7H1EcFFpDw0po1W8PX4FE8g@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/5] dma-heap: charge dma-buf memory via explicit memcg
-To: Albert Esteve <aesteve@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+Date: Tue, 19 May 2026 07:00:07 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4z121v4tK_3+j-hkD7HH0gH3w8tWD8nk0CwRhFE5T+4Og@mail.gmail.com>
+X-Gm-Features: AVHnY4J-roggZZXq-3fecPrif-MI9m_xhdL-W3ahLsaa5t4gx3NgfHLdPTzAVis
+Message-ID: <CAGsJ_4z121v4tK_3+j-hkD7HH0gH3w8tWD8nk0CwRhFE5T+4Og@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] Re: [PATCH RFC 2/5] dma-heap: charge dma-buf
+ memory via explicit memcg
+To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc: "T.J. Mercier" <tjmercier@google.com>, Albert Esteve <aesteve@redhat.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
 	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
 	Benjamin Gaignard <benjamin.gaignard@collabora.com>, Brian Starkey <Brian.Starkey@arm.com>, 
-	John Stultz <jstultz@google.com>, "T.J. Mercier" <tjmercier@google.com>, 
-	Christian Brauner <brauner@kernel.org>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
-	linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, mripard@kernel.org, 
-	echanude@redhat.com
+	John Stultz <jstultz@google.com>, Christian Brauner <brauner@kernel.org>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, dri- <devel@lists.freedesktop.org>, 
+	linaro-mm-sig@lists.linaro.org, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, mripard@kernel.org, echanude@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16053-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16054-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[36];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,amd.com,linux.dev,linux-foundation.org,collabora.com,arm.com,google.com,paul-moore.com,namei.org,hallyn.com,gmail.com,redhat.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,kvack.org];
+	FREEMAIL_CC(0.00)[google.com,redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,linux.dev,linux-foundation.org,collabora.com,arm.com,paul-moore.com,namei.org,hallyn.com,gmail.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,kvack.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -113,90 +115,80 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[baohua@kernel.org,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 9208D574C03
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 82C71574D8E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, May 18, 2026 at 8:16=E2=80=AFPM Albert Esteve <aesteve@redhat.com> =
-wrote:
+On Mon, May 18, 2026 at 3:34=E2=80=AFPM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
 >
-> On Sat, May 16, 2026 at 9:37=E2=80=AFAM Barry Song <baohua@kernel.org> wr=
-ote:
-> >
-> > On Tue, May 12, 2026 at 5:18=E2=80=AFPM Albert Esteve <aesteve@redhat.c=
-om> wrote:
-> > >
-> > > On embedded platforms a central process often allocates dma-buf
-> > > memory on behalf of client applications. Without a way to
-> > > attribute the charge to the requesting client's cgroup, the
-> > > cost lands on the allocator, making per-cgroup memory limits
-> > > ineffective for the actual consumers.
-> > >
-> > > Add charge_pid_fd to struct dma_heap_allocation_data. When set to
-> > > a valid pidfd, DMA_HEAP_IOCTL_ALLOC resolves the target task's
-> > > memcg and charges the buffer there via mem_cgroup_charge_dmabuf()
-> > > inside dma_heap_buffer_alloc(). Without charge_pid_fd, and with
-> > > the mem_accounting module parameter enabled, the buffer is charged
-> > > to the allocator's own cgroup.
-> > >
-> > > Additionally, commit 3c227be90659 ("dma-buf: system_heap: account for
-> > > system heap allocation in memcg") adds __GFP_ACCOUNT to system-heap
-> > > page allocations. Keeping __GFP_ACCOUNT would charge the same pages
-> > > twice (once to kmem, once to MEMCG_DMABUF), thus remove it and route
-> > > all accounting through a single MEMCG_DMABUF path.
-> > >
+> On 5/16/26 11:19, Barry Song wrote:
+> > On Thu, May 14, 2026 at 12:35=E2=80=AFAM T.J. Mercier <tjmercier@google=
+.com> wrote:
 > > [...]
+> >>>> I have a question about this part. Albert I guess you are interested
+> >>>> only in accounting dmabuf-heap allocations, or do you expect to add
+> >>>> __GFP_ACCOUNT or mem_cgroup_charge_dmabuf calls to other
+> >>>> non-dmabuf-heap exporters?
+> >>>
+> >>> We're scoping this to dma-buf heaps for now. CMA heaps and the dmem
+> >>> controller are on the radar for follow-up/parallel work (there will b=
+e
+> >>> dragons and will surely need discussion). For DRM and V4L2 the
+> >>> long-term intent is migration to heaps, which would make direct
+> >>> accounting on those paths unnecessary.
+> >>
+> >> Ah I see. GEM buffers exported to dmabufs are what I had in mind. I
+> >> guess this would only leave the odd non-DRM driver with the need to
+> >> add their own accounting calls, which I don't expect would be a big
+> >> problem.
+> >>
 > >
-> > > -               if (mem_accounting)
-> > > -                       flags |=3D __GFP_ACCOUNT;
-> >
-> > Hi Albert,
-> >
-> > would it be better to move this and its description to patch 1? It
-> > looks like patch 1 already introduces the double accounting changes,
-> > and patch 2 is mainly just supporting remote charging.
+> > sounds like we still have a long way to go to correctly account for
+> > various v4l2, drm, GEM, CMA, etc. In patch 1, the charging is done in
+> > dma_buf_export(), so I guess it covers all dma-buf types except
+> > dma_heap, but the problem is that it has no remote charging support at
+> > all?
 >
-> Hi Barry,
+> No, just the other way around
 >
-> Thanks for looking into this series! Yes, in my head I was trying to
-> keep patch 1, which was taken from a previous, different series, and
-> then diverge from it starting with patch 2. This would clarify the
-> difference between the two. But I can see it just added some confusion
-> (for example, patch 1 charges on dma_buf_export() and then it is moved
-> to dma_heap_buffer_alloc() in patch 2). I will reorganize it better
-> for the next version, including your suggestion.
-
-Yep, I understand the situation now. I also understand
-that you were referring to T.J.'s patch, which caused
-some back-and-forth confusion for readers when reading
-patches 1 and 2.
-
+> DMA-buf heaps can be handled here because we know that it is pure system =
+memory and nothing special so memcg always applies.
 >
-> >
-> > Also, mem_accounting is only used by system_heap.c; has this patchset
-> > also eliminated its need?
+> dma_buf_export() on the other hand handles tons of different use cases, r=
+anging from buffer accounted to dmem, over special resources which aren't e=
+ven memory all the way to buffers which can migrate from dmem to memcg and =
+back during their lifetime.
 >
-> No, mem_accounting is still handled in this patch for the general case
-> where no `charge_pid_fd` is used. See dma_heap_buffer_alloc() code:
->
-> +       if (memcg)
-> +               css_get(&memcg->css);
-> +       else if (mem_accounting)
-> +               memcg =3D get_mem_cgroup_from_mm(current->mm);
 
-I see. What feels a bit odd to me is that mem_accounting
-could either be dropped (with unconditional charging), or
-it should cover both remote and local charge cases.
+Hi Christian,
 
-I don=E2=80=99t have a strong opinion here=E2=80=94it just feels a bit
-strange, since its description is quite generic for memcg:
+Thanks very much for your explanation. So basically it seems that
+dma_buf_export() is not the proper place to charge, since it may end up
+mixing in non-system-memory accounting?
 
-"Enable cgroup-based memory accounting for dma-buf heap
-allocations (default=3Dfalse)."
+My question is also about the global view for both heap and non-heap cases.
+After reading the discussion, I=E2=80=99ve tried to summarize it=E2=80=94pl=
+ease let me know
+if my understanding is correct.
+
+for dma_heap, we have the ioctl DMA_HEAP_IOCTL_ALLOC, where users can pass =
+a
+remote pidfd or similar information to indicate where the dma-buf should be
+charged, as in Albert's patchset.
+
+For non-dma_heap dma-bufs, we don=E2=80=99t have an obvious userspace entry=
+ point that
+triggers the allocation. So we likely need other approaches. We could eithe=
+r
+move more drivers over to dma-heap, or introduce something like
+DMA_BUF_IOCTL_XFER_CHARGE, as you are discussing, to let userspace explicit=
+ly
+declare a charge.
 
 Best Regards
 Barry
