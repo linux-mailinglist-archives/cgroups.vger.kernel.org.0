@@ -1,63 +1,59 @@
-Return-Path: <cgroups+bounces-16024-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16025-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2CiOAoIaCmpYwwQAu9opvQ
-	(envelope-from <cgroups+bounces-16024-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 17 May 2026 21:44:02 +0200
+	id g1G5M/5nCmoj1AQAu9opvQ
+	(envelope-from <cgroups+bounces-16025-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 03:14:38 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50D665639D0
-	for <lists+cgroups@lfdr.de>; Sun, 17 May 2026 21:44:00 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70F6F564B4A
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 03:14:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F45F3026F17
-	for <lists+cgroups@lfdr.de>; Sun, 17 May 2026 19:43:25 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CABD8300231A
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 01:14:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDCE3BE178;
-	Sun, 17 May 2026 19:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G5XDDwmK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AC92147F9;
+	Mon, 18 May 2026 01:14:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC643D3306
-	for <cgroups@vger.kernel.org>; Sun, 17 May 2026 19:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCB01FECBA;
+	Mon, 18 May 2026 01:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779047005; cv=none; b=cCfgV2PVyjnMxeXigF9d+q7xZaEll6Kof30KFGrscp0ul1zjgyryn2DHMWTPgKqGjFKPj5fww00pYJ9Dc7RqXpinuo4mC44M9DarXk+yKzLPtyQkLAVeqlZ174Xyw6WwxyH0ExQ8aoRh9B9YaCk6vshAMVo2iqpV7O6ZN2aDqL0=
+	t=1779066876; cv=none; b=sPvijy9EuSfk5Kwzv00bMBKKrwdrihJlICgji6IWSWRfmJhmp4+jnU41yBUcgLmfVYZ+5jub0DELcjyiiYyXTthTKkBlEllBhw2RJJBRYq0VVPiKLUbleE5w++EK7OB6q+G7zLYChzt6Ljljp+Tp4Otz5c8knqIAJDBi/tJLl+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779047005; c=relaxed/simple;
-	bh=KznaCiF5c6LBgkkGNfuVxha2b8yOzd2QqseiC2M76nQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dCFrmvsF0mzBko7McJAm6yEFooRa+GBD38kcakbh5u6eypXLbanw2f2l8XTDAnlnwhrYOZv7/Z3Jcms3LB1TByeGbtGL7eEnzzGRpRQbjmGO2fBDLOibDf6BM0VwR09Alq5cHU8tjnBbV7jjoQ8c/bPhkzGmGqh0csDFQozwbEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G5XDDwmK; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779047001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=dVdq1jCkPqSPhxPa9j3o3rCe8JoThsgPaLrsDuG7ZL0=;
-	b=G5XDDwmKqGDrgio9xNyEW3gXjYRXJRVye2jJNq1tfICzAcvzmveTcRuNA7j0+dNrmQXq1N
-	TL9CJp5z/XU/AB1YAilct63QAnncN4XLaNBg8B9pUvG4NH39l7F74XhUjJJKagXU8sBvXV
-	WobS8+JwZE5bH1VoMrALbkYsolkNe6s=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Qi Zheng <qi.zheng@linux.dev>,
-	Meta kernel team <kernel-team@meta.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v2] memcg: cache obj_stock by memcg, not by objcg pointer
-Date: Sun, 17 May 2026 12:43:08 -0700
-Message-ID: <20260517194308.952655-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1779066876; c=relaxed/simple;
+	bh=k+8nZs+E882US7hblQn4br6HhSehbAQcgwObve8Uggk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dbAwJbLAGJWihB0rOI0silB90Au3A/o2439kQOC9OG1Kx60xYgvh9WvtXM+RnstbqX95Yd0Z26Do+UUk1saluNJhyU4xfnUH0m5mNjXLIBWLstJhhCoXbESjeMJv9RQcavGySIFafjwpYXGRh6NvIjL4l8YHcuSxPw+50P4qx3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gJfv60rC0zKHMtq;
+	Mon, 18 May 2026 09:13:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 6647F40574;
+	Mon, 18 May 2026 09:14:23 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP4 (Coremail) with SMTP id gCh0CgCXX1vtZwpq_HnICg--.8878S4;
+	Mon, 18 May 2026 09:14:23 +0800 (CST)
+From: Zizhi Wo <wozizhi@huaweicloud.com>
+To: axboe@kernel.dk,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	yukuai@fnnas.com,
+	linux-block@vger.kernel.org
+Cc: cgroups@vger.kernel.org,
+	yangerkun@huawei.com,
+	chengzhihao1@huawei.com,
+	wozizhi@huaweicloud.com
+Subject: [PATCH] blk-cgroup: defer blkcg css_put until blkg is unlinked from queue
+Date: Mon, 18 May 2026 09:09:32 +0800
+Message-ID: <20260518010932.633707-1-wozizhi@huaweicloud.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,146 +61,151 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 50D665639D0
+X-CM-TRANSID:gCh0CgCXX1vtZwpq_HnICg--.8878S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw1kZF4kXF1fKr15Jw4xWFg_yoW5Ar18pF
+	ZxGrWSy3srKryIvan8WF17X34F9a1rKF15GrZ5Gw4Ykr45Zrn2qF1UArWkXFWY9FZ7Ar4Y
+	yrW0qrZrtF4UCwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+	6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r1q
+	6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+	IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: pzr2x6tkl6x35dzhxuhorxvhhfrp/
+X-Rspamd-Queue-Id: 70F6F564B4A
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16024-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16025-lists,cgroups=lfdr.de];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,linux.dev:email,linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,huaweicloud.com:mid]
 X-Rspamd-Action: no action
 
-Commit 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg
-per-node type") split a memcg's single obj_cgroup into one per NUMA
-node, but the per-CPU obj_stock_pcp still keys cached_objcg by
-pointer. Cross-NUMA workloads now see a drain on every refill and a
-miss on every consume that targets a sibling per-node objcg of the
-same memcg, producing the 67.7% stress-ng switch-mq regression
-reported by LKP.
+From: Zizhi Wo <wozizhi@huawei.com>
 
-stock->nr_bytes are fungible across per-node objcgs of one memcg.
-Treat the cache as keyed by memcg in __consume_obj_stock() and
-__refill_obj_stock() so siblings share the reserve. Compare via
-READ_ONCE(objcg->memcg) directly: pointer-compare only, no deref, so
-the rcu_read_lock contract on obj_cgroup_memcg() does not apply.
+[BUG]
+Our fuzz testing triggered a blkcg use-after-free issue:
 
-In the same-memcg refill path also fold the incoming objcg's
-nr_charged_bytes into the stock; otherwise sub-page residue
-accumulates on whichever sibling was cached at drain time and
-obj_cgroup_release() silently drops it, leaking up to nr_node_ids *
-(PAGE_SIZE - 1) bytes per memcg lifecycle from the page_counter.
-This issue was reported by Sashiko.
+  BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
+  Call Trace:
+  ...
+  blkcg_deactivate_policy+0x244/0x4d0
+  ioc_rqos_exit+0x44/0xe0
+  rq_qos_exit+0xba/0x120
+  __del_gendisk+0x50b/0x800
+  del_gendisk+0xff/0x190
+  ...
 
-Update the now-stale invariant comment on __account_obj_stock().
+[CAUSE]
+process1						process2
+cgroup_rmdir
+...
+  css_killed_work_fn
+    offline_css
+    ...
+      blkcg_destroy_blkgs
+      ...
+        __blkg_release
+	  css_put(&blkg->blkcg->css)
+          blkg_free
+	    INIT_WORK(xxx, blkg_free_workfn)
+	    schedule_work
+    css_put
+    ...
+      blkcg_css_free
+        kfree(blkcg)--------blkcg has been freed!!!
+====================================schedule_work
+              blkg_free_workfn
+							__del_gendisk
+							  rq_qos_exit
+							    ioc_rqos_exit
+							      blkcg_deactivate_policy
+							        mutex_lock(&q->blkcg_mutex)
+								spin_lock_irq(&q->queue_lock)
+							        list_for_each_entry(blkg, xxx)
+								  blkcg = blkg->blkcg
+								  spin_lock(&blkcg->lock)-------UAF!!!
+	        mutex_lock(&q->blkcg_mutex)
+	        spin_lock_irq(&q->queue_lock)
+	        /* Only then is the blkg removed from the list */
+	        list_del_init(&blkg->q_node)
 
-Qi Zheng built a specialized reproducer [1] for the corner case and
-confirmed the fix.
+As a result, a blkg can still be reachable through q->blkg_list while
+its ->blkcg has already been freed.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202605121641.b6a60cb0-lkp@intel.com
-Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
-Link: https://lore.kernel.org/19693be6-7132-446e-b3fc-b7e9f56e5949@linux.dev/ [1]
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-Debugged-by: Qi Zheng <qi.zheng@linux.dev>
-Tested-by: Qi Zheng <qi.zheng@linux.dev>
+[Fix]
+Fix this by deferring the blkcg css_put() until after the blkg has been
+unlinked from q->blkg_list in blkg_free_workfn(). This ensures that the
+blkcg outlives every blkg still reachable through q->blkg_list, so any
+iterator holding q->queue_lock is guaranteed to observe a valid
+blkg->blkcg.
+
+Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and blkcg_deactivate_policy()")
+Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
 ---
+ block/blk-cgroup.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Changes since v1:
-- Fix the rcu warning (Sashiko).
-- Fix the page counter possible underflow warning (Sashiko).
-
- mm/memcontrol.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d978e18b9b2d..e22ffa3b3319 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3152,7 +3152,12 @@ static void unlock_stock(struct obj_stock_pcp *stock)
- 		local_unlock(&obj_stock.lock);
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 554c87bb4a86..7b7677d022d0 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -132,10 +132,15 @@ static void blkg_free_workfn(struct work_struct *work)
+ 	if (blkg->parent)
+ 		blkg_put(blkg->parent);
+ 	spin_lock_irq(&q->queue_lock);
+ 	list_del_init(&blkg->q_node);
+ 	spin_unlock_irq(&q->queue_lock);
++	/*
++	 * Release blkcg css ref only after blkg is removed from q->blkg_list,
++	 * so concurrent iterators won't see a blkg with a freed blkcg.
++	 */
++	css_put(&blkg->blkcg->css);
+ 	mutex_unlock(&q->blkcg_mutex);
+ 
+ 	blk_put_queue(q);
+ 	free_percpu(blkg->iostat_cpu);
+ 	percpu_ref_exit(&blkg->refcnt);
+@@ -177,12 +182,10 @@ static void __blkg_release(struct rcu_head *rcu)
+ 	 * blkg_stat_lock is for serializing blkg stat update
+ 	 */
+ 	for_each_possible_cpu(cpu)
+ 		__blkcg_rstat_flush(blkcg, cpu);
+ 
+-	/* release the blkcg and parent blkg refs this blkg has been holding */
+-	css_put(&blkg->blkcg->css);
+ 	blkg_free(blkg);
  }
  
--/* Call after __refill_obj_stock() to ensure stock->cached_objg == objcg */
-+/*
-+ * Call after __consume_obj_stock() / __refill_obj_stock(). The stock may be
-+ * cached for a sibling per-node objcg of the same memcg; in that case the
-+ * vmstat batching slot does not match objcg and we fall through to the
-+ * direct path.
-+ */
- static void __account_obj_stock(struct obj_cgroup *objcg,
- 				struct obj_stock_pcp *stock, int nr,
- 				struct pglist_data *pgdat, enum node_stat_item idx)
-@@ -3210,7 +3215,11 @@ static bool __consume_obj_stock(struct obj_cgroup *objcg,
- 				struct obj_stock_pcp *stock,
- 				unsigned int nr_bytes)
- {
--	if (objcg == READ_ONCE(stock->cached_objcg) &&
-+	struct obj_cgroup *cached = READ_ONCE(stock->cached_objcg);
-+
-+	/* Sibling per-node objcgs share the reserve. */
-+	if ((cached == objcg ||
-+	     (cached && READ_ONCE(cached->memcg) == READ_ONCE(objcg->memcg))) &&
- 	    stock->nr_bytes >= nr_bytes) {
- 		stock->nr_bytes -= nr_bytes;
- 		return true;
-@@ -3318,6 +3327,7 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
- 			       unsigned int nr_bytes,
- 			       bool allow_uncharge)
- {
-+	struct obj_cgroup *cached;
- 	unsigned int nr_pages = 0;
- 
- 	if (!stock) {
-@@ -3327,7 +3337,11 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
- 		goto out;
- 	}
- 
--	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
-+	cached = READ_ONCE(stock->cached_objcg);
-+	if (cached == objcg)
-+		goto add_bytes;
-+	/* Direct READ_ONCE due to just pointer comparison. */
-+	if (!cached || READ_ONCE(cached->memcg) != READ_ONCE(objcg->memcg)) {
- 		drain_obj_stock(stock);
- 		obj_cgroup_get(objcg);
- 		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-@@ -3335,7 +3349,12 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
- 		WRITE_ONCE(stock->cached_objcg, objcg);
- 
- 		allow_uncharge = true;	/* Allow uncharge when objcg changes */
-+	} else if (atomic_read(&objcg->nr_charged_bytes)) {
-+		/* Fold sibling's stranded ncb into stock; else release leaks it. */
-+		stock->nr_bytes += atomic_xchg(&objcg->nr_charged_bytes, 0);
-+		allow_uncharge = true;
- 	}
-+add_bytes:
- 	stock->nr_bytes += nr_bytes;
- 
- 	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
+ /*
+  * A group is RCU protected, but having an rcu lock does not mean that one
 -- 
-2.53.0-Meta
+2.52.0
 
 
