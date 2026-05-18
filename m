@@ -1,211 +1,182 @@
-Return-Path: <cgroups+bounces-16025-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16026-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id g1G5M/5nCmoj1AQAu9opvQ
-	(envelope-from <cgroups+bounces-16025-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 03:14:38 +0200
+	id UIv1M828Cmrb7AQAu9opvQ
+	(envelope-from <cgroups+bounces-16026-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 09:16:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70F6F564B4A
-	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 03:14:38 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B9CF5674CE
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 09:16:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id CABD8300231A
-	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 01:14:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5F999303CF85
+	for <lists+cgroups@lfdr.de>; Mon, 18 May 2026 07:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2AC92147F9;
-	Mon, 18 May 2026 01:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAED35DA79;
+	Mon, 18 May 2026 07:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EZ6rkO+2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCB01FECBA;
-	Mon, 18 May 2026 01:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D053264FC;
+	Mon, 18 May 2026 07:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779066876; cv=none; b=sPvijy9EuSfk5Kwzv00bMBKKrwdrihJlICgji6IWSWRfmJhmp4+jnU41yBUcgLmfVYZ+5jub0DELcjyiiYyXTthTKkBlEllBhw2RJJBRYq0VVPiKLUbleE5w++EK7OB6q+G7zLYChzt6Ljljp+Tp4Otz5c8knqIAJDBi/tJLl+g=
+	t=1779088522; cv=none; b=lmr+BC9XUgWrToqLJQJv5+AEg29dFCm6XykOi8x0GTJwzhZlsqQp2ba+j1hYD0z2bXUe4oAKVh4aNzm09FAFiJZbyqgTEA4vOhRJTAYOTZVUKR80Ocg9DOkwmP3njoeIjLda+jXkF98XWxvR/NCfcNlOLSv8kvKulllEDazXry4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779066876; c=relaxed/simple;
-	bh=k+8nZs+E882US7hblQn4br6HhSehbAQcgwObve8Uggk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dbAwJbLAGJWihB0rOI0silB90Au3A/o2439kQOC9OG1Kx60xYgvh9WvtXM+RnstbqX95Yd0Z26Do+UUk1saluNJhyU4xfnUH0m5mNjXLIBWLstJhhCoXbESjeMJv9RQcavGySIFafjwpYXGRh6NvIjL4l8YHcuSxPw+50P4qx3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gJfv60rC0zKHMtq;
-	Mon, 18 May 2026 09:13:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 6647F40574;
-	Mon, 18 May 2026 09:14:23 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.85.155])
-	by APP4 (Coremail) with SMTP id gCh0CgCXX1vtZwpq_HnICg--.8878S4;
-	Mon, 18 May 2026 09:14:23 +0800 (CST)
-From: Zizhi Wo <wozizhi@huaweicloud.com>
-To: axboe@kernel.dk,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	yukuai@fnnas.com,
-	linux-block@vger.kernel.org
-Cc: cgroups@vger.kernel.org,
-	yangerkun@huawei.com,
-	chengzhihao1@huawei.com,
-	wozizhi@huaweicloud.com
-Subject: [PATCH] blk-cgroup: defer blkcg css_put until blkg is unlinked from queue
-Date: Mon, 18 May 2026 09:09:32 +0800
-Message-ID: <20260518010932.633707-1-wozizhi@huaweicloud.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1779088522; c=relaxed/simple;
+	bh=8M+uYC2suQsYrzWQJJE+5uKTIQCzP7BWOOQIRTLVACA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lFgKQEso81a6bbkygCsRSBh/uUE38VwhuEFArxL7NzAQX+sLKV3U/BZw1CFOqp3tOBIf4qZ6bvuwtRKssApy/TEsuM5E5ztUez4hOE9W/VgAZwZx7ow/zKWNBA0nFLmXu1MMJDsD/aisISgsfT1k1NpD7tvzaiRuzN6ikum3/3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=EZ6rkO+2; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=kE84bpMAJimsO/2Y8gv/DmoOqTHldl6qIZRaW5AO+jw=; b=EZ6rkO+2qNGDOY/2dQfNvC615D
+	MzyCGvN+9rkakhniTyxkwvVg8fhMdsPdHFqyPH1V+thx7L4uPACnm7MxWGz0gU8DrbLdpcvYzuGT3
+	XRON7NkdPh8Gl2WxaJ30UdPauKfLONf6+Zb2r+OJ6YyWmTtIUsMoGHY3RlIa1f6rl+iQCVI8+N2Kw
+	2LerFjvrZPTda/g70b8zGcXqp0wcGkJXF2LCAyZWvtjrM+DedwcixGD6paPE0KJWgKDYqELlWWc4C
+	P8j2fN1lFaF6KiafqoPz19P3YoeXUDtT16PJX9YAL8T7yqBnv5QYfh+pASrANeI0NjzmmJO/ZotIP
+	g98sJW6g==;
+Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wOsBl-0000000A88A-3Tnw;
+	Mon, 18 May 2026 07:14:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 2097A3012C6; Mon, 18 May 2026 09:14:56 +0200 (CEST)
+Date: Mon, 18 May 2026 09:14:56 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jstultz@google.com,
+	kprateek.nayak@amd.com, qyousef@layalina.io
+Subject: Re: [PATCH v2 00/10] sched: Flatten the pick
+Message-ID: <20260518071456.GO3102624@noisy.programming.kicks-ass.net>
+References: <20260511113104.563854162@infradead.org>
+ <agIswZpCxlsQ2Xdk@slm.duckdns.org>
+ <20260512081000.GL3102624@noisy.programming.kicks-ass.net>
+ <agN1QbsjFv2aXFhK@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXX1vtZwpq_HnICg--.8878S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw1kZF4kXF1fKr15Jw4xWFg_yoW5Ar18pF
-	ZxGrWSy3srKryIvan8WF17X34F9a1rKF15GrZ5Gw4Ykr45Zrn2qF1UArWkXFWY9FZ7Ar4Y
-	yrW0qrZrtF4UCwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-	6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r1q
-	6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-	IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUonmRUUUUU
-X-CM-SenderInfo: pzr2x6tkl6x35dzhxuhorxvhhfrp/
-X-Rspamd-Queue-Id: 70F6F564B4A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <agN1QbsjFv2aXFhK@slm.duckdns.org>
+X-Rspamd-Queue-Id: 3B9CF5674CE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16026-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16025-lists,cgroups=lfdr.de];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCVD_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,huaweicloud.com:mid]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim]
 X-Rspamd-Action: no action
 
-From: Zizhi Wo <wozizhi@huawei.com>
+On Tue, May 12, 2026 at 08:45:21AM -1000, Tejun Heo wrote:
+> Hello, Peter.
+> 
+> On Tue, May 12, 2026 at 10:10:00AM +0200, Peter Zijlstra wrote:
+> ...
+> > Anyway, this is why I've been looking at these alternative weight
+> > schemes, to get the nominal fraction near 1 and make these problems go
+> > away. It is both the numerical issues and the disparity between levels
+> > (with root being at level 0 being the most obvious).
+> 
+> I see. I think what bothers me is that I'm unsure what the weight config
+> would mean when the shares are scaled by the number of active cpus in that
+> cgroup. 
 
-[BUG]
-Our fuzz testing triggered a blkcg use-after-free issue:
+Relative weight per active cpu :-), but yes, that is a somewhat more
+difficult concept I suppose.
 
-  BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
-  Call Trace:
-  ...
-  blkcg_deactivate_policy+0x244/0x4d0
-  ioc_rqos_exit+0x44/0xe0
-  rq_qos_exit+0xba/0x120
-  __del_gendisk+0x50b/0x800
-  del_gendisk+0xff/0x190
-  ...
+> Here's a simple example:
+> 
+> - There are 256 cpus.
+> - /cgroup-A has weight 100 and 128 active threads. No pinning.
+> - /cgroup-B has weight 100 and 256 active thredas. No pinning.
+> 
+> In the current code, assuming math holds up, cgroup-A and B would get about
+> the same shares - ~128 CPUs each. However, if we scale the share by active
+> CPUs in each cgroup, B's tasks would end up with the same weight as A's on
+> CPUs that they end up competing on, which would lead to ~ 1:3 distribution.
+> Is that the right reading of the code?
 
-[CAUSE]
-process1						process2
-cgroup_rmdir
-...
-  css_killed_work_fn
-    offline_css
-    ...
-      blkcg_destroy_blkgs
-      ...
-        __blkg_release
-	  css_put(&blkg->blkcg->css)
-          blkg_free
-	    INIT_WORK(xxx, blkg_free_workfn)
-	    schedule_work
-    css_put
-    ...
-      blkcg_css_free
-        kfree(blkcg)--------blkcg has been freed!!!
-====================================schedule_work
-              blkg_free_workfn
-							__del_gendisk
-							  rq_qos_exit
-							    ioc_rqos_exit
-							      blkcg_deactivate_policy
-							        mutex_lock(&q->blkcg_mutex)
-								spin_lock_irq(&q->queue_lock)
-							        list_for_each_entry(blkg, xxx)
-								  blkcg = blkg->blkcg
-								  spin_lock(&blkcg->lock)-------UAF!!!
-	        mutex_lock(&q->blkcg_mutex)
-	        spin_lock_irq(&q->queue_lock)
-	        /* Only then is the blkg removed from the list */
-	        list_del_init(&blkg->q_node)
+Indeed. So both A and B will get ~1024 weight per (active) CPU, such
+that on the CPUs they contend they will get 1:1 and then B will get the
+full CPU on the uncontested CPUs, resulting in a total of 1:3
+distribution.
 
-As a result, a blkg can still be reachable through q->blkg_list while
-its ->blkcg has already been freed.
+This can of course be compensated by increasing the relative
+weight of A, if that is so desired. But the alternative view is that for
+those 128 CPUs they overlap, A and B will get equal parts, it is just
+that B consumes another 128 CPUs and will not have contention there.
 
-[Fix]
-Fix this by deferring the blkcg css_put() until after the blkg has been
-unlinked from q->blkg_list in blkg_free_workfn(). This ensures that the
-blkcg outlives every blkg still reachable through q->blkg_list, so any
-iterator holding q->queue_lock is guaranteed to observe a valid
-blkg->blkcg.
+So the current scheme will inflate the part of A to be double the weight
+(of B), giving them 2 out of 3 parts on the contended CPUs, but then B
+will still get complete / uncontested access to those extra 128 CPUs,
+resulting in a 2:4 weight distribution.
 
-Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and blkcg_deactivate_policy()")
-Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
----
- block/blk-cgroup.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Which also isn't as straight forward as one might think.
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 554c87bb4a86..7b7677d022d0 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -132,10 +132,15 @@ static void blkg_free_workfn(struct work_struct *work)
- 	if (blkg->parent)
- 		blkg_put(blkg->parent);
- 	spin_lock_irq(&q->queue_lock);
- 	list_del_init(&blkg->q_node);
- 	spin_unlock_irq(&q->queue_lock);
-+	/*
-+	 * Release blkcg css ref only after blkg is removed from q->blkg_list,
-+	 * so concurrent iterators won't see a blkg with a freed blkcg.
-+	 */
-+	css_put(&blkg->blkcg->css);
- 	mutex_unlock(&q->blkcg_mutex);
- 
- 	blk_put_queue(q);
- 	free_percpu(blkg->iostat_cpu);
- 	percpu_ref_exit(&blkg->refcnt);
-@@ -177,12 +182,10 @@ static void __blkg_release(struct rcu_head *rcu)
- 	 * blkg_stat_lock is for serializing blkg stat update
- 	 */
- 	for_each_possible_cpu(cpu)
- 		__blkcg_rstat_flush(blkcg, cpu);
- 
--	/* release the blkcg and parent blkg refs this blkg has been holding */
--	css_put(&blkg->blkcg->css);
- 	blkg_free(blkg);
- }
- 
- /*
-  * A group is RCU protected, but having an rcu lock does not mean that one
--- 
-2.52.0
+So perhaps 'weight on the CPUs you contest on' isn't as unintuitive as
+it seems on first glance, its just different.
 
+And it has tremendous advantages as outlined before; it is naturally
+normalized -- the disparity between nesting levels goes away, and the
+edge case of a single CPU active will be sane.
+
+Eg. consider your example except now A will have 1 active thread. Then A
+will get the full group weight (1024) on its one CPU, while B will get
+(1024/256=8) on each CPU.
+
+So for the one contended CPU A gets 256 out of 257 parts, while B gets
+the full CPU for the remaining 255 CPUs, for a:
+
+  256    1        257
+  --- : --- + 255*--- = 256:65535 ~ 1:256
+  257   257       257
+
+distribution. While with the new scheme it would be:
+
+ 1   1       2
+ - : - + 255*- = 1:511
+ 2   2       2
+
+Which, realistically isn't all that different, except the old scheme has
+this really large weight to deal with.
+
+So from where I'm sitting, yes different, but it behaves better.
 
