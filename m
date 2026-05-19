@@ -1,184 +1,250 @@
-Return-Path: <cgroups+bounces-16085-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16086-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EFcgI7V8DGoSiQUAu9opvQ
-	(envelope-from <cgroups+bounces-16085-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:07:33 +0200
+	id uDFwD++FDGoniwUAu9opvQ
+	(envelope-from <cgroups+bounces-16086-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:46:55 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E875811B2
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:07:32 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92FFF581B41
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:46:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B7D9530667BD
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 15:00:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5A02B3266C67
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 15:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A821637AA64;
-	Tue, 19 May 2026 15:00:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218C93ED3C2;
+	Tue, 19 May 2026 15:13:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="geXqvDvc"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bXBwTdI/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6E03546FE;
-	Tue, 19 May 2026 15:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779202821; cv=none; b=PhUa9N0ssmCawL+SjvxGhQibPHf4ymbikjPWsH+OnnGIZuZyny53+LYwSy3Jd5I3Xvp6EBpUvsyGpdJm7JRAVLwpLQB5x4igo9qGTJPkM7TSCj2G0EvhZe4FiPhL4FSYfjjaS3PbEa4QtjlVsQPZAiAoLe2yVWpG9akr9gC+ylE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779202821; c=relaxed/simple;
-	bh=+vafbmR6P35W1uPb6vJ+4sthJQy6Z+LMEd69JGdKiKk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WGrUg9c8lo94wVYRwtsVvVCpTUEX7vXCf5KD773eL+ThT8jQ8pYdrS7R+WZ+cNYltuVauNxMk5zEaBliswyslkulCzjv9Q673IsSY0wGC1+JyNCpe7LjjGQE0zQP3K4GMZG42wBlcqeWjPFzuwlwm55iA40zKTWa/Fl/crxu7c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=geXqvDvc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68CFFC2BCB3;
-	Tue, 19 May 2026 15:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779202821;
-	bh=+vafbmR6P35W1uPb6vJ+4sthJQy6Z+LMEd69JGdKiKk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=geXqvDvc1oWGQxvj2TsovQelBq2ywdFPQQyYsBI1gbg/54JH5yOlGnKHwpy7p9vkF
-	 TdCxavWRyTcebE5FHmsC80cTvkB7WwU1i1KqXF1pVjXN/REheRLvXKNAqxxmZS4aac
-	 Bxo7kUGhPNOoeu+TazCiFDcAlYpEswO1jkxsCxE+LvNEU9Y1QBO5p6bdeCCobUkxJA
-	 qPGi/Y2+/SWGU5ENPe5NohU0O/B87AVeJUS1WOh9hdeBWIgaW4u5/xrOwSV6WXlPjo
-	 KfkGyMw6/yK5w6c4CNRqXDLyu6pW1F//hGETczuAbuppSVtbsihiso2Q/JjGEfgSTP
-	 J4aW7D6RB2LGw==
-Message-ID: <ca8e655d-5fe7-4957-8a36-6667616be8b6@kernel.org>
-Date: Wed, 20 May 2026 00:00:16 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02127403EAB
+	for <cgroups@vger.kernel.org>; Tue, 19 May 2026 15:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779203636; cv=pass; b=eMxPPlmxUFzP6jltdvoq5V8+E8tviZat3jd8VNw8xSzbI3bG3toDFrAKmrG/6O0QZNctPDOw7yii90itsd7VM8GIAJ+1nuWOk8Bui3S1GcuTVF/f2EU2AIYX6ALLkz2V815iyfzVqwhXJN01VFZcu9eewPIs+Fynxh/EfDn+1qo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779203636; c=relaxed/simple;
+	bh=qt7mRCe3W8LWJX/ykLXf7sJXkXTi0OBtx9fWGMlE/k8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ry9npIKhtkhcDoXdXmFlQg9tcFr7DNuSlz5ISw9ZOAmF9CDYxQNyBkewBNUY++GbxPJxYH9Ea4WHnKH1oNcJPWt1a/e+UyT2Vw7tWcOZvYkMq8CzzunR6fe8w+1uElUMOXDzmWQdPPHpMf7xbPJCgDZmqFUEaFWsC6yp3IGdvRA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bXBwTdI/; arc=pass smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-67b8d9c26bbso8535317a12.2
+        for <cgroups@vger.kernel.org>; Tue, 19 May 2026 08:13:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779203633; cv=none;
+        d=google.com; s=arc-20240605;
+        b=iZkXAiuQ8HfyCM6OmUJKctwD+XdZTCe0gnkh54ufTrPecDMS0zfJ71QeGUGAS/lqlO
+         RzZTjfJAklKp25HfWzEp/FgPKNNWvz0Oeg6dGoUWMmkJCjuAhUyjObyOCYJCScdgBanF
+         4/HO6Kvooz0LXAl01f3PCYHNCLYjFiQ1k3043MgWd/u0tZq0Dp/thW72pbOWsDLP+Wpn
+         XunYKtZIXB+5DbeFK7/kiq1ybdhp3ulAit7+BQm4W6TWUCbhjL0pLbejJEtYYeZxOBds
+         X6qMVtCynoa94PuaIVq5bOm+gUCVZxZKpDMaSa52HEHbjIv6/Gr7ETxWPTLi6meYe6v6
+         8iiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=/ntDQDAFXEiIAEKc8+SQdLOl2n46zxFQzSK1l6/XS7I=;
+        fh=XTDpDn8cnRioZo8BT5LZ7Z2KE3lJCNdRD9gy0QG9fNk=;
+        b=fq73rT1SznERjZrlzPHzKDExpZbpDA/0V+kCuKu8AxE16SUFnbA2xGnff7DDjW3IM9
+         L4ibb2+CcoHXNDpdWBE7m4XRTvx/3WjEGRn6gFAvTuvu/8Wi77yIXNIHLXMItHbhWyFf
+         CxoSgKV+p9KW0bfc3bBGoYt+CsOWKslde2p9B2OFPG743EWn7a7ov3Thf7cgI98lPySP
+         0CJI5qDboF7NUAwRcHGuEH8giqoOdhFtZpf9Uy1OQJorpT3xeWyRW6PMlzGO7Iu+7fXx
+         zA7KJTuh90HLPkhKtFByFQDH6qhIf1PclpwiMnsKvubMiJh9FYP1BdnI1jRLoqFX26I7
+         ZVaQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1779203633; x=1779808433; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ntDQDAFXEiIAEKc8+SQdLOl2n46zxFQzSK1l6/XS7I=;
+        b=bXBwTdI/O78kuRgZW3mzP/jTx6OkOf9G5YGl9rQOgLb91bncXk2GqRWHx1IWAjemUP
+         su3pFucXJTGgu+avSLlA2ZeQchyaiPoHuDpFbpl23qz6immxhRjJR3yjFeGj/55cToLP
+         ycoza2++5uzwwiEJwHsJebD5JWUKNDVZCL1hMI1ZGt4BW62BJMpSulHiQucecJfMgMkx
+         oaamELfTOPpnogqpCTDxBg80DJNDYKegZ9UEop0KbtSqYwxhoj4RusYrO3gQdMhX3tRD
+         ZZAgMpX97E2XArMVbIRFgljxd+49FgT4Kfjf2Kn1rm1G9WeTZTnkgoz248qTPYehl8Wr
+         +zJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779203633; x=1779808433;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ntDQDAFXEiIAEKc8+SQdLOl2n46zxFQzSK1l6/XS7I=;
+        b=o7/xYIObd6dKxrx7B0WRHZ8ow7t6Jar0l1fcU1qLtqJnDQFjpQstsw7hZEIpacwOh0
+         r4/PwjIt5bsdjmAmegsC8XK10Av8P1sOHRXjkWGIMlLKeJ8M+gu+uuimdOU4b28K2idO
+         ZVby2Ewt+QA5BU/fmrBh0FgwuNpblbKGC5q6nVECpiehlrhn0N973uB454+fBznNu9Pj
+         N1lMtTKnpqB/niTWvplZEEYSWf2A8JO1mqiopM5peWPNx6F74uNbBB7uHVCU26jDM6fY
+         Uwl7Q+yMwwW1ofKTG7DYlERMCX2W9hoPdKx2DCfs4Xf3lD8+4KcpsyBhPl6yNOYrepmn
+         ADdg==
+X-Forwarded-Encrypted: i=1; AFNElJ+27toTJhRoHjCxGv7zmlL/vO8UyzjpiLnBc+OcQJjnJZrHOvfJrStlbm40rzzFD+w6+9nshSJB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6OUXb10AbLRG3kXsSShhXK77X31FL+PONPwrOaPO3l2bQYNq7
+	lezxtE2ifS8NZrqyAwGMzEwc5a63Y1Pbn3N6205A+XsG2y/aENeFKKatiopUxLSWaekwMLOw50Z
+	TTPbICc3AksHfdbksFFOfgJsOAJUl6Qdyg6aMzBsRyg==
+X-Gm-Gg: Acq92OEZE73AWb3q0DGFPQwPCb7/IKo9cC/KxZfhYZEJz9qqvEE0w9GMps2EqBHaXDY
+	HpqBJLqBt5AaMUKaGZZb7s8Cqf4rmk+rHGkndORQvXe3WQmA33Wj/7PRfmPQ9tyCZG8a4kAdl89
+	LUwPCkHkxIrxLE7+H4Js6/R6qUgm/XeXuNfC1h7nmJoH4+DHQfNpoO42PgF9pcMoku3Gp6UIVPJ
+	m/j5/rOcvx1XX72lyjMJxh1skt262jiQqVR3xhHSUI6WxvB5cmlo1Mf7vTopVHjbauHTdak5Ah/
+	cbXxHaFYj4qvoqC7HYuu0oWVZDLK/RNVWN9aK3L9g1ERiQ4=
+X-Received: by 2002:a05:6402:3494:b0:683:c72:44c9 with SMTP id
+ 4fb4d7f45d1cf-683bc8ac2f4mr12626053a12.11.1779203633253; Tue, 19 May 2026
+ 08:13:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] memcg: cache obj_stock by memcg, not by objcg pointer
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
- Alexandre Ghiti <alex@ghiti.fr>, Joshua Hahn <joshua.hahnjy@gmail.com>,
- Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel test robot <oliver.sang@intel.com>
-References: <20260518222827.110696-1-shakeel.butt@linux.dev>
- <aguiSnY3ie1y4nEl@linux.dev>
- <4e296262-fbbf-4ac7-aecc-3ef831583704@kernel.org>
- <agxszIIN6FtK0fEb@linux.dev>
-Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <agxszIIN6FtK0fEb@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+References: <20260511113104.563854162@infradead.org> <20260511120627.944705718@infradead.org>
+In-Reply-To: <20260511120627.944705718@infradead.org>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 19 May 2026 17:13:40 +0200
+X-Gm-Features: AVHnY4Ics_QrAdlmhL-xdhqOhd0_chqx07XdmseSEmg8J2xY-zo2vOOTfZSP3h4
+Message-ID: <CAKfTPtDSLOvk1kNstN429rVNf4hYhzBBgy4f=RKqdyztX8PsWQ@mail.gmail.com>
+Subject: Re: [PATCH v2 08/10] sched/fair: Add newidle balance to pick_task_fair()
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com, 
+	juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, tj@kernel.org, 
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jstultz@google.com, kprateek.nayak@amd.com, 
+	qyousef@layalina.io
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[linaro.org,none];
+	R_DKIM_ALLOW(-0.20)[linaro.org:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16085-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 33E875811B2
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vincent.guittot@linaro.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16086-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,linaro.org:email,linaro.org:dkim,infradead.org:email];
+	DKIM_TRACE(0.00)[linaro.org:+]
+X-Rspamd-Queue-Id: 92FFF581B41
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Mon, 11 May 2026 at 14:07, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> With commit 50653216e4ff ("sched: Add support to pick functions to
+> take rf") removing the balance callback, the pick_task() callback is
+> in charge of newidle balancing.
+>
+> This means pick_task_fair() should do so too. This hasn't been a
+> problem in practise because pick_next_task_fair() is used. However,
+> since we'll be removing that one shortly, make sure pick_next_task()
+> is up to scratch.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 
-On 5/19/26 11:02 PM, Shakeel Butt wrote:
-> On Tue, May 19, 2026 at 03:46:51PM +0900, Harry Yoo wrote:
->>
->>
->> On 5/19/26 8:41 AM, Shakeel Butt wrote:
->>> On Mon, May 18, 2026 at 03:28:27PM -0700, Shakeel Butt wrote:
->>>> Commit 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg
->>>> per-node type") split a memcg's single obj_cgroup into one per NUMA
->>>> node, but the per-CPU obj_stock_pcp still keys cached_objcg by
->>>> pointer. Cross-NUMA workloads now see a drain on every refill and a
->>>> miss on every consume that targets a sibling per-node objcg of the
->>>> same memcg, producing the 67.7% stress-ng switch-mq regression
->>>> reported by LKP.
->>>>
->>>> stock->nr_bytes are fungible across per-node objcgs of one memcg.
->>>> Treat the cache as keyed by memcg in __consume_obj_stock() and
->>>> __refill_obj_stock() so siblings share the reserve. Compare via
->>>> READ_ONCE(objcg->memcg) directly: pointer-compare only, no deref, so
->>>> the rcu_read_lock contract on obj_cgroup_memcg() does not apply.
->>>>
->>>> Sharing the reserve without re-caching means bytes funded by one
->>>> per-node objcg's slow path can be consumed/freed under a different
->>>> sibling, leaving sub-page residue on whichever sibling was cached at
->>>> drain time. The pre-existing obj_cgroup_release() path would WARN and
->>>> silently drop that residue, leaking up to nr_node_ids * (PAGE_SIZE - 1)
->>>> bytes per memcg lifecycle from the page_counter. Forward the residue
->>>> into a per-node objcg of the same (post-reparent) memcg at release time
->>>> instead, so it can be reconciled later via a refill atomic_xchg or
->>>> another release; the chain terminates at root_mem_cgroup, whose
->>>> page_counter has no enforced limit.
->>>>
->>>> Please note that this is temporary fix and will be reverted when
->>>> per-node kmem accounting is introduced.
->>
->> ... because once per-node kmem accounting is introduced,
->> "stock->nr_bytes are fungible across per-node objcgs of one memcg"
->> no longer holds?
-> 
-> Yes
-> 
->>
->> And the follow-up plain is to revert this and address it with a multi-objcg
->> percpu stock [1], similar to a multi-memcg percpu charge cache we have now,
->> right? (regardless of per-node kmem accounting's progress)
->>
-> 
-> Yes
-
-Thanks for confirming!
-
->> If this temporary fix imposes other potential correctness issues, would it
->> make sense to land [1] in mainline before the next LTS release and skip this
->> temporary fix?
->>
->> [1] https://lore.kernel.org/oe-lkp/agtPMpQK2jXdQAY4@linux.dev
->>
-> 
-> The full clean solution might take one more cycle and I think we can not just
-> ignore 67% regression on 7.1.
-
-That is valid point, unfortunately.
-
-One more thing I have to ask... for v7.1, wouldn't it be a safer option 
-to revert the per-node object change and re-introduce it once we have a 
-cleaner solution?
-
-This change was introduced in v5, but the implementation before v4 had 
-been exposed in -next for a while, and I think we don't have enough 
-justification to keep the per-node objcgs change, at least for v7.1, 
-given that we have an unexpected last-minute regression and
-correctness concerns (albeit slight).
-
--- 
-Cheers,
-Harry / Hyeonggon
-
+> ---
+>  kernel/sched/fair.c |   38 +++++++++++++++-----------------------
+>  1 file changed, 15 insertions(+), 23 deletions(-)
+>
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9215,16 +9215,18 @@ static void wakeup_preempt_fair(struct r
+>  }
+>
+>  static struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
+> +       __must_hold(__rq_lockp(rq))
+>  {
+>         struct sched_entity *se;
+>         struct cfs_rq *cfs_rq;
+>         struct task_struct *p;
+>         bool throttled;
+> +       int new_tasks;
+>
+>  again:
+>         cfs_rq = &rq->cfs;
+>         if (!cfs_rq->nr_queued)
+> -               return NULL;
+> +               goto idle;
+>
+>         throttled = false;
+>
+> @@ -9245,6 +9247,14 @@ static struct task_struct *pick_task_fai
+>         if (unlikely(throttled))
+>                 task_throttle_setup_work(p);
+>         return p;
+> +
+> +idle:
+> +       new_tasks = sched_balance_newidle(rq, rf);
+> +       if (new_tasks < 0)
+> +               return RETRY_TASK;
+> +       if (new_tasks > 0)
+> +               goto again;
+> +       return NULL;
+>  }
+>
+>  static void __set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
+> @@ -9256,12 +9266,12 @@ pick_next_task_fair(struct rq *rq, struc
+>  {
+>         struct sched_entity *se;
+>         struct task_struct *p;
+> -       int new_tasks;
+>
+> -again:
+>         p = pick_task_fair(rq, rf);
+> +       if (unlikely(p == RETRY_TASK))
+> +               return p;
+>         if (!p)
+> -               goto idle;
+> +               return p;
+>         se = &p->se;
+>
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+> @@ -9311,29 +9321,11 @@ pick_next_task_fair(struct rq *rq, struc
+>  #endif /* CONFIG_FAIR_GROUP_SCHED */
+>         put_prev_set_next_task(rq, prev, p);
+>         return p;
+> -
+> -idle:
+> -       if (rf) {
+> -               new_tasks = sched_balance_newidle(rq, rf);
+> -
+> -               /*
+> -                * Because sched_balance_newidle() releases (and re-acquires)
+> -                * rq->lock, it is possible for any higher priority task to
+> -                * appear. In that case we must re-start the pick_next_entity()
+> -                * loop.
+> -                */
+> -               if (new_tasks < 0)
+> -                       return RETRY_TASK;
+> -
+> -               if (new_tasks > 0)
+> -                       goto again;
+> -       }
+> -
+> -       return NULL;
+>  }
+>
+>  static struct task_struct *
+>  fair_server_pick_task(struct sched_dl_entity *dl_se, struct rq_flags *rf)
+> +       __must_hold(__rq_lockp(dl_se->rq))
+>  {
+>         return pick_task_fair(dl_se->rq, rf);
+>  }
+>
+>
 
