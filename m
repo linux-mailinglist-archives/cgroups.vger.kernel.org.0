@@ -1,105 +1,106 @@
-Return-Path: <cgroups+bounces-16065-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16066-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cNyMOh4QDGoZVQUAu9opvQ
-	(envelope-from <cgroups+bounces-16065-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 09:24:14 +0200
+	id +CLpCq8YDGrrVwUAu9opvQ
+	(envelope-from <cgroups+bounces-16066-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 10:00:47 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FAF5578FBB
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 09:24:14 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E35A579936
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 10:00:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3633C3011C68
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 07:19:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A34A9306CC66
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 07:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057953CF02E;
-	Tue, 19 May 2026 07:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84EB83DDDA3;
+	Tue, 19 May 2026 07:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="o4o+Dfrr"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aXBYR2TS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012070.outbound.protection.outlook.com [40.107.209.70])
+Received: from MW6PR02CU001.outbound.protection.outlook.com (mail-westus2azon11012000.outbound.protection.outlook.com [52.101.48.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705EA3BD63B;
-	Tue, 19 May 2026 07:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AF62459C5;
+	Tue, 19 May 2026 07:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.48.0
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779175197; cv=fail; b=PC//IDGR42x2sN1yCeBpBo1dhHv3fXN1jTHflr1tPvC0u9TNq/A8E5yesXlkp7aDhzlSDjXxD60UzQvsNzMc05KvjWn2y9AQyanbgCS+VyLmooBEiLjK5YcRvqQQI8Gpiz22Qo2AzkJK/w1dLBal3/I57tpD6EvRScYY9optbXg=
+	t=1779177219; cv=fail; b=ON9qpGaZl84+sx6QiLmFlNUnw7mjdVkCVMPd4zyZN5Rg+Mz7hFVQzUrNgxFHmtsKxMZ1wy4wAQec6Qdql+iv58vZQVIItj4lE2T6jGUNU5ytnTOFBoEBdJevBe7X6B0h4RgX+A2Y41qUq8t6PCDOqPO5SAxy8xMK7sefTKWhkVQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779175197; c=relaxed/simple;
-	bh=kFNUC+s8XpRBzkpTznQwhj7Sdo21AMGkEkxNdi0LnmY=;
+	s=arc-20240116; t=1779177219; c=relaxed/simple;
+	bh=P1y9SX2S4lDsS0/lWb9jBKd2pcf7L9gBUmcHZvl2YnQ=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=PDGJRSjKUl+AFolieMXwwOBIRx6Sn0g/dd5insJSdvGqURuGqt2NlhPtQTBZCMbBQGiXInLwf7aEI4QeMroRHhWFkSHM6xYWBbc64S/eR1y2YodNLQW/OuRN0c1DcGlrpes27P9VKel3bzSvFM6Yt+BYWETF1Vm52gEJj7Odans=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=o4o+Dfrr; arc=fail smtp.client-ip=40.107.209.70
+	 Content-Type:MIME-Version; b=q15KD9QD8RbwbhtsecbLXS93Kp2l2Mft1DmNikqhBDKDpIEWPbexXDn/PHrbdXIdK0KVhrU1BSVLfnGFcfMJZpsnDMDrew/4sgIy5adwWiQh7VNOqP1eE2JMNapDbblSSvkdI8BruZ3ITXU0aR5KEa2cINNt411tJMnk66/YM9U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aXBYR2TS; arc=fail smtp.client-ip=52.101.48.0
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gaufHFBZAHVSI/VBShSBeOlGIUVwMMT9kpMMv27PMvlizc4QLLFsqFoJtlMeBp+drjZUzM67bmeaYBhLYISAzGamdpc24EgZzyrJI/8NcpPtjb9lusVNHrZLfWCThCI7qCf4RZ1I9o9G4QhdiZpautUg/G+jRrUkHsIyyQva/UXDHRB1a6wl45gA+V/twcOcWcYApnkOpDdRnq61UFweS42DHkEdMGKMbLwZpRpxh3kUi/ku9d5TAI1E3y8yHrV63//YdeGTqQbSfntW9jnm4tZRa9Uv858k69QrROO0XB7wzOsPz1m52O8xlkeMx+OM5PdnP6MHfx5QEhzi/Udrdw==
+ b=C47NOUgzALBfz0G8PfzauSOb/yWfHD4bI+kRvS4ogba7hwJF2nibpnz/PRctzgr4ZyoXdeHsPS9Yg4q2K9CQlP6tXyziWcxQOoxcUP4Q1n9GUESoiXHUSyxy+hPVgRS8yGe3oYWpxiWD3s8b3F8xLzkz5pqxuTLGSYveIBDZ/LONtlt0MvU/JjBM7rPmy3XGExY+W2jteKch//adhrwhGa0KS2ufiQycm70lWnIujBMlrHDijYStO5P1dHgg1GHR9tDuYwfSVcCMZvu9ptvrkosVxCl2np7DfIYGmhnuDiTH+dFqTH+OOq/dXmvu89MmJXRyTtHHLOB1d5HHsx9reg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tToTDeZ2zH40MRA2cGhy3MJjH7UDbtc/xCc9lAoPtb8=;
- b=WmGVujBJGade125jNVwoX6GLNGdxsSi4N+ZDEI4e5B5cNBH40r0mSc1ER7Fr1nOrm+0BLgsbPUi2SsfZtossPhL11Hp1s+j79iSzLkFmFIHFOrbAxvJEmbfQhG7qiq2wXXNUxYXkmaq73eoUd8/fpjPQ2WMf+9bEJhYakq0Higez3B8TL/5l7tg5vzAfTW9WkF9k6UqmB81+NZXO4mZ8yZbYi2fARjr5xHz3SZ6EdnRjUT8Dm+DI/JXdKzXL9gCgrMrIDOELI+YoYNZjsrI3NLzw8v4gAyvH936Nbw1QojwLuYPAaC/25M4d86e0ZNg8QuZCFeLTxFNvlkmAVLQQ3A==
+ bh=QcTGYPJyddA/87hdIBe9DbOLClP63BESwxE1z6U6qqM=;
+ b=NFAVMv826SgnPgqwrkZqcIvU9fcSqYXwvzGfm4GkfdiDFUbxNWbTYvNRahfUluh4MfdTe2nC/Et5ECAUZBQeYbfE0/ZRXwTgp+t5/bdFPi7oH0aOXwHUgIDb7hQ9sJ6YqHdbw1/VIqG0+ZAtr8+F7b9cooTmpELjR4Ld/OZuaIYu+5jvkvaq6DmhEqpI7PNAaWPKNq56+IghnWo9c+jOHxc14BxxzeGMFXbH88UkqcuYevRNOxUip1VH4uZZWM8PDFG7W97Vyz0ww+MjZCM/fo6MN2VDGFajql6ZWnSYlQ4VhP/cdVanEb1RW6vU5ukPolPGZQQycucl9m+dDQvKhA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tToTDeZ2zH40MRA2cGhy3MJjH7UDbtc/xCc9lAoPtb8=;
- b=o4o+Dfrrp2PpwAa9dqIVZUzhLkHOT3W/xw9jMm0Vu9waFJREy0SO20gX/XWkC2bgRys2H6b6J8FA2fUR9NmpX9K87IrU4WUHCbirhdUFgVkd+2IMOJJi51wqB+wHX8FmiMu2hyPrv3MucCShijUn+wS5dwvUW2AXycp/53FAoTQ=
+ bh=QcTGYPJyddA/87hdIBe9DbOLClP63BESwxE1z6U6qqM=;
+ b=aXBYR2TS1RROtj2D0au1VJy5cKdeYY7yPq6ta49MvxDFoW2isVh7OPtvZKALEonjsit7IWW4jxToy5DeUwb/lqwwo2+fGTRe8zxqa33eje/356qXv+1EibXyWJAk1x7mzvKCmK2849V/zDvqa7ebl+DvHWvzQRcdEQndVuk6yEc=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
 Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by DS0PR12MB6439.namprd12.prod.outlook.com (2603:10b6:8:c9::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.25.24; Tue, 19 May 2026 07:19:51 +0000
+ by SJ0PR12MB7067.namprd12.prod.outlook.com (2603:10b6:a03:4ae::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.14; Tue, 19 May
+ 2026 07:53:29 +0000
 Received: from PH7PR12MB5685.namprd12.prod.outlook.com
  ([fe80::ce69:cfae:774d:a65c]) by PH7PR12MB5685.namprd12.prod.outlook.com
  ([fe80::ce69:cfae:774d:a65c%5]) with mapi id 15.21.0025.022; Tue, 19 May 2026
- 07:19:51 +0000
-Message-ID: <01b6eefc-c107-4f8c-9d7c-3b86f54cabaa@amd.com>
-Date: Tue, 19 May 2026 09:19:42 +0200
+ 07:53:29 +0000
+Message-ID: <9cc79977-9a42-40eb-bfa7-460881c1e10f@amd.com>
+Date: Tue, 19 May 2026 09:53:19 +0200
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/5] dma-heap: charge dma-buf memory via explicit
- memcg
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Albert Esteve <aesteve@redhat.com>, Christian Brauner
- <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>,
+Subject: Re: [Linaro-mm-sig] Re: [PATCH RFC 2/5] dma-heap: charge dma-buf
+ memory via explicit memcg
+To: Albert Esteve <aesteve@redhat.com>
+Cc: Barry Song <baohua@kernel.org>, "T.J. Mercier" <tjmercier@google.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
  Sumit Semwal <sumit.semwal@linaro.org>, Michal Hocko <mhocko@kernel.org>,
  Roman Gushchin <roman.gushchin@linux.dev>,
  Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>,
  Benjamin Gaignard <benjamin.gaignard@collabora.com>,
  Brian Starkey <Brian.Starkey@arm.com>, John Stultz <jstultz@google.com>,
- Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
- "Serge E. Hallyn" <serge@hallyn.com>,
+ Christian Brauner <brauner@kernel.org>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
  Stephen Smalley <stephen.smalley.work@gmail.com>,
  Ondrej Mosnacek <omosnace@redhat.com>, Shuah Khan <shuah@kernel.org>,
  cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+ dri- <devel@lists.freedesktop.org>, linaro-mm-sig@lists.linaro.org,
  linux-mm@kvack.org, linux-security-module@vger.kernel.org,
  selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
  mripard@kernel.org, echanude@redhat.com
 References: <20260512-v2_20230123_tjmercier_google_com-v1-0-6326701c3691@redhat.com>
  <20260512-v2_20230123_tjmercier_google_com-v1-2-6326701c3691@redhat.com>
- <20260515-hinschauen-effizient-9e3a05a94f2e@brauner>
- <CABdmKX0d6Zsg+_TxXjB80UZR23ZvXzxYoWzORgwmx=ZiuE+Nzw@mail.gmail.com>
- <208fb820-d8eb-4832-a343-ef8b360e8120@amd.com>
- <CADSE00Lh95ygoXGKJGsYvQGEsFV8sVmwEC3uvh8M6r3ERzaJwg@mail.gmail.com>
- <88efe10a-8b93-4a81-8279-4a5559d0f17c@amd.com>
- <CABdmKX3yZubjDKbVqwrjHAiKyj_ioHzOoxd0wzFbJK=PAGOqcQ@mail.gmail.com>
+ <8ef38815-6ae9-4359-86d4-042554357639@amd.com>
+ <CABdmKX2uwZ12kYJYPJGfWxuMBOJS=64b1GRj72tfB5D=NKM22w@mail.gmail.com>
+ <CADSE00Jq_uvNgvxgPze0mEdUd+hF4-DPZkHy0KroWHZzygf4WA@mail.gmail.com>
+ <CABdmKX3DhejYBis9htLDnzPrG7vuF3R3URLVNEbnyd61SSsx=g@mail.gmail.com>
+ <CAGsJ_4zyecY6E-=Tm4_couT7uoM9LMcFdTMUPkZAjj4zUKE-dQ@mail.gmail.com>
+ <cb84c2ee-9de1-4565-b2e0-60984721228f@amd.com>
+ <CADSE00Lc42s2bzXzV5D7t1Enf56u4BVj-yXLp3Yxhm0=qMPvuw@mail.gmail.com>
 Content-Language: en-US
 From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CABdmKX3yZubjDKbVqwrjHAiKyj_ioHzOoxd0wzFbJK=PAGOqcQ@mail.gmail.com>
+In-Reply-To: <CADSE00Lc42s2bzXzV5D7t1Enf56u4BVj-yXLp3Yxhm0=qMPvuw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR2P281CA0127.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9e::15) To PH7PR12MB5685.namprd12.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0309.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f6::6) To PH7PR12MB5685.namprd12.prod.outlook.com
  (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -108,84 +109,84 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS0PR12MB6439:EE_
-X-MS-Office365-Filtering-Correlation-Id: 79b325b6-71f2-40fc-25d1-08deb577044a
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ0PR12MB7067:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2afa463c-406f-4c66-c463-08deb57bb6d1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|7416014|22082099003|18002099003|56012099003|4143699003|11063799003;
+	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|3023799003|56012099003|22082099003|18002099003|4143699003|11063799003;
 X-Microsoft-Antispam-Message-Info:
-	mLUr2v38XyeinR7+AM0mNNIaHEsJJMGTMxmOVFouuHDR5XuSIIdC0fsvDF+oDXznz/mfFBjAUVSIfYOAKTd2VvMpxTjxU1OND6EUQmjZt1pMbHjVZnNVi3V3NdZqoyxWzwt/upkNWtM6bd5Ax/mau+KUvuSm98kq9tk5y9nZiHLXcI5hGA+78iR6vEI4Rl0ZWhZ7tLG0ZMx8WKuNywFPG8c9nACDpk20mQzbd85tiCSRUumOj0ZuThij48KwJHu2DBuKpnxYaXxRHxt1tBr0unCn0Tp+/Gt0AwuaVximnQ5qsM3w9IhnqMeizEdLyQ168wl8eEAJ7P69k1Ue0Hg1VKJiRClZ0M2YjANdMdTlYaoHneqrqdo0b1/Hkp6ftuM3P3A7Ln5yFJ/ySEURHtye0sAcxPrs6nVvpX9XBs3vrje07Sp516r8UGv0ZL/JxHopUP0+CuUganBwH2ltMSYWktGWMVjXGEMKWPh1PXV8/YK3Gpome8iPZ5ZZIPP8/mv6jbeWVMmzwpHneDu1s3Cl3y/GwrU41DdqDZB61tEr7mtlttwefzrR7shoJbABu7S/eoiFRd/Vm89ynA76Zqk4bsXnYpYrBhu9PDi/wTx+PK5P0JXlWf5NLyxBfZano82NG1OQ//1/nJPgbkwDUGMdlznfrZeyyw5tRzNdfXoGQiR2ZTCKdhrd3LZ+B+avGStD
+	IOe1jomYCeJ1l4P9ZTKYM8vM7bZTWJKmIBdDvTmJLW+TGJjEjFIa40HVPgcohH8GT9HsxsAZcBBJaThIElUM8C4nkRnhUtwOLmicloq55YiUWm6sQ73ro94k/3I5YnzW/MN53WRjp9pX87aJHqgZqfZ84mKHJmgMAhg7Swoo7OXq0Wud/leHc7ROMaUKt5VkH5+QwPmBVvXAWG9BC+ldN0MwHooR9yeQ8K/gIXZnZc/q9xK7BPWTUrMjuRbbwNcTQeKaTx/UgOP7cNNoWXD5+l6skntTbDUajGVfAjLPIFSw3GMp9F2K6MkgVbvv7FrQWbUZ0cUznVmRqEUwLI1PlDbHRFMfbOUX0avg/h2x9U2pWdZlMVTmjnxnSzMeySdXe0g+XvyZccNfccZ70zIAgj10jvZy9eVJFefw+hhcBzBrZBgN67oZ1bP15x0mzubl1tWAz0u/BDDp9c1r0bJgD33Cz0/E33eDmf7l/BLLJubHphtWo8SExM5Mk1nQAfpT3kl4YpczlY/Ri3pdjVFx0dz/sxecehDAZwk2bXMJEqJhZccGbRpJaKwU47xJtwiaMHTaxG/yiDBtL4DMCgVO8+gGRQKBgMeeyRIbXKhKdlBK90cBZPyRJfgyxjnSzL9osDXUg7qfwMBF7DLdy0cZGElalh7TQO9qcO0sKgyPRIx21EQhGd0sZd8yY3gvx8rn+4HjhuA2M2Pc84iiArDTgg==
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014)(22082099003)(18002099003)(56012099003)(4143699003)(11063799003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(3023799003)(56012099003)(22082099003)(18002099003)(4143699003)(11063799003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MXc3bjJMK3F1QW0zdHRJc0Z4U0t2K0tFa3JkTWxVenVnYjRLRzNBRXpSTXhl?=
- =?utf-8?B?Mng4c0duVmYvZmluemtUU2wzOEdFN1YxL0FtZEE2NmZEd0hvanBrSG5QVHNv?=
- =?utf-8?B?MFBqVHF5SFZKMXpaa1pOYkJuellFc2tKQXB6QnNMYm5FSWNNTkNBK1VYSXB2?=
- =?utf-8?B?TGUvbmRQMEVOaTBHZWtabnM2REs4VDhxWGcxZnNVWmc3bTBsaVZKSTJ5Ymlh?=
- =?utf-8?B?SjlCMjJNb3RldlZEREtldGJXUDYrdTFHbk8yUXlENHJoaVREV2VyZkJIVUZy?=
- =?utf-8?B?VlNUSVMveEp2WUlvR1AxV3ZGQTJqZTRNZEhpNkVJZ01PWmcxSzRWLzkwVEIw?=
- =?utf-8?B?a1pjbmFOVXJ2S1poOHRKWGxqWGJUSmllN1dsR2U5S2lxTUxZaVRGcEFWV1o5?=
- =?utf-8?B?enRINytxLzliaEswakR3am9FOXY5clp4TUtlN0ZMNzN1YWc1dlU0Mm1DSlU5?=
- =?utf-8?B?d0w5ckRUZGxwbDkzQ1ZiZFEvL0ZSNG4vV3ZhM1p4T1Z0OU4zRnBTTHNCaG54?=
- =?utf-8?B?UkwzSndRWWtzMWtzU1BzSy84TnVuT0pCRXU5Rjl5dk9xY0FvTkZIUmhzTnlv?=
- =?utf-8?B?dHNXQitwMzNrZXI3ZE1adkNRcnYvNFNpMDI5c2F6aTc1REJGQUlDaGF0TTg1?=
- =?utf-8?B?akcwSVh6R0NBVHljTkVYazhnUTIyK3E3VlZoeldMTUFuM0lQWDVpUlROWDB4?=
- =?utf-8?B?dVFVUEZLZGtKdkxCWFo3OHI0bWMrVXlBMlVQdUJaanV3eFNBVDFVdEpSeTc0?=
- =?utf-8?B?YUprL3VZeTZ5Y1hnd09tT3VnVExTZ2JvZHFzNDVVaFl6YnMxclRzR21uLzh6?=
- =?utf-8?B?VjZ6ZWhwRmdSNXFRWEllRG5NRGdtd0RKNHJBNTdCTlRrY29mMGU1ZWprQVVD?=
- =?utf-8?B?Z0ZBVlhZbndEQzNCbHhJejlBRVhiWHFPSzFJN3FHY2QvVVFGS1dBSDZyRnVS?=
- =?utf-8?B?VXBFekVPM2E2amVDZ0JwbzlzWUtSTFJMK01yN2RNeFBaU1V3OGlrVElVei93?=
- =?utf-8?B?YzgwVVJwc2VEQ2VOazhEVEd2MW5LekNEN1pWQUJnOE1BNFdmc1J4UWZBUVZT?=
- =?utf-8?B?aHUrRFE4VXJFYzR5VEJ2SW5NTUZzSlFNV3lTRVNGMitybCtuYU5UQ2NzSDJP?=
- =?utf-8?B?OTMvVFZJRTBZOVlFZmQ1SXJaTTljS0JGQ3JVSXhYM1FzdlcyM2ErWFpDTS93?=
- =?utf-8?B?T3RsWkFKSXQ2alQ3L1Vtb2FBbUJBMmpCbFBQeGxhdDE1bjNNdk1WOUVKZ1VS?=
- =?utf-8?B?Y2wzWUhrUFd2cC9EcGNkaXcyekNpTmdpYUFkMXNJOGlmRU5mQk80Mk9KZ1R0?=
- =?utf-8?B?dmY4N3hzdHJmcDJSODc3NUFFaXhzNnlsNzJjZHB6QWFNTnRKSmVRKzQ1MTFX?=
- =?utf-8?B?NDdXdUtQMEVJQ091YTEyZnNFRWFiOXRMQmhWNVhLNjdTWHhCd3RGUytqSHFt?=
- =?utf-8?B?WGNPcFVFSWU5akxEUnBvRk9JY0dZcmg4VGJUN2ZHSjlUWFRpdkxNK0R0VlBF?=
- =?utf-8?B?OTdHaHVJMHkyL21xNnVLdHNQTDNVT3NYRjVyeDRFR3lFUS8wZDhZSmhsY3pq?=
- =?utf-8?B?Z2ZNNnBnL1p0WVFEZUowSUxEWDhFejJQYkRGNFd1dFA4S0xtRUM0RUd0ZC9Z?=
- =?utf-8?B?YTJERjF1UlVaWHYzNUVsU3FRbnF0Wjdia0lMOWFSckMvWkV4NmVTbGMzc01S?=
- =?utf-8?B?amlXQTZJVEZBM1U5dTdnSHFFaG9QR1p6MVMwdURmZStxVzJHVkJzam5teWUx?=
- =?utf-8?B?Z3oxeFNEY0ZGREF6V0I1ZEJFeXdEclJsSDhFKzcwQ2pzUXFwRTNmMmE2eDZn?=
- =?utf-8?B?MVJkR29IV29LSndGNEgrU0VFR3N4a3MwbHgxRENKZVdVbXdCNjUzS1l4WE9D?=
- =?utf-8?B?VTNpbzJuRmdMN2pmWjRGOGRyclZDak5PdHd4K2ZBUy9EOVZlalkyNlRkZ2Nl?=
- =?utf-8?B?bWx3RzVGYXJJekh1bzgyRVpxWVQ0V3ZrOFNIZFpWUWIxeWlHU28rNXprcmlI?=
- =?utf-8?B?eWtLNWhoQ3dZT0dNaXhTSUMxaFl0ZVB1VllZY2FiNGY1dHNZWFhDZjh6Snh0?=
- =?utf-8?B?T2pkcE9jYzJwSW9OWVZMbFY0STRZVjNsOXdkbkFYb1lDSHI0azE4cTN2dXJI?=
- =?utf-8?B?RkhKNUxoUnJ0MU4xd1J3YjczMFNJdXJMbDVBMjM2K1JKZXVGUDRpRnZrTzdi?=
- =?utf-8?B?QjNQeW5lSks5MGtzK0orM2ZXNnNkVnl1VHRFWE1pcWoydjEySjg4S0E5Z0pl?=
- =?utf-8?B?b2YyY3d1Z3ByRGlHdWliRVJuU1JjQnNsa0psb1BwQUxET2xqUGprc3BwSm5r?=
- =?utf-8?Q?KglzcuK24b/j83fFn0?=
+	=?utf-8?B?N0ZoaHhlbjhCYWF4RUxJWDV6dGY3VVRXSStXc1NzY1ZXdVI2L2NBSlIwZVRJ?=
+ =?utf-8?B?NlJ1bVRoNWlzVkxiUkJVZ0xxa3BXa1ZvS1hTTUM1WEtobmhSa04vQ1F5VzM5?=
+ =?utf-8?B?VU02MzRCc21BSGkyY3dWc1dBUjRqdjlNZGUrRFJQMEZwV211Y2ltN0RsL3Yy?=
+ =?utf-8?B?U2tQa21JQ1BWbjNxejdRKzEySm84dDk0N0h4TXk1ZHR6Y3pkK3JVcjN6RHhE?=
+ =?utf-8?B?MFFaVkJUVmgxWDQvV2F0emFHTGVRVmp2VmlmY2ZtNDRaclpoV3VnTkVzRFBr?=
+ =?utf-8?B?REhBRkZZK1Rrc2FsSDc0VkJhS3JGWjdqS1lRYlBtdEVKR0RtV3ZJNUU4b1dX?=
+ =?utf-8?B?bWQyRVgzcGJlR0lEMHl1b05IUzZ4bTNCVmxBQWFlVzlwYTZKRTdVS1ZzZEJo?=
+ =?utf-8?B?eWxvaWs1dEtwKytIRmRISFR4SnhhbGdQSVRwNHRBUmlWbmFhVnhkbmdaN0RH?=
+ =?utf-8?B?NklUNjlRMnFRM0xTb0ptcU9IY01iSWltVHVLMEduMmdubkd0aUMvN2NkeUtE?=
+ =?utf-8?B?ZFZzSCtqRDlmdVFxTk00ZnAvR2xBYlBxM21hUUN6UDlUT2E3UkUzamtFTkEr?=
+ =?utf-8?B?enZoeEg0UlJHdU5MR050cm9odTlNQkNwdGtzNnZDU3RISmsyZ0pITWpWa2V4?=
+ =?utf-8?B?d1N5R2NoTXhvb25uemRCRkNwWCs5M0plUkhhdVU0aEhxQy9YU1JYc1ZPYjJh?=
+ =?utf-8?B?Rk41Y0JLN2ZSTU93RFFrOGhQb3d0R2dVKy9PZko3enk5aU1wTFVaN0QrVkJ3?=
+ =?utf-8?B?TnRuNWdSejU4V0JSWjBnbGpBZGkrUTk4WWFWak5sTnpMbmdzTTlOWWRjZnpO?=
+ =?utf-8?B?TzhIdTcwSUpOL1gyMFFlTGpIV3FGdndGTTZJTHJzd2trcHhneWRZbFBLaHpp?=
+ =?utf-8?B?ZlU1dkpmSFc4VGZiMHg4OUtNemtTbzgyWHZ6RzdjRG9MTHJiRlZMWFRGbDhi?=
+ =?utf-8?B?VUdpODc1MDRUbFhUMHBob2Q2QWRDTytRTEE5bHVEeENpVkQrTFFrK282SGhX?=
+ =?utf-8?B?R0VQTHl0S2J4YVYrdjUzSnd5MFNKOWxsa1FucUl4aDhxY1ZmMFJWVFZQeVdz?=
+ =?utf-8?B?ZzloVkFBZWtIY29NYWxJM21ZVnlSMG9vM0hOcFlKeFJrZk1uSnE1elkzYm1O?=
+ =?utf-8?B?Y2I4VWtFeTFEeWFxMitrY3FZRnFMbGJlMTdmWnB6SzRrMHFPY3hqUHFsSkhj?=
+ =?utf-8?B?aUltYzZSUFgzdUNzcVJIa1NvUFlJSldHM3RYUUpZU2FYNGtHK2RGcWRmeGF4?=
+ =?utf-8?B?RUsvdE9jQ2JzdHBnWUpvb3gwTVlJakNKSDhkSldVek1GSGUvYnVaaTROOHov?=
+ =?utf-8?B?UElOSGpHYWRyaUxkN0NBYWNaM09FZGhvQVVBR2N5L0RBU3crUHh3bDFxN1M5?=
+ =?utf-8?B?NDdqU2hBT3JYNkpvMEVDRzVQVmlZNC8rMC9RNlcrQzd0cWNBOXhKMnZBMDVj?=
+ =?utf-8?B?NkFwaEl3SEhMNTlPQUJCVXF0NkJKODZ1UnNtWG1sYys0UWhwR1VlSVlsQ2dH?=
+ =?utf-8?B?b1NsdGtIS2czR1NHTmowRGI4MjdldHIzb0R6RThtVmhXRU9CSXlMSlRWdVhu?=
+ =?utf-8?B?eW5UZVF3RXY4V0lzNU5xM29yenIxYXpoUG9PWjgySU5XeHh1bGYyZy9HNzVh?=
+ =?utf-8?B?WW1zSng3cEgyL2ljMzI1SDJuc3dXNU1zWlU4Tm1RdEY2RlVaaEMzc0tsSHZN?=
+ =?utf-8?B?dlA1VE9qbG1hSzNFeTNxV3NmS01neTJyY3FzbWpNelpTak9QVzZ5VEp1VEp1?=
+ =?utf-8?B?eVpDSWNoYXlFcUJHclA0V0tSVmtnR1BuMHZyUXBkVzgwSFBRT0IwY1RZNXMw?=
+ =?utf-8?B?Mm5Ka0FVSEV1cHVhZU5hbzNYQUYzaU9heHFaejNaVTFwd2M2cnhjdDg2b0xo?=
+ =?utf-8?B?dysrZHZtbXljSmVPQ2FGWTFNSEtJcUx3L3g3Rlp4Vm9nazRtR0puVFRWVFRy?=
+ =?utf-8?B?LzBsVVhBcUd1OU1pNGg5Yk5RbmtJZ2NjSkJyVVg0bTBpRTQ5SXpiaEdzT2RE?=
+ =?utf-8?B?dXNwWUtGRndiMThmVlR3bzc4RGJEb2gvV1hBK05xQ3RLNkpSenNad1MwZDBx?=
+ =?utf-8?B?c25haU9hK0lqcGVOU3cvaHdkeXRMYzhwajJWTzhtZnRLMWxTSW80YWhacDFm?=
+ =?utf-8?B?d09LZEw0a00vM2Nyak9rSUVoc2tvN0sxRzk3MkVSYVpkNTE0UVhOMmtDUllS?=
+ =?utf-8?B?RTN3RlN4dmNIcFN3eHFyUnFPbVNUZ0h5SUV0M2twMmFvQ2d3TkFjazJKUzdP?=
+ =?utf-8?B?MzZhdnppQnE5KzJ1U3d2TnRmdFBXWWJOZzRmSE1zOVh1bUQ3RWp5Mkp4dFNh?=
+ =?utf-8?Q?GEFllYyeNyi5uR292C?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79b325b6-71f2-40fc-25d1-08deb577044a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2afa463c-406f-4c66-c463-08deb57bb6d1
 X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2026 07:19:51.2634
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2026 07:53:28.9599
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vjdyUJPUFOfj8iHsCcUFp9eHhhXekCHrPW5VnWQOS2jXhN2da880tFCuH8P7EgMi
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6439
+X-MS-Exchange-CrossTenant-UserPrincipalName: lHKflGocT50PZGGGXfuV9j2328lwMnecTmWPNTA9XZje1JVfcupepggejSGFNoqF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7067
 X-Spamd-Result: default: False [1.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16065-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16066-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[35];
+	RCPT_COUNT_TWELVE(0.00)[36];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,linux.dev,linux-foundation.org,collabora.com,arm.com,google.com,paul-moore.com,namei.org,hallyn.com,gmail.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,kvack.org];
+	FREEMAIL_CC(0.00)[kernel.org,google.com,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,linaro.org,linux.dev,linux-foundation.org,collabora.com,arm.com,paul-moore.com,namei.org,hallyn.com,gmail.com,redhat.com,vger.kernel.org,lists.freedesktop.org,lists.linaro.org,kvack.org];
 	DKIM_TRACE(0.00)[amd.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -194,103 +195,124 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,amd.com:email,amd.com:mid,amd.com:dkim]
-X-Rspamd-Queue-Id: 8FAF5578FBB
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:mid,amd.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 7E35A579936
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/19/26 01:39, T.J. Mercier wrote:
-> On Mon, May 18, 2026 at 7:07 AM Christian König
-> <christian.koenig@amd.com> wrote:
+On 5/18/26 14:06, Albert Esteve wrote:
+>>>>> udmabufs are already
+>>>>> memcg-charged, so adding a separate MEMCG_DMABUF would double count.
+>>>>> Are there any other exporters you had in mind that would benefit from
+>>>>> this approach?
 >>
->> On 5/18/26 14:50, Albert Esteve wrote:
->>> On Mon, May 18, 2026 at 9:20 AM Christian König
->>> <christian.koenig@amd.com> wrote:
->>>>
->>>> On 5/15/26 19:06, T.J. Mercier wrote:
->>>>> On Fri, May 15, 2026 at 6:53 AM Christian Brauner <brauner@kernel.org> wrote:
->>>>>>
->>>>>> On Tue, May 12, 2026 at 11:10:44AM +0200, Albert Esteve wrote:
->>>>>>> On embedded platforms a central process often allocates dma-buf
->>>>>>> memory on behalf of client applications. Without a way to
->>>>>>> attribute the charge to the requesting client's cgroup, the
->>>>>>> cost lands on the allocator, making per-cgroup memory limits
->>>>>>> ineffective for the actual consumers.
->>>>>>>
->>>>>>> Add charge_pid_fd to struct dma_heap_allocation_data. When set to
->>>>>>
->>>>>> Please be aware that pidfds come in two flavors:
->>>>>>
->>>>>> thread-group pidfds and thread-specific pidfds. Make sure that your API
->>>>>> doesn't implicitly depend on this distinction not existing.
->>>>>
->>>>> Hi Christian,
->>>>>
->>>>> Memcg is not a controller that supports "thread mode" so all threads
->>>>> in a group should belong to the same memcg.
->>>>
->>>> BTW: Exactly that is the requirement automotive has with their native context use case.
->>>>
->>>> The use case is that you have a deamon which has multiple threads were each one is acting on behalve of some other process.
->>>>
->>>> At the moment we basically say they are simply not using cgroups for that use case, but it would be really nice if we could handle that as well.
->>>>
->>>> Summarizing the requirement of that use case: You need a different cgroup for each thread of a process.
->>>
->>> Hi Christian,
->>>
->>> Thanks for sharing this atuomotive usecase. If I understand correctly,
->>> the actual requirement is attributing dma-buf charges to the right
->>> client, not putting each daemon thread in a different cgroup?
+>> Well apart from DMA-buf memfd_create() is one of the things which as broken our neck in the past a couple of times.
 >>
->> Nope, exactly that's the difference.
+>> But thinking more about it what if instead of making this DMA-buf heaps specific what if we have a general cgroups function which allows to change accounting of a buffer referenced by a file descriptor to a different process?
 >>
->> The thread acts as a filtering agent for both memory allocation and command submission for somebody else, the process on which behalve the daemon does things can even be in a client VM, completely remote over some network or even something like a microcontroller.
->>
->> Everything the thread does regarding CPU time, GPU driver memory allocation as well as resources like GPU processing and I/O time etc.. needs to be accounted to one client which can be different for each thread of the process.
->>
->> The only thing which is shared with the main process thread is CPU memory resources, e.g. malloc() because that is basically just needed for housekeeping and pretty much irrelevant for this kind of use case.
->>
->> The problem is now you can't do that with cgroups at the moment but unfortunately only the kernel has the information you need to know to do this.
->>
->> So what you end up with is to define tons of interfaces just to get the necessary information from the kernel into userspace and then essentially duplicate the same infrastructure cgroup provides in the kernel in userspace again.
->>
->>> If so,
->>> the `charge_pid_fd` approach achieves this directly by passing the
->>> client's `pid_fd`, without needing to add per-thread cgroup
->>> infrastructure.
->>
->> Well it's already a massive improvemt, we could basically stop doing the whole duplication part for the GPU driver stack and just use cgroups for this part.
->>
->> Doing that automatically for CPU and I/O time would just be nice to have additionally.
->>
->> Regards,
->> Christian.
+>> That would cover not only the DMA-buf heaps use case, but also all other DMA-buf with dmem and whatever we come up in the future as well.
 > 
-> Hopefully I'm following correctly here.... So you are duplicating the
-> GPU driver stack to achieve remote accounting on a per-thread basis?
+> I removed a draft adding an ioctl for charge transfer from the series
+> before sending because I wanted to focus on the charge_pid_fd approach
+> and keep things simple, deferring the recharge path to a follow-up
+> depending on feedback.
+> 
+> The main difference between my removed draft and what you're
+> describing, iiuc, is scope and layer: my draft was an explicit ioctl
+> on the dma-buf fd that the consumer calls to claim the charge (see
+> below), while you seem to be suggesting a more general kernel-internal
+> function that could work across buffer types and cgroup controllers,
+> so not necessarily userspace-initiated? A kernel-internal function
+> will need a way to identify the target process, which sounds similar
+> to the binder-backed approach from TJ [1]. For everything else, the
+> receiver still needs to declare itself, which the ioctl accomplishes.
+> 
+> ```
+> # When an app imports a daemon-allocated buffer, it can transfer the
+> charge to itself:
+> int buf_fd = receive_dmabuf_from_daemon();
+> ioctl(buf_fd, DMA_BUF_IOCTL_XFER_CHARGE); /* charge now attributed to
+> apps's cgroup */
 
-Not quite, we are duplicating the handling cgroup provides in the kernel in userspace.
+Well that thinking goes into the right direction, but the requirements are still not completely covered as far as I can see.
 
-For this memory usage information as well as execution times of the GPU kernel driver is exposed in fdinfo for example.
+Let me explain below a bit more.
 
-> Does this mean for GPU allocations you currently have some GFP_ACCOUNT
-> magic in your driver to attribute GPU memory to the correct remote
-> client?
+> 
+> [1] https://lore.kernel.org/cgroups/20230109213809.418135-1-tjmercier@google.com/
+> 
+>>
+>> The only drawback I can see is that DMA-buf heap allocations would be temporarily accounted to the memory allocation daemon, but I don't think that this would be a problem.
+> 
+> The main reasons we moved away from TJ's transfer-based approach
+> toward `charge_pid_fd` are: avoid the transient charge window on the
+> daemon's cgroup; and to decouple from Binder, allowing any allocator
+> to use it.
 
-No, we just expose what the kernel driver has allocated for itself. E.g. page tables, buffers etc...
+Yeah those concerns are completely correct.
 
-When userspace allocates something using memfd_create() for example we just ignore that. 
+The application should not volunteering says 'Charge that buffer to me.', but rather that the daemon says force charge that buffer to this application and tell me when the application is over its limit.
 
-> So this series would close the gap for dma-buf allocations,
-> but what about private GPU driver memory allocated on behalf of a
-> client?
+> 
+> Technically, both approaches could coexist, though. Of the three
+> scenarios TJ described:
+> - Scenario 2 is directly addressed by charge_pid_fd approach without
+> any transient charge on the daemon at the cost of one extra field in
+> the heap ioctl uAPI struct.
 
-Well we would need a cgroup which isn't associated with any process were we could charge the GPU driver allocations against.
+Yeah extending the uAPI to pass in the pid on allocation time is not much of a problem, but you also need to modify the whole stack above it and that is a bit more trickier.
 
-But good point, charging against a pid wouldn't work in this use case.
+> - Scenario 3 can be handled by the charge transfer function without
+> changes to SurfaceFlinger. The app or dequeueBuffer claims the charge
+> for itself or the app, respectively (depending on whether we include a
+> pid_fd field in the transfer ioctl). It also covers non-heap
+> exporters. The con in both variants is the transient charge window on
+> the daemon.
+
+It should be trivial for the deamon to charge the buffer to an application before handing it out.
+
+> Both approaches shift the responsibility for correct charging
+> attribution to userspace: first, 'charge_pid_fd` on the allocator's
+> side, and the transfer charge on the consumer's side.
+
+Yeah that's why I said it would be better if we do that without any uAPI change, but with all the uAPI we have to transfer file descriptors (dup(), fork(), passing FDs over sockets etc...) it could be really tricky to implement that.
+
+> Deciding on one, the other or both depends on how much we value
+> avoiding transient attribution, and how much we need a non-heap
+> generic solution. With the XFER_CHARGE we can cover both. Thus, the
+> `charge_pid_fd` approach in this RFC can be seen as a
+> performance/strictness optimisation, eliminating transient charges to
+> the daemon at the cost of a permanent uAPI addition to the heap ioctl
+> struct, but not strictly required for correctness.
+
+Well all we need is a uAPI which says charge this buffer (file descriptor) to that cgroup (pidfd).
+
+With this at hand we should be able to handle all use cases at the same time.
+
+> On the other hand,
+> if we agree on the end goal of migrating other exporters to use
+> dma-buf heaps
+
+That won't work. DMA-buf heaps is actually only a rather small and Anroid specific use case.
+
+We have tons of other interfaces to allocate DMA-bufs which need to stay around because of HW restrictions and we do need a solution for them as well.
 
 Regards,
 Christian.
+
+>, and scenario 3 is addressed by adding the app's pid_fd
+> to SurfaceFlinger, then `charge_pid_fd` alone is a coherent/sufficient
+> approach despite the uAPI change.
+> 
+>>
+>> Regards,
+>> Christian.
+>>
+>>>
+>>> Thanks
+>>> Barry
+>>
+> 
+
 
