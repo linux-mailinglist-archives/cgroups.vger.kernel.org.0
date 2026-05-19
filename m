@@ -1,110 +1,110 @@
-Return-Path: <cgroups+bounces-16086-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16087-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uDFwD++FDGoniwUAu9opvQ
-	(envelope-from <cgroups+bounces-16086-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:46:55 +0200
+	id 8HMSEYWBDGpPigUAu9opvQ
+	(envelope-from <cgroups+bounces-16087-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:28:05 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92FFF581B41
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:46:54 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 985EA581720
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 17:28:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A02B3266C67
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 15:15:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 333CC31A91AC
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2026 15:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218C93ED3C2;
-	Tue, 19 May 2026 15:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1803546DB;
+	Tue, 19 May 2026 15:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bXBwTdI/"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kQ5CvUbf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02127403EAB
-	for <cgroups@vger.kernel.org>; Tue, 19 May 2026 15:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFB3315D3B
+	for <cgroups@vger.kernel.org>; Tue, 19 May 2026 15:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.53
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779203636; cv=pass; b=eMxPPlmxUFzP6jltdvoq5V8+E8tviZat3jd8VNw8xSzbI3bG3toDFrAKmrG/6O0QZNctPDOw7yii90itsd7VM8GIAJ+1nuWOk8Bui3S1GcuTVF/f2EU2AIYX6ALLkz2V815iyfzVqwhXJN01VFZcu9eewPIs+Fynxh/EfDn+1qo=
+	t=1779203679; cv=pass; b=J5RU/e/PyFD8oJXdA4MUtYoGbb63i6r4jLywpdk+AIWPZMFvcWkr6XpeCZUamYkP7DEgWT4+uwtAiEFpqPMt3QeTFF2Vo80g/ABtsH448ybXPaqRGNw654p9ar6iciZX2S91040cFxx4krHdVwTxSNNif5hATQyo+kxTFq5wWoI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779203636; c=relaxed/simple;
-	bh=qt7mRCe3W8LWJX/ykLXf7sJXkXTi0OBtx9fWGMlE/k8=;
+	s=arc-20240116; t=1779203679; c=relaxed/simple;
+	bh=GA0PQI75UOoRCcf99QZgF7SfyEX7OGS+zH+EEW8i5Qc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ry9npIKhtkhcDoXdXmFlQg9tcFr7DNuSlz5ISw9ZOAmF9CDYxQNyBkewBNUY++GbxPJxYH9Ea4WHnKH1oNcJPWt1a/e+UyT2Vw7tWcOZvYkMq8CzzunR6fe8w+1uElUMOXDzmWQdPPHpMf7xbPJCgDZmqFUEaFWsC6yp3IGdvRA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bXBwTdI/; arc=pass smtp.client-ip=209.85.208.54
+	 To:Cc:Content-Type; b=ZAiOhLawARTbH0ef1gYtkEdQFskyCvkGMnZpbbF+9jqEZUcSD2YJFihAMPJW6dx/088m9XaPtGEO5XLVB9BIjGEjpNREq7Jc0KcVY3XOR59eKXxDuEjd1/jhX+CdoEXl/kI8gy+CLCYFnuJCVIHQ5grD9dP2uK5Y/5l6DauOqDM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kQ5CvUbf; arc=pass smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-67b8d9c26bbso8535317a12.2
-        for <cgroups@vger.kernel.org>; Tue, 19 May 2026 08:13:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1779203633; cv=none;
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-67da63ae541so8116650a12.0
+        for <cgroups@vger.kernel.org>; Tue, 19 May 2026 08:14:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1779203676; cv=none;
         d=google.com; s=arc-20240605;
-        b=iZkXAiuQ8HfyCM6OmUJKctwD+XdZTCe0gnkh54ufTrPecDMS0zfJ71QeGUGAS/lqlO
-         RzZTjfJAklKp25HfWzEp/FgPKNNWvz0Oeg6dGoUWMmkJCjuAhUyjObyOCYJCScdgBanF
-         4/HO6Kvooz0LXAl01f3PCYHNCLYjFiQ1k3043MgWd/u0tZq0Dp/thW72pbOWsDLP+Wpn
-         XunYKtZIXB+5DbeFK7/kiq1ybdhp3ulAit7+BQm4W6TWUCbhjL0pLbejJEtYYeZxOBds
-         X6qMVtCynoa94PuaIVq5bOm+gUCVZxZKpDMaSa52HEHbjIv6/Gr7ETxWPTLi6meYe6v6
-         8iiw==
+        b=dSlA5j/VPFD8+u4YZzoBrCliv+IIet8Dmd9kyoh/QOju6IKaxqbfg6/jA9mXEwA1lw
+         cO2tmVPic5cRoZALxyksQt0jn7weKr/eG7sknEFjjxZPO9M12jWNIovtwB0F4R7gNyjz
+         QpoQYVE2tJ3Sbhbn1BfJoTbdxh9F7RjPmkxRdKTJUtx5IzQer9uosnYHc4WTp8MVWZiD
+         qwhqBwiB2WV5eOi5xPYVd39GsLRMhlF7Rsyc7FsvuC06MS8gYh/MIA+9LiKzTPE3sAE7
+         LE7Cg6059u7C0dINf1m+lqiuyecZhu87SUkeVYDg4k4x3chTmkUfTWZpqiiycN2lhdes
+         CkXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=/ntDQDAFXEiIAEKc8+SQdLOl2n46zxFQzSK1l6/XS7I=;
-        fh=XTDpDn8cnRioZo8BT5LZ7Z2KE3lJCNdRD9gy0QG9fNk=;
-        b=fq73rT1SznERjZrlzPHzKDExpZbpDA/0V+kCuKu8AxE16SUFnbA2xGnff7DDjW3IM9
-         L4ibb2+CcoHXNDpdWBE7m4XRTvx/3WjEGRn6gFAvTuvu/8Wi77yIXNIHLXMItHbhWyFf
-         CxoSgKV+p9KW0bfc3bBGoYt+CsOWKslde2p9B2OFPG743EWn7a7ov3Thf7cgI98lPySP
-         0CJI5qDboF7NUAwRcHGuEH8giqoOdhFtZpf9Uy1OQJorpT3xeWyRW6PMlzGO7Iu+7fXx
-         zA7KJTuh90HLPkhKtFByFQDH6qhIf1PclpwiMnsKvubMiJh9FYP1BdnI1jRLoqFX26I7
-         ZVaQ==;
+        bh=Nl5pzXfqmREJgLa9QCh8fbDY+oJd7AG8p4ttgoLV1Ys=;
+        fh=ABSx6mv4RCuVV0A708xwWIuIf2w64fg8FN6bvqegefA=;
+        b=getZSnEPnp5fRO6as4nzPCISl6pf/BwvBJAY1YVNqo2IEpfOMsBQmXPvo+OLvJpfu8
+         UICCoX6Ca+cDxOx+0EzSeIaxqLRs9wT1Xk9awcLkyh7crztBX8srZwZSEN7YNGcM/+bX
+         Mnr0gM5arso1C+EczmTjkqV7ENWenjWjrwv69tZPnH/w07rUGEJpDcEOXyS5j7NCLQKl
+         FoMbfFs4+g2iIVSHBXYRP0liNeGppcbvBD7daOc2ak6zF/droS4dqeV/THRVxA3Xe3ca
+         dQuGpz9od52BjO7fxS4SJglzL5OLPqzVD0n3498nGEpPgqWnUJLQOnlhE9wvAha/Jn12
+         fKoA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1779203633; x=1779808433; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1779203676; x=1779808476; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ntDQDAFXEiIAEKc8+SQdLOl2n46zxFQzSK1l6/XS7I=;
-        b=bXBwTdI/O78kuRgZW3mzP/jTx6OkOf9G5YGl9rQOgLb91bncXk2GqRWHx1IWAjemUP
-         su3pFucXJTGgu+avSLlA2ZeQchyaiPoHuDpFbpl23qz6immxhRjJR3yjFeGj/55cToLP
-         ycoza2++5uzwwiEJwHsJebD5JWUKNDVZCL1hMI1ZGt4BW62BJMpSulHiQucecJfMgMkx
-         oaamELfTOPpnogqpCTDxBg80DJNDYKegZ9UEop0KbtSqYwxhoj4RusYrO3gQdMhX3tRD
-         ZZAgMpX97E2XArMVbIRFgljxd+49FgT4Kfjf2Kn1rm1G9WeTZTnkgoz248qTPYehl8Wr
-         +zJA==
+        bh=Nl5pzXfqmREJgLa9QCh8fbDY+oJd7AG8p4ttgoLV1Ys=;
+        b=kQ5CvUbfByUI5hBga3Ye1LFlI0A6XFhC3cHPJXmAg6B+O0rDMBn62/3GP8L9+G/5A1
+         U5oPMtTwIXpK/H2dHItyoxhoTBLz2tpLSAV/V2kYSezd8zw6bXcxu/odSVYeewVtrktf
+         lQ43tat250QwGXNrzTpv40ZhKD435rkhI1ahb+47OdVMDA8mk9qO3cX1K0oTkzLRFY2B
+         iinRffwQfidL8oFEgCz/A7L4KSjzj3rvDJhEUjsFDulfv20Bd5oo2kv/mWTjxKsTKwIw
+         jAcIR0ZCaREpjBXsxWgz7M+qX3OJxWTRCvQjThvruyAKqRIThAdquoQZAcwMUduBzg68
+         OAUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779203633; x=1779808433;
+        d=1e100.net; s=20251104; t=1779203676; x=1779808476;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/ntDQDAFXEiIAEKc8+SQdLOl2n46zxFQzSK1l6/XS7I=;
-        b=o7/xYIObd6dKxrx7B0WRHZ8ow7t6Jar0l1fcU1qLtqJnDQFjpQstsw7hZEIpacwOh0
-         r4/PwjIt5bsdjmAmegsC8XK10Av8P1sOHRXjkWGIMlLKeJ8M+gu+uuimdOU4b28K2idO
-         ZVby2Ewt+QA5BU/fmrBh0FgwuNpblbKGC5q6nVECpiehlrhn0N973uB454+fBznNu9Pj
-         N1lMtTKnpqB/niTWvplZEEYSWf2A8JO1mqiopM5peWPNx6F74uNbBB7uHVCU26jDM6fY
-         Uwl7Q+yMwwW1ofKTG7DYlERMCX2W9hoPdKx2DCfs4Xf3lD8+4KcpsyBhPl6yNOYrepmn
-         ADdg==
-X-Forwarded-Encrypted: i=1; AFNElJ+27toTJhRoHjCxGv7zmlL/vO8UyzjpiLnBc+OcQJjnJZrHOvfJrStlbm40rzzFD+w6+9nshSJB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6OUXb10AbLRG3kXsSShhXK77X31FL+PONPwrOaPO3l2bQYNq7
-	lezxtE2ifS8NZrqyAwGMzEwc5a63Y1Pbn3N6205A+XsG2y/aENeFKKatiopUxLSWaekwMLOw50Z
-	TTPbICc3AksHfdbksFFOfgJsOAJUl6Qdyg6aMzBsRyg==
-X-Gm-Gg: Acq92OEZE73AWb3q0DGFPQwPCb7/IKo9cC/KxZfhYZEJz9qqvEE0w9GMps2EqBHaXDY
-	HpqBJLqBt5AaMUKaGZZb7s8Cqf4rmk+rHGkndORQvXe3WQmA33Wj/7PRfmPQ9tyCZG8a4kAdl89
-	LUwPCkHkxIrxLE7+H4Js6/R6qUgm/XeXuNfC1h7nmJoH4+DHQfNpoO42PgF9pcMoku3Gp6UIVPJ
-	m/j5/rOcvx1XX72lyjMJxh1skt262jiQqVR3xhHSUI6WxvB5cmlo1Mf7vTopVHjbauHTdak5Ah/
-	cbXxHaFYj4qvoqC7HYuu0oWVZDLK/RNVWN9aK3L9g1ERiQ4=
-X-Received: by 2002:a05:6402:3494:b0:683:c72:44c9 with SMTP id
- 4fb4d7f45d1cf-683bc8ac2f4mr12626053a12.11.1779203633253; Tue, 19 May 2026
- 08:13:53 -0700 (PDT)
+        bh=Nl5pzXfqmREJgLa9QCh8fbDY+oJd7AG8p4ttgoLV1Ys=;
+        b=pK9ZFBnGIgvPMwn6NVkcUm1oDv9giQ9ozm26gy5Gc6fG/hjPl1bPkQFb8mSuo1iIUZ
+         vvxeR7NcR0jc4TmcaCLY57lsud2Rsp0tuE3WPlmlyEzwJLlsxXuv/9OZitHBAFOxt8Nn
+         0FUUcWWMdWakS/dd5J1bGfE+ddJT4CjbGi3Sw2NA/4ECplMcrnfkmc+/vDQbpyHbXWUp
+         MtkTVcNpVEA6umql+09xZXvquLa+E8o+AitFHuOqYy48mwts8EndMgDki1d1wxFHDlFh
+         Kj6dc9sJK/dLj8muPC9DssthRb1ERsxVvWFIauYZymk5gfdQjiiaDSRgnNs6fbqcpb0O
+         8fEA==
+X-Forwarded-Encrypted: i=1; AFNElJ/hVrJMTBF2O90dBOjK4HmWsw7Ansulm3trRzMXQyj7H7835L1Zy6biwoENBBAKVqnRQplJwxCH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxN8KN1TIeJtBJktKrqRlVBaWsZU6DCevKZ8aJBZ7VBj8eBVk6i
+	AxUXHeCNIPPUPgfqfeYmMHJamdSBwcRGoGJVljEga03zfP5tTRjQ6jCsOyVJhI6wjTUOCyG4kQ4
+	yI/d5KDellLwmihLuI8DjzEbDTpnf6wue5GFpUwPh/Q==
+X-Gm-Gg: Acq92OHPZsX60k94Mpkg6Z6QGOCwIwXs1sPZSty/LDf91OeT9xwq05Tup4eM3ha/D9x
+	aVj8Q14EHHpi/fHfm+FNVwNIP1TRETeFTdLgEN9tx4qdjLJI5B86S1Kvor9+6XSJaAPcXqPNLTC
+	uaOXfyNVsPIPzRCh7vjuN0Ax1j2Z1iVH2vlISRFMRF1ght7LzmlukSvOS/cFjs7y8Hl0JCZf79g
+	l4TNGWUis5rYuOXWEHw0kB0wadXrivwNq2jYPHI+/wHwrrmVzpBZR/Pr4ojaMjlmMuEnGNwSf9L
+	PnujHW7kqQgplqbWLXOihGXUcbwNgCvqHv5V
+X-Received: by 2002:a17:907:c714:b0:bcf:9dd2:f79e with SMTP id
+ a640c23a62f3a-bd517964d82mr1193318866b.29.1779203675686; Tue, 19 May 2026
+ 08:14:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260511113104.563854162@infradead.org> <20260511120627.944705718@infradead.org>
-In-Reply-To: <20260511120627.944705718@infradead.org>
+References: <20260511113104.563854162@infradead.org> <20260511120628.057634261@infradead.org>
+In-Reply-To: <20260511120628.057634261@infradead.org>
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 19 May 2026 17:13:40 +0200
-X-Gm-Features: AVHnY4Ics_QrAdlmhL-xdhqOhd0_chqx07XdmseSEmg8J2xY-zo2vOOTfZSP3h4
-Message-ID: <CAKfTPtDSLOvk1kNstN429rVNf4hYhzBBgy4f=RKqdyztX8PsWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 08/10] sched/fair: Add newidle balance to pick_task_fair()
+Date: Tue, 19 May 2026 17:14:22 +0200
+X-Gm-Features: AVHnY4JK1SqRt6L1UhvDQnTKPdNUwnoUf7sUCXtnmZaAcDJau7we7w-I9JKpBiQ
+Message-ID: <CAKfTPtC3wbJYRSwT5CjGRC68WmXLgf9EaOSdC=37BVPu_4Gk0w@mail.gmail.com>
+Subject: Re: [PATCH v2 09/10] sched: Remove sched_class::pick_next_task()
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com, 
 	juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
@@ -117,7 +117,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[linaro.org,none];
 	R_DKIM_ALLOW(-0.20)[linaro.org:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -126,7 +126,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MISSING_XM_UA(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
@@ -134,117 +134,310 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16086-lists,cgroups=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,linaro.org:email,linaro.org:dkim,infradead.org:email];
+	TAGGED_FROM(0.00)[bounces-16087-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,linaro.org:email,linaro.org:dkim];
 	DKIM_TRACE(0.00)[linaro.org:+]
-X-Rspamd-Queue-Id: 92FFF581B41
+X-Rspamd-Queue-Id: 985EA581720
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On Mon, 11 May 2026 at 14:07, Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> With commit 50653216e4ff ("sched: Add support to pick functions to
-> take rf") removing the balance callback, the pick_task() callback is
-> in charge of newidle balancing.
+> The reason for pick_next_task_fair() is the put/set optimization that
+> avoids touching the common ancestors. However, it is possible to
+> implement this in the put_prev_task() and set_next_task() calls as
+> used in put_prev_set_next_task().
 >
-> This means pick_task_fair() should do so too. This hasn't been a
-> problem in practise because pick_next_task_fair() is used. However,
-> since we'll be removing that one shortly, make sure pick_next_task()
-> is up to scratch.
+> Notably, put_prev_set_next_task() is the only site that:
+>
+>  - calls put_prev_task() with a .next argument;
+>  - calls set_next_task() with .first = true.
+>
+> This means that put_prev_task() can determine the common hierarchy and
+> stop there, and then set_next_task() can terminate where put_prev_task
+> stopped.
 >
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+
+Hackbench results on my Arm64 dev machine stay similars with patch 8
+and 9 (unlike patch 10)
 
 Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 
 > ---
->  kernel/sched/fair.c |   38 +++++++++++++++-----------------------
->  1 file changed, 15 insertions(+), 23 deletions(-)
+>  kernel/sched/core.c  |   27 +++------
+>  kernel/sched/fair.c  |  139 +++++++++++++++++----------------------------------
+>  kernel/sched/sched.h |   14 -----
+>  3 files changed, 57 insertions(+), 123 deletions(-)
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -5980,16 +5980,15 @@ __pick_next_task(struct rq *rq, struct t
+>         if (likely(!sched_class_above(prev->sched_class, &fair_sched_class) &&
+>                    rq->nr_running == rq->cfs.h_nr_queued)) {
+>
+> -               p = pick_next_task_fair(rq, prev, rf);
+> +               p = pick_task_fair(rq, rf);
+>                 if (unlikely(p == RETRY_TASK))
+>                         goto restart;
+>
+>                 /* Assume the next prioritized class is idle_sched_class */
+> -               if (!p) {
+> +               if (!p)
+>                         p = pick_task_idle(rq, rf);
+> -                       put_prev_set_next_task(rq, prev, p);
+> -               }
+>
+> +               put_prev_set_next_task(rq, prev, p);
+>                 return p;
+>         }
+>
+> @@ -5997,20 +5996,12 @@ __pick_next_task(struct rq *rq, struct t
+>         prev_balance(rq, prev, rf);
+>
+>         for_each_active_class(class) {
+> -               if (class->pick_next_task) {
+> -                       p = class->pick_next_task(rq, prev, rf);
+> -                       if (unlikely(p == RETRY_TASK))
+> -                               goto restart;
+> -                       if (p)
+> -                               return p;
+> -               } else {
+> -                       p = class->pick_task(rq, rf);
+> -                       if (unlikely(p == RETRY_TASK))
+> -                               goto restart;
+> -                       if (p) {
+> -                               put_prev_set_next_task(rq, prev, p);
+> -                               return p;
+> -                       }
+> +               p = class->pick_task(rq, rf);
+> +               if (unlikely(p == RETRY_TASK))
+> +                       goto restart;
+> +               if (p) {
+> +                       put_prev_set_next_task(rq, prev, p);
+> +                       return p;
+>                 }
+>         }
 >
 > --- a/kernel/sched/fair.c
 > +++ b/kernel/sched/fair.c
-> @@ -9215,16 +9215,18 @@ static void wakeup_preempt_fair(struct r
+> @@ -9214,7 +9214,7 @@ static void wakeup_preempt_fair(struct r
+>         resched_curr_lazy(rq);
 >  }
 >
->  static struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
-> +       __must_hold(__rq_lockp(rq))
+> -static struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
+> +struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
+>         __must_hold(__rq_lockp(rq))
 >  {
 >         struct sched_entity *se;
->         struct cfs_rq *cfs_rq;
->         struct task_struct *p;
->         bool throttled;
-> +       int new_tasks;
->
->  again:
->         cfs_rq = &rq->cfs;
->         if (!cfs_rq->nr_queued)
-> -               return NULL;
-> +               goto idle;
->
->         throttled = false;
->
-> @@ -9245,6 +9247,14 @@ static struct task_struct *pick_task_fai
->         if (unlikely(throttled))
->                 task_throttle_setup_work(p);
->         return p;
-> +
-> +idle:
-> +       new_tasks = sched_balance_newidle(rq, rf);
-> +       if (new_tasks < 0)
-> +               return RETRY_TASK;
-> +       if (new_tasks > 0)
-> +               goto again;
-> +       return NULL;
+> @@ -9257,72 +9257,6 @@ static struct task_struct *pick_task_fai
+>         return NULL;
 >  }
 >
->  static void __set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
-> @@ -9256,12 +9266,12 @@ pick_next_task_fair(struct rq *rq, struc
->  {
->         struct sched_entity *se;
->         struct task_struct *p;
-> -       int new_tasks;
->
-> -again:
->         p = pick_task_fair(rq, rf);
-> +       if (unlikely(p == RETRY_TASK))
-> +               return p;
->         if (!p)
-> -               goto idle;
-> +               return p;
->         se = &p->se;
->
->  #ifdef CONFIG_FAIR_GROUP_SCHED
-> @@ -9311,29 +9321,11 @@ pick_next_task_fair(struct rq *rq, struc
->  #endif /* CONFIG_FAIR_GROUP_SCHED */
->         put_prev_set_next_task(rq, prev, p);
->         return p;
+> -static void __set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
+> -static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first);
 > -
-> -idle:
-> -       if (rf) {
-> -               new_tasks = sched_balance_newidle(rq, rf);
+> -struct task_struct *
+> -pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+> -       __must_hold(__rq_lockp(rq))
+> -{
+> -       struct sched_entity *se;
+> -       struct task_struct *p;
 > -
-> -               /*
-> -                * Because sched_balance_newidle() releases (and re-acquires)
-> -                * rq->lock, it is possible for any higher priority task to
-> -                * appear. In that case we must re-start the pick_next_entity()
-> -                * loop.
-> -                */
-> -               if (new_tasks < 0)
-> -                       return RETRY_TASK;
+> -       p = pick_task_fair(rq, rf);
+> -       if (unlikely(p == RETRY_TASK))
+> -               return p;
+> -       if (!p)
+> -               return p;
+> -       se = &p->se;
 > -
-> -               if (new_tasks > 0)
-> -                       goto again;
+> -#ifdef CONFIG_FAIR_GROUP_SCHED
+> -       if (prev->sched_class != &fair_sched_class)
+> -               goto simple;
+> -
+> -       __put_prev_set_next_dl_server(rq, prev, p);
+> -
+> -       /*
+> -        * Because of the set_next_buddy() in dequeue_task_fair() it is rather
+> -        * likely that a next task is from the same cgroup as the current.
+> -        *
+> -        * Therefore attempt to avoid putting and setting the entire cgroup
+> -        * hierarchy, only change the part that actually changes.
+> -        *
+> -        * Since we haven't yet done put_prev_entity and if the selected task
+> -        * is a different task than we started out with, try and touch the
+> -        * least amount of cfs_rqs.
+> -        */
+> -       if (prev != p) {
+> -               struct sched_entity *pse = &prev->se;
+> -               struct cfs_rq *cfs_rq;
+> -
+> -               while (!(cfs_rq = is_same_group(se, pse))) {
+> -                       int se_depth = se->depth;
+> -                       int pse_depth = pse->depth;
+> -
+> -                       if (se_depth <= pse_depth) {
+> -                               put_prev_entity(cfs_rq_of(pse), pse);
+> -                               pse = parent_entity(pse);
+> -                       }
+> -                       if (se_depth >= pse_depth) {
+> -                               set_next_entity(cfs_rq_of(se), se, true);
+> -                               se = parent_entity(se);
+> -                       }
+> -               }
+> -
+> -               put_prev_entity(cfs_rq, pse);
+> -               set_next_entity(cfs_rq, se, true);
+> -
+> -               __set_next_task_fair(rq, p, true);
 > -       }
 > -
-> -       return NULL;
->  }
->
+> -       return p;
+> -
+> -simple:
+> -#endif /* CONFIG_FAIR_GROUP_SCHED */
+> -       put_prev_set_next_task(rq, prev, p);
+> -       return p;
+> -}
+> -
 >  static struct task_struct *
 >  fair_server_pick_task(struct sched_dl_entity *dl_se, struct rq_flags *rf)
-> +       __must_hold(__rq_lockp(dl_se->rq))
+>         __must_hold(__rq_lockp(dl_se->rq))
+> @@ -9346,10 +9280,33 @@ static void put_prev_task_fair(struct rq
 >  {
->         return pick_task_fair(dl_se->rq, rf);
+>         struct sched_entity *se = &prev->se;
+>         struct cfs_rq *cfs_rq;
+> +       struct sched_entity *nse = NULL;
+>
+> -       for_each_sched_entity(se) {
+> +#ifdef CONFIG_FAIR_GROUP_SCHED
+> +       if (next && next->sched_class == &fair_sched_class)
+> +               nse = &next->se;
+> +#endif
+> +
+> +       while (se) {
+>                 cfs_rq = cfs_rq_of(se);
+> -               put_prev_entity(cfs_rq, se);
+> +               if (!nse || cfs_rq->curr)
+> +                       put_prev_entity(cfs_rq, se);
+> +#ifdef CONFIG_FAIR_GROUP_SCHED
+> +               if (nse) {
+> +                       if (is_same_group(se, nse))
+> +                               break;
+> +
+> +                       int d = nse->depth - se->depth;
+> +                       if (d >= 0) {
+> +                               /* nse has equal or greater depth, ascend */
+> +                               nse = parent_entity(nse);
+> +                               /* if nse is the deeper, do not ascend se */
+> +                               if (d > 0)
+> +                                       continue;
+> +                       }
+> +               }
+> +#endif
+> +               se = parent_entity(se);
+>         }
 >  }
+>
+> @@ -13896,10 +13853,30 @@ static void switched_to_fair(struct rq *
+>         }
+>  }
+>
+> -static void __set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
+> +/*
+> + * Account for a task changing its policy or group.
+> + *
+> + * This routine is mostly called to set cfs_rq->curr field when a task
+> + * migrates between groups/classes.
+> + */
+> +static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
+>  {
+>         struct sched_entity *se = &p->se;
+>
+> +       for_each_sched_entity(se) {
+> +               struct cfs_rq *cfs_rq = cfs_rq_of(se);
+> +
+> +               if (IS_ENABLED(CONFIG_FAIR_GROUP_SCHED) &&
+> +                   first && cfs_rq->curr)
+> +                       break;
+> +
+> +               set_next_entity(cfs_rq, se, first);
+> +               /* ensure bandwidth has been allocated on our new cfs_rq */
+> +               account_cfs_rq_runtime(cfs_rq, 0);
+> +       }
+> +
+> +       se = &p->se;
+> +
+>         if (task_on_rq_queued(p)) {
+>                 /*
+>                  * Move the next running task to the front of the list, so our
+> @@ -13919,27 +13896,6 @@ static void __set_next_task_fair(struct
+>         sched_fair_update_stop_tick(rq, p);
+>  }
+>
+> -/*
+> - * Account for a task changing its policy or group.
+> - *
+> - * This routine is mostly called to set cfs_rq->curr field when a task
+> - * migrates between groups/classes.
+> - */
+> -static void set_next_task_fair(struct rq *rq, struct task_struct *p, bool first)
+> -{
+> -       struct sched_entity *se = &p->se;
+> -
+> -       for_each_sched_entity(se) {
+> -               struct cfs_rq *cfs_rq = cfs_rq_of(se);
+> -
+> -               set_next_entity(cfs_rq, se, first);
+> -               /* ensure bandwidth has been allocated on our new cfs_rq */
+> -               account_cfs_rq_runtime(cfs_rq, 0);
+> -       }
+> -
+> -       __set_next_task_fair(rq, p, first);
+> -}
+> -
+>  void init_cfs_rq(struct cfs_rq *cfs_rq)
+>  {
+>         cfs_rq->tasks_timeline = RB_ROOT_CACHED;
+> @@ -14251,7 +14207,6 @@ DEFINE_SCHED_CLASS(fair) = {
+>         .wakeup_preempt         = wakeup_preempt_fair,
+>
+>         .pick_task              = pick_task_fair,
+> -       .pick_next_task         = pick_next_task_fair,
+>         .put_prev_task          = put_prev_task_fair,
+>         .set_next_task          = set_next_task_fair,
+>
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2555,17 +2555,6 @@ struct sched_class {
+>          * schedule/pick_next_task: rq->lock
+>          */
+>         struct task_struct *(*pick_task)(struct rq *rq, struct rq_flags *rf);
+> -       /*
+> -        * Optional! When implemented pick_next_task() should be equivalent to:
+> -        *
+> -        *   next = pick_task();
+> -        *   if (next) {
+> -        *       put_prev_task(prev);
+> -        *       set_next_task_first(next);
+> -        *   }
+> -        */
+> -       struct task_struct *(*pick_next_task)(struct rq *rq, struct task_struct *prev,
+> -                                             struct rq_flags *rf);
+>
+>         /*
+>          * sched_change:
+> @@ -2789,8 +2778,7 @@ static inline bool sched_fair_runnable(s
+>         return rq->cfs.nr_queued > 0;
+>  }
+>
+> -extern struct task_struct *pick_next_task_fair(struct rq *rq, struct task_struct *prev,
+> -                                              struct rq_flags *rf);
+> +extern struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf);
+>  extern struct task_struct *pick_task_idle(struct rq *rq, struct rq_flags *rf);
+>
+>  #define SCA_CHECK              0x01
 >
 >
 
