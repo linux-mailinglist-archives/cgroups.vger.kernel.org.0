@@ -1,150 +1,143 @@
-Return-Path: <cgroups+bounces-16114-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16115-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id dSw7Fq5TDWrywAUAu9opvQ
-	(envelope-from <cgroups+bounces-16114-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 08:24:46 +0200
+	id OIIsBchYDWpuwQUAu9opvQ
+	(envelope-from <cgroups+bounces-16115-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 08:46:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B01215881D4
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 08:24:45 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A1E3588532
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 08:46:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 251BE3014259
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 06:24:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 87BE8301589D
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 06:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D452A367B9F;
-	Wed, 20 May 2026 06:24:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7811E33D4F8;
+	Wed, 20 May 2026 06:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C4/u22s+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8662E9ED6;
-	Wed, 20 May 2026 06:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A98233A6F1;
+	Wed, 20 May 2026 06:41:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779258281; cv=none; b=VrK7cgkz8hvOCr0g5NPypwv86ZdmhJsLbBBl5RF0WSiKqwdYyVqyqJCehZ/6tGlkkuRqMNAOxiJ/OHpcLlQpp6i7NZRumfbY4eNMWSLEEFfZfY9hFnGSAdWCtQ6+wQvWaFwotEHKCKBGSX4H+Mx9TBKC4DbS8WYgiXUyHEg9uzA=
+	t=1779259267; cv=none; b=eMsmaVHawbGcYHhzI3EvW9lQlQaueEUaInRaaeAOWtfZ8FLEyQgyvuT5oRWM0Uo/IXDQO3hzWchgOFgndeZilzvKrNK4ABX+njpHkY57XPTpA1llBE+HeJ31vbxm2w3aZcWZW+LWeeLqPekfMX+gEt9NlEAcrx6K3sQDciof4CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779258281; c=relaxed/simple;
-	bh=sLjb42HkoMlV1mqO1uKia2k274xSBZTqAZDTZpZkQwM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QFZ1/O/tsgeQRLAN0Kg6prjZL3JGAzQEqBqk/xYzb4JMmD1fyvye8khkedhC9Jz/WXPj9insqnO9+n6gxipezT2F5qI0YsFiwdawlaSAkHMCP2BUTxwkoyqT2ppMB5n88Ew3EwnFyoPnloM1rTUNMWiga1hihrEY5vJI2SuCiQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 901ab602541411f1aa26b74ffac11d73-20260520
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
-	AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:062d1788-4d46-41f8-b492-a9cd2d5d2e37,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:062d1788-4d46-41f8-b492-a9cd2d5d2e37,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:63764f3f94c51278a390290098261ec3,BulkI
-	D:260520142433RWPR6ZH2,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
-	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
-	0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 901ab602541411f1aa26b74ffac11d73-20260520
-X-User: cuitao@kylinos.cn
-Received: from ctao-book.. [(183.242.174.20)] by mailgw.kylinos.cn
-	(envelope-from <cuitao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1622988839; Wed, 20 May 2026 14:24:31 +0800
-From: Tao Cui <cuitao@kylinos.cn>
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk,
-	cgroups@vger.kernel.org
-Cc: linux-block@vger.kernel.org,
-	Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH] blk-throttle: schedule parent dispatch in tg_flush_bios()
-Date: Wed, 20 May 2026 14:24:20 +0800
-Message-ID: <20260520062420.1762788-1-cuitao@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1779259267; c=relaxed/simple;
+	bh=oRrxPI8YAXHdl+Os7sSeFj1xpkSqAKNVD65qbgB/f1U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BW+0+tVggOHKsM6jbmyE1h5bG29Pmf3iTu317pVfwyaatyDh3mY2u1u8TYV9BhjXcWxi+2mggES6BDI5R+mb4oK4vSyGsHMtSWorD1Bvk8q0n/SzcQb+OsPmslxfgSw+67xYKrdped6ItdfiXwoS3yNOpJngJ+VkXDBvqtCH/ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C4/u22s+; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F7B1F000E9;
+	Wed, 20 May 2026 06:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779259265;
+	bh=t5aueIOO+B8O30BYhpyvaYfeaMnbRo9gO1SHqe+cDh4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=C4/u22s+iJFOhW8pgObb0RVr2N7kMXeXpEl4lUPTaIi091OJPb//FrxSwEW27oqJa
+	 kHiNRf/Fno0ECc+vLbk9XIKE7v1l2xgxVIW6MYYN9c3yd7o0RNEKKuRfuWyUKy2Rzg
+	 ESBM8FWYeBZfp6Q38Q5WDpZQT2oLGFKfHNbplVVcUVDadUdZUnOA6HwKpFTVcCbvrJ
+	 1CjqJoM0qw6+qu81E3bEMdSsAs1Mh4XVWuULqgZKfURJ8u2WSq0XuJ9z5KTCAYKWDQ
+	 U8GqsjzlJvCXZnnU2EN4MCjgJXecH/V4L/Df2WBqNISK/mPa4l1BOkTJk63H6ZJPpQ
+	 3miapLDvgPAbg==
+Message-ID: <98578d1a-a1fa-4d4b-91ee-921cf07dd09d@kernel.org>
+Date: Wed, 20 May 2026 15:41:02 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] memcg: uint16_t for nr_bytes in obj_stock_pcp
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+ Alexandre Ghiti <alex@ghiti.fr>, Joshua Hahn <joshua.hahnjy@gmail.com>,
+ Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel test robot <oliver.sang@intel.com>
+References: <20260520053123.2709959-1-shakeel.butt@linux.dev>
+ <20260520053123.2709959-3-shakeel.butt@linux.dev>
+Content-Language: en-US
+From: Harry Yoo <harry@kernel.org>
+In-Reply-To: <20260520053123.2709959-3-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16115-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16114-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: B01215881D4
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:email,linux.dev:email]
+X-Rspamd-Queue-Id: 6A1E3588532
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-tg_flush_bios() schedules pending_timer on the child tg's own
-service_queue, which causes throtl_pending_timer_fn() to dispatch from
-the child's pending_tree.  For leaf cgroups this tree is empty, so the
-timer fires and exits without dispatching the throttled bio.
 
-The throttled bio sits in the parent's pending_tree with disptime set
-to jiffies (THROTL_TG_CANCELING zeroes all dispatch times), but the
-parent's timer is never explicitly rescheduled.  The bio only gets
-dispatched when the parent timer eventually fires at its previously
-scheduled expiry.
 
-Fix by calling throtl_schedule_next_dispatch(sq->parent_sq, true)
-instead, matching what tg_set_limit() already does.  This forces the
-parent's dispatch cycle to run immediately and flush all canceling
-bios without waiting for a stale timer.
+On 5/20/26 2:31 PM, Shakeel Butt wrote:
+> Currently struct obj_stock_pcp stores nr_bytes in an 'unsigned int'
+> which is 4 bytes on 64-bit machines. Switch the field to uint16_t to
+> shrink the per-CPU cache.
+> 
+> The kernel supports PAGE_SIZE_4KB, _8KB, _16KB, _32KB, _64KB and
+> _256KB (see HAVE_PAGE_SIZE_* in arch/Kconfig). After the
+> PAGE_SIZE-aligned flush in __refill_obj_stock(), the sub-page
+> remainder fits in uint16_t up through 64KiB pages where PAGE_SIZE - 1
+> == U16_MAX, but on 256KiB pages PAGE_SIZE - 1 == 0x3FFFF exceeds
+> U16_MAX. The accumulator also needs to stay within uint16_t between
+> page-aligned flushes on 64KiB pages where PAGE_SIZE itself is
+> U16_MAX + 1.
+> 
+> Accumulate the new total in an 'unsigned int' local, then:
+> 
+>    1. Flush whenever the accumulator would hit U16_MAX. Together with
+>       the existing allow_uncharge flush at PAGE_SIZE, this keeps the
+>       uint16_t safe on PAGE_SIZE <= 64KiB.
+> 
+>    2. On configs with PAGE_SHIFT > 16 (PAGE_SIZE_256KB on hexagon and
+>       powerpc 44x), push any sub-page remainder above U16_MAX into
+>       objcg->nr_charged_bytes via atomic_add before storing back, so
+>       the store cannot silently truncate. The PAGE_SHIFT > 16 guard
+>       folds the branch out at compile time on smaller page sizes.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> ---
 
-Signed-off-by: Tao Cui <cuitao@kylinos.cn>
----
- block/blk-throttle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 2d39977ba9de..0ad30b688ce1 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1652,7 +1652,7 @@ static void tg_flush_bios(struct throtl_grp *tg)
- 	 */
- 	tg_update_disptime(tg);
- 
--	throtl_schedule_pending_timer(sq, jiffies + 1);
-+	throtl_schedule_next_dispatch(sq->parent_sq, true);
- }
- 
- static void throtl_pd_offline(struct blkg_policy_data *pd)
 -- 
-2.43.0
+Cheers,
+Harry / Hyeonggon
 
 
