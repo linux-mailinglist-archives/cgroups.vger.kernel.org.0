@@ -1,166 +1,180 @@
-Return-Path: <cgroups+bounces-16121-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16122-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6HaJIb5/DWosyAUAu9opvQ
-	(envelope-from <cgroups+bounces-16121-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:32:46 +0200
+	id 8Cn7CJGADWosyAUAu9opvQ
+	(envelope-from <cgroups+bounces-16122-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:36:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0091158AD2D
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:32:45 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B10F758ADF2
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:36:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5B3693029A55
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:32:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 14E5C301954A
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622A23CA4A3;
-	Wed, 20 May 2026 09:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606133C9EEF;
+	Wed, 20 May 2026 09:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GetjQ/uU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA8B3C65E0;
-	Wed, 20 May 2026 09:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A910C3A4F51;
+	Wed, 20 May 2026 09:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779269537; cv=none; b=sGoEubO5mRsPpA3PMflNfAp1NegfwlNH+ytOQrTyu85efo4EZzxifE/uDrmJXEp8c1GxvbMuqOXyCVx81QLPM5n7Iv6GFzUFGI79vfewAlqHxsWvJmoj1Mwj3wqddvhn+FmuZ1nBq7Nvt9tmbI5ICubCpcFb/F8N58AyOMR/ZR4=
+	t=1779269738; cv=none; b=RUhQG8dXPnsMqwiWQ3Wfrm+9q+/H9URlWIvI7k6YZauK1xTao9wEQ0Vubw8L30vQIWlKPRNpivKOfaw8Ku6UTRiuD4Xtfoqc3gzbjMA1gwSb/N//MyTe+Kr7t+SGGgD3pR7Lery6xh9Oe6+2Yj2Tjk8WzRKTZFizZ2/tPWjMAIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779269537; c=relaxed/simple;
-	bh=8YfbGTb5qD2kWjjJr6kJPWp9Ff0N5ji9lmV/cl0fe7Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PmRIi9YZzV661yNAW7o3QY0VgyHbhR0VCCjD+56sSn9dnXjxzI3YkmBv0Q7nBBQvDu2JEUnGKiepxqAWssx0CZc0Ee9OOSbGynOxDS9JNnE+h0oDoGUJIPzsisgVcH0r8uZyd3GWX3IqGrWGnXB4MCijwxOgw4UeKUABVtO6TIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: bcdc7526542e11f1aa26b74ffac11d73-20260520
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
-	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD
-	HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER
-	HR_SJ_NOR_SYM, HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_CHARSET
-	HR_TO_CHARSET_NUM, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME, IP_TRUSTED
-	SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED, SN_TRUSTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
-	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
-	ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:8ea1c0e1-8084-4f84-8587-b02fe67b2cdc,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:8ea1c0e1-8084-4f84-8587-b02fe67b2cdc,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:a38dba02c14bbe1690276f6c3af2da88,BulkI
-	D:260520173155BISL4B5P,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
-	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
-	0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: bcdc7526542e11f1aa26b74ffac11d73-20260520
-X-User: zhangguopeng@kylinos.cn
-Received: from yan.. [(183.242.174.22)] by mailgw.kylinos.cn
-	(envelope-from <zhangguopeng@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1577218; Wed, 20 May 2026 17:31:53 +0800
-From: Guopeng Zhang <zhangguopeng@kylinos.cn>
-To: Shuah Khan <shuah@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Hildenbrand <david@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guopeng Zhang <zhangguopeng@kylinos.cn>
-Subject: [PATCH] selftests/cgroup: enable memory controller in hugetlb memcg test
-Date: Wed, 20 May 2026 17:31:30 +0800
-Message-ID: <20260520093130.490020-1-zhangguopeng@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1779269738; c=relaxed/simple;
+	bh=gPa4LfxMsVgEEYah2FCalbzmj6BE/lExGX0MWgsjCIk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ihUv6ws4jmO049yyDdaBMf+7MEOFn0X2iO/yKcekASD03eB3UnhDbPzfR904HZ/UQq9S/8Rn8vQJNq0NEf5SSvaArnevm68qTo+zM9UsLOp/42++gFCWKJMDLUQ7eXL3MQAnboU8rKkzB9DHVgZvoLzS3/fKj2P1AcU0ShFhsuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GetjQ/uU; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A48E41F000E9;
+	Wed, 20 May 2026 09:35:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779269735;
+	bh=cKQ8TEy4a/F3xgQZDjI4b33O37xBHC3B7sYri3TaWOE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=GetjQ/uUxGQgtxfzq+bLELhGxJlEL0BVV0+a8LUQgyPJ3AEyqrBND1etreZRkq8ZL
+	 20qfHoY1y4dT1DYsR8cp2k7AGGPczNbv0JeUp12TxGJZKXu6MFRZBU0P02+JUifixp
+	 bBaeGTe2q4gxahkVNvRP8alEP+x3AeFii0RE9Jj7Mq2UVfKJujaKIxy255sm7J6tps
+	 JeLYFmsmnoolpvXsYYrB09OcH266m9xHJKZUDlUH+gx/CsIlpX2OGd2RTfl46CCnNC
+	 WNnoGjWlEd0ZOj7v+FWkDSE2yR52+88zQf+z+jPHaBdYK9vplZwOu9BitMhaww8gTP
+	 nmEkJG02q872Q==
+Message-ID: <4e20f643-6983-4b6e-b12d-c6c4eb20ae0c@kernel.org>
+Date: Wed, 20 May 2026 18:35:30 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] memcg: multi objcg charge support
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+ Alexandre Ghiti <alex@ghiti.fr>, Joshua Hahn <joshua.hahnjy@gmail.com>,
+ Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel test robot <oliver.sang@intel.com>
+References: <20260520053123.2709959-1-shakeel.butt@linux.dev>
+ <20260520053123.2709959-5-shakeel.butt@linux.dev>
+Content-Language: en-US
+From: Harry Yoo <harry@kernel.org>
+In-Reply-To: <20260520053123.2709959-5-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16122-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-16121-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhangguopeng@kylinos.cn,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 0091158AD2D
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,intel.com:email,linux.dev:email]
+X-Rspamd-Queue-Id: B10F758ADF2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-test_hugetlb_memcg creates a child cgroup and then writes memory.max and
-memory.swap.max. When the test is run standalone, the memory controller
-may not be enabled in the test root cgroup's subtree_control.
 
-In that case, the child cgroup is created without the memory control
-files, and the test fails during setup before reaching the hugetlb memcg
-accounting checks.
 
-Skip the test when the memory controller is unavailable. Otherwise, enable
-it in subtree_control before creating the test cgroup.
+On 5/20/26 2:31 PM, Shakeel Butt wrote:
+> Commit 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg
+> per-node type") split a memcg's single obj_cgroup into one per NUMA
+> node so that reparenting LRU folios can take per-node lru locks. As a
+> side effect, the per-CPU obj_stock_pcp -- which caches exactly one
+> cached_objcg -- thrashes on workloads where threads of the same memcg
+> run on different NUMA nodes. The kernel test robot reported a 67.7%
+> regression on stress-ng.switch.ops_per_sec from this pattern.
+> 
+> Mirror the multi-slot pattern already used by memcg_stock_pcp: turn
+> nr_bytes and cached_objcg into NR_OBJ_STOCK-element arrays, scan all
+> slots on consume/refill/account, prefer empty slots when inserting,
+> and evict a random slot only when full. With multiple slots a CPU can
+> hold the per-node objcg variants of one memcg plus a few siblings
+> without ever forcing a drain.
+> 
+> A single int8_t index records which slot the cached slab stats belong
+> to; the stats are flushed on slot or pgdat change. With NR_OBJ_STOCK
+> = 5 the layout (verified with pahole) is:
+> 
+>    offset 0  : lock(1) + index(1) + node_id(2) + slab stats(4) = 8B
+>    offset 8  : nr_bytes[5]                                     = 10B
+>    offset 18 : padding                                         = 6B
+>    offset 24 : cached[5]                                       = 40B
+>    offset 64 : (line 2) work_struct + flags (cold)
+> 
+> so consume_obj_stock, refill_obj_stock and the slab account path each
+> touch exactly one 64-byte cache line on non-debug 64-bit builds.
+> 
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202605121641.b6a60cb0-lkp@intel.com
+> Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> ---
+> @@ -3350,19 +3405,45 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
+>   		goto out;
+>   	}
+>   
+> -	stock_nr_bytes = stock->nr_bytes;
+> -	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+> -		drain_obj_stock(stock);
+> +	for (i = 0; i < NR_OBJ_STOCK; ++i) {
+> +		struct obj_cgroup *cached = READ_ONCE(stock->cached[i]);
+> +
+> +		if (!cached) {
+> +			if (empty_slot == -1)
+> +				empty_slot = i;
+> +			continue;
+> +		}
+> +		if (cached == objcg) {
+> +			slot = i;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (slot == -1) {
+> +		slot = empty_slot;
+> +		if (slot == -1) {
+> +			slot = get_random_u32_below(NR_OBJ_STOCK);
 
-Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
----
-Tested with a cgroup namespace where memory is available in
-cgroup.controllers but not enabled in cgroup.subtree_control:
+It would break kmalloc_nolock() because _get_random_bytes() uses a 
+spinlock. perhaps prandom_u32_state() should be sufficient in this case.
 
-  before: test_hugetlb_memcg failed with "fail to set cgroup memory limit"
-  after:  test_hugetlb_memcg passed and cgroup.subtree_control contained memory
+Is there a reason why it uses random eviction, unlike multi-memcg percpu 
+charge cache?
 
- tools/testing/selftests/cgroup/test_hugetlb_memcg.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Otherwise LGTM!
 
-diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-index f451aa449be6..b627d84358b1 100644
---- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-+++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-@@ -217,6 +217,14 @@ int main(int argc, char **argv)
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
-+	if (cg_read_strstr(root, "cgroup.controllers", "memory"))
-+		ksft_exit_skip("memory controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "memory")) {
-+		if (cg_write(root, "cgroup.subtree_control", "+memory"))
-+			ksft_exit_skip("Failed to set memory controller\n");
-+	}
-+
- 	switch (test_hugetlb_memcg(root)) {
- 	case KSFT_PASS:
- 		ksft_test_result_pass("test_hugetlb_memcg\n");
 -- 
-2.43.0
+Cheers,
+Harry / Hyeonggon
+
 
