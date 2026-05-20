@@ -1,228 +1,166 @@
-Return-Path: <cgroups+bounces-16120-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16121-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UIITEMJ3DWokxwUAu9opvQ
-	(envelope-from <cgroups+bounces-16120-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 10:58:42 +0200
+	id 6HaJIb5/DWosyAUAu9opvQ
+	(envelope-from <cgroups+bounces-16121-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:32:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B62C58A472
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 10:58:41 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0091158AD2D
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:32:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C450C32DDA97
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 08:43:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5B3693029A55
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1FD3B9DAB;
-	Wed, 20 May 2026 08:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622A23CA4A3;
+	Wed, 20 May 2026 09:32:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFB703B0AF3;
-	Wed, 20 May 2026 08:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA8B3C65E0;
+	Wed, 20 May 2026 09:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779266419; cv=none; b=l1CRvUbkL/UvOD1dCe7myjBK6cDcqRPC9PVZKxcWwUGxQCiVbmJUaG3kaR1Os3YMVV1ZLbAu62AP63mWiuALgU/mlbDe88/Hm+XMqZgSl9kfGpkL/sSV/9FwllVRhqxCfgfkDgJ5dAynIYYG2Qvs1XZwOHszZUXGSj5teiSJoe4=
+	t=1779269537; cv=none; b=sGoEubO5mRsPpA3PMflNfAp1NegfwlNH+ytOQrTyu85efo4EZzxifE/uDrmJXEp8c1GxvbMuqOXyCVx81QLPM5n7Iv6GFzUFGI79vfewAlqHxsWvJmoj1Mwj3wqddvhn+FmuZ1nBq7Nvt9tmbI5ICubCpcFb/F8N58AyOMR/ZR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779266419; c=relaxed/simple;
-	bh=EilAPoeqML1iQcSZdjE9cVPGE+5RyEhrcN0DHWonRFI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FgOdhNOpVsVNOU6Q6epOK54H0GilebJUQ2qm0KjS52Ts6RWqPtN9CElfbPyW+b6cSUtSl+HsZNHL4fgZX/myPJfqYbgNiP1U4toNSZXah6p7cYdduN2r80OmW4uMnlgNs81Sqmr5arlKlicOEmT1JjMErSxh5OJ/swexicDRNrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B0D83EBC7;
-	Wed, 20 May 2026 08:40:03 +0000 (UTC)
-Message-ID: <7e28d0c9-80f2-420b-87c4-55e571071059@ghiti.fr>
-Date: Wed, 20 May 2026 10:39:59 +0200
+	s=arc-20240116; t=1779269537; c=relaxed/simple;
+	bh=8YfbGTb5qD2kWjjJr6kJPWp9Ff0N5ji9lmV/cl0fe7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PmRIi9YZzV661yNAW7o3QY0VgyHbhR0VCCjD+56sSn9dnXjxzI3YkmBv0Q7nBBQvDu2JEUnGKiepxqAWssx0CZc0Ee9OOSbGynOxDS9JNnE+h0oDoGUJIPzsisgVcH0r8uZyd3GWX3IqGrWGnXB4MCijwxOgw4UeKUABVtO6TIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: bcdc7526542e11f1aa26b74ffac11d73-20260520
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
+	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD
+	HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER
+	HR_SJ_NOR_SYM, HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_CHARSET
+	HR_TO_CHARSET_NUM, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME, IP_TRUSTED
+	SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED, SN_TRUSTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:8ea1c0e1-8084-4f84-8587-b02fe67b2cdc,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:10
+X-CID-INFO: VERSION:1.3.12,REQID:8ea1c0e1-8084-4f84-8587-b02fe67b2cdc,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:10
+X-CID-META: VersionHash:e7bac3a,CLOUDID:a38dba02c14bbe1690276f6c3af2da88,BulkI
+	D:260520173155BISL4B5P,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
+	865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
+	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
+	0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: bcdc7526542e11f1aa26b74ffac11d73-20260520
+X-User: zhangguopeng@kylinos.cn
+Received: from yan.. [(183.242.174.22)] by mailgw.kylinos.cn
+	(envelope-from <zhangguopeng@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1577218; Wed, 20 May 2026 17:31:53 +0800
+From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+To: Shuah Khan <shuah@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Oscar Salvador <osalvador@suse.de>,
+	David Hildenbrand <david@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guopeng Zhang <zhangguopeng@kylinos.cn>
+Subject: [PATCH] selftests/cgroup: enable memory controller in hugetlb memcg test
+Date: Wed, 20 May 2026 17:31:30 +0800
+Message-ID: <20260520093130.490020-1-zhangguopeng@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/8] per-memcg-per-node kmem accounting
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
- Christoph Lameter <cl@gentwo.org>, Vlastimil Babka <vbabka@kernel.org>,
- Yosry Ahmed <yosry@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
- Sergey Senozhatsky <senozhatsky@chromium.org>,
- Chengming Zhou <chengming.zhou@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Qi Zheng <qi.zheng@linux.dev>,
- David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
- Minchan Kim <minchan@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Axel Rasmussen <axelrasmussen@google.com>, Barry Song <baohua@kernel.org>,
- Kairui Song <kasong@tencent.com>, Wei Xu <weixugc@google.com>,
- Yuanchu Xie <yuanchu@google.com>, "Liam R . Howlett"
- <Liam.Howlett@oracle.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org
-References: <20260518145732.349196-1-joshua.hahnjy@gmail.com>
-Content-Language: en-US
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20260518145732.349196-1-joshua.hahnjy@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
-X-GND-Score: -100
-X-GND-Cause: dmFkZTEDCWN8I9KCg3ODolESpoO8C0U+cgp1vdclwRT2FiWCsJP7mQ/S9Bk8bA5NqEjt69Syv/4OrmyY/GmF7OFXH1yz8GGHmlYmDFs4jgE1XBqREjezj8hlgKNMnNs72ohK6EA2GZ2E5RPntNL87/W0nt5zBFG0+xw7QqNfkdAwc4tT7jRdEcCPGnB1uMvnnsOx84TrsZM7hZkPrJoN1JUdrQoRFBx6DyR8vzq+aLH4NeF1zVnrJhBoblpOLBNdvQXsYvqnvirnSFLqmUQvg1lDnoos7/pwu6cvE9D82wj7zvtmBNEMiJTu2MTmAO0J41ksYyF5yPOhx/97qhbUHAPbsTUDRXIfJvFjwzjr0fCXWdzPzwW4vSN17Jsmqu3qtcVYRaEWMyx2JgoEjbSTzqQxzO08jmV9FjF5OJIc8KuQsxBR3/Nwx7PHE80/GsqTip2bvGdUvn/CMsMYFFXuIidw8KtNtlvOGqdASvgLB3/awxO5Zg7QQ+Pl5KkFYrCV/IPtO5g9zEuNlVn97nCp2j6nI2HoUrOnDmGeS9jWlWYSkPrk7ZtfM9xnBh8f9vVwbCtef9A3C9rVvrmMSglqMCPphLm+ssH9O+IBcsjLXWIRSfKLIvUqUmhQtqyHEjIvMMF/qZRPdmcKDGynf5t4YXC6xpDmLg6useSeWmxvWB+nJJxEnw
-X-GND-State: clean
 X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16120-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[ghiti.fr];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,gentwo.org,gmail.com,chromium.org,google.com,tencent.com,oracle.com,kvack.org,vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alex@ghiti.fr,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-16121-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhangguopeng@kylinos.cn,cgroups@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,ghiti.fr:mid,ghiti.fr:email]
-X-Rspamd-Queue-Id: 8B62C58A472
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 0091158AD2D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Joshua,
+test_hugetlb_memcg creates a child cgroup and then writes memory.max and
+memory.swap.max. When the test is run standalone, the memory controller
+may not be enabled in the test root cgroup's subtree_control.
 
-On 5/18/26 16:57, Joshua Hahn wrote:
-> On Mon, 11 May 2026 22:20:35 +0200 Alexandre Ghiti <alex@ghiti.fr> wrote:
->
->> This series pursues the work initiated by Joshua [1]. We need kernel
->> memory to be accounted on a per-node basis in order to be able to
->> know the memcg and physical memory association.
->>    
->> This series takes advantage of the recent introduction of per-node
->> obj_cgroup [2] and makes those obj_cgroup tied to their numa node.
->>    
->> The bulk of the series is percpu per-node accounting: percpu
->> "precharges" the memcg before we know the actual location of the pages
->> it uses, so charging and accounting had to be split. All other kmem
->> users (slab, zswap, __memcg_kmem_charge_page) are straightforward
->> conversions (zswap support is limited in this series because Joshua
->> is working on it in parallel [3]).
->>   
->> Thanks Joshua for your early feedbacks!
-> Hello Alex,
->
-> Thank you for your work!
->
-> Overall I think the direction makes sense to me. Pre-overcharging makes sense to
-> me as an approach, we would much rather overaccount than underaccount and
-> later have to breach limits.
->
-> I do have some concerns on performance, though. Namely, I think there are
-> some expensive operations that I think would benefit from some performane
-> benchmarking with this patch added (maybe some simple microbenchmarks that
-> demonstrates kernel allocation overhead could be useful).
->
->  From what I can tell, there is some additional performance overhead that has
-> to do with iterating over num_possible_cpus() x pages_per_alloc, which
-> doesn't seem trivial to me.
+In that case, the child cgroup is created without the memory control
+files, and the test fails during setup before reaching the hugetlb memcg
+accounting checks.
 
+Skip the test when the memory controller is unavailable. Otherwise, enable
+it in subtree_control before creating the test cgroup.
 
-Indeed, let me microbenchmark the overhead on a large system.
+Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+---
+Tested with a cgroup namespace where memory is available in
+cgroup.controllers but not enabled in cgroup.subtree_control:
 
+  before: test_hugetlb_memcg failed with "fail to set cgroup memory limit"
+  after:  test_hugetlb_memcg passed and cgroup.subtree_control contained memory
 
->
-> Another concern that I see is the stock credit system. Maybe we could be
-> bypassing the stock check leading to more time spent doing the atomic
-> operations.
+ tools/testing/selftests/cgroup/test_hugetlb_memcg.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-
-I'm not following on this one, which atomic operations do you see that 
-could be bypassed?
-
-
->
-> obj_stock caches a single obj_cgroup, which means that if we split the objcg
-> to be per-node (in patch 6), then the obj_stock basically gets invalidated
-> every operation since we iterate over more objcgs (even though we are in
-> the same logical objcg). Maybe I'm missing something?
-
-
-The objcg split comes from commit 01b9da291c49 ("mm: memcontrol: convert 
-objcg to be per-memcg per-node type") and the problem you describe is 
-exactly what Shakeel is trying to fix [1].
-
-But I remember trying a microbenchmark and noticed a +5% regression (on 
-top of the 67% then...), I'll rebase this series on top of Shakeel's and 
-re-run.
-
-[1] 
-https://lore.kernel.org/linux-mm/20260520053123.2709959-1-shakeel.butt@linux.dev/T/#m127d4969b105c046a2a21e3c79c963771007583d
-
-
->
-> I haven't taken a deep look at the implementation details but just wanted to
-> raise some high level items that I noticed. Of course, all of these concerns
-> are just theoretical, if you can show that the performance delta is not
-> noticable then all of my concerns don't matter.
->
-> I also want to talk more about the local credit system but let's first see
-> what the numbers are first.
->
-> Thanks again, Alex. And I really like patch 2 because it is a solution to
-> a problem that I ran into in my percpu tracking series that I couldn't think
-> of before! Thank you for solving my problem too : -)
-
-
-Great then, thanks :)
-
-Alex
-
-
->
-> Have a great day!
-> Joshua
->     
->> [1] https://lore.kernel.org/linux-mm/20260404033844.1892595-1-joshua.hahnjy@gmail.com/
->> [2] https://lore.kernel.org/linux-mm/56c04b1c5d54f75ccdc12896df6c1ca35403ecc3.1772711148.git.zhengqi.arch@bytedance.com/
->> [3] https://lore.kernel.org/linux-mm/20260311195153.4013476-1-joshua.hahnjy@gmail.com/
->>
->> Alexandre Ghiti (8):
->>    mm: memcontrol: propagate NMI slab stats to memcg vmstats
->>    mm: percpu: charge obj_exts allocation with __GFP_ACCOUNT
->>    mm: percpu: Split memcg charging and kmem accounting
->>    mm: memcontrol: track MEMCG_KMEM per NUMA node
->>    mm: memcontrol: per-node kmem accounting for page charges
->>    mm: slab: per-node kmem accounting for slab
->>    mm: percpu: per-node kmem accounting using local credit
->>    mm: zswap: per-node kmem accounting for zswap/zsmalloc
->>
->>   include/linux/memcontrol.h |  27 +++++--
->>   include/linux/mmzone.h     |   1 +
->>   include/linux/zsmalloc.h   |   2 +
->>   mm/memcontrol.c            | 150 ++++++++++++++++++++++++++++---------
->>   mm/percpu-internal.h       |  16 +---
->>   mm/percpu.c                |  90 ++++++++++++++++++++--
->>   mm/vmstat.c                |   1 +
->>   mm/zsmalloc.c              |  11 +++
->>   mm/zswap.c                 |   9 ++-
->>   9 files changed, 242 insertions(+), 65 deletions(-)
->>
->> -- 
->> 2.54.0
->>
->>
+diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+index f451aa449be6..b627d84358b1 100644
+--- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
++++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+@@ -217,6 +217,14 @@ int main(int argc, char **argv)
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
++	if (cg_read_strstr(root, "cgroup.controllers", "memory"))
++		ksft_exit_skip("memory controller isn't available\n");
++
++	if (cg_read_strstr(root, "cgroup.subtree_control", "memory")) {
++		if (cg_write(root, "cgroup.subtree_control", "+memory"))
++			ksft_exit_skip("Failed to set memory controller\n");
++	}
++
+ 	switch (test_hugetlb_memcg(root)) {
+ 	case KSFT_PASS:
+ 		ksft_test_result_pass("test_hugetlb_memcg\n");
+-- 
+2.43.0
 
