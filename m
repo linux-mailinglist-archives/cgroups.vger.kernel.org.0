@@ -1,174 +1,192 @@
-Return-Path: <cgroups+bounces-16118-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16119-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mMhTCiNiDWquwgUAu9opvQ
-	(envelope-from <cgroups+bounces-16118-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:26:27 +0200
+	id uPeXA7xyDWpUxgUAu9opvQ
+	(envelope-from <cgroups+bounces-16119-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 10:37:16 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9D7588EDB
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 893BC589E86
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 10:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B6ED33059F9A
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 07:25:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9A86930C61B9
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 08:29:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75D99367B99;
-	Wed, 20 May 2026 07:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158D43A9618;
+	Wed, 20 May 2026 08:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XemDWMXv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UGNcUCZ2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7593537C7;
-	Wed, 20 May 2026 07:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698D0343886
+	for <cgroups@vger.kernel.org>; Wed, 20 May 2026 08:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779261942; cv=none; b=S+EBmAJLXNwb9SOM+EW3GOrgOydeRlSHXmzK/s09d+iEO2NuMzslZ/rMbMcDNpV1DypiF/7aiechW6BZqIn60ZrEXs8CJZWIc3+UFfpG6i5bTwHBpFTXglbU2nspx6Nszi1NVYQOOb4Ddk4FYdYLQA4H5npAmLnY9F5xekHGYc4=
+	t=1779265794; cv=none; b=T+JDIqjW7dIqD0Y5J0HEa+0Rxd841YUSfWfSsLY9/Q5oj8vwg6LTlRupgPUL6ynv8vqQle6abhwdPOI+UaZJ/ycfSw2K42ESPU+9IeI7yy5s3P93PhDPqNIM0Iwy55iE5jsCqkQzV45FcTqVWGmie0dmemDpU6Rjt3SWWvmD1OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779261942; c=relaxed/simple;
-	bh=IKekUUC9iK0RkUsRYaDXwZOyLabo8lJEQMFCNywYvmY=;
+	s=arc-20240116; t=1779265794; c=relaxed/simple;
+	bh=4dGHBUaC0lXk8XhGqBlJBgVqSawjCbWxlCP4Jnu68H8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B+Ptz/WBAbsTZckYnCMzfRQwBcalaRO7OrF68g0jbTVLmduzdN1PEhjZK/PYRV6dng+AoLNdeRieqdkCROdzFzue7lQfGWomzlz/tLRAIm+YtJ8ha8wuYJN0KsMJsM5cdo4ULvMVqwu0wOI1YCyA6lPrfhyqApMFZNR9of7tsgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XemDWMXv; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837541F00893;
-	Wed, 20 May 2026 07:25:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779261941;
-	bh=tDyqx151XYnh6CsWtMJuKL4bIM/vvrXsshPFIbTLDeE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=XemDWMXvAe0034jVFdHdnVxPz48ky+mESd2t2m7ebd9U8QHmdqkl914Mz7ddp5Qsm
-	 bvdR6/Mh/QiRiFJ/kFM9mGAOz+ePgDbunbAoG6pLWDxURzAirzkWTFpho8Rf/K50Mw
-	 KPjSqE4Xff7pmcJpEbEja/NxKmfTTz9H5SrqiYcjXuES/NmUIl71FYc01SeSKLQYIr
-	 mRJBK1HJjdcuWA/RhdGQieC3sBxFp1IhrYkAlLFimJykGgnujVpBjcPFPhJ10Ec4z8
-	 5oqVrGmdqnc/13c9zehqWH9A/9KUh2KXWs0FXYzRD0JBBk4hhpR/XxXh0eRwJDruip
-	 VzKXa5e06RF0Q==
-Message-ID: <dd058c86-35b7-4b95-a8ab-cb2f28237b6c@kernel.org>
-Date: Wed, 20 May 2026 16:25:37 +0900
+	 In-Reply-To:Content-Type; b=LVmi6uziFqLp81wkWNhabU7q4gnDH+Rfb270AcmiGVBR+NVy2lTyn50UohwzyJwn1DX/31re2+r45n9TcN7+I7jT82DAp0B5lqeU50Gaf2djb90EW0vdBzcpz3aJmX+A/smM40EZ62mx7TSQTdN7VD6nnpCMax+JkTxhVMe2N1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UGNcUCZ2; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3936b856-cf88-41a9-bb3f-4f48440e2692@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779265791;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cLY4P9cX/pTfkn1UIOKp2eNoI0Xihn/4il/vBJw2HU4=;
+	b=UGNcUCZ2pAW6+J0nsQcqj4+quri8tmEa5KgswvcVDemJr2H+oLBSo3wcPgrJyjutmKjbSu
+	2f2rhREO/K3Pw0OODn4sVIw4XKWSEPbqUC7I3T6aqlHqCY3HO5JqfA9GUvAkhvZJokIs5N
+	7ALh0q2qIzv3/mJKfKjksKQLQvr8skw=
+Date: Wed, 20 May 2026 16:29:40 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] memcg: int16_t for cached slab stats
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
- Alexandre Ghiti <alex@ghiti.fr>, Joshua Hahn <joshua.hahnjy@gmail.com>,
- Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel test robot <oliver.sang@intel.com>
-References: <20260520053123.2709959-1-shakeel.butt@linux.dev>
- <20260520053123.2709959-4-shakeel.butt@linux.dev>
+Subject: Re: [PATCH cgroup/for-next v2 0/5] cgroup/cpuset: Support multiple
+ source/destination cpusets for cpuset_*attach()
+To: Waiman Long <longman@redhat.com>, Chen Ridong
+ <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Aaron Tomlin <atomlin@atomlin.com>
+References: <20260516042448.698216-1-longman@redhat.com>
 Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260520053123.2709959-4-shakeel.butt@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ridong Chen <ridong.chen@linux.dev>
+In-Reply-To: <20260516042448.698216-1-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16118-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16119-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,linux.dev:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 9D9D7588EDB
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 893BC589E86
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
 
-On 5/20/26 2:31 PM, Shakeel Butt wrote:
-> Currently struct obj_stock_pcp stores cached slab stats in 'int' which
-> is 4 bytes per counter on 64-bit machines. Switch them to int16_t to
-> shrink the cached metadata.
+On 2026/5/16 12:24, Waiman Long wrote:
+> Sashiko AI review of another cpuset patch had found that cpuset_attach()
+> and cpuset_can_attach() can be passed a cgroup_taskset with tasks
+> migrating from one source cpuset to multiple destination cpusets and
+> vice versa.  Further testing of the cpuset code indicates that this is
+> indeed the case when the v2 cpuset controller is enabled or disabled.
 > 
-> The existing PAGE_SIZE flush in __account_obj_stock() bounds *bytes at
-> PAGE_SIZE on 4KiB and 16KiB page archs, well within int16_t. On 64KiB
-> pages PAGE_SIZE is well above S16_MAX so that flush never fires, and a
-> sufficiently long run of accumulations would overflow the cache. Add
-> an explicit S16_MAX guard before each add: when the next add would
-> push abs(*bytes) past S16_MAX, fold the cached value into @nr and
-> flush directly via mod_objcg_mlstate() before the accumulation.
+> Unfortunately, cpuset_attach() and cpuset_can_attach() still assume that
+> there will be one source and one destinaton cpuset which may result in
+> inocrrect behavior.
 > 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Tested-by: kernel test robot <oliver.sang@intel.com>
-> ---
 
-So arches with 64KiB sizes won't benefit from
+Hi Longman,
 
-"Even for large object >= PAGE_SIZE, the vmstat data will still be 
-cached locally at least once before pushing it out" case.
+I am thinking whether we can use the pids subsystem's approach to solve 
+this issue, which I think could be much simpler.
 
-But its benefit is questionable (to me), might be ok.
+For the DL task accounting, we can handle it the same way 
+pids_can_attach() does - just call task_cs(task) for each task 
+individually inside the can_attach() loop and do the nr_deadline_tasks 
+adjustment right there. This eliminates the need to pass per-task source 
+cpuset information to the attach() callback entirely for DL accounting 
+purposes.
 
->   mm/memcontrol.c | 16 +++++++++++++---
->   1 file changed, 13 insertions(+), 3 deletions(-)
+For cpuset_migrate_mm(), I don't think we need per-task oldcs storage in 
+task_struct either. The scenarios where multiple source cpusets are 
+involved are:
+
+enable cpuset controller: child cpusets inherit parent's effective_mems, 
+so attach_mems_updated is false and cpuset_migrate_mm() is never called.
+
+disable cpuset controller: tasks move from children to parent. Since 
+children's effective_mems is always a subset of parent's effective_mems, 
+even if cpuset_migrate_mm() is triggered, it's effectively a noop (no 
+pages need to move from a subset to its superset).
+
+cgroup.procs write with threads in different cpusets: this is a 
+many-to-one migration with a single process, so there is only one 
+group_leader and one mm. We only need to record the leader's oldcs, 
+which a single static variable can handle.
+
+So in all cases, the migration path only needs one oldcs for the leader. 
+We don't need to add a field to task_struct.
+
+What do you think?
+
+
+
+> This patch series is created to fix this issue. The first 2 patches are
+> just preparatory patches to make the remaining patches easier to review.
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b3d63d9f267c..1ed27fd06850 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3158,7 +3158,7 @@ static void __account_obj_stock(struct obj_cgroup *objcg,
->   				struct obj_stock_pcp *stock, int nr,
->   				struct pglist_data *pgdat, enum node_stat_item idx)
->   {
-> -	int *bytes;
-> +	int16_t *bytes;
->   
->   	/*
->   	 * Though at the moment MAX_NUMNODES <= 1024 in all archs but let's make
-> @@ -3195,6 +3195,16 @@ static void __account_obj_stock(struct obj_cgroup *objcg,
->   
->   	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
->   					       : &stock->nr_slab_unreclaimable_b;
-> +	/*
-> +	 * To avoid overflow or underflow, flush directly if accumulating @nr
-> +	 * would push the cached value past S16_MAX.
-> +	 */
-> +	if (abs(nr + *bytes) >= S16_MAX) {
-nit: should be > S16_MAX?
-
-> +		nr += *bytes;
-> +		*bytes = 0;
-> +		goto direct;
-> +	}
-> +
->   	/*
->   	 * Even for large object >= PAGE_SIZE, the vmstat data will still be
->   	 * cached locally at least once before pushing it out.
-
-FWIW:
-Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
+> Patch 3 adds a new attach_old_cs field into task_struct to track the
+> old cpuset to be used in case when cpuset_migrate_mm() needs to be
+> called in cpuset_attach().
+> 
+> Patch 4 moves mpol_rebind_mm() and cpuset_migrate_mm() inside
+> cpuset_attach_task() to make CLONE_INTO_CGROUP flag of clone(2) works
+> more like moving task from one cpuset to another one, while also make
+> supporting multiple source and destination cpusets easier.
+> 
+> Patch 5 makes the necessary changes to enable the support of multiple
+> source and destination cpusets by keeping all the source and destination
+> cpusets found during task iterations in two singly linked lists for
+> source and destination cpusets respectively.
+> 
+> Waiman Long (5):
+>    cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
+>    cgroup/cpuset: Expand the scope of cpuset_can_attach_check()
+>    cgroup/cpuset: Replace cpuset_attach_old_cs by a new attach_old_cs
+>      field in task_struct
+>    cgroup/cpuset: Move mpol_rebind_mm/cpuset_migrate_mm() calls inside
+>      cpuset_attach_task()
+>    cgroup/cpuset: Support multiple source/destination cpusets for
+>      cpuset_*attach()
+> 
+>   include/linux/sched.h           |   3 +
+>   kernel/cgroup/cpuset-internal.h |   6 +
+>   kernel/cgroup/cpuset.c          | 358 +++++++++++++++++++++-----------
+>   3 files changed, 249 insertions(+), 118 deletions(-)
+> 
 
 -- 
-Cheers,
-Harry / Hyeonggon
-
+Best regards,
+Ridong
 
