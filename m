@@ -1,180 +1,129 @@
-Return-Path: <cgroups+bounces-16122-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16123-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8Cn7CJGADWosyAUAu9opvQ
-	(envelope-from <cgroups+bounces-16122-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:36:17 +0200
+	id gKwDNLGFDWo8ygUAu9opvQ
+	(envelope-from <cgroups+bounces-16123-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:58:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10F758ADF2
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:36:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FDBD58B35A
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 11:58:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 14E5C301954A
-	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:35:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B7232303276A
+	for <lists+cgroups@lfdr.de>; Wed, 20 May 2026 09:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 606133C9EEF;
-	Wed, 20 May 2026 09:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AD23D16EC;
+	Wed, 20 May 2026 09:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GetjQ/uU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HlrnIGVf"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A910C3A4F51;
-	Wed, 20 May 2026 09:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81AE358363;
+	Wed, 20 May 2026 09:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779269738; cv=none; b=RUhQG8dXPnsMqwiWQ3Wfrm+9q+/H9URlWIvI7k6YZauK1xTao9wEQ0Vubw8L30vQIWlKPRNpivKOfaw8Ku6UTRiuD4Xtfoqc3gzbjMA1gwSb/N//MyTe+Kr7t+SGGgD3pR7Lery6xh9Oe6+2Yj2Tjk8WzRKTZFizZ2/tPWjMAIQ=
+	t=1779270747; cv=none; b=o36VZxedh2oLpDOr5ZDz6zVjpaRUqNthYEwke2nHt9ljEjdWzdq3WwTHvev/9Ikd9U43ZhzFywoFFCuJwC72uVAYgrSgkuuIn6Gt4mMEICre9AaJbIuAMxNnieGzIAzV/XINrCesg9DKLaKM6C8LTS9QkyNAp/sgRR7mq3YbE2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779269738; c=relaxed/simple;
-	bh=gPa4LfxMsVgEEYah2FCalbzmj6BE/lExGX0MWgsjCIk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ihUv6ws4jmO049yyDdaBMf+7MEOFn0X2iO/yKcekASD03eB3UnhDbPzfR904HZ/UQq9S/8Rn8vQJNq0NEf5SSvaArnevm68qTo+zM9UsLOp/42++gFCWKJMDLUQ7eXL3MQAnboU8rKkzB9DHVgZvoLzS3/fKj2P1AcU0ShFhsuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GetjQ/uU; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A48E41F000E9;
-	Wed, 20 May 2026 09:35:32 +0000 (UTC)
+	s=arc-20240116; t=1779270747; c=relaxed/simple;
+	bh=aFmAH3fj7VGX5PGKdCayjUDXHQ5zgyfD2+jqUXoGRsY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W49pjXvw2m8303BvJhqs4bWBHSxhynQBRlYwoV7t8Bi72Do3iwNP8z+DrrZcpDBAnD6OcZ356wT6Hz3gwzRocWyZLnjqftGdfMUUTT9Y30TVUQ+8wG0YVCzWOu2RQWrGE9RTo2xW1ZbX3gBIn6sbANepxZ3tHHC3aQloHnwhid4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HlrnIGVf; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 792091F000E9;
+	Wed, 20 May 2026 09:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779269735;
-	bh=cKQ8TEy4a/F3xgQZDjI4b33O37xBHC3B7sYri3TaWOE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=GetjQ/uUxGQgtxfzq+bLELhGxJlEL0BVV0+a8LUQgyPJ3AEyqrBND1etreZRkq8ZL
-	 20qfHoY1y4dT1DYsR8cp2k7AGGPczNbv0JeUp12TxGJZKXu6MFRZBU0P02+JUifixp
-	 bBaeGTe2q4gxahkVNvRP8alEP+x3AeFii0RE9Jj7Mq2UVfKJujaKIxy255sm7J6tps
-	 JeLYFmsmnoolpvXsYYrB09OcH266m9xHJKZUDlUH+gx/CsIlpX2OGd2RTfl46CCnNC
-	 WNnoGjWlEd0ZOj7v+FWkDSE2yR52+88zQf+z+jPHaBdYK9vplZwOu9BitMhaww8gTP
-	 nmEkJG02q872Q==
-Message-ID: <4e20f643-6983-4b6e-b12d-c6c4eb20ae0c@kernel.org>
-Date: Wed, 20 May 2026 18:35:30 +0900
+	s=k20260515; t=1779270746;
+	bh=SJETYFJkSCdwSSOgdJEmuUJWgEdHp6U1AWVfwQxLLkc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=HlrnIGVf6XsyMNZ/pPtkBiKeJMERcmBZFAMvEwErzc7/2e9rwW2EZ/YTNAmeIpAs+
+	 +y3bziJlpZAlBql2M61qmmo3Q9pJyFFHSfAohmYGwr299Yo6WZP5lXQGoHS+W3on/b
+	 gkWpV2sNBl2v5PicyBPWBGU5WAUgXgV7BYYOzv6YhpE2PVoPVFvP92jJ2kPaHrQFL+
+	 Cmx7x86DbVP27txLoxmcqX9nngTEs+JwBbkPTxF4VotikOsesmld0FX9O+u+Ok00Dv
+	 wAz/3gOQ6hr8o8w3VsHKN3feg1NKZ0Zdm5xuzPz5m6J/m+LLbOAXEJX8KvjayaW/Us
+	 YFHdiIuz3AWKQ==
+Date: Tue, 19 May 2026 23:52:25 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Qiliang Yuan <realwujing@gmail.com>
+Cc: Maarten Lankhorst <dev@lankhorst.se>,
+	Maxime Ripard <mripard@kernel.org>,
+	Natalie Vock <natalie.vock@gmx.de>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup/dmem: implement dmem.high soft limit and
+ throttling
+Message-ID: <ag2EWbmlWhK2a3zz@slm.duckdns.org>
+References: <20260520-feature-dmem-high-v1-1-97ca0cb7f95a@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] memcg: multi objcg charge support
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
- Alexandre Ghiti <alex@ghiti.fr>, Joshua Hahn <joshua.hahnjy@gmail.com>,
- Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel test robot <oliver.sang@intel.com>
-References: <20260520053123.2709959-1-shakeel.butt@linux.dev>
- <20260520053123.2709959-5-shakeel.butt@linux.dev>
-Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260520053123.2709959-5-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260520-feature-dmem-high-v1-1-97ca0cb7f95a@gmail.com>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16122-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[lankhorst.se,kernel.org,gmx.de,cmpxchg.org,suse.com,vger.kernel.org,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-16123-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,intel.com:email,linux.dev:email]
-X-Rspamd-Queue-Id: B10F758ADF2
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,slm.duckdns.org:mid]
+X-Rspamd-Queue-Id: 4FDBD58B35A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Hello,
 
+On Wed, May 20, 2026 at 02:07:20PM +0800, Qiliang Yuan wrote:
+...
+> This series introduces the "high" soft limit and associated task
+> throttling mechanism to the dmem cgroup v2 controller.
+> 
+> The device memory (VRAM) management currently only supports hard limits
+> (max), which leads to immediate allocation failures when reached. This
+> can be disruptive for GPU-bound AI workloads. By introducing a soft
+> limit, we allow cgroups to exceed their quota temporarily while
+> applying backpressure via task throttling before the process returns
+> to user space.
+> 
+> The mechanism is inspired by the memory cgroup's high limit:
+> - When usage > high, the task is marked with TIF_NOTIFY_RESUME.
+> - Upon returning to user space, it triggers a 100ms sleep.
+> - This provides a smoother over-subscription model for GPU resources.
 
-On 5/20/26 2:31 PM, Shakeel Butt wrote:
-> Commit 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg
-> per-node type") split a memcg's single obj_cgroup into one per NUMA
-> node so that reparenting LRU folios can take per-node lru locks. As a
-> side effect, the per-CPU obj_stock_pcp -- which caches exactly one
-> cached_objcg -- thrashes on workloads where threads of the same memcg
-> run on different NUMA nodes. The kernel test robot reported a 67.7%
-> regression on stress-ng.switch.ops_per_sec from this pattern.
-> 
-> Mirror the multi-slot pattern already used by memcg_stock_pcp: turn
-> nr_bytes and cached_objcg into NR_OBJ_STOCK-element arrays, scan all
-> slots on consume/refill/account, prefer empty slots when inserting,
-> and evict a random slot only when full. With multiple slots a CPU can
-> hold the per-node objcg variants of one memcg plus a few siblings
-> without ever forcing a drain.
-> 
-> A single int8_t index records which slot the cached slab stats belong
-> to; the stats are flushed on slot or pgdat change. With NR_OBJ_STOCK
-> = 5 the layout (verified with pahole) is:
-> 
->    offset 0  : lock(1) + index(1) + node_id(2) + slab stats(4) = 8B
->    offset 8  : nr_bytes[5]                                     = 10B
->    offset 18 : padding                                         = 6B
->    offset 24 : cached[5]                                       = 40B
->    offset 64 : (line 2) work_struct + flags (cold)
-> 
-> so consume_obj_stock, refill_obj_stock and the slab account path each
-> touch exactly one 64-byte cache line on non-debug 64-bit builds.
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202605121641.b6a60cb0-lkp@intel.com
-> Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Tested-by: kernel test robot <oliver.sang@intel.com>
-> ---
-> @@ -3350,19 +3405,45 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
->   		goto out;
->   	}
->   
-> -	stock_nr_bytes = stock->nr_bytes;
-> -	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
-> -		drain_obj_stock(stock);
-> +	for (i = 0; i < NR_OBJ_STOCK; ++i) {
-> +		struct obj_cgroup *cached = READ_ONCE(stock->cached[i]);
-> +
-> +		if (!cached) {
-> +			if (empty_slot == -1)
-> +				empty_slot = i;
-> +			continue;
-> +		}
-> +		if (cached == objcg) {
-> +			slot = i;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (slot == -1) {
-> +		slot = empty_slot;
-> +		if (slot == -1) {
-> +			slot = get_random_u32_below(NR_OBJ_STOCK);
+I'm not sure about complicating dmem control model without implementing
+reclaim. What are we slowing them down for if the only recovery action is
+killing them?
 
-It would break kmalloc_nolock() because _get_random_bytes() uses a 
-spinlock. perhaps prandom_u32_state() should be sufficient in this case.
-
-Is there a reason why it uses random eviction, unlike multi-memcg percpu 
-charge cache?
-
-Otherwise LGTM!
+Thanks.
 
 -- 
-Cheers,
-Harry / Hyeonggon
-
+tejun
 
