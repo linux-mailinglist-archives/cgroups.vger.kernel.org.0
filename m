@@ -1,174 +1,343 @@
-Return-Path: <cgroups+bounces-16150-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16151-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yMpLEpndDmoVCwYAu9opvQ
-	(envelope-from <cgroups+bounces-16150-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 12:25:29 +0200
+	id gAWDCwTaDmrPCgYAu9opvQ
+	(envelope-from <cgroups+bounces-16151-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 12:10:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E1FE5A3414
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 12:25:28 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96FAC5A2FD8
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 12:10:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 467BA321B56A
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 09:54:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1A2C330826C4
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 10:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2890D37F74B;
-	Thu, 21 May 2026 09:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B35637F01C;
+	Thu, 21 May 2026 10:08:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b="WO2Ax2Bn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KakhTu1D"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lankhorst.se (unknown [141.105.120.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC46E37F8DD;
-	Thu, 21 May 2026 09:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33E937F75E
+	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 10:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779357265; cv=none; b=VB+xPNfTlowAxvZxIJ0OmlSAp2J0cskMXLiaSGs7aZ0/ReDE0YiGjnBnD15C2DKHtHRBBUOIBzyoTiE+VZAEO8SSm7rQO9aWSzIa81N+DQwcw1ud29POxyJOVM2alWX0XOEu6oW/LUY6bacwQi7Vgd38w9lSBrxOKKZ8Xxndq2Q=
+	t=1779358096; cv=none; b=ubp+H4PFKb9A+tqb7yLLgRwUijA8FAX8s+bBBymDni0VPkD2METNB646QNLJLlY17s2f7b3jFQzNXhepgBgsc3GjRLmbBnU3o6NXh5SHeRJWE0EKAhLMDTspzVcD1qCz4BPTcbla0hcTgtoSUoZReGPWdhd+dpsjVA8pCc0c2Aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779357265; c=relaxed/simple;
-	bh=4isyDSU2yKa1nmv4Pvr9FM416ghQXAnaNHpmgxxin50=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gkrV2y3HrfrOPu0vHFSynx7LK5nQWRwYEIcDLfFTbwSKoEyVbOwqAlx9EBntKo2AlxiGQStjpev2AMVg1Lh13s5BLFfzPGp/MzFz/E/aOT+u4MfqoNRw9mQI4M72TP1BDjTaOePfiPAKcMxNx3aM1LJxl3tbhIgI1krjYdwN5FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b=WO2Ax2Bn; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lankhorst.se;
-	s=default; t=1779356756;
-	bh=4isyDSU2yKa1nmv4Pvr9FM416ghQXAnaNHpmgxxin50=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=WO2Ax2BnzpAIfdf9+avS8EvsulN1b3fhEzPLipJmppmnT95ZDOg4H96OfW4MBtbBs
-	 yk5Pr9Q1HF+nvyQSqDZOagUZEqEbVI/Z3mXH1Fvd2TTfY5F5V8K59eu9ENhDjUsS3g
-	 ZuhyuRNVSOfqmzrVUyd7eaFrJn8xKoTl1VlVh9ARPjYMhJn5q1yn+riNXMJPxS8UlY
-	 SoKNjXivMxxFNz73HjZVT3nkUWR/x4xzut1Si9Edv3yD8PKy34vc5dR7yET19w1dKV
-	 57Uojx9JgT8Pj6tfUlFoUwmTLfkkG21yk2D+765J4RwL+TCGNNpDhBSZjsBUWzwfM5
-	 toF1Dk77lk4Tg==
-Message-ID: <63878874-39d2-43d5-9fc3-68addf9ebbdd@lankhorst.se>
-Date: Thu, 21 May 2026 11:45:50 +0200
+	s=arc-20240116; t=1779358096; c=relaxed/simple;
+	bh=tKUxhJa+uUJODYZnNbJj7KNXf7X6X96OumM5eiH5DSE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=r5SQVPxTJ1abtvZFgWSxBVr3KivKPz9CyyXn4WE6HbFbaIZVbfqqgm2H608prlcJvGbLwhF0tcYEi4HeDmGg9QMnlMPG+lLHFYLeUr6RkbGgAtMsP2alLvWdf6UJ2gEgpsEWj8RYXqQevQqVS2MVgE04KYYDSA2TBHIHQT+3+7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KakhTu1D; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779358094; x=1810894094;
+  h=date:from:to:cc:subject:message-id;
+  bh=tKUxhJa+uUJODYZnNbJj7KNXf7X6X96OumM5eiH5DSE=;
+  b=KakhTu1DS2kN827RqiMXz9V4gvf/r0/IsojEegrCVQv5FIqRHT1KqlR/
+   jFce9XWhYwUfsi+jx4lTPpC0zcusj8jG528W57PIuixbOm6J0cTCwhuRS
+   9apjtkp1tvtO3OHL3mNqUdpylTK0xENO4T+YTD4//57qM1OSdIE7VzYJN
+   qgqEYNxUXbErNDGdlb98mIn+i9A0h8KKfUeDK9MPYCOUbcIrNs5kSFLL1
+   DTPMZ8W8HM5S2LP7RFtBGe9PR9VqbhndjJQuFjzM4h5nkTk6yoR5Dm3zx
+   LwBlaBJrKqtv17AtSj0gA4XZMGzpFLYRQ7/p/54+mt6j1CiK+JHW/DmeC
+   Q==;
+X-CSE-ConnectionGUID: sPqMYs+qQliWvLdsd/yHDg==
+X-CSE-MsgGUID: Z/KC2Y7cSMWDBydXKiLegw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11792"; a="79422762"
+X-IronPort-AV: E=Sophos;i="6.23,246,1770624000"; 
+   d="scan'208";a="79422762"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2026 03:08:10 -0700
+X-CSE-ConnectionGUID: lboLUm11RPOin+ZwwlfHsw==
+X-CSE-MsgGUID: CHmthdxaSp22yPZ+nILdZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,246,1770624000"; 
+   d="scan'208";a="237886982"
+Received: from lkp-server01.sh.intel.com (HELO fdb68b0ce653) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 21 May 2026 03:08:08 -0700
+Received: from kbuild by fdb68b0ce653 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wQ0Jy-00000000053-01Ex;
+	Thu, 21 May 2026 10:08:06 +0000
+Date: Thu, 21 May 2026 18:07:52 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 936f0880adaf8edab431e64503a5686a8d79e54e
+Message-ID: <202605211844.ooXeT9F8-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/dmem: implement dmem.high soft limit and
- throttling
-To: Qiliang Yuan <realwujing@gmail.com>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20260520-feature-dmem-high-v1-1-97ca0cb7f95a@gmail.com>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <20260520-feature-dmem-high-v1-1-97ca0cb7f95a@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[lankhorst.se,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[lankhorst.se:s=default];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16150-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,kernel.org,gmx.de,cmpxchg.org,suse.com];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[lankhorst.se:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16151-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev@lankhorst.se,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.de:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:email]
-X-Rspamd-Queue-Id: 9E1FE5A3414
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,intel.com:mid,intel.com:dkim]
+X-Rspamd-Queue-Id: 96FAC5A2FD8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello Qiliang,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 936f0880adaf8edab431e64503a5686a8d79e54e  Merge branch 'for-7.1-fixes' into for-next
 
-Den 2026-05-20 kl. 08:07, skrev Qiliang Yuan:
-> Introduce the "high" soft limit for the dmem cgroup v2 controller.
-> When a cgroup's device memory usage exceeds its high limit, tasks
-> belonging to that cgroup are throttled by being forced into a sleep
-> before returning to user space, instead of being failed outright
-> as with the "max" limit.
-> 
-> Key changes:
-> - Add high counter configuration to dmem_cgroup_pool.
-> - Add over-high check in the try_charge path and set TIF_NOTIFY_RESUME.
-> - Inject the dmem throttling handler into resume_user_mode_work.
-> - Implement the handler to perform a 100ms interruptible sleep for
->   over-limit tasks.
-> 
-> This mechanism provides smoother over-subscription support for device
-> memory resources.
-> 
-> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
-> ---
-> This series introduces the "high" soft limit and associated task
-> throttling mechanism to the dmem cgroup v2 controller.
-> 
-> The device memory (VRAM) management currently only supports hard limits
-> (max), which leads to immediate allocation failures when reached. This
-> can be disruptive for GPU-bound AI workloads. By introducing a soft
-> limit, we allow cgroups to exceed their quota temporarily while
-> applying backpressure via task throttling before the process returns
-> to user space.
-> 
-> The mechanism is inspired by the memory cgroup's high limit:
-> - When usage > high, the task is marked with TIF_NOTIFY_RESUME.
-> - Upon returning to user space, it triggers a 100ms sleep.
-> - This provides a smoother over-subscription model for GPU resources.
-> 
-> Qiliang Yuan (1):
-> 
-> cgroup/dmem: implement dmem.high soft limit and throttling
-> ---
-> To: Maarten Lankhorst <dev@lankhorst.se>
-> To: Maxime Ripard <mripard@kernel.org>
-> To: Natalie Vock <natalie.vock@gmx.de>
-> To: Tejun Heo <tj@kernel.org>
-> To: Johannes Weiner <hannes@cmpxchg.org>
-> To: Michal Koutný <mkoutny@suse.com>
-> Cc: cgroups@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
+elapsed time: 854m
 
-I think the concept of allowing userspace to throttle on high
-is interesting.
+configs tested: 218
+configs skipped: 3
 
-It's the approach I'm more worried about. I believe that it's
-better if we punish exceeding their high limit by preferentially
-evicting those.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-It would make eviction run in 3 passes on the affected cgroup tree:
-- Round 1: Clients above their 'high' limit
-- Round 2: Clients above their 'low/min' limits
-- Round 3: Clients at or below their 'low' limit
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    clang-16
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    clang-23
+arc                              allyesconfig    gcc-15.2.0
+arc                                 defconfig    gcc-15.2.0
+arc                   randconfig-001-20260521    gcc-8.5.0
+arc                   randconfig-002-20260521    gcc-8.5.0
+arm                               allnoconfig    clang-23
+arm                               allnoconfig    gcc-15.2.0
+arm                              allyesconfig    clang-16
+arm                              allyesconfig    gcc-15.2.0
+arm                                 defconfig    gcc-15.2.0
+arm                      footbridge_defconfig    clang-17
+arm                   randconfig-001-20260521    gcc-8.5.0
+arm                   randconfig-002-20260521    gcc-8.5.0
+arm                   randconfig-003-20260521    gcc-8.5.0
+arm                   randconfig-004-20260521    gcc-8.5.0
+arm64                            allmodconfig    clang-19
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-15.2.0
+arm64                               defconfig    gcc-15.2.0
+arm64                 randconfig-001-20260521    gcc-8.5.0
+arm64                 randconfig-002-20260521    gcc-8.5.0
+arm64                 randconfig-003-20260521    gcc-8.5.0
+arm64                 randconfig-004-20260521    gcc-8.5.0
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                  randconfig-001-20260521    gcc-8.5.0
+csky                  randconfig-002-20260521    gcc-8.5.0
+hexagon                          allmodconfig    clang-17
+hexagon                          allmodconfig    gcc-15.2.0
+hexagon                           allnoconfig    clang-23
+hexagon                           allnoconfig    gcc-15.2.0
+hexagon                             defconfig    gcc-15.2.0
+hexagon               randconfig-001-20260521    gcc-11.5.0
+hexagon               randconfig-002-20260521    gcc-11.5.0
+i386                             allmodconfig    clang-20
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                              allnoconfig    gcc-15.2.0
+i386                             allyesconfig    clang-20
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20260521    clang-20
+i386        buildonly-randconfig-002-20260521    clang-20
+i386        buildonly-randconfig-003-20260521    clang-20
+i386        buildonly-randconfig-004-20260521    clang-20
+i386        buildonly-randconfig-005-20260521    clang-20
+i386        buildonly-randconfig-006-20260521    clang-20
+i386                                defconfig    gcc-15.2.0
+i386                  randconfig-001-20260521    clang-20
+i386                  randconfig-002-20260521    clang-20
+i386                  randconfig-003-20260521    clang-20
+i386                  randconfig-004-20260521    clang-20
+i386                  randconfig-005-20260521    clang-20
+i386                  randconfig-006-20260521    clang-20
+i386                  randconfig-007-20260521    clang-20
+i386                  randconfig-011-20260521    gcc-14
+i386                  randconfig-012-20260521    gcc-14
+i386                  randconfig-013-20260521    gcc-14
+i386                  randconfig-014-20260521    gcc-14
+i386                  randconfig-015-20260521    gcc-14
+i386                  randconfig-016-20260521    gcc-14
+i386                  randconfig-017-20260521    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                        allmodconfig    clang-23
+loongarch                         allnoconfig    clang-23
+loongarch                         allnoconfig    gcc-15.2.0
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260521    gcc-11.5.0
+loongarch             randconfig-002-20260521    gcc-11.5.0
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    clang-16
+m68k                             allyesconfig    gcc-15.2.0
+m68k                                defconfig    clang-19
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    clang-19
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+mips                         rt305x_defconfig    clang-23
+nios2                            allmodconfig    clang-23
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    clang-23
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    clang-19
+nios2                 randconfig-001-20260521    gcc-11.5.0
+nios2                 randconfig-002-20260521    gcc-11.5.0
+openrisc                         allmodconfig    clang-23
+openrisc                         allmodconfig    gcc-15.2.0
+openrisc                          allnoconfig    clang-23
+openrisc                          allnoconfig    gcc-15.2.0
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    clang-23
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    clang-19
+parisc                           allyesconfig    gcc-15.2.0
+parisc                              defconfig    gcc-15.2.0
+parisc                randconfig-001-20260521    gcc-12.5.0
+parisc                randconfig-002-20260521    gcc-12.5.0
+parisc64                            defconfig    clang-19
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    clang-23
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc                      mgcoge_defconfig    clang-23
+powerpc                 mpc837x_rdb_defconfig    gcc-15.2.0
+powerpc               randconfig-001-20260521    gcc-12.5.0
+powerpc               randconfig-002-20260521    gcc-12.5.0
+powerpc                    sam440ep_defconfig    gcc-15.2.0
+powerpc64             randconfig-001-20260521    gcc-12.5.0
+powerpc64             randconfig-002-20260521    gcc-12.5.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    clang-23
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    gcc-15.2.0
+riscv                          randconfig-001    gcc-15.2.0
+riscv                 randconfig-001-20260521    gcc-15.2.0
+riscv                          randconfig-002    gcc-15.2.0
+riscv                 randconfig-002-20260521    gcc-15.2.0
+s390                             allmodconfig    clang-18
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    gcc-15.2.0
+s390                           randconfig-001    gcc-15.2.0
+s390                  randconfig-001-20260521    gcc-15.2.0
+s390                           randconfig-002    gcc-15.2.0
+s390                  randconfig-002-20260521    gcc-15.2.0
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    clang-23
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    clang-19
+sh                               allyesconfig    gcc-15.2.0
+sh                                  defconfig    gcc-14
+sh                             randconfig-001    gcc-15.2.0
+sh                    randconfig-001-20260521    gcc-15.2.0
+sh                             randconfig-002    gcc-15.2.0
+sh                    randconfig-002-20260521    gcc-15.2.0
+sparc                             allnoconfig    clang-23
+sparc                             allnoconfig    gcc-15.2.0
+sparc                               defconfig    gcc-15.2.0
+sparc                 randconfig-001-20260521    gcc-8.5.0
+sparc                 randconfig-002-20260521    gcc-8.5.0
+sparc64                          allmodconfig    clang-23
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20260521    gcc-8.5.0
+sparc64               randconfig-002-20260521    gcc-8.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-14
+um                               allyesconfig    gcc-15.2.0
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260521    gcc-8.5.0
+um                    randconfig-002-20260521    gcc-8.5.0
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-20
+x86_64                            allnoconfig    clang-23
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260521    clang-20
+x86_64      buildonly-randconfig-002-20260521    clang-20
+x86_64      buildonly-randconfig-003-20260521    clang-20
+x86_64      buildonly-randconfig-004-20260521    clang-20
+x86_64      buildonly-randconfig-005-20260521    clang-20
+x86_64      buildonly-randconfig-006-20260521    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20260521    clang-20
+x86_64                randconfig-002-20260521    clang-20
+x86_64                randconfig-003-20260521    clang-20
+x86_64                randconfig-004-20260521    clang-20
+x86_64                randconfig-005-20260521    clang-20
+x86_64                randconfig-006-20260521    clang-20
+x86_64                         randconfig-011    gcc-14
+x86_64                randconfig-011-20260521    gcc-14
+x86_64                         randconfig-012    gcc-14
+x86_64                randconfig-012-20260521    gcc-14
+x86_64                         randconfig-013    gcc-14
+x86_64                randconfig-013-20260521    gcc-14
+x86_64                         randconfig-014    gcc-14
+x86_64                randconfig-014-20260521    gcc-14
+x86_64                         randconfig-015    gcc-14
+x86_64                randconfig-015-20260521    gcc-14
+x86_64                         randconfig-016    gcc-14
+x86_64                randconfig-016-20260521    gcc-14
+x86_64                         randconfig-071    clang-20
+x86_64                randconfig-071-20260521    clang-20
+x86_64                         randconfig-072    clang-20
+x86_64                randconfig-072-20260521    clang-20
+x86_64                         randconfig-073    clang-20
+x86_64                randconfig-073-20260521    clang-20
+x86_64                         randconfig-074    clang-20
+x86_64                randconfig-074-20260521    clang-20
+x86_64                         randconfig-075    clang-20
+x86_64                randconfig-075-20260521    clang-20
+x86_64                         randconfig-076    clang-20
+x86_64                randconfig-076-20260521    clang-20
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    clang-23
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                           allyesconfig    clang-23
+xtensa                randconfig-001-20260521    gcc-8.5.0
+xtensa                randconfig-002-20260521    gcc-8.5.0
 
-And the same client's cgroup, below 'min' limit as well.
-
-I'm open for other ideas as well. Perhaps a flag that would allow
-allocation or binding to an address space to fail if it would need
-to evict, or a notification sent to the affected client that they
-went over high.
-
-Have you tried any other approaches before this one?
-
-Kind regards,
-~Maarten Lankhorst
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
