@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-16166-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16167-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QI3nDnotD2r+HQYAu9opvQ
-	(envelope-from <cgroups+bounces-16166-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 18:06:18 +0200
+	id AJyXIUcnD2paGgYAu9opvQ
+	(envelope-from <cgroups+bounces-16167-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 17:39:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 859AC5A8E02
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 18:06:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01A1F5A8812
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 17:39:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BFCDD33AD56D
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 15:05:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1C0CF36A88E7
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 15:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C987C364E81;
-	Thu, 21 May 2026 15:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEAC63672A9;
+	Thu, 21 May 2026 15:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="MPLRq5Vc"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="gNbx8Jg0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DF9332EBC
-	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 15:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5273655C4
+	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 15:03:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779375826; cv=none; b=KeTT5kRoQ2Pzmf6T/DwqMvTqlNeaNHFhkGQOmvxsv1LjYjqylI/x+iPUB9ShtpxE+MPEuNI6ms3BQNkT4p/r/+A8O9WGPBzsDcvkzGj7j0n+6BJtw7FHzmJN6rHaUu794PEfuzOdFS39MdZBX28QhlivQTmNn9YTzqAJ35syMVg=
+	t=1779375828; cv=none; b=omct5y4DTaUMbEDd5BuTovmVLYJNlgtTMaYDo66XGOECCGc1l1mng2tbjP6d1RAlaObcPa8Tm557QqNSmKh0Lov27PrUWt86y6hOUMUADxwBzzUNHKkxhr7wNMpZ6Y578kUhipNsQSR8tsc/42nlJjFIIRn14Ru1xsl54esGf9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779375826; c=relaxed/simple;
-	bh=U8Z3an3hNgZrCxyekQRPWZceUjB6u0warXZQZI9zDco=;
+	s=arc-20240116; t=1779375828; c=relaxed/simple;
+	bh=7vbHWCiV+CF1x1UjKtGMwHGjchNHDlG16hVGTCF4ge0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TKCnS+GfcJxFgecIEs26spyPzr3t8opb5dVlaBpyt1ifjfJyD1sJhYqm4PGQtSmfK8YR0wvZcGP10vUcvG9E5gnWcAwrjWyG7FmKng/RiXLVgoeAx4eDLgKMZzB0nbV+2yJn0OwMdK2BURQq7dxdz8UKYjGHVcyrsZofexe0Amo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=MPLRq5Vc; arc=none smtp.client-ip=209.85.167.174
+	 MIME-Version; b=lcN1sg25/FUdMZA90z5kfXbDCP3257D8UBw61DeyBYujhIgHv1U2toARSYv/2Arwd850tEgvvkd7ANbcnqiLjTvHU8CVORlZ70CGeU9zJU7N/ZVcxQZi/OcBtz6wxJAUXym+MeTTmKYGAhCaYOuiZKDUtYxtT0qdn2c+tbIMTQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=gNbx8Jg0; arc=none smtp.client-ip=209.85.160.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-484d3c0855aso2439978b6e.3
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2026 08:03:45 -0700 (PDT)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-516cc5471bdso6790941cf.2
+        for <cgroups@vger.kernel.org>; Thu, 21 May 2026 08:03:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1779375824; x=1779980624; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1779375826; x=1779980626; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1cbAO2KW+lIj5NuloFoDpyrLcHnbVUzz5CiT+zyYy0s=;
-        b=MPLRq5Vcn/sK/aXPgD0CaHvegRRF9M1+l6r0nhCwNEvOD9feeAEykYn1oixuTqPTH5
-         BLplBfvM0g/y/PrmXWRgraUG/7uslPVrpAoauviD0iQjAO20owdE44O/3Peczfyk7yRG
-         E17LbfVG+8AwU7wLlDpTRzKHddUYIlXSI36UBxyCyNxTeL1DBqHAgbTVlw+h1YmgUx3+
-         YpvsIR5bgt3OHUyVXRhck7Sf/RuTURNQ/uAEHML9mK4VLN0b0uJo8iy1gD27ybn2HwXU
-         izgu3Erd4l5jS3zsNOPp/EzMw3YpnVEG+45F0ximUypIFk4hH/M9zZhennlZFeD6qsP+
-         2iBg==
+        bh=Vn9mXwqyXlTnHz6VCNHiXrEOY97snOle2kaY6Iy8PrM=;
+        b=gNbx8Jg0alMVz9JNUPXbPoGIZ3SHR5Jro41ueL12iC3N0cugFsxoj5gN15arKmwObG
+         DQZ5cBwNdLrzKbY4YOivqpHx7Qq1PIJ/kpKAy+2Gp53pkyLitjiafP0ggaEjs2q2hrQS
+         fDlTiBKyDN4zweU4Sap6EkZL60Z6Dd1HxUJe3NXLvmQOgrXwv5S1/kfdtfScRQ7SJpqD
+         scVUjeKp8cAhSRUhHAg512oQ4TDei0NX7gXEV+ZY/TUSpCuRAaey3+x2jKC1xrmBBjT1
+         N1SEIlEtbN832hogAMHA+pxWy2JLVfzYNnfE06YwDBULRtBAXIaXc/9R0927RfDffuNi
+         49wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779375824; x=1779980624;
+        d=1e100.net; s=20251104; t=1779375826; x=1779980626;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=1cbAO2KW+lIj5NuloFoDpyrLcHnbVUzz5CiT+zyYy0s=;
-        b=jyAM1GkpEchCxSqKxh2ZKQ5T6NQAsV3cXxsl8GJdN0ULsCTR39TpDuyl5Zb7+hTRBB
-         723kEsG8q7nZwAcjOXa72pquNCtsEj2a/xWabeNCmh+yeURdKrDcSlHN9Y8EW08vorsu
-         NVdOBPeAmh9J+9vKx92R57v4DVkU7XIHvP6qFxlX4lvJPuZ7EFPSWvmvHCpNpe2OKmGH
-         ZSkEtMZBbR6kL6jWT4iv7g+WRbDlYAcpIVYEDjQtXrNFbGrKfbz0aXVpNfH2ykaoUcrh
-         b/QC9FUcUjvarnyRfK7UGHRGUimCbY1zeH+Ws3w/4wLabUtUb3+Smh8v5j6Rfcpc/6/G
-         Olpg==
-X-Forwarded-Encrypted: i=1; AFNElJ+ZyUxX4vIK2S8sprXaUmMIcdCcpeKhtbUDFXMHQzmNPAPoadrKVgJhQ9h0Zj4MMsZgHrc7jQCh@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9HZ4bPw52kj+Pn1b3tiJjbuVyNTKkFkrsHAijnz0nXAxCz3cE
-	Mxb3BkZZuhfIFfcBhBCc9bYopQQtv7HjB2eZeC/QLLCKIe8p8x92bBq7HZmYe0hN1FY=
-X-Gm-Gg: Acq92OHDAinRcwd8MZfiSyMiygy1Il14zwNzHBZb8XRlsg2BJJwmUXabeTUT+dJfn/E
-	Eg0r9UZi+EbAbIrYl/7E60bdXeg+AhmTq1JF3hA7lmLW75GQuaaoqESc7CxHmx/5a9yTt7m5YEJ
-	/s9hEqD5lEZXm8nyclqfXoZX9A2RqY0wiSe6nIRrMwkILfipuKudicCDbuIvVp6TzXZFkrDzzhO
-	0ti56y1REQD++/j68dM8dFmQZMJjX7iK1nWa50o6THEZcH/Kxcnv83itOZ1NHX8huqh10odegX8
-	wa2fLTR8RK1vqsdZy09FD3cPfDLKdlxSl3ZpagzEdnUpQiuXE/qj48mRKOsH4nRTnq+PSNB0FNx
-	ybmE7vHVUt5ohZTmeu8YbKogjDNk4YaE3wcyLu1RoE36ZMeAG1XT5xTAVs8kKoZX204Q355S9lM
-	NkhjCNUATpSoIoGFXiKaF3Qw==
-X-Received: by 2002:a05:6808:2221:b0:467:1941:1f0d with SMTP id 5614622812f47-4852eb590aemr1685571b6e.11.1779375823781;
-        Thu, 21 May 2026 08:03:43 -0700 (PDT)
+        bh=Vn9mXwqyXlTnHz6VCNHiXrEOY97snOle2kaY6Iy8PrM=;
+        b=pLwk6l02svn/Z1V/kHNyouMTMJjtQtgR1YYn0RZqInw3FQDJAkgDDFJatgpofIMz2E
+         9QnkdOgL+HKjoi/Kq4a7Lqv1dwyJSa8Ht9MExNtBCQ+wtDdaS+iI+UBInLGv60GGe65I
+         oy8BNI7WveOpbBOFpO4TbwGjuAVMQbcaBLoWKmw+92Mj36FP26qVfpZHjeS4mMQUYPnk
+         exobfIuUS6gHWtdOLXxCkJzMhw+6osv7g23XIZSI4+vgPjlIJ75yif0VGbIqjsZdUCYI
+         97GYNjqO9E3EPcsalVn5ZhfRNdqjRoKaVUmS5GSVDQVEUzvPBm8HXJVUmWLxrOdYKgfR
+         thfA==
+X-Forwarded-Encrypted: i=1; AFNElJ+86TGjeUGi3Eh+ngYWGNO/bFf8BITrOlrSMVnzgJnaowHLalQRq9X4Nq5pT3qpRZIWR3f2prX2@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOaje+K/C2GrGiyDH/j5l0ifr57U6mOXQVay5Gk4laKwU2MEnz
+	OMp6NOAIacTDTchxh9ln9W6w8YVMHhiG4jgTwrQpH9nXquLWbaomHoQNGLa1FvlO6x4=
+X-Gm-Gg: Acq92OGHCXnsHSWr/cuVRBu2sjA4qt6bLLuHo0tPXJYhT/sJarZSLBXn5r0RnHw1lfK
+	nKcCt2Y8fI96WHyNFjygJ/uaBx6ODq01fOnpyDJ+rwMcT7bb6avsjWvYDGxoHcFg74fKygu6FF+
+	mJwz6FNuo7IyqOaCSoBRIh2uL/zwMgZVqomQpiKLkMZPUgP8ODRcMNsgwi8YjdeShNpUQigpMFr
+	uqYsEZVn6yL1G3a5o5PEM577fKY/y2w/Blnctj/IHd/38hsrYhbg3sUb8pj3fMp5kPhWyfJ032C
+	MwMn611xQ0N+rF2gixEAoK+g7q+fpDoZGkQbhsQ4ebli7YCBsThD3CfDcr89sosRH8dHG0+iE5B
+	5C0koEFy/SlPRgkINKZ3d6WEOeem8Rz0gMreH8w7gsTX7IQ7qPjJ/eyKYgTpcFQi4vj4J3fOJZF
+	TBAX4NcM/61O4R9ntqWPhUsQ==
+X-Received: by 2002:a05:622a:4296:b0:4f1:ab79:fb18 with SMTP id d75a77b69052e-516c54e89a9mr45144641cf.25.1779375825779;
+        Thu, 21 May 2026 08:03:45 -0700 (PDT)
 Received: from localhost ([2603:7001:f100:500:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-516cce102f7sm8647231cf.22.2026.05.21.08.03.42
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-516cce01aafsm8868781cf.21.2026.05.21.08.03.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2026 08:03:42 -0700 (PDT)
+        Thu, 21 May 2026 08:03:44 -0700 (PDT)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,9 +104,9 @@ Cc: David Hildenbrand <david@kernel.org>,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/8] mm: list_lru: lock_list_lru_of_memcg() cannot return NULL if !skip_empty
-Date: Thu, 21 May 2026 11:02:07 -0400
-Message-ID: <20260521150330.1955924-2-hannes@cmpxchg.org>
+Subject: [PATCH v4 2/8] mm: list_lru: deduplicate unlock_list_lru()
+Date: Thu, 21 May 2026 11:02:08 -0400
+Message-ID: <20260521150330.1955924-3-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260521150330.1955924-1-hannes@cmpxchg.org>
 References: <20260521150330.1955924-1-hannes@cmpxchg.org>
@@ -123,20 +123,19 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
 	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16166-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[27];
 	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
+	TAGGED_FROM(0.00)[bounces-16167-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	SUBJECT_HAS_EXCLAIM(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -144,53 +143,85 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:email]
-X-Rspamd-Queue-Id: 859AC5A8E02
+	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,cmpxchg.org:mid,cmpxchg.org:dkim,linux.dev:email]
+X-Rspamd-Queue-Id: 01A1F5A8812
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-skip_empty is only for the shrinker to abort and skip a list that's
-empty or whose cgroup is being deleted.
-
-For list additions and deletions, the cgroup hierarchy is walked
-upwards until a valid list_lru head is found, or it will fall back to
-the node list. Acquiring the lock won't fail. Remove the NULL checks
-in those callers.
+The MEMCG and !MEMCG variants are the same. lock_list_lru() has the
+same pattern when bailing. Consolidate into a common implementation.
 
 Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/list_lru.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ mm/list_lru.c | 29 +++++++++--------------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
 diff --git a/mm/list_lru.c b/mm/list_lru.c
-index dd29bcf8eb5f..d3619961a7ac 100644
+index d3619961a7ac..9a68177619bf 100644
 --- a/mm/list_lru.c
 +++ b/mm/list_lru.c
-@@ -165,8 +165,6 @@ bool list_lru_add(struct list_lru *lru, struct list_head *item, int nid,
- 	struct list_lru_one *l;
+@@ -15,6 +15,14 @@
+ #include "slab.h"
+ #include "internal.h"
  
- 	l = lock_list_lru_of_memcg(lru, nid, memcg, false, false);
--	if (!l)
--		return false;
- 	if (list_empty(item)) {
- 		list_add_tail(item, &l->list);
- 		/* Set shrinker bit if the first element was added */
-@@ -204,9 +202,8 @@ bool list_lru_del(struct list_lru *lru, struct list_head *item, int nid,
- {
- 	struct list_lru_node *nlru = &lru->node[nid];
- 	struct list_lru_one *l;
++static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
++{
++	if (irq_off)
++		spin_unlock_irq(&l->lock);
++	else
++		spin_unlock(&l->lock);
++}
 +
- 	l = lock_list_lru_of_memcg(lru, nid, memcg, false, false);
--	if (!l)
--		return false;
- 	if (!list_empty(item)) {
- 		list_del_init(item);
- 		l->nr_items--;
+ #ifdef CONFIG_MEMCG
+ static LIST_HEAD(memcg_list_lrus);
+ static DEFINE_MUTEX(list_lrus_mutex);
+@@ -67,10 +75,7 @@ static inline bool lock_list_lru(struct list_lru_one *l, bool irq)
+ 	else
+ 		spin_lock(&l->lock);
+ 	if (unlikely(READ_ONCE(l->nr_items) == LONG_MIN)) {
+-		if (irq)
+-			spin_unlock_irq(&l->lock);
+-		else
+-			spin_unlock(&l->lock);
++		unlock_list_lru(l, irq);
+ 		return false;
+ 	}
+ 	return true;
+@@ -101,14 +106,6 @@ lock_list_lru_of_memcg(struct list_lru *lru, int nid, struct mem_cgroup *memcg,
+ 	memcg = parent_mem_cgroup(memcg);
+ 	goto again;
+ }
+-
+-static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
+-{
+-	if (irq_off)
+-		spin_unlock_irq(&l->lock);
+-	else
+-		spin_unlock(&l->lock);
+-}
+ #else
+ static void list_lru_register(struct list_lru *lru)
+ {
+@@ -147,14 +144,6 @@ lock_list_lru_of_memcg(struct list_lru *lru, int nid, struct mem_cgroup *memcg,
+ 
+ 	return l;
+ }
+-
+-static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
+-{
+-	if (irq_off)
+-		spin_unlock_irq(&l->lock);
+-	else
+-		spin_unlock(&l->lock);
+-}
+ #endif /* CONFIG_MEMCG */
+ 
+ /* The caller must ensure the memcg lifetime. */
 -- 
 2.54.0
 
