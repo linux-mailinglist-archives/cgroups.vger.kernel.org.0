@@ -1,244 +1,237 @@
-Return-Path: <cgroups+bounces-16143-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16144-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iFtxADiADmqp/AUAu9opvQ
-	(envelope-from <cgroups+bounces-16143-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 05:47:04 +0200
+	id GKY3ACuQDmqt/wUAu9opvQ
+	(envelope-from <cgroups+bounces-16144-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 06:55:07 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547F859E8BB
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 05:47:03 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93AD859EE71
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 06:55:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 74C07301A720
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 03:46:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DEBE83026240
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 04:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33B92D5937;
-	Thu, 21 May 2026 03:46:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98DC2336882;
+	Thu, 21 May 2026 04:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B4g4Mxuu"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="fNteNa3d";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="lsG9Q/EY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03FFE16DC28
-	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 03:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779335169; cv=none; b=DzQ0BZRpKT+VkyUetVYH1cORVr/LEPYQrbwQPp1T6nDOrNO5/ZUnrwwGyxBxIM2b0NxDJHMA2H8wPEPnbzhZJqDr6bRfyr2n2unAluaSL4mXiQUNj/vyCNzgZPzjOPTySu0AX+/yQV9NWXkzSRmtBRCJj/5Mw52M0mqyp7hYVH0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779335169; c=relaxed/simple;
-	bh=bopuXWm9olVJHXpLu1DG1Qyl7MHDKEjinXkMh4Vre9g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nyK2KtPm+1zHw8cuHGLdtp2y5KARbps3YRkXi/3LIwGNC39r1OBKinpv/2DqwtXGhqjoAEDN65yCVypxwkOyGASETDQCgFdN34n0vbdoMbNPB2RuOjxopH1G51LVwh7XpfuxCzHREUac+sfVHb4K3Q+ULrQrckxgf2mQamOyUlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B4g4Mxuu; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-7dcdd1b492eso5709845a34.1
-        for <cgroups@vger.kernel.org>; Wed, 20 May 2026 20:46:07 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AB03101B6;
+	Thu, 21 May 2026 04:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.141
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779339302; cv=fail; b=cP0XRmneDqC3ONPrNGXkjiJD2WrZmiia6SV9l98CUq5fXJFtOvVhTMyEdy+99m6XO2KudxMmBMb2zwj83EJRsOsVF4hs0lzpo4LO2hEnbtlZ/rlIVNKxW3NRps2rACe9RO6dVuxGMCBKWT1hieXJFS3G4Ar/O4XVq778FXclj1E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779339302; c=relaxed/simple;
+	bh=w1mHhPZXnP9PHDpgYd0jm9GT+91v9yUmXscivLcG3N4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=UxjBL2TIhv25IYirp1eOs/bkWxSiYLV1mxg3WcVhN4KpdnrqZod2KBVTkwsVd0XJxzrUdvvtW7Mfa3R2Y7smiUkGRVOYoAdt0z/lvbBBPVGVsddR6xWfzX93yOIefhc70ycB+kST/fiJPl4yBo1aSXqDOmJvUJ2sUQbBqFHQBV0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=fNteNa3d; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=lsG9Q/EY; arc=fail smtp.client-ip=216.71.153.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1779339301; x=1810875301;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=w1mHhPZXnP9PHDpgYd0jm9GT+91v9yUmXscivLcG3N4=;
+  b=fNteNa3dgkPBbL4zbUCrlZQtNNPcgJ/KI1YoPdfmhkZqkJ7IaCG5ZeT5
+   tR3ACmFdna3LoR6qV9shzUqqkvbhSQS1PyvLV685F2/kZa6fKR3DRPyXb
+   6kF0FWkI0k9TsM+GUZPnMx1W37jMjW3n9JwDxcafiq/QNLsymN8ZC5MqF
+   Q6jmmrkqnpLXbKz+RTKvpBKrh0THqkhtN0mO7fMCUVbh9ZCHKMYWiYQ+t
+   37K/8LWQckrei3McuOHGjl2KHKtyJCLiuc2kHXILh95ohil2+agRASLFJ
+   lirrvSUIsxSYP53YYgNqpWiuT0loN7dzIofHny4+uLwlEAtUPqFTwQj6A
+   Q==;
+X-CSE-ConnectionGUID: sVWecuhfQZWs5XtIViM8RQ==
+X-CSE-MsgGUID: FMECXSsITgitNG21Qin47g==
+X-IronPort-AV: E=Sophos;i="6.23,245,1770566400"; 
+   d="scan'208";a="147388040"
+Received: from mail-westus3azon11012024.outbound.protection.outlook.com (HELO PH8PR06CU001.outbound.protection.outlook.com) ([40.107.209.24])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 May 2026 12:54:54 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=usaGQU5nR12+9AqYuKhcy2LMLkYbW6qyAdUVGqiqQO+Gn7JooHmWoaDFdiF7yrJZlvz/oUAQFAOLe2nAfLazjO+ImxT1R6ZF6mWPaaKY40vQUHjXgTh7n2PPXNl4weoDqY/z6DiqK1X61B/EBpFq8ISVpF73qhsmZyiQmyrslJRRGkZ6sd6+Mo39+81F/r47IrpHpCISLedlkVUHueuoHxKESIuUBF3RHgol49qVrpLSzBXC8Dk5j8M9+1ClBzTLUOkKbnHPnSIZIOAl9Q19tP4d818DRW/H9tYA1Quen9GrRou0c9V9T2F50kk7RxhaNXW7C76ZoRAwK1qrbGRD8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KUvD09q3bnigNbaesUKq8rlksFmhAx4ZOINP8rk24LY=;
+ b=PZeBy5oGXHeavfb+eZPXxWTtcKjSRfz+LHNRapcYnmLDySpPZ/lUj96EBDb15dZzmYwICAh8Op+HEmDt88u6ztuAM6/D/Q4n2M04RRB0QzKADcRqXpMe7jZmvghxqjlSQ9lIh+Yg0Z6ofeMppEqxFwfLVZtkmEa8Ot+u9ln2Gbwq08ok/sUZXI2xlrf4yhQjjgC4tS1xmDmF5u9Rp/YY4/B4PJQUffm+EBP/dVRwrhHiwdU1JAogfczpH8MtWmseIj0dXyHnZeGQQfBkhTQ/xOP2YQRNEXl44dSgKBFLvMEgBsm9KExIc4Kog2di+Ko4Vog5QdV4VCnSoz7i1X18pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779335167; x=1779939967; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zEBQggBlYt3BpKFY9Kg3q0PYXokZZ4ieOXENn/+MaCo=;
-        b=B4g4Mxuuk5NY6oQG5OPetJ7rN985SsEfZSaMmagjS2eGXzN9Q2jtot1vGbUTR/OLnM
-         A5PmHm4rCxFoOXRGuhTNwDeUT7nebohWLAdV1zPhKF0Y20t7ZLZS8z2P/SOhoYLchoQE
-         INCcOmbT6D7zie9ukmxkCwH8wN2MeUO9OmXz/6xZwLMOBkLmpCeek8aH0Da6n1YfxkTQ
-         45VV7wguGHzRXIzs96EZM1tWP3SFo2ORhgfpb/Cmkjn8E7wcyuOHccnGjr964sIaSxf3
-         BtaM7YkiM5L85xYOFkFDbwdAjQKQBAnzBL+bbRwawI1cRUvDY1D+0g3QAeO5J616FUXp
-         Qz7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779335167; x=1779939967;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=zEBQggBlYt3BpKFY9Kg3q0PYXokZZ4ieOXENn/+MaCo=;
-        b=aGakGE0wPkRhs6eba1Wov2hyqThTT0znfM4fldCj9JaocEpzxyiJy1eu/0qFCa/d0q
-         0RLeuPuqv6cbEKvkrov0YAIsvJA7I/OtMaEgO5/pmM1ddvycWyx6Nm4XD8kY9F3riTYA
-         /Xp1BmKIs62ZW6XDjlx2oarmYGpnQ7g0dDeSU/HNNKw9P18v4gUmggDOe3xYlVwMJmyO
-         ZM3Nfwy6VSmlRyM+qhJFq/f9xQD9hNt9Ug2PO84z+HflKXMvh4Jh7CJHTTOa6tkABVu6
-         3dQNmkoPTeGdJ9V8WpS2agpFeGK6WsDd0kO5nxwjCI8btpuspoBED0L0iMLArN3LoYi/
-         7WnQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9rrrfaR2KseczITof/KNM9EsuNAl3LX+lctllOKdcomqLVTTTizgacgdw61S3HrnYGjMgUrMRH@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2gR//ellRCEatyDP09sOSHsA287P5IGhR2E4zNW7d3G4ITJe8
-	t3Ht1VqvjQ1aKG5F28RIw3eox79osAA+LJQcHHMv1mB117vvgQ79KS6p
-X-Gm-Gg: Acq92OH1+PXJmqj1SGi/lxcXk/DYnZ69K1Se9lm+lIi5CrISz9tDGwWTM1EkEfVnJjW
-	c4tVOgkquTGhQOPMxbjmX5yojs54q+6ZI+ab2KN9aEM4WTBV9mXBnoPJiqKUZ2bH0OQeoyKKS63
-	3h3njNqGxpeyDMYniaANSdtgBhcWtaWtqvHNBIfTpC3rVyoM0D03UehRvPZCQo4O5eGdozeDQgb
-	Y2ad/c/LJyb6uLw/jpXjtusR6eoXiYMk9GRfGh9l/LCU61jfiymkyUacnCtPRuss9Yhbz033MB0
-	Vy0duaUOHldKTTx3Uhka0DyZOQ+3S0ZZvCnbwrhynDF1Mo2xShO7WnFyecRgkxb9YPuwCggn6ie
-	gyuBdeyjuSP3IASTu7mH8faCK/Jg51J3+XZ7buId2yiV/wBhGp6H94C9wxcwQ3W4cjIqBhoMZVL
-	SEKvmMukrHQaGlezcgcdP/NOqm5cF6sJSml4bIK+4FEkGXgO4j/o38GQ==
-X-Received: by 2002:a05:6830:18fa:b0:7dc:e059:c25d with SMTP id 46e09a7af769-7e5ea0e7ddcmr512971a34.0.1779335166967;
-        Wed, 20 May 2026 20:46:06 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:58::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7e55bc4749esm14591959a34.23.2026.05.20.20.46.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 May 2026 20:46:06 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Yosry Ahmed <yosry@kernel.org>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Qi Zheng <qi.zheng@linux.dev>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	Minchan Kim <minchan@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Barry Song <baohua@kernel.org>,
-	Kairui Song <kasong@tencent.com>,
-	Wei Xu <weixugc@google.com>,
-	Yuanchu Xie <yuanchu@google.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH 0/8] per-memcg-per-node kmem accounting
-Date: Wed, 20 May 2026 20:46:03 -0700
-Message-ID: <20260521034604.4126295-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <7e28d0c9-80f2-420b-87c4-55e571071059@ghiti.fr>
-References: 
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KUvD09q3bnigNbaesUKq8rlksFmhAx4ZOINP8rk24LY=;
+ b=lsG9Q/EYUOdRio3b5gPkFDsRHBNUbM+h9oZFvmRSA31TzMLWOcV5MTdAPRmAXeADM3lm/A/HIfpzfmHcrlwD9YNO2P3vw3EuRskPzG8g3MfvFelVSGQJHCa+vAaBSmS0YguIwTNAzgvF8XiFHKkLWsAigGa35x3c8j2P46wfg2M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+Received: from SA1PR04MB10065.namprd04.prod.outlook.com
+ (2603:10b6:806:4dd::14) by LV3PR04MB9068.namprd04.prod.outlook.com
+ (2603:10b6:408:275::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.14; Thu, 21 May
+ 2026 04:54:50 +0000
+Received: from SA1PR04MB10065.namprd04.prod.outlook.com
+ ([fe80::9b98:bf8a:b0b1:ef85]) by SA1PR04MB10065.namprd04.prod.outlook.com
+ ([fe80::9b98:bf8a:b0b1:ef85%6]) with mapi id 15.21.0048.013; Thu, 21 May 2026
+ 04:54:50 +0000
+Date: Thu, 21 May 2026 13:54:43 +0900
+From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To: Tao Cui <cuitao@kylinos.cn>
+Cc: axboe@kernel.dk, cgroups@vger.kernel.org, josef@toxicpanda.com, 
+	linux-block@vger.kernel.org, tj@kernel.org
+Subject: Re: [PATCH] blk-throttle: schedule parent dispatch in tg_flush_bios()
+Message-ID: <ag6OXDuTc3JubfqV@shinmob>
+References: <ag2owaQQoigp_fSV@shinmob>
+ <20260520142022.1799724-1-cuitao@kylinos.cn>
+ <ag5DjOCrzfD7D_Ln@shinmob>
+ <31179261-64e0-4950-b112-32627d48e734@kylinos.cn>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31179261-64e0-4950-b112-32627d48e734@kylinos.cn>
+X-ClientProxiedBy: TY4P286CA0119.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:405:37c::16) To SA1PR04MB10065.namprd04.prod.outlook.com
+ (2603:10b6:806:4dd::14)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR04MB10065:EE_|LV3PR04MB9068:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7bb70f0-7529-490f-984a-08deb6f516c7
+WDCIPOUTBOUND: EOP-TRUE
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|19092799006|376014|366016|4143699003|22082099003|18002099003|11063799006|56012099003|3023799007;
+X-Microsoft-Antispam-Message-Info:
+	GdSXWmApBNltWXVJfaaeH3VzcUr4AnEc6ZY1LA2Z8oeVsliSZOFmeJNM8f6ZX1KrXgfjyx7s99sUHPCmuBVy4pzJRseDaXW7hk6En7ag9hfGtB6TMGeF5cik+a55D563BkfCva9ERH0nevLc0m5eoCrtsTwHai7EIf3nAaw+HDew3APeIa/ZhKvGNK2hAXxURxgdFOs329KMpd6DLVHXFuAbYQJEoxEG3bC0tkbEd2qktmw+VyHm4ELIi+bX3rwP+qoi5v8f2E1GV1A6kzLdLa3OwpJkmLGSj8fYTphSjnuyEDzt824XntYfwniSdMlGxZZ6V7AdkAI6pnE470opm3cAJKmj0EtA6R8pjPNAihJsDFl2Mp0zdetdCkhWViOTy/v5hArwXW175Se63qp4doycuhpjWCbrOjD2Cx48lpcsrH9cmaVfGX8AkppStzUhlPFl94R1dDKySEFrjUhFvu39hoXQVejryal4eaAfIMW3gXvqi7oInMXIZQuB+1LhhkIFBItERjydmbEl/H4WtV90MAFYRBecAff2zQAnFOupndoo+RRCcnWZIAihhF0nab7TEfaIIb8/DwLBrKffq5vJel+wSWWr3GvcQ048BittcSbM7uhwiDuQkqy4+ewqXlSPZFXaBuY2ucrlmYZiztj+tXpljCUduVH+2x0+1MTjW1qeUpNU8QyXegnPuClH
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR04MB10065.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(19092799006)(376014)(366016)(4143699003)(22082099003)(18002099003)(11063799006)(56012099003)(3023799007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?V3PbRtJUhFbWShx/I8uTFBG8SzNOiLDmZalRD6NcfJxykCwO9gEXAUfNpE27?=
+ =?us-ascii?Q?95ecN5O65oRYrsOnCmgnOxY6zZfy18SuJkX4gJTPUOPT4enXaXgj1Wz+DPY3?=
+ =?us-ascii?Q?Sw96g8qh5bXIX+DmlUFtSqe+nyAbVqzNfUuXXaH5adPqhHT3Sg0pJQxkLIwV?=
+ =?us-ascii?Q?wqlX5akKvQXLUzIlg3e6ZwxhEB6RpFP9YbWh2OL8v83Rrk/RNNy1t9zWs/2L?=
+ =?us-ascii?Q?rLXkDQRkJsVBYjHRw501+0cYCGiYx1TwZzwjq+DF+TgJFukC3efuPzvFycS3?=
+ =?us-ascii?Q?ycIdsz3PhqHf4jTmHU6szw+8yiUDiDmFTawrbW6lA7mAZ3YW/NBFeMItxCCp?=
+ =?us-ascii?Q?t7BqeC7OkoIcaaTxTNOmLIw3+z1L8Bg2Dn2LkmXoZ/ELsPyIwUc7A2mQ4mah?=
+ =?us-ascii?Q?NqxAHrwtDseWeVT7Tudx24D9ntvcdW8QBuyneWIIsQJoVdzKtqIybyjqLazP?=
+ =?us-ascii?Q?rJ+CBluGzN6PZjTMPYRbJ5Ba9OiXtP+gdAUEOo02j+N7JBld8EC3oPRe4wo6?=
+ =?us-ascii?Q?ImCmTDFz654gQjj7ZfmOQH5SGFmzoe94/6MbGI7sBBWcTtR87mmS5fPjSTHl?=
+ =?us-ascii?Q?L85vNnVBF4SW/kmubsVN6fvSMbptscfzBxaICTpvsiXwv5z52lV5ll5Uz0o5?=
+ =?us-ascii?Q?6eJZIm+aAqpKzR3i/94plA6xgjwY298QRXY2+/Pd76IjDQkDcPpXY2gWwtoX?=
+ =?us-ascii?Q?zMdfFRNevCuLXXNjj/H48pHY2ud9I29/TLPOGNPvI04D1Cn0IC/EqbBNNH82?=
+ =?us-ascii?Q?RStL6YF340ZcDx5M4putRX00BLxkje4Tl9NPVWz26U7KTeWd8/KhOBRQN0rA?=
+ =?us-ascii?Q?PriPCoqUBOOC+vnFYfdDiiOgB/tpuY+Dr5OhxAHZ/KSJ0WuYhYiQUX8kRC/1?=
+ =?us-ascii?Q?5mROJcA1D8i70br8lI5hVxAVfF9v5/mFSxiTkpUUOlb5hQlwmn3ydcftN2Ba?=
+ =?us-ascii?Q?tYf6SJ1qLXEa1aotPzJ2crws81bke+ebV1W3p2vnz1NBJ1Zx1mQPC7kkiCM8?=
+ =?us-ascii?Q?irV71I1SUy7M+4mDcsQXT4JM9fwF9AQv/kBeQlHAPKVfiWVb/261Scce1AlO?=
+ =?us-ascii?Q?RHR3UqaAwexyLUXh2CIlDX5DMHq07ZBTR0rFxT/1YTx5h5Po/bpJnyHNIDzf?=
+ =?us-ascii?Q?3kk7mw70JzsnOSFKV1ri+v17s/GWEiv2vE+/pZp8maJBysNQVvwaL5OW04Xs?=
+ =?us-ascii?Q?jWf/aFJ5cvjGoj8Znlc8yqazq183q5Ok6kBZV6b4WAb2eS5QWfXMuAYzV5jV?=
+ =?us-ascii?Q?5R8R/htCiOVHbErlJu/2Mj9paUPjbFOPjNAwq6S9CN2a+ZCKtnaaO84P8pHm?=
+ =?us-ascii?Q?JIiYzEcPNud5iWMLU+gc/qs9BOV06vmDL+aPKGAgwtfMNrNt9wIX0Ab+fW7L?=
+ =?us-ascii?Q?GSvmRt9jQzSM+WL8yGvmWVueloNBGYZpWme61MOBT3M1OY/MnmGmLu1j/y46?=
+ =?us-ascii?Q?OhPWsGDWdaPEYAWmqbVYQKmRVNwu5b81Z+1MqvSR4SduY432mCwuHWUUpYp9?=
+ =?us-ascii?Q?pTFj6IsHj3CrHnJ3T1e+t3RBUBs6hBPamJZbg0KLNAa2B0VZlC+vZLOr81Aa?=
+ =?us-ascii?Q?RDV/NXfA8UxDhsZgczNIYW1mUO6MxTnB4mKXj2jz31UC9OhINTLLBU141V0Z?=
+ =?us-ascii?Q?fG1dBnIRuuuyL5lIXw538gQGNr6xzYepctZEf3lZ/mnzMd1bdpgjhww66W/5?=
+ =?us-ascii?Q?iP90Rf/tyDZh0rWos02nWw8xzFMVQqXgg3byKcr2axVZtOa1wC/uzqoTtnK/?=
+ =?us-ascii?Q?bnXHWP3FBccBTXgp86zySvTcuXsLdF4=3D?=
+X-Exchange-RoutingPolicyChecked:
+	ewHewsbQR39QM6/bvVf+aTFLqN5VGegRqY5WPKI15WoHZSQczF7L5ft6XZ0tTBk9kP0J016ycHUOJ9SCXjuomCV0srcFA0Hy4zrJlzqk2Uetoxalor52yS+noIxTBkOOcea390zD8Qb5ro3VtFvdFRL20SXRbmQg9LgCa0HKmtOFbef4spuUw9nEPxjdMg+TQn3NzY55N0i4SmZwWUjEJK3f9g6MHPgNspiCFKp1JWaD0NBVuzr02d/sdXhNVjVlJdGS24juXHra0StylNQaw61AalvOiUoVYz3HYNIXkvzzoQmjYkBUrzUM4qjlj545I3HhnUIJ30wm+TwSFADp1g==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	eRpbCbx5JhlpFwCcloy7Ubd3uX/FwKgf0pgQzfwIqNUJIwp5pfDlLiRH88k8ep+Kz6eqXz3BzEBbcMDVQfZBFJdrwHGQ3eAkuKMdhzpY/4DG1qzzavZaUlLBrY+TvGBxJizx+ogWIuxhdC4Rd9YFZmIE3NbwTK9JgtWXO6lFavcXYIhIggeXJWkDeP30ot11KdKno81BZdimUZeBGxjvn5KAs3XUZ0VgOSgRnJd/pT1/hqm45aCPeSGwqu6zbvYn0LbNhKFiOwUe/dYhE9soYJNTaKXwjm2+V7aVwbNzqYsu2dK6+e7OAHdesg1Wl5w1e5EUGMrzAhlq825BhCfvPHo5irtebUjyAiFbJMdFf8PG/0q02vqU1n0I112GgVkQPTpWGhQjWTsfPRCJAxHT/Lu46zTRIVZltewPHnujjcbm4VDb2PqItIzpuK5VC1Ctu2dYzBAhp5dJ1O+CfsIXbIapjJKR2vZ7GuoQGC32NbEL9Z+EaGlS5rwFP14XqIZr3VC1qpDRWZdJj03gSbg2YyL0F09/f9CTiGf5tZHtqOe1Zile3jvbEqBpS5Lv8H7p9l8IKC7n946CizEVvKbbErlSp3tbRutvBnV54QHZoZcsRsuJfFNz39L2p7xeqdrZ
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7bb70f0-7529-490f-984a-08deb6f516c7
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR04MB10065.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2026 04:54:50.0625
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XV0b+sQnO0eY1X8fJbS4Y1rqnENBdMrt7mY33RRDNrYJ+Ya5GKJHAyG8cCJdSHgrthyldf2pR9T2TAUYQ3InGdOaYN1s8UcZKr9oNr5wrjw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR04MB9068
+X-Spamd-Result: default: False [0.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,gentwo.org,gmail.com,chromium.org,google.com,tencent.com,oracle.com,kvack.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-16143-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[29];
+	TAGGED_FROM(0.00)[bounces-16144-lists,cgroups=lfdr.de];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shinichiro.kawasaki@wdc.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 547F859E8BB
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 93AD859EE71
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 20 May 2026 10:39:59 +0200 Alexandre Ghiti <alex@ghiti.fr> wrote:
+On May 21, 2026 / 10:54, Tao Cui wrote:
+...
+> Could you check if your system has a non-English locale set? 
 
-> Hi Joshua,
-> 
-> On 5/18/26 16:57, Joshua Hahn wrote:
-> > On Mon, 11 May 2026 22:20:35 +0200 Alexandre Ghiti <alex@ghiti.fr> wrote:
-> >
-> >> This series pursues the work initiated by Joshua [1]. We need kernel
-> >> memory to be accounted on a per-node basis in order to be able to
-> >> know the memcg and physical memory association.
-> >>    
-> >> This series takes advantage of the recent introduction of per-node
-> >> obj_cgroup [2] and makes those obj_cgroup tied to their numa node.
-> >>    
-> >> The bulk of the series is percpu per-node accounting: percpu
-> >> "precharges" the memcg before we know the actual location of the pages
-> >> it uses, so charging and accounting had to be split. All other kmem
-> >> users (slab, zswap, __memcg_kmem_charge_page) are straightforward
-> >> conversions (zswap support is limited in this series because Joshua
-> >> is working on it in parallel [3]).
-> >>   
-> >> Thanks Joshua for your early feedbacks!
-> > Hello Alex,
-> >
-> > Thank you for your work!
-> >
-> > Overall I think the direction makes sense to me. Pre-overcharging makes sense to
-> > me as an approach, we would much rather overaccount than underaccount and
-> > later have to breach limits.
-> >
-> > I do have some concerns on performance, though. Namely, I think there are
-> > some expensive operations that I think would benefit from some performane
-> > benchmarking with this patch added (maybe some simple microbenchmarks that
-> > demonstrates kernel allocation overhead could be useful).
-> >
-> >  From what I can tell, there is some additional performance overhead that has
-> > to do with iterating over num_possible_cpus() x pages_per_alloc, which
-> > doesn't seem trivial to me.
-> 
-> Indeed, let me microbenchmark the overhead on a large system.
+Thanks for trying it out. My system has Englihs locale.
 
-Hi Alex,
+$ locale
+LANG=en_US.UTF-8
+LC_CTYPE="en_US.UTF-8"
+LC_NUMERIC="en_US.UTF-8"
+LC_TIME="en_US.UTF-8"
+LC_COLLATE="en_US.UTF-8"
+LC_MONETARY="en_US.UTF-8"
+LC_MESSAGES="en_US.UTF-8"
+LC_PAPER="en_US.UTF-8"
+LC_NAME="en_US.UTF-8"
+LC_ADDRESS="en_US.UTF-8"
+LC_TELEPHONE="en_US.UTF-8"
+LC_MEASUREMENT="en_US.UTF-8"
+LC_IDENTIFICATION="en_US.UTF-8"
+LC_ALL=
 
-That sounds great with me : -) Looking forward to the numbers!
+> If the issue persists after running with LC_ALL=C ./check throtl/004, I'll investigate further.
 
-> > Another concern that I see is the stock credit system. Maybe we could be
-> > bypassing the stock check leading to more time spent doing the atomic
-> > operations.
-> 
-> I'm not following on this one, which atomic operations do you see that 
-> could be bypassed?
+It still fails with LC_ALL=C.
 
-So in my initial scan of the patch 7 I had a concern that if we have a nested
-stock system (obj_cgroup stock and local credit "stock"), then we could
-incur more work if these are out of sync; do extra work in the stock refill
-path in obj_cgroup_precharge, and then do extra work on top in the loop
-within the pcpu_memcg_post_alloc_hook (obj_cgroup_account_kmem does the
-charging atomically I think).
+# LC_ALL=C ./check throtl/004
+throtl/004 (nullb) (delete disk while IO is throttled)       [passed]
+    runtime  1.250s  ...  1.211s
+throtl/004 (sdebug) (delete disk while IO is throttled)      [failed]
+    runtime  2.518s  ...  2.271s
+    --- tests/throtl/004.out    2026-03-20 14:25:50.478000000 +0900
+    +++ /home/shin/Blktests/blktests/results/nodev_sdebug/throtl/004.out.bad    2026-05-21 13:46:36.676000000 +0900
+    @@ -1,3 +1,2 @@
+     Running throtl/004
+    -Input/output error
+     Test complete
 
-So what I mean is, I'm not sure what the "size" is typically for
-pcpu_memcg_post_alloc_hook. But it might be a worthwhile optimization to
-do precharge all the pages, then for each cpu iterate over the pages to
-figure out how many pages are used per nid (doing just math, not actually
-doing the atomic adds), and then outside both of these loops just iterate
-over every nid_objcg once to perform the atomic operation.
 
-Maybe this is needed or not (depending on how big "size" typically is
-and whether we go from doing O(1000) atomic adds --> O(10) or some
-big reduction, but I just wanted to toss it out there as something that
-could potentially be expensive.
-
-> > obj_stock caches a single obj_cgroup, which means that if we split the objcg
-> > to be per-node (in patch 6), then the obj_stock basically gets invalidated
-> > every operation since we iterate over more objcgs (even though we are in
-> > the same logical objcg). Maybe I'm missing something?
-> 
-> 
-> The objcg split comes from commit 01b9da291c49 ("mm: memcontrol: convert 
-> objcg to be per-memcg per-node type") and the problem you describe is 
-> exactly what Shakeel is trying to fix [1].
-
-Whoops O_o I completely missed that one. Sorry for flagging it again!
-
-> But I remember trying a microbenchmark and noticed a +5% regression (on 
-> top of the 67% then...), I'll rebase this series on top of Shakeel's and 
-> re-run.
-
-Sounds like a great idea! Thanks again Alex, have a great day! : -)
-Joshua
+P.S. Through this action, I noticed that locale handling is an improvement point
+     of blktests.
 
