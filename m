@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-16171-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16172-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GCyqDMY6D2otIAYAu9opvQ
-	(envelope-from <cgroups+bounces-16171-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 19:03:02 +0200
+	id sAgxB94lD2paGgYAu9opvQ
+	(envelope-from <cgroups+bounces-16172-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 17:33:50 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C70B35A9CF6
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 19:03:00 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEC55A86AB
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 17:33:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D64B8328D39F
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 15:06:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 17B4333CBE95
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 15:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60E637204A;
-	Thu, 21 May 2026 15:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06E037DAB1;
+	Thu, 21 May 2026 15:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="tU/jJ+b3"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="TVfi7btK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4522E33A9CB
-	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 15:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174B1379C3F
+	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 15:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779375836; cv=none; b=ArAqd1qmXs48lj0Aum/9bI+wFbUbFES4SF38YI3CQEg3Wm+LBPGzBIDbgitDqIpcEWfSef+H7xTKw9qu7vf9v/7zPS/+PzsUP/u+bO+jPuMj8W3/OFaRuNtNlUmmAP/J6X8hl9qLB13p3y5r4BXAzUzrtIwiNyPtYie4/d1N8w4=
+	t=1779375838; cv=none; b=lq0ac3Ga9Kki8WG3pty8U+DLvJ4FONwvI3/j7fqXAc2WbAmio7077Q2tfPSW+5BJW3NzDB2iJtW9HUIUsVcZRhG/VzJwYenWBpsj9ctOA2Lmk5BPqEHmQkXy3Rphb3uldy5rTYY6REaiXDs3mVMlRxKxuGpD3/J+iXZL6FA5qZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779375836; c=relaxed/simple;
-	bh=XDHwiXK7DhsPrkpYFuamx5LXb9zFWccd6v2gAdweAKE=;
+	s=arc-20240116; t=1779375838; c=relaxed/simple;
+	bh=71dbN/lwsz2RYbZhDRLT9fuF1mdojGIG9wIFF+AZShE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VufUHxjzNPwGMrOOqy3EGlGDE79ZZTr/2vsMw2K2n2DLNwgCwWfj6SHj/SYLlu6DiC8gKYxcP8t0bXhEXlXiW9TLiDzEedqa/NiG5Vy7oYr4mpa0JIEHB82sn7nkmnpMtJcJ9eVYcNN8qZsLc8MVcr4xAOuA1WDWdSfb1PUGmAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=tU/jJ+b3; arc=none smtp.client-ip=209.85.160.180
+	 MIME-Version; b=WWloYk8yt152d0rfZcZZuCyTys4wwRq11TNSFTZ4Cl33LHk6EW2GykfIDgvX4HH38iBZavLcvzJXuxl8qaObpXEgszmUQov0Y1bSkr7d5XX+XbLEFlha59z7kKWF/x4QvCJs5D5VfpMYUCn+/znD/pBGvyXtowCXfPNBiascgRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=TVfi7btK; arc=none smtp.client-ip=209.85.222.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-51306c9f2e1so74840271cf.0
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2026 08:03:55 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-911dfc86901so657796285a.0
+        for <cgroups@vger.kernel.org>; Thu, 21 May 2026 08:03:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1779375834; x=1779980634; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1779375836; x=1779980636; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rR/PuWQM6I0Sn5LudGZTwz22IXjqotRj7EvDPtJsrZA=;
-        b=tU/jJ+b3fBUHI05Ny9Rarn81/d3LqESIs0nKlG4J1eEJheSlCQtFCP/32+74qqqEtI
-         bAdTQ++1D4trnZNETWRTCBHKF53dmE9Tyvsd96vybtCVHR2JQQRegJe7wvcKO/7IcKzq
-         1FdlSwn2Hle05Fe9IlqugXYvLCJUUiinjbqjw1z8PcSwbroD53IhGY00Yr51xftalFC0
-         2NKvSdt13c5hasmceAlg26aaIRKe4AzRI/CEhBcAMmrjkfVE+EdfuiVp37UhR6LjzfEn
-         puQRixSBwQ2yiNxRWMiDFJ8e+HG6Op9aZa39+k5t6yoRzbHL36MLau3xZbd0zS/h/pyh
-         ZzwA==
+        bh=VJJEuZOvug6rcak+Osyt/tu7+OHIrKr4x7Xajjb2SaI=;
+        b=TVfi7btKfs52Ud8FsysSxZtMH1F5OjgJIxCHty5Taq8U6zqvCxwhhJGjfd4rZp99iJ
+         YvHwhwX45E03r1y92lMLy1Ea79jxYvIhvbGdMqxkqAowfW6fY8Dnk++zefxBAF2jtHcb
+         OZlLnOn4nxAK6UQ7VnWWrZGuV02Lx5xNcpwsWEGY4YBezdtJH8aGhj2EXo/uM+nKgrVu
+         WTCNLFRr0AdeOrLOCpIG8oMjFyOJvSWnwhDBDKrSc6K3e+fsdfrcA9ExSrXtnI9zL3Eh
+         nmU3C+QxETIMewceTKi3fOZRC2kGLteTY8xJvhmOO1hP09saDG6XHlkkBBLMZXs94eRF
+         HlQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779375834; x=1779980634;
+        d=1e100.net; s=20251104; t=1779375836; x=1779980636;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=rR/PuWQM6I0Sn5LudGZTwz22IXjqotRj7EvDPtJsrZA=;
-        b=Ss5g1DsVqfmdixeWLj3Y7BFWvsHg/NpTeYkbbE2+9KhFaLIgzwvEUNXG/LhBx7uK45
-         hqT9tkOC3/d+blMQPCV98Ysv6pMliiQhbMX4dBd8tM4mdpaMf+t6wDmU6aOkuUlZSgR9
-         6S6AWlrh5emlPOHOFSdzZlNYGrgfPBmdYifJuMtbuD6Q0t/IC7UU8INSiZlwlyA3zpv3
-         Wpn9vQzdp6B8Jcxn3972XUQlAaBgIOZ7kTWfv0i0RTF9kciGMmJZHlHlVwy8un/vDay3
-         pvw1zhyQU47N5UKMC06o6uwVsuJOGFkUdMBiGhh/xYCeAyusjT46VWeYISVrTFACeLc4
-         psJA==
-X-Forwarded-Encrypted: i=1; AFNElJ/E7LoOYTurSb0BV5w17FtF46NCJJ25QVwoLOIlJSkxHmtwH8c6oYfN2ZRTtE6aooXFOszOXf2N@vger.kernel.org
-X-Gm-Message-State: AOJu0YzsFPjVzIfuypAJ7SPW7wFPyI+NHJwElk/EgZPI+nAqrTImhBzk
-	gZp4Bhi+qt66aZ5VQNbJ+Ly2fDiK1Ux0Y/ct3+sDEHUU+NjTQK/iBd9HlwlQmbjCfNA=
-X-Gm-Gg: Acq92OE+czoAr/XEb+C/ENKI+7PB4elnj96J67Xj1so9fQBPOk4rlVpnZmM0xrwwAGx
-	x2ZpZDGT2MycdFdXexjthkqbwI8S5o9QBnZZdgYM4Vf5vr+JBVlVwfXGK6g9JW5HSdkxEXfLmbM
-	SnsyFvQ4I2G2kIgUvxKJfEBkKhIdlDwFKUSe8tXGiJd7gTQ8w1LX/GW0fS7RbKMBwE+fAgUU5x5
-	86DudUVsGX7bJmBysmrXbiRVxLXtNbrr5wDc/AXFZeLhMZvqae993LfC3AL8yyqgBgY2GqzzS7a
-	A5M6uU+dJ6PGQ5QZsiBfj7dBD0K875YKQOXONvyirJnjp7RFWy1zRSPLIiRedRARHusmkyMIspz
-	K7bzmuwz/dtDFCq8i6jantPH44e8oFrE3e0tyLHWWOYJwWlqFPcGlX6Oh71Vqt9dKkfNPJVeIP5
-	O1gJkvwkDkRo5nIFmNy0hJXW6JRBhp9oNV
-X-Received: by 2002:ac8:5e0f:0:b0:50f:b3d2:6ee1 with SMTP id d75a77b69052e-516c555a206mr43518571cf.31.1779375834075;
-        Thu, 21 May 2026 08:03:54 -0700 (PDT)
+        bh=VJJEuZOvug6rcak+Osyt/tu7+OHIrKr4x7Xajjb2SaI=;
+        b=O7Y88omdUthujM/LKOE/Q33oHTfPOWvVHYpzA/2DItuoIL0I9HpJl24wqcXLP7H35l
+         ygrWHL034CCBOx6QsH6rzNDfXjiDbs6kIfLBfwFjyTnZsFdjGMD3ZCiPyjxCQEA2XTn1
+         tTWs9Z06MDuQLX5lBJby3U0ZBVGEabBDWTXe9PIWEWWOLDZjpcGUiUyrZVw0BcZctj0b
+         s05kDp8opBjAXicV4hkX9GQAN7+pa5YH4jaxp1szgDsflTv3sSFwRnrblFrmYEKkWvDk
+         mqqYCOIpSzu0GDtyLqkPep63C2ID/jD0mQ6AWTrmmAAjqZz2I7uO10GAAlqb7Fp5bhdf
+         b+wA==
+X-Forwarded-Encrypted: i=1; AFNElJ/zH8kFF4JsOWo0fmwtz5uY+n3HP9fA5XS+OvbAoBx+lb309xVFXnvSfHNoRLRrv34DYXJb+HSv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/1IyNN712pSMYam9k35zvjdIE9jkjjlJoqL/GVr/KNdgTtoBt
+	E1IGjOb6YxbVBF37vvMm9hUPkVVZFlGZ8on4d7jU/GKW9sY5eFRma5vl9DbrmvHyfZI=
+X-Gm-Gg: Acq92OFBeM3qvhUuIR40I7W5CrINxqcRKJDUbVARu3kTJtxCPSci/UoKfIs4ZiDgX+m
+	0NxI6Yi5E69d4KKgiVufnE/J/aLEIj5kAO4xdxGxyH+jGP2lz5ZDj6NVKszI0iF/uMULgJV5BoQ
+	w10URYwqn0uYrTSXvFufYsPDFvHJhxAylwnsx830nWc+YqvjKZaQcZTuTWQ5Gi7GqKAKv2w27SI
+	Eq8je4uMmA+Eb3z/InKJCLJzcOwNI9exqtpLRRZv5n1qMkk4Qq4HPUw9RLMDXNBo+5VP9i8kcrL
+	zMx2UrsXLCNT+bkWh/4igOPqKTQYyTAKXeFxdQMEJ2jY3zdvvGOWbMpFv0ga2QCDpmhCSnWFads
+	nzBy1tSeS3jrQNLGA4cl7m6mvRhTI/LKEtCZHQBJh2LgDxXF98mzeLYWU4pV/wHAvRF2+eUG55Q
+	n1Kc2uI2xSi+bqnP+S1JIQ1A==
+X-Received: by 2002:a05:622a:608f:b0:50d:860a:8fb0 with SMTP id d75a77b69052e-516c54c70e8mr41818231cf.21.1779375835903;
+        Thu, 21 May 2026 08:03:55 -0700 (PDT)
 Received: from localhost ([2603:7001:f100:500:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-516ccba5ffdsm9168671cf.5.2026.05.21.08.03.52
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-516ccba5ffdsm9169611cf.5.2026.05.21.08.03.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2026 08:03:52 -0700 (PDT)
+        Thu, 21 May 2026 08:03:54 -0700 (PDT)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,9 +104,9 @@ Cc: David Hildenbrand <david@kernel.org>,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/8] mm: list_lru: introduce folio_memcg_list_lru_alloc()
-Date: Thu, 21 May 2026 11:02:12 -0400
-Message-ID: <20260521150330.1955924-7-hannes@cmpxchg.org>
+Subject: [PATCH v4 7/8] mm/memory: flatten folio allocation retry loops
+Date: Thu, 21 May 2026 11:02:13 -0400
+Message-ID: <20260521150330.1955924-8-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260521150330.1955924-1-hannes@cmpxchg.org>
 References: <20260521150330.1955924-1-hannes@cmpxchg.org>
@@ -123,18 +123,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
 	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_TWELVE(0.00)[27];
 	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16171-lists,cgroups=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16172-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
@@ -145,133 +145,93 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: C70B35A9CF6
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 6EEC55A86AB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-memcg_list_lru_alloc() is called every time an object that may end up
-on the list_lru is created. It needs to quickly check if the list_lru
-heads for the memcg already exist, and allocate them when they don't.
+alloc_swap_folio() and alloc_anon_folio() use a top-level if (folio)
+that buries the success path four levels deep. This makes for awkward
+long lines and wrapping. The next patch will add more code here, so
+flatten this now to keep things clean and simple.
 
-Doing this with folio objects is tricky: folio_memcg() is not stable
-and requires either RCU protection or pinning the cgroup. But it's
-desirable to make the existence check lightweight under RCU, and only
-pin the memcg when we need to allocate list_lru heads and may block.
+alloc_anon_folio() already has a next label, use it for !folio. Add
+the equivalent to alloc_swap_folio().
 
-In preparation for switching the THP shrinker to list_lru, add a
-helper function for allocating list_lru heads coming from a folio.
+No functional change intended.
 
-Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+Suggested-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- include/linux/list_lru.h | 27 +++++++++++++++++++++++++++
- mm/list_lru.c            | 39 ++++++++++++++++++++++++++++++++++-----
- 2 files changed, 61 insertions(+), 5 deletions(-)
+ mm/memory.c | 44 +++++++++++++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-index c79ed378311f..733a262b91e5 100644
---- a/include/linux/list_lru.h
-+++ b/include/linux/list_lru.h
-@@ -81,6 +81,33 @@ static inline int list_lru_init_memcg_key(struct list_lru *lru, struct shrinker
- 
- int memcg_list_lru_alloc(struct mem_cgroup *memcg, struct list_lru *lru,
- 			 gfp_t gfp);
-+
-+#ifdef CONFIG_MEMCG
-+/**
-+ * folio_memcg_list_lru_alloc - allocate list_lru heads for shrinkable folio
-+ * @folio: the newly allocated & charged folio
-+ * @lru: the list_lru this might be queued on
-+ * @gfp: gfp mask
-+ *
-+ * Allocate list_lru heads (per-memcg, per-node) needed to queue this
-+ * particular folio down the line.
-+ *
-+ * This does memcg_list_lru_alloc(), but on the memcg that @folio is
-+ * associated with. Handles folio_memcg() access rules in the fast
-+ * path (list_lru heads allocated) and the allocation slowpath.
-+ *
-+ * Returns 0 on success, a negative error value otherwise.
-+ */
-+int folio_memcg_list_lru_alloc(struct folio *folio, struct list_lru *lru,
-+			       gfp_t gfp);
-+#else
-+static inline int folio_memcg_list_lru_alloc(struct folio *folio,
-+					     struct list_lru *lru, gfp_t gfp)
-+{
-+	return 0;
-+}
-+#endif
-+
- void memcg_reparent_list_lrus(struct mem_cgroup *memcg, struct mem_cgroup *parent);
- 
- /**
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index df58226eea8c..4eeb4351c475 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -562,17 +562,14 @@ static inline bool memcg_list_lru_allocated(struct mem_cgroup *memcg,
- 	return idx < 0 || xa_load(&lru->xa, idx);
- }
- 
--int memcg_list_lru_alloc(struct mem_cgroup *memcg, struct list_lru *lru,
--			 gfp_t gfp)
-+static int __memcg_list_lru_alloc(struct mem_cgroup *memcg,
-+				  struct list_lru *lru, gfp_t gfp)
- {
- 	unsigned long flags;
- 	struct list_lru_memcg *mlru = NULL;
- 	struct mem_cgroup *pos, *parent;
- 	XA_STATE(xas, &lru->xa, 0);
- 
--	if (!list_lru_memcg_aware(lru) || memcg_list_lru_allocated(memcg, lru))
--		return 0;
--
- 	gfp &= GFP_RECLAIM_MASK;
- 	/*
- 	 * Because the list_lru can be reparented to the parent cgroup's
-@@ -613,6 +610,38 @@ int memcg_list_lru_alloc(struct mem_cgroup *memcg, struct list_lru *lru,
- 
- 	return xas_error(&xas);
- }
-+
-+int memcg_list_lru_alloc(struct mem_cgroup *memcg, struct list_lru *lru,
-+			 gfp_t gfp)
-+{
-+	if (!list_lru_memcg_aware(lru) || memcg_list_lru_allocated(memcg, lru))
-+		return 0;
-+	return __memcg_list_lru_alloc(memcg, lru, gfp);
-+}
-+
-+int folio_memcg_list_lru_alloc(struct folio *folio, struct list_lru *lru,
-+			       gfp_t gfp)
-+{
-+	struct mem_cgroup *memcg;
-+	int res;
-+
-+	if (!list_lru_memcg_aware(lru))
-+		return 0;
-+
-+	/* Fast path when list_lru heads already exist */
-+	rcu_read_lock();
-+	memcg = folio_memcg(folio);
-+	res = memcg_list_lru_allocated(memcg, lru);
-+	rcu_read_unlock();
-+	if (likely(res))
-+		return 0;
-+
-+	/* Allocation may block, pin the memcg */
-+	memcg = get_mem_cgroup_from_folio(folio);
-+	res = __memcg_list_lru_alloc(memcg, lru, gfp);
-+	mem_cgroup_put(memcg);
-+	return res;
-+}
- #else
- static inline void memcg_init_list_lru(struct list_lru *lru, bool memcg_aware)
- {
+diff --git a/mm/memory.c b/mm/memory.c
+index 0c9d9c2cbf0e..552fe26a042a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4752,13 +4752,15 @@ static struct folio *alloc_swap_folio(struct vm_fault *vmf)
+ 	while (orders) {
+ 		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+ 		folio = vma_alloc_folio(gfp, order, vma, addr);
+-		if (folio) {
+-			if (!mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
+-							    gfp, entry))
+-				return folio;
++		if (!folio)
++			goto next;
++		if (mem_cgroup_swapin_charge_folio(folio, vma->vm_mm, gfp, entry)) {
+ 			count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK_CHARGE);
+ 			folio_put(folio);
++			goto next;
+ 		}
++		return folio;
++next:
+ 		count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK);
+ 		order = next_order(&orders, order);
+ 	}
+@@ -5270,24 +5272,24 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+ 	while (orders) {
+ 		addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+ 		folio = vma_alloc_folio(gfp, order, vma, addr);
+-		if (folio) {
+-			if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
+-				count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+-				folio_put(folio);
+-				goto next;
+-			}
+-			folio_throttle_swaprate(folio, gfp);
+-			/*
+-			 * When a folio is not zeroed during allocation
+-			 * (__GFP_ZERO not used) or user folios require special
+-			 * handling, folio_zero_user() is used to make sure
+-			 * that the page corresponding to the faulting address
+-			 * will be hot in the cache after zeroing.
+-			 */
+-			if (user_alloc_needs_zeroing())
+-				folio_zero_user(folio, vmf->address);
+-			return folio;
++		if (!folio)
++			goto next;
++		if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
++			count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
++			folio_put(folio);
++			goto next;
+ 		}
++		folio_throttle_swaprate(folio, gfp);
++		/*
++		 * When a folio is not zeroed during allocation
++		 * (__GFP_ZERO not used) or user folios require special
++		 * handling, folio_zero_user() is used to make sure
++		 * that the page corresponding to the faulting address
++		 * will be hot in the cache after zeroing.
++		 */
++		if (user_alloc_needs_zeroing())
++			folio_zero_user(folio, vmf->address);
++		return folio;
+ next:
+ 		count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK);
+ 		order = next_order(&orders, order);
 -- 
 2.54.0
 
