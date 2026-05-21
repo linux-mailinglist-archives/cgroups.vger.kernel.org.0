@@ -1,161 +1,182 @@
-Return-Path: <cgroups+bounces-16138-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16139-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WBcpHK1jDmpG+QUAu9opvQ
-	(envelope-from <cgroups+bounces-16138-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 03:45:17 +0200
+	id eOvwBWFwDmq8+gUAu9opvQ
+	(envelope-from <cgroups+bounces-16139-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 04:39:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C15BA59DC8F
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 03:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B94B59E26F
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 04:39:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2631430534F8
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 01:43:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8BB10303F29B
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 02:37:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89430191F91;
-	Thu, 21 May 2026 01:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BAF374E67;
+	Thu, 21 May 2026 02:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hUoRj7Xx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="onsgQubU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68CC3126B1;
-	Thu, 21 May 2026 01:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2E72D73B5
+	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 02:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779327805; cv=none; b=ZbSRnZx90MtHAcr1357kPOYejGvFp+vNxk3YXtWG1GHRBzp8GkIHEGdjTzqzNwZIiXq0bEAm3pT4hXBKoX+RjapZfW9e0kglA4hHNHWsu0JxWJeKt+edd5lBY2/Ftio1OoABVvWggdj/bVwr/+889pYpqHOzuXIEtwEyvarbZgw=
+	t=1779331040; cv=none; b=PR8hLOlQ4EV2AWIFbRy/yk0HSnz7okv8Hw08po2GYRShmkmPdyLxv7hnHbT949zgVpcgZFUddljYAjLYsw8OkHQBncihtsZAS3Phgy/9Vwo+3cFcXBU6klJnomqxufUfQ2umUNkEeeVK2rbaxK+5yW6CB0eZAbNTk4l77zxBlEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779327805; c=relaxed/simple;
-	bh=EmnHGDbTdw48NKTSfC+WeBfPXbDBkBkKYYyKn8M44T0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k5o5j+efa0yZU/cAuybtUh/TAx/I7KxZs1La9ypyqcbkwrDkYVRljt471Ct4DFWZvJ7+4UG6AT7yWm0uchvayz1OdOcrt3MggF2qHmSmCRWCSUx5QptZcyQzPFrpwTFZlNxGsIM0te5Qu9w9EtP2ozuJ5FnX2fr1+pYiQ1V0les=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hUoRj7Xx; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B589E1F000E9;
-	Thu, 21 May 2026 01:43:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779327795;
-	bh=TjSMEOl6HoJhfnGhlg9lwlgKo2mAJunoCTjT72+1vmE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=hUoRj7Xx7zxiV+y2G/ilfDYIoH03YyCV33rF5ZScmU4APkemG0NbVIlfShmstGYt6
-	 f0GlCYPAR8fEcrG6sdt7CoPyyEM/eE9tW58ruj7OMa6SzbSXowgHgF4RFAnenu+VOq
-	 8w/ByKROGz2z2bg2xsS5O/8UorPYoh3ahCu29UKzbQ6hcRKyJXgZdGSsO2QaiJa1NL
-	 REFS4+E4XIIWs20Am3SV+m/fPATBFrERJqYmxwwRHASUGUVaIrzzIurw0iCj1cer2x
-	 05aBKdCSdnrUwVRT12R9PSEal3c//gBn8AiJ9oJzRosvwhVIpbK3bctDGWLJIrBRoG
-	 x8HDoFG0Rbmdw==
-Message-ID: <5b09f618-3b84-4163-84f9-f3adc0f1cc97@kernel.org>
-Date: Thu, 21 May 2026 10:43:11 +0900
+	s=arc-20240116; t=1779331040; c=relaxed/simple;
+	bh=hvP+zx5nDdySfGXoXc3/DIIrPxhFWJ7VUfVTgfDPrRo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=k5mTMKxgzEdGYIeQlN9f3mUhMKHs5mG5XkobAuFPc5AX4QUYkGWB+I6LfV4wx+Jc9ha0oApiVB348UYyPcrrBUM+yQ29u8w19Urq7QgRL3oLgIUENFE5iZYDyH+dphSpHqVLOtS60zyr+AUeID74+bwTYmp+oKaO3/WwQyKhU1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=onsgQubU; arc=none smtp.client-ip=209.85.214.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2bd2051167eso25217965ad.1
+        for <cgroups@vger.kernel.org>; Wed, 20 May 2026 19:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779331039; x=1779935839; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :mail-followup-to:references:in-reply-to:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3VXZEZTkDJvE/SCtCoJk4/cTfgLUHmkSXPo8xqseOk=;
+        b=onsgQubU/kgx/G2DdUwFlrg/t3/ANUs6CPop6n4AuuDfyKhhZzjWppPRxAcU1zEgnv
+         /qSKKz3lrbGOs5k7n+UqZJ1rF9+bQkbRZo4S7yWHceQjcYYJbiOt28B7uI7hMbN7Pk6p
+         UyluhnRSVjEiAVr7TCeXeHmccH+nOVev5y3cqAhFEcejyI3Vd6IqclJWzi/fHZr6H1sl
+         /GIAYufA9oShXNR5PzAjPNBLLBPsT+tuTumqc1U0D6ayxA4Fhk0FB6OpmN5KnoFSwr7d
+         uyslNqr7tDYUfJ98JNiS9xYhAvU+L9jwwj6je8gzOcAExsOCnnob+XSgsU260e0mUAHm
+         uzGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779331039; x=1779935839;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :mail-followup-to:references:in-reply-to:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e3VXZEZTkDJvE/SCtCoJk4/cTfgLUHmkSXPo8xqseOk=;
+        b=eF/nJ2brAVFb9nL+iC/2EPZIMnd8v9Dig1r5k3oviFQZd2+UZnycCD2lXkMshiHsMS
+         uSTJglSEP8rhISBGD2fz07udXj/tOMi7CQNJYXREvCYAek1KKu/XsH+njENLGBVAtkL1
+         eR0Letqse3UyW1mXrTbxZUlkJT+hb9IOnhKYFSedP7H3j1fWdC3SkV9rpY/XJzbKOfb5
+         iujbDrXB6dKrHShxtbNN2LawTNODOduESrF37+Mdp/IwLLo9aCJYJUSrKEqMh7vwivbZ
+         ATeS+UlM0GsAGDi1j7cWUwsZdwL/quWF/vZAzmCB+fDUYw1biJmgdn6+x6ii8U6s9OE2
+         njXg==
+X-Forwarded-Encrypted: i=1; AFNElJ94+l7Er7MjJpVMu1YK0Wr7MjN5YySuojswJHrekpCI7D+a2MhxPp6SQJZ3T38hPkoaiPHyD+o4@vger.kernel.org
+X-Gm-Message-State: AOJu0YxflMJFHdg/zFJI+J4csNKlZynWdjTcebdIFR2xv7gzjDaKezsS
+	unM6hYTKoWqmm1MuDkQbLZHb/s85BltkWb6enfQ0KECwRyI71I1l4eGsEXdxQp1FI6I=
+X-Gm-Gg: Acq92OG8QDiXfUy/nYvcoLq4S1u5lr/Ke9Gpr5ZSC1+hSEMxfsl5Slks8/8hxhlYavh
+	an/TJoWd2noWgY/yVn2Za/vxBNQ3dOFJ8euI7Gk7IUwfuQhiG3y/xVUniM+LLTF/wixVnk4CBhz
+	QEWJ/6BOenXGuMlenYMYKQcOMeNylkOD8Olw8I9fjd3DFN42RJPAM5WffM/4PD2b800h8APYM1L
+	aRtmev4V0oHUWiBMLlEUmRWXkpdogZNO8R9ZmXt/o2JJtCLAmm8WvTIhP2ZNmUwwl6fqcD0wkoW
+	t0uDf/k5qdX82+mr3Wms+YqHZx410O4cdwQYvCZ5hp8tty7jeo+vhJ/qacwaKmx7IvP+BYKdTyx
+	tfH2wnJ3sLVpv2xS9X5GT12lw0QmKZyTvTxTUF9H4RYYRiXhb1VkciQAzMW0U5LuehlctrBc8kd
+	qQNQ0cW3d8ztnHOH0N3r6q91HcTMinrcuv/El2
+X-Received: by 2002:a17:902:d591:b0:2be:3dbc:eee5 with SMTP id d9443c01a7336-2bea2fcfd85mr7414165ad.2.1779331038883;
+        Wed, 20 May 2026 19:37:18 -0700 (PDT)
+Received: from localhost.localdomain ([116.80.91.208])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2bd5d0f9155sm245183765ad.59.2026.05.20.19.37.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 May 2026 19:37:18 -0700 (PDT)
+From: Cunlong Li <shenxiaogll@gmail.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: rstat: relax NMI guard after switch to try_cmpxchg
+Date: Thu, 21 May 2026 10:37:12 +0800
+Message-Id: <ag5v2LFie20WN+tw@debian>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <ag44Seky7krETHe6@linux.dev>
+References: <20260520-nmi-v1-1-f2c8f08e4a2b@gmail.com> <ag44Seky7krETHe6@linux.dev>
+Mail-Followup-To: Cunlong Li <shenxiaogll@gmail.com>, Shakeel Butt <shakeel.butt@linux.dev>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] memcg: multi objcg charge support
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
- Alexandre Ghiti <alex@ghiti.fr>, Joshua Hahn <joshua.hahnjy@gmail.com>,
- Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel test robot <oliver.sang@intel.com>
-References: <20260520053123.2709959-1-shakeel.butt@linux.dev>
- <20260520053123.2709959-5-shakeel.butt@linux.dev>
- <4e20f643-6983-4b6e-b12d-c6c4eb20ae0c@kernel.org>
- <ag5Z9uIMoXpr3rLP@linux.dev>
-Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <ag5Z9uIMoXpr3rLP@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16138-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16139-lists,cgroups=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shenxiaogll@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: C15BA59DC8F
+X-Rspamd-Queue-Id: 6B94B59E26F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-
-
-On 5/21/26 10:05 AM, Shakeel Butt wrote:
-> On Wed, May 20, 2026 at 06:35:30PM +0900, Harry Yoo wrote:
->>> @@ -3350,19 +3405,45 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
->>>    		goto out;
->>>    	}
->>> -	stock_nr_bytes = stock->nr_bytes;
->>> -	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
->>> -		drain_obj_stock(stock);
->>> +	for (i = 0; i < NR_OBJ_STOCK; ++i) {
->>> +		struct obj_cgroup *cached = READ_ONCE(stock->cached[i]);
->>> +
->>> +		if (!cached) {
->>> +			if (empty_slot == -1)
->>> +				empty_slot = i;
->>> +			continue;
->>> +		}
->>> +		if (cached == objcg) {
->>> +			slot = i;
->>> +			break;
->>> +		}
->>> +	}
->>> +
->>> +	if (slot == -1) {
->>> +		slot = empty_slot;
->>> +		if (slot == -1) {
->>> +			slot = get_random_u32_below(NR_OBJ_STOCK);
->>
->> It would break kmalloc_nolock() because _get_random_bytes() uses a spinlock.
->> perhaps prandom_u32_state() should be sufficient in this case.
-
-s/spinlock/local_lock/
-
->> Is there a reason why it uses random eviction, unlike multi-memcg percpu
->> charge cache?
+On Wed, May 20, 2026 at 03:41:02PM -0700, Shakeel Butt wrote:
+> On Wed, May 20, 2026 at 11:30:54AM +0800, Cunlong Li wrote:
+> > Commit 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi safe") used
+> > this_cpu_cmpxchg() for the lockless insertion, and therefore required
+> > both ARCH_HAVE_NMI_SAFE_CMPXCHG and ARCH_HAS_NMI_SAFE_THIS_CPU_OPS in
+> > the NMI guard: on archs without the latter, this_cpu_cmpxchg() falls
+> > back to "local_irq_save() + plain cmpxchg", and local_irq_save()
+> > cannot mask NMIs.
+> > 
+> > Commit 3309b63a2281 ("cgroup: rstat: use LOCK CMPXCHG in
+> > css_rstat_updated") later replaced this_cpu_cmpxchg() with plain
+> > try_cmpxchg() to fix cross-CPU lockless-list corruption, but left the
+> > NMI guard untouched.  After that switch, css_rstat_updated() no longer
+> > performs any this_cpu_*() RMW operations and only relies on the arch
+> > having NMI-safe cmpxchg, so ARCH_HAS_NMI_SAFE_THIS_CPU_OPS is no
+> > longer required in the guard.
+> > 
+> > Relax the guard accordingly so that archs which have HAVE_NMI and
+> > ARCH_HAVE_NMI_SAFE_CMPXCHG but not ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+> > (e.g. sparc, powerpc on PPC64/BOOK3S) can benefit from the existing
+> > CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC path.  Without this, the css
+> > is never queued in NMI on those archs, and the atomics staged by
+> > account_{slab,kmem}_nmi_safe() are not drained by flush_nmi_stats().
+> > 
+> > Fixes: 3309b63a2281 ("cgroup: rstat: use LOCK CMPXCHG in css_rstat_updated")
+> > Signed-off-by: Cunlong Li <shenxiaogll@gmail.com>
 > 
-> Oh I didn't know and actually we are already using get_random_u32_below() in
-> refill_stock(). So, it need fixing as well. That would be a separate patch.
+> Looks fine but how did you find this? AI?
+> 
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> 
 
-Ouch, I see.
-> I will explore prandom_u32_state().
+Yes, AI-assisted.
 
-Thanks!
+I'm new to kernel development and was studying the memcg code.
+When I came across the guard in css_rstat_updated():
 
-FYI, SLUB had a similar issue that was recently fixed:
-commit a1e244a9f1778 ("mm/slab: use prandom if !allow_spin").
+	if ((!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) ||
+	     !IS_ENABLED(CONFIG_ARCH_HAS_NMI_SAFE_THIS_CPU_OPS)) && in_nmi())
+		return;
 
-It uses prandom if spinning is not allowed when shuffling slab freelist.
+I asked Opus what those two CONFIGs mean and why the function
+returns when in_nmi(). It suggested ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
+may no longer be required after the switch from this_cpu_cmpxchg()
+to try_cmpxchg(). I then went through the related commit history
+and confirmed the analysis.
 
--- 
-Cheers,
-Harry / Hyeonggon
-
+Thanks for the ack!
 
