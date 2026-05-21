@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-16179-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16180-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4D/CNglQD2pEJAYAu9opvQ
-	(envelope-from <cgroups+bounces-16179-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 20:33:45 +0200
+	id 2LHZCgdID2ptIgYAu9opvQ
+	(envelope-from <cgroups+bounces-16180-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 19:59:35 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3A305AB165
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 20:33:44 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D48185AAB14
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 19:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2AE7E30EB779
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 17:25:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 52B9A30805A4
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2026 17:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2E43783B5;
-	Thu, 21 May 2026 17:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3E693C4155;
+	Thu, 21 May 2026 17:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YmVIoM7s"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gtJKinXs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B293DB332
-	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 17:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1010C384CED
+	for <cgroups@vger.kernel.org>; Thu, 21 May 2026 17:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779384344; cv=none; b=q+uBma7rw5KB7dhtJ7qBv5I6NHJ0YjzlihredCRzP+W73sazOqi8MnJ37fu//B4cJYmuaEpdfYJLknD556Kg6x1Ob5S4cocyfcQnpCagYGTRQpqA3IAhF1A0q7/ZF4sVyQYbp50e8i/jM2MR1oyJZXPCwS9mxlqVDjxvLiRlBJo=
+	t=1779384520; cv=none; b=KYVkuzkjThf8ZKCU727ZQ/kJbLpPPld59zf8FJ6piwLC6Pk+OH5w4aKUnwC44Uh7Vgfeqq/2L1ZODQ5yzfQ5EVz8w9VXoYQ0Hi0fpfPpllOYRjIDw/vY11sSl+pVm3q1Y9sJHjacA/P+yci5hsBujarB7KSn+i8REvpJ2qbohpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779384344; c=relaxed/simple;
-	bh=mRLF46kf7HA8naZ3dQNeBQ9NbsNWENZ8rBEdJoXY+EE=;
+	s=arc-20240116; t=1779384520; c=relaxed/simple;
+	bh=/Y4JOjqiWrH99jRT/1kQW4MKozhFjKKnxjBVmamwLAk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jRv/K8vJrvbRC3fRyPTtdIJks45Jv6K/IiVlQe191QgJULnrAH96vfpnr9HmvOoFbcFzUexep5cMkuuBytRjuROVlJaqTPlCEjFRXojgmNh3iqJOFDmkLeI090caQixKOwm+nHp0w3qKnX6/Hp8xQXkjQM6Vt5ZNRhyVpG8tLuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YmVIoM7s; arc=none smtp.client-ip=91.218.175.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=bibUBB1VWUL2sCquImDw/+weAjIwHoCw8fcqsNG3C4MxKJUvWCBSTDcmar+yxnlu9pST9epfMhxrCN3i5IXscRigla54HYi9O6W8vXdWVVw/fsx4+/jDFFUzIsFJWUVwkOv0Z8DfvDO6srGshW00N6CbM9GSHjbSbGqJmAfT1GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gtJKinXs; arc=none smtp.client-ip=91.218.175.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 21 May 2026 10:25:19 -0700
+Date: Thu, 21 May 2026 10:28:19 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779384326;
+	t=1779384516;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=iMwxwYsInnQKNuZpDpS5C1/ioRJ+8U1UfRBdgFKYaUc=;
-	b=YmVIoM7sBMemQ/wGQmebFrGGn3b1FfSmy2xsVZhLKgadJl+TMfwx4qj3xmAFBd4E5nekDc
-	qZiao4IOLB0FhuCE9ppf8VD/37qOpevXEKQ6RTy4DnpjmnURHE2K3CHi7tKyi1RYR0UnjA
-	4xAEDOf3Cz7+ibx+oPvAZmOIYpIeHlA=
+	bh=VMh0FfyEhpzP/o6+/cG0EuYR7BrwDmTdRcZFskTN7I0=;
+	b=gtJKinXsA+PvoLRM/qYCELyTzZ8blaZkWqvMW4qMo4oYOD2Y0aCv/YPNS9HYL2paKJgsak
+	UCJngQ0G3V1bmIDRcrnrS9n2pZzZd/MUkrgqnDwcIL9sCdEZXgRDTF0RiTkwZnvG+ZxdjK
+	TFDeQo9NvtXo5wql6LmmFsA8m73X9Sk=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Alexandre Ghiti <alex@ghiti.fr>
@@ -60,11 +60,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Wei Xu <weixugc@google.com>, Yuanchu Xie <yuanchu@google.com>, 
 	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Joshua Hahn <joshua.hahnjy@gmail.com>, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/8] mm: percpu: charge obj_exts allocation with
- __GFP_ACCOUNT
-Message-ID: <ag8-Dfoco9qQho0A@linux.dev>
+Subject: Re: [PATCH 4/8] mm: memcontrol: track MEMCG_KMEM per NUMA node
+Message-ID: <ag9AY2SrcsE1B3Ti@linux.dev>
 References: <20260511202136.330358-1-alex@ghiti.fr>
- <20260511202136.330358-3-alex@ghiti.fr>
+ <20260511202136.330358-5-alex@ghiti.fr>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -73,19 +72,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260511202136.330358-3-alex@ghiti.fr>
+In-Reply-To: <20260511202136.330358-5-alex@ghiti.fr>
 X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16179-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16180-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,gentwo.org,gmail.com,chromium.org,google.com,tencent.com,oracle.com,kvack.org,vger.kernel.org];
@@ -99,40 +98,89 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: D3A305AB165
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: D48185AAB14
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, May 11, 2026 at 10:20:37PM +0200, Alexandre Ghiti wrote:
-> This is a preparatory patch for upcoming per-memcg-per-node kmem
-> accounting.
+On Mon, May 11, 2026 at 10:20:39PM +0200, Alexandre Ghiti wrote:
+> This patch gets rid of MEMCG_KMEM and wires all the "generic" functions
+> by introducing per-node obj_cgroup objects.
 > 
-> pcpu allocations are always fully charged at once using
-> pcpu_obj_full_size(), which returns the size of the pcpu "metadata" +
-> pcpu "payload". But metadata and payload may not be allocated on the
-> same numa node, so charge the metadata independently from the payload.
+> Note that it does not convert the kmem users to proper per-memcg-per-node
+> accounting now, this is done in upcoming patches.
 > 
-> Do this by explicitly passing __GFP_ACCOUNT to the obj_exts allocation
-> and remove its accounting in pcpu_memcg_pre_alloc_hook().
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> ---
+>  include/linux/memcontrol.h | 23 ++++++++++----
+>  include/linux/mmzone.h     |  1 +
+>  mm/memcontrol.c            | 64 ++++++++++++++++++++++++--------------
+>  mm/vmstat.c                |  1 +
+>  4 files changed, 59 insertions(+), 30 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 568ab08f42af..17cf823160e4 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -35,7 +35,6 @@ enum memcg_stat_item {
+>  	MEMCG_SWAP = NR_VM_NODE_STAT_ITEMS,
+>  	MEMCG_SOCK,
+>  	MEMCG_PERCPU_B,
+> -	MEMCG_KMEM,
+>  	MEMCG_ZSWAP_B,
+>  	MEMCG_ZSWAPPED,
+>  	MEMCG_ZSWAP_INCOMP,
+> @@ -126,9 +125,10 @@ struct mem_cgroup_per_node {
+>  	struct list_head objcg_list;
+>  
+>  #ifdef CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC
+> -	/* slab stats for nmi context */
+> +	/* slab and kmem stats for nmi context */
+>  	atomic_t		slab_reclaimable;
+>  	atomic_t		slab_unreclaimable;
+> +	atomic_t		kmem;
+>  #endif
+>  };
+>  
+> @@ -190,6 +190,7 @@ struct obj_cgroup {
+>  		struct rcu_head rcu;
+>  	};
+>  	bool is_root;
+> +	int nid;
+>  };
+>  
+>  /*
+> @@ -254,10 +255,6 @@ struct mem_cgroup {
+>  	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
+>  	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
+>  
+> -#ifdef CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC
+> -	/* MEMCG_KMEM for nmi context */
+> -	atomic_t		kmem_stat;
+> -#endif
+>  	/*
+>  	 * Hint of reclaim pressure for socket memroy management. Note
+>  	 * that this indicator should NOT be used in legacy cgroup mode
+> @@ -776,6 +773,20 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+>  		percpu_ref_put(&objcg->refcnt);
+>  }
+>  
+> +static inline struct obj_cgroup *obj_cgroup_get_nid(struct obj_cgroup *objcg,
+> +						    int nid)
+> +{
+> +	struct obj_cgroup *nid_objcg;
+> +	struct mem_cgroup *memcg;
+> +
+> +	rcu_read_lock();
+> +	memcg = obj_cgroup_memcg(objcg);
+> +	nid_objcg = rcu_dereference(memcg->nodeinfo[nid]->objcg);
+> +	rcu_read_unlock();
+> +
+> +	return nid_objcg;
 
-Will all the entries in obj_exts array be for the same memcg? If not then why we
-are charging the whole array to the one which happen to allocate the array?
+What is guarating the life of nid_objcg?
 
-Sorry I don't know the details of percpu allocator, so asking some dumb
-questions:
-
-1. Does the alloc_percpu() (& similar functions) allocate the underlying on a
-   single node or does it allocate memory for each cpu on their local node?
-   For slub, it is on the same node, so the situation is easier to handle.
-
-2. On a typical system how much memory is consumed by obj_exts for the percpu
-   allocator chunks? I am wondering if we don't charge it, how much will we
-   loose?
-
-3. What would be side effect on assuming that obj_exts is on the same node as
-   the given chunk?
 
