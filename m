@@ -1,230 +1,228 @@
-Return-Path: <cgroups+bounces-16190-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16191-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8NLtF+24D2qCPAYAu9opvQ
-	(envelope-from <cgroups+bounces-16190-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 04:01:17 +0200
+	id qF8oKlC+D2ppPQYAu9opvQ
+	(envelope-from <cgroups+bounces-16191-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 04:24:16 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C4E5ADD3F
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 04:01:16 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B33C5ADF58
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 04:24:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 83A23300B445
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 01:52:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AF86D300EE8D
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 02:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABBF42BE7DD;
-	Fri, 22 May 2026 01:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED742E8DFC;
+	Fri, 22 May 2026 02:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="L2Lh02D+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uZMZU+Ao"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9B420D4E9;
-	Fri, 22 May 2026 01:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BD125B09F
+	for <cgroups@vger.kernel.org>; Fri, 22 May 2026 02:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779414727; cv=none; b=LF9MiGk8IrJJQAtZqbaPov/EsHiEBkEntXxKYjPjx7RWHQzecVKgmmRiZINGpLJQaAE7YhQYDuh9P0R+h62WUue5u46zH1Wzy1eqP/I4dhDj26fttpwEbRJaJCZvCXRbH3uWPynR9EVnSIfaSY8qLhC3frZuIDI+Lwa2/VfkA/g=
+	t=1779416651; cv=none; b=tnB/jljl2F3iWPGCD1BWhbSy9Fx8KEISfkT1RQaWjmGgxtxGumvzLIUkaQH6JG0bycw+dzwPBYrb9n0gABtYD+Y3d7LbFgQCdYOe6ar+AlPbba/n+Bqt/IQC+UQoZwekmibnuKGbLBg2ci/DpScBB/pltHuAppuhlks+8Hav3q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779414727; c=relaxed/simple;
-	bh=3SyIRDl/2ZYw/U+KoPVPRqoM4BSNvIYZQ3+EC9K80iA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=ii8QfelEN4t2OuBOnfRyEDDuBdMQTOXmzQ/2BasZd52HMyMTILMED/0jd5CWkUwR9N1bThMHUcypTs2sjIiGy5YT1DW1j7eX8x/IsL5fmRn0DRR72Cm+DJ5k3a5OenuEFRe8ag4mXqIzEiWQT4b/RxNkQmnEiSJKf7KknyW4DLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=L2Lh02D+; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12A231F000E9;
-	Fri, 22 May 2026 01:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux-foundation.org; s=korg; t=1779414725;
-	bh=Dyfcsiq/DCFXpxq5yQbpU2tFM6IQFzSOs7Lzid8qTR0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=L2Lh02D+6lZ2EjThkr03oBOiuaO2ST3bKnMDgaqAUoV/V2ap+v5QhU49hIhzv5YIE
-	 gTokUqnQb/0UGvN0asj/Aj/ZZ59YyBasIyRUxsL411orhSXQfXKpZzsnowk71dcsFi
-	 3GWv1UkjvYatzyEj33JPVZk6lMsmZ6JMfSgH/lTU=
-Date: Thu, 21 May 2026 18:52:04 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: kasong@tencent.com
-Cc: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>,
- linux-mm@kvack.org, David Hildenbrand <david@kernel.org>, Zi Yan
- <ziy@nvidia.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song
- <baohua@kernel.org>, Hugh Dickins <hughd@google.com>, Chris Li
- <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham
- <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Johannes Weiner
- <hannes@cmpxchg.org>, Youngjun Park <youngjun.park@lge.com>, Chengming Zhou
- <chengming.zhou@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Usama Arif <usama.arif@linux.dev>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Lorenzo Stoakes <ljs@kernel.org>, Yosry Ahmed
- <yosry@kernel.org>, Qi Zheng <qi.zheng@linux.dev>
-Subject: Re: [PATCH v5 12/12] mm, swap: merge zeromap into swap table
-Message-Id: <20260521185204.a109bfcd1e0e8f52135c5ed5@linux-foundation.org>
-In-Reply-To: <20260517-swap-table-p4-v5-12-88ae43e064c7@tencent.com>
-References: <20260517-swap-table-p4-v5-0-88ae43e064c7@tencent.com>
-	<20260517-swap-table-p4-v5-12-88ae43e064c7@tencent.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1779416651; c=relaxed/simple;
+	bh=MgmG/UQzDO+rmrLnLu3XIzZ7/WCZ3CZ0K2U681MVv+8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RgpgQRN98i3kM1pYR5RSSGvw5+AmjUThQIHJy1EENZ+lhC1fVwI0c312o1imIVlq28SB6eX2kDC3kl9ATtCBxw7q4alj0kFUkXmliovHGfmuVSPjRs4W9kvtBnINRJXGHUvRyVVNgQqV7r5R+T5vTS15mv14jMF5I6v+PHNg5b0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uZMZU+Ao; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <3eaa3522-b41f-4e69-a260-ebfd94fad722@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779416646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HbQIAvOJY9pLyi2McPglRZSeFKk8rXs49yW8pjAXz28=;
+	b=uZMZU+Aoo7vlKannwgx46GlcQSL2F/RTH5pzZEsYEqWykgwRxE4gNZqt74RlDWAm6osy6F
+	bLo2Ip7BZ0E7KU7cgSuPf7rmVGB0VzDpIQoEav/jRZDfpDPxj7XiRQPpMZuOGr6cheBaJ2
+	2l45vYcjqlEGnBLjQuuXjIcZl4rx7c0=
+Date: Fri, 22 May 2026 10:23:31 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [PATCH v2 2/4] memcg: uint16_t for nr_bytes in obj_stock_pcp
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Alexandre Ghiti <alex@ghiti.fr>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>, Harry Yoo <harry@kernel.org>,
+ Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel test robot <oliver.sang@intel.com>
+References: <20260522011908.1669332-1-shakeel.butt@linux.dev>
+ <20260522011908.1669332-3-shakeel.butt@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <20260522011908.1669332-3-shakeel.butt@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [5.34 / 15.00];
-	SEM_URIBL(3.50)[huaweicloud.com:email];
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MV_CASE(0.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16190-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	R_DKIM_ALLOW(0.00)[linux-foundation.org:s=korg];
-	GREYLIST(0.00)[pass,body];
-	DMARC_NA(0.00)[linux-foundation.org];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16191-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,kvack.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,vger.kernel.org];
+	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups,kasong.tencent.com];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux-foundation.org:+];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c09:e001:a7::/64:c];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	NEURAL_SPAM(0.00)[0.576];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: E6C4E5ADD3F
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:mid,linux.dev:dkim,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,intel.com:email]
+X-Rspamd-Queue-Id: 4B33C5ADF58
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sun, 17 May 2026 23:39:51 +0800 Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org> wrote:
 
-> From: Kairui Song <kasong@tencent.com>
+
+On 5/22/26 9:19 AM, Shakeel Butt wrote:
+> Currently struct obj_stock_pcp stores nr_bytes in an 'unsigned int'
+> which is 4 bytes on 64-bit machines. Switch the field to uint16_t to
+> shrink the per-CPU cache.
 > 
-> By allocating one additional bit in the swap table entry's flags field
-> alongside the count, we can store the zeromap inline
+> The kernel supports PAGE_SIZE_4KB, _8KB, _16KB, _32KB, _64KB and
+> _256KB (see HAVE_PAGE_SIZE_* in arch/Kconfig). After the
+> PAGE_SIZE-aligned flush in __refill_obj_stock(), the sub-page
+> remainder fits in uint16_t up through 64KiB pages where PAGE_SIZE - 1
+> == U16_MAX, but on 256KiB pages PAGE_SIZE - 1 == 0x3FFFF exceeds
+> U16_MAX. The accumulator also needs to stay within uint16_t between
+> page-aligned flushes on 64KiB pages where PAGE_SIZE itself is
+> U16_MAX + 1.
 > 
-> For 64 bit systems, zeromap will store in the swap table, avoiding zeromap
-> allocation. It reduces the allocated memory. That is the happy path.
+> Accumulate the new total in an 'unsigned int' local, then:
 > 
-> For certain 32-bit archs, there might not be enough bits in the swap
-> table to contain both PFN and flags. Therefore, conditionally let each
-> cluster have a zeromap field at build time, and use that instead.
-> If the swapfile cluster is not fully used, it will still save memory for
-> zeromap. The empty cluster does not allocate a zeromap. In the worst case,
-> all cluster are fully populated. We will use memory similar to the
-> previous zeromap implementation.
+>    1. Flush whenever the accumulator would hit U16_MAX. Together with
+>       the existing allow_uncharge flush at PAGE_SIZE, this keeps the
+>       uint16_t safe on PAGE_SIZE <= 64KiB.
 > 
-> A few macros were moved to different headers for build time struct
-> definition.
+>    2. On configs with PAGE_SHIFT > 16 (PAGE_SIZE_256KB on hexagon and
+>       powerpc 44x), push any sub-page remainder above U16_MAX into
+>       objcg->nr_charged_bytes via atomic_add before storing back, so
+>       the store cannot silently truncate. The PAGE_SHIFT > 16 guard
+>       folds the branch out at compile time on smaller page sizes.
 > 
-> ...
->
-> @@ -469,13 +474,21 @@ static int swap_cluster_alloc_table(struct swap_cluster_info *ci, gfp_t gfp)
->  		VM_WARN_ON_ONCE(ci->memcg_table);
->  		ci->memcg_table = kzalloc_obj(*ci->memcg_table, gfp);
->  		if (!ci->memcg_table)
-> -			ret = -ENOMEM;
-> +			goto err_free;
->  	}
->  #endif
-> -	if (ret)
-> -		swap_cluster_free_table(ci);
->  
-> -	return ret;
-> +#if !SWAP_TABLE_HAS_ZEROFLAG
-> +	VM_WARN_ON_ONCE(ci->zero_bitmap);
-> +	ci->zero_bitmap = bitmap_zalloc(SWAPFILE_CLUSTER, gfp);
-> +	if (!ci->zero_bitmap)
-> +		goto err_free;
-> +#endif
-> +	return 0;
+> Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
+> ---
+> 
+> Changes since v1:
+> - Collected tags
+> - Rearrange fields of obj_stock_pcp (David Laight)
+> - Fix comparison operator (Harry)
+> 
+>   mm/memcontrol.c | 33 +++++++++++++++++++++++++++------
+>   1 file changed, 27 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d7c162946719..e4f00a8159d5 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2019,8 +2019,8 @@ static DEFINE_PER_CPU_ALIGNED(struct memcg_stock_pcp, memcg_stock) = {
+>   
+>   struct obj_stock_pcp {
+>   	local_trylock_t lock;
+> -	unsigned int nr_bytes;
+>   	struct obj_cgroup *cached_objcg;
+> +	uint16_t nr_bytes;
+>   	int16_t node_id;
+>   	int nr_slab_reclaimable_b;
+>   	int nr_slab_unreclaimable_b;
+> @@ -3331,6 +3331,7 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
+>   			       bool allow_uncharge)
+>   {
+>   	unsigned int nr_pages = 0;
+> +	unsigned int stock_nr_bytes;
+>   
+>   	if (!stock) {
+>   		nr_pages = nr_bytes >> PAGE_SHIFT;
+> @@ -3339,21 +3340,41 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
+>   		goto out;
+>   	}
+>   
+> +	stock_nr_bytes = stock->nr_bytes;
+>   	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
+>   		drain_obj_stock(stock);
+>   		obj_cgroup_get(objcg);
+> -		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+> +		stock_nr_bytes = atomic_read(&objcg->nr_charged_bytes)
+>   				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
+>   		WRITE_ONCE(stock->cached_objcg, objcg);
+>   
+>   		allow_uncharge = true;	/* Allow uncharge when objcg changes */
+>   	}
+> -	stock->nr_bytes += nr_bytes;
+> +	stock_nr_bytes += nr_bytes;
 > +
-> +err_free:
-> +	swap_cluster_free_table(ci);
-> +	return -ENOMEM;
->  }
+> +	/* Since stock->nr_bytes is uint16_t, don't refill >= U16_MAX */
 
-My m68k defconfig warned.  I'll do the below, which looks good enough. 
-Please check.
+                                                            ^
 
-Perhaps a custom guard() handler would clean things up here.
+should also be changed to: don't refill > U16_MAX ?
 
+Otherwise:
 
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: mm-swap-merge-zeromap-into-swap-table-fix-2
-Date: Thu May 21 06:39:20 PM PDT 2026
+Acked-by: Qi Zheng <qi.zheng@linux.dev>
 
-mm/swapfile.c: In function 'swap_cluster_alloc_table':
-mm/swapfile.c:488:1: warning: label 'err_free' defined but not used [-Wunused-label]
-  488 | err_free:
-      | ^~~~~~~~
+Thanks!
 
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Baoquan He <bhe@redhat.com>
-Cc: Barry Song <baohua@kernel.org>
-Cc: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: Chris Li <chrisl@kernel.org>
-Cc: David Hildenbrand <david@kernel.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Kairui Song <kasong@tencent.com>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: Lorenzo Stoakes <ljs@kernel.org>
-Cc: Muchun Song <muchun.song@linux.dev>
-Cc: Nhat Pham <nphamcs@gmail.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Youngjun Park <youngjun.park@lge.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- mm/swapfile.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
---- a/mm/swapfile.c~mm-swap-merge-zeromap-into-swap-table-fix-2
-+++ a/mm/swapfile.c
-@@ -472,22 +472,22 @@ static int swap_cluster_alloc_table(stru
- 	if (!mem_cgroup_disabled()) {
- 		VM_WARN_ON_ONCE(ci->memcg_table);
- 		ci->memcg_table = kzalloc_obj(*ci->memcg_table, gfp);
--		if (!ci->memcg_table)
--			goto err_free;
-+		if (!ci->memcg_table) {
-+			swap_cluster_free_table(ci);
-+			return -ENOMEM;
-+		}
- 	}
- #endif
- 
- #if !SWAP_TABLE_HAS_ZEROFLAG
- 	VM_WARN_ON_ONCE(ci->zero_bitmap);
- 	ci->zero_bitmap = bitmap_zalloc(SWAPFILE_CLUSTER, gfp);
--	if (!ci->zero_bitmap)
--		goto err_free;
-+	if (!ci->zero_bitmap) {
-+		swap_cluster_free_table(ci);
-+		return -ENOMEM;
-+	}
- #endif
- 	return 0;
--
--err_free:
--	swap_cluster_free_table(ci);
--	return -ENOMEM;
- }
- 
- /*
-_
+> +	if ((allow_uncharge && (stock_nr_bytes > PAGE_SIZE)) ||
+> +	    stock_nr_bytes > U16_MAX) {
+> +		nr_pages = stock_nr_bytes >> PAGE_SHIFT;
+> +		stock_nr_bytes &= (PAGE_SIZE - 1);
+> +
+> +		/*
+> +		 * On configs with PAGE_SHIFT > 16 (PAGE_SIZE_256KB on
+> +		 * hexagon and powerpc 44x), the sub-page remainder can
+> +		 * still exceed U16_MAX. Push the excess back to
+> +		 * objcg->nr_charged_bytes so the store into uint16_t
+> +		 * cannot silently truncate; folded out at compile time
+> +		 * on smaller page sizes.
+> +		 */
+> +		if (PAGE_SHIFT > 16 && stock_nr_bytes > U16_MAX) {
+> +			unsigned int kept = stock_nr_bytes & U16_MAX;
+>   
+> -	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
+> -		nr_pages = stock->nr_bytes >> PAGE_SHIFT;
+> -		stock->nr_bytes &= (PAGE_SIZE - 1);
+> +			atomic_add(stock_nr_bytes - kept,
+> +				   &objcg->nr_charged_bytes);
+> +			stock_nr_bytes = kept;
+> +		}
+>   	}
+> +	stock->nr_bytes = stock_nr_bytes;
+>   
+>   out:
+>   	if (nr_pages)
 
 
