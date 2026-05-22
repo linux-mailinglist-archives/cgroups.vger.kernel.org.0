@@ -1,175 +1,135 @@
-Return-Path: <cgroups+bounces-16217-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16218-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aI2VLnCGEGqEYwYAu9opvQ
-	(envelope-from <cgroups+bounces-16217-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 18:38:08 +0200
+	id +IhsHFqJEGriYwYAu9opvQ
+	(envelope-from <cgroups+bounces-16218-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 18:50:34 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635195B7A6E
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 18:38:08 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF4845B7C33
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 18:50:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C46CB3001FD3
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 16:38:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 183CD3011A4D
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2026 16:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B477941C303;
-	Fri, 22 May 2026 16:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F4B46AF2B;
+	Fri, 22 May 2026 16:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="giS18ONg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BoMQGnqw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060FD370AF3
-	for <cgroups@vger.kernel.org>; Fri, 22 May 2026 16:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7A5201113;
+	Fri, 22 May 2026 16:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779467884; cv=none; b=Jt1XGVHe9OjFl/fpeKlsNglYLhSZioX4DpbhKWmJzW63IomH3wizl3z1CoJwgP9+cz9h0GDUzuXWeZk0IuytIrNKIYmuQknuNizUST45/8YEbyUCDN0h3iAn8aR+6iGnm4InCBMYPJAQnHIv9zmOGpG3G00ISPH/nurqC6KB6Tg=
+	t=1779468473; cv=none; b=lx5+tye9YIlaWGsYXnjXnPr2sFq6CaNl21se+IK6+iRK+6RccayoFFmm+/bKchEVcJ/qf2xuHkMagLpCbfQpgZM1S1UMXAG1iMVeMZE0Nb21VYTDPtiAmHb3dB5cYLQkQsujV5X51UrS3QnDRya2106tse5YmIQRXZCkw143zKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779467884; c=relaxed/simple;
-	bh=lxNyYQr0cQNVzW3YAilHzvlyx477lK01M8Ia03cHmfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V9R8g/eoymchY1f3m5VTS3sRLiDhsfSjoDP8Z1NoxFv080yDejrNP9llKS8Nv1uBPta4KTExRptmmUFHz3lwc6A4BZ2hbvErBcNXI21b7JQCI/UWM+rK55JQa6p8MGgrSRrscSTleuTBX8SEqj4TJ0AKZH2gxEnwN32Ad1eYtCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=giS18ONg; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 22 May 2026 09:37:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779467871;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oGer9ojiBJJKSgW4zmxqBqKbeEU9rBkVQbJdBxhzT0c=;
-	b=giS18ONglvazOIz5+CrJmLvo+1ZX/TD6DtT1KkoaLTzb5sdswuQCbKxe6EBNa8gP4WzY3T
-	HeuaJ+sBuZnuEds/er5wc87wu0eCq6itAzxxcRAMWc+YtmGQGQyyx4izS9xDU2SUIm1NVo
-	J2Ha8K+cWUlsZqyBlo6lKnjYMcimAs0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Muchun Song <muchun.song@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Qi Zheng <qi.zheng@linux.dev>, Alexandre Ghiti <alex@ghiti.fr>, 
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Harry Yoo <harry@kernel.org>, 
-	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH v2 4/4] memcg: multi objcg charge support
-Message-ID: <ahCGEAQ6USZDYrUo@linux.dev>
-References: <20260522011908.1669332-1-shakeel.butt@linux.dev>
- <20260522011908.1669332-5-shakeel.butt@linux.dev>
- <9D6F8C2F-F3E7-4326-A4F6-D5B1433A6C55@linux.dev>
+	s=arc-20240116; t=1779468473; c=relaxed/simple;
+	bh=L9svKRLV62mYFxkAE3Bc4NDb+eQx27QmwJybPbaDekg=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=cXwzZqc29Q00Ib6zIuW6pzr3cgx9B6Td3GtiswCwRFq/YxEKde4oYDTlwug8JP9XEz1MqYrSGkGFnmEFBWavGTRK/ib+PGkR164rWmXkzpv4Qw+sTWiOmJuvtAKA/XXSnyVdW/kYvQH8xa1b5PKDZq6Js7kDbRSMOZuzJlQZeGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BoMQGnqw; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 546AF1F000E9;
+	Fri, 22 May 2026 16:47:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779468472;
+	bh=nDYNEM/+NfCoxQseNPlx6z0X1r+GNdL1J+SzAQ+U788=;
+	h=Date:From:To:Cc:Subject;
+	b=BoMQGnqwTOtyDHb0BlXdTsppHGWo76fCfdYF9VrlrSY5P1/RRaUNAn/h4jzEL1RVJ
+	 dHPJCpmXCdqxRdGbDtsBh/Oryk8AfhVR1eIencnjw3olVaf0uPxN1YdLx2ThxaB8Kr
+	 cq2VQjAcwTptcI5bRvZmhHy6OELG0TYxIdt36bgtSmRUOWkkhXdtBHoNEwBRMxf8I+
+	 vyl2N1tN4BMwxWmTAqnzDsGTznKY/erprlFoohMafbv/5JG3qJZyDlEBB7SLMnkJS6
+	 8+vSJuAfOrL+6E59JwsU3rk3YR8mlb+Re/5OZSg2Zu2NtyfOyOwPVqfGtv04XLIyUr
+	 QbWgtMk8r9pag==
+Date: Fri, 22 May 2026 06:47:51 -1000
+Message-ID: <cff491d26895c2d56392d153592009ea@kernel.org>
+From: Tejun Heo <tj@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Koutný <mkoutny@suse.com>,
+ Waiman Long <longman@redhat.com>,
+ cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] cgroup: Fixes for v7.1-rc4
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9D6F8C2F-F3E7-4326-A4F6-D5B1433A6C55@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16218-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16217-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,linux.dev:email,linux.dev:mid,linux.dev:dkim,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 635195B7A6E
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: DF4845B7C33
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, May 22, 2026 at 02:33:36PM +0800, Muchun Song wrote:
-> 
-> 
-> > On May 22, 2026, at 09:19, Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > 
-> > Commit 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg
-> > per-node type") split a memcg's single obj_cgroup into one per NUMA
-> > node so that reparenting LRU folios can take per-node lru locks. As a
-> > side effect, the per-CPU obj_stock_pcp -- which caches exactly one
-> > cached_objcg -- thrashes on workloads where threads of the same memcg
-> > run on different NUMA nodes. The kernel test robot reported a 67.7%
-> > regression on stress-ng.switch.ops_per_sec from this pattern.
-> > 
-> > Mirror the multi-slot pattern already used by memcg_stock_pcp: turn
-> > nr_bytes and cached_objcg into NR_OBJ_STOCK-element arrays, scan all
-> > slots on consume/refill/account, prefer empty slots when inserting,
-> > and evict a random slot only when full. With multiple slots a CPU can
-> > hold the per-node objcg variants of one memcg plus a few siblings
-> > without ever forcing a drain.
-> > 
-> > A single int8_t index records which slot the cached slab stats belong
-> > to; the stats are flushed on slot or pgdat change. With NR_OBJ_STOCK
-> > = 5 the layout (verified with pahole) is:
-> > 
-> >  offset 0  : lock(1) + index(1) + node_id(2) + slab stats(4) = 8B
-> >  offset 8  : nr_bytes[5]                                     = 10B
-> >  offset 18 : padding                                         = 6B
-> >  offset 24 : cached[5]                                       = 40B
-> >  offset 64 : (line 2) work_struct + flags (cold)
-> > 
-> > so consume_obj_stock, refill_obj_stock and the slab account path each
-> > touch exactly one 64-byte cache line on non-debug 64-bit builds.
-> > 
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202605121641.b6a60cb0-lkp@intel.com
-> > Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > Tested-by: kernel test robot <oliver.sang@intel.com>
-> > ---
-> > 
-> > Changes since v1:
-> > - Use round robin for drain
-> > 
-> > mm/memcontrol.c | 188 ++++++++++++++++++++++++++++++++++--------------
-> > 1 file changed, 136 insertions(+), 52 deletions(-)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 78c02451312b..ba17633b0bd0 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -150,14 +150,14 @@ static void obj_cgroup_release(struct percpu_ref *ref)
-> > 	* However, it can be PAGE_SIZE or (x * PAGE_SIZE).
-> > 	*
-> > 	* The following sequence can lead to it:
-> > - 	* 1) CPU0: objcg == stock->cached_objcg
-> > + 	* 1) CPU0: objcg cached in one of stock->cached[i]
-> > 	* 2) CPU1: we do a small allocation (e.g. 92 bytes),
-> > 	*          PAGE_SIZE bytes are charged
-> > 	* 3) CPU1: a process from another memcg is allocating something,
-> > 	*          the stock if flushed,
-> > 	*          objcg->nr_charged_bytes = PAGE_SIZE - 92
-> > 	* 5) CPU0: we do release this object,
->            ^
->            4
-> 
-> Since you're already modifying the comments in this section,
-> would you mind fixing the numbering as well? I noticed that the
-> sequence was wrong a while back :)
+Hello, Linus.
 
-Haha I didn't even notice. If I send a new version, I will fix this otherwise I
-will ask Andrew to fix inplace.
+The following changes since commit 345f40166694e60db6d5cf02233814bb27ac5dec:
 
+  cgroup/cpuset: Return only actually allocated CPUs during partition invalidation (2026-05-13 08:54:53 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tags/cgroup-for-7.1-rc4-fixes
+
+for you to fetch changes up to 22572dbcd3486e6c4dced877125bbf50e4e24edf:
+
+  cgroup: rstat: relax NMI guard after switch to try_cmpxchg (2026-05-20 09:44:35 -1000)
+
+----------------------------------------------------------------
+cgroup: Fixes for v7.1-rc4
+
+Two rstat fixes:
+
+- Out-of-bounds access in the css_rstat_updated() BPF kfunc when called
+  with an unchecked user-supplied cpu.
+
+- Over-strict NMI guard after the recent switch to try_cmpxchg left
+  sparc and ppc64 unable to queue rstat updates from NMI.
+
+----------------------------------------------------------------
+Cunlong Li (1):
+      cgroup: rstat: relax NMI guard after switch to try_cmpxchg
+
+Qing Ming (1):
+      cgroup/rstat: validate cpu before css_rstat_cpu() access
+
+ block/blk-cgroup.c     |  2 +-
+ include/linux/cgroup.h |  1 +
+ kernel/cgroup/rstat.c  | 37 +++++++++++++++++++++++--------------
+ mm/memcontrol.c        |  6 +++---
+ 4 files changed, 28 insertions(+), 18 deletions(-)
+
+Thanks.
+
+--
+tejun
 
