@@ -1,136 +1,226 @@
-Return-Path: <cgroups+bounces-16231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16232-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sC7yGmcmEWqShwYAu9opvQ
-	(envelope-from <cgroups+bounces-16231-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 23 May 2026 06:00:39 +0200
+	id gI09Bfa/EWoNpgYAu9opvQ
+	(envelope-from <cgroups+bounces-16232-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 23 May 2026 16:55:50 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B489E5BD0CC
-	for <lists+cgroups@lfdr.de>; Sat, 23 May 2026 06:00:38 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74B8A5BF7C6
+	for <lists+cgroups@lfdr.de>; Sat, 23 May 2026 16:55:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C9AEE3018D5F
-	for <lists+cgroups@lfdr.de>; Sat, 23 May 2026 04:00:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DFEC6301BF7A
+	for <lists+cgroups@lfdr.de>; Sat, 23 May 2026 14:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A00115A86D;
-	Sat, 23 May 2026 04:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70FCC2DCBE3;
+	Sat, 23 May 2026 14:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="d5rQFnOt"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k2ndsnEL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCD2E1C68F;
-	Sat, 23 May 2026 04:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF2A184
+	for <cgroups@vger.kernel.org>; Sat, 23 May 2026 14:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779508833; cv=none; b=R2cM5G9xXrk9282MBHDYJC2BLc0NnIn06eakBqMaXXDQx5hpkJNdCeKlFRRG6rUBS+p5czJXDJyOLfhCFwFlwUPMhnfSQnlgYd2FnFzy3bg46DoLnCGTImVq9n1y0HgCC36Pl7eOgt9ZEJWjQYGu2Q5qL5CQi/VFsOJZK29izPo=
+	t=1779548104; cv=none; b=jdHJ9dihHVflj4gyVKhdflXcnIJeKdvd15ENMIVbERFuGJ8jsC1OmgzewGYYLnMty/T3D+bq+x+hgPUJHaKCIKSWIpqsmZPVA7EVI2PKPuzrNar4T3ruBKnsZecViR4L89zynAVwrUYj+CUyXJgLH9Su2Kh3EZ7krwlFL/n3VVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779508833; c=relaxed/simple;
-	bh=treRULed3wqe/7eJRDx7sDZeYMM3wyTc2R9/1DhowoI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=VB48mEAaKBFfwLdx8XWYtUB2dw54aQdtXXj70BO3Y8Jq8eHDukj9r3d/gHJILgqRJX5AHU2u2GfEjy9GcHkwYMB20/jb5Z+BCUNNJfG9/PYW5LjT0aAEhxC9JTXWFfEgIHzTw2IuTIRd2JMY7TWhcp7XufJxKrjw+miRhmCkqyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=d5rQFnOt; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA0BC1F000E9;
-	Sat, 23 May 2026 04:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux-foundation.org; s=korg; t=1779508832;
-	bh=SYfwlBoIkTxQjX6100mlVLUtbaP2TS53vxqnbDjhphY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=d5rQFnOt2PYBgehQp1D+DGRsxE2mUjtNAGKuoMDItY0hFrfkpoTt1ESyftEqFaZlu
-	 V43rgjDi9XRHoxPOx4eqWq+ypyojU4p+HepHhYGlz8qSeiZVTTl/mMOupYC2S333H2
-	 D38MBJN0SNuuf8BRQaEwN3T414GnXFADbKVH0b+s=
-Date: Fri, 22 May 2026 21:00:31 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt
- <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, David
- Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
- "Liam R . Howlett" <liam.howlett@oracle.com>, Vlastimil Babka
- <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan
- <surenb@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 0/7 v2] mm/memcontrol, page_counter: move stock from
- mem_cgroup to page_counter
-Message-Id: <20260522210031.6d5e0debd687b39b87c87501@linux-foundation.org>
-In-Reply-To: <20260523025051.170871-1-joshua.hahnjy@gmail.com>
-References: <20260522220627.1150804-1-joshua.hahnjy@gmail.com>
-	<20260523025051.170871-1-joshua.hahnjy@gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1779548104; c=relaxed/simple;
+	bh=DXXA6d9Wkq6svW86MAOrYHRw7YFNEspGgP6pIjX+gEU=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=R01JTFFu3zCn3u4zadPPimq46gmtSikdvMvWVMmR2+Z0c4heA2l2eZ/78ZHpSCZhDjLaqgPgasSo17rIqmwcdYiQrewiKlw7v6J/ILHoVKIPaKPE6dXhkNQGo5Y8kpd/ZzRWsXdTIqK54XT9/mp8WjdlS44vRkdI/6jDbE65h2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k2ndsnEL; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779548103; x=1811084103;
+  h=date:from:to:cc:subject:message-id;
+  bh=DXXA6d9Wkq6svW86MAOrYHRw7YFNEspGgP6pIjX+gEU=;
+  b=k2ndsnELftozlnGS5JUtgpzUH/8pAT13N8muuJdkxH/VTwUk5xT1ouWU
+   6UrAs5ZThx1EXU+9MYN9Zt5lKnmiXxjmQ9bfZ8yLYDeRKfo/s7rRA8yq7
+   NSeN2o618DIjuv53p+jkuDLm4IipBR6sQMCEAAlgqJLK0Gifm3fMTcQn/
+   1rjt9BEeKXMlkgzaPCnIv6dQ7/qIR8wkBrmx85jcJ9wWJkgFVZZOe8xT7
+   Yb1LaNZPYMtAmp573QjYPPPTFGKs5LdaFW7BjY8A/hTPtHDVTF9gylnx9
+   kdkeiKeg9HTo5mMiOsGvAJLnIVmMobIFw0rDC8SvvEO6oGdV5njhHVl1a
+   A==;
+X-CSE-ConnectionGUID: 7pIfxCuqQRWe8a+Cx44vOg==
+X-CSE-MsgGUID: iaYSrymbRueSWvt4S1H8KA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11795"; a="91558632"
+X-IronPort-AV: E=Sophos;i="6.24,164,1774335600"; 
+   d="scan'208";a="91558632"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2026 07:55:03 -0700
+X-CSE-ConnectionGUID: ltrOrxqcRKOYJR8VPWSwPg==
+X-CSE-MsgGUID: UWUoooF+SYeZuxjxpINHgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,164,1774335600"; 
+   d="scan'208";a="246151916"
+Received: from lkp-server01.sh.intel.com (HELO 6ba8523b1a8f) ([10.239.97.150])
+  by orviesa005.jf.intel.com with ESMTP; 23 May 2026 07:55:02 -0700
+Received: from kbuild by 6ba8523b1a8f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wQnke-00000000028-0DsI;
+	Sat, 23 May 2026 14:54:57 +0000
+Date: Sat, 23 May 2026 22:51:57 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-7.2] BUILD SUCCESS
+ 98f0adb2284a0a4599a40337a30bef429167bb7b
+Message-ID: <202605232249.4cpo2VxZ-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-16231-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	DMARC_NA(0.00)[linux-foundation.org];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux-foundation.org:+];
-	NEURAL_HAM(-0.00)[-0.699];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16232-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux-foundation.org:mid,linux-foundation.org:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: B489E5BD0CC
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 74B8A5BF7C6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, 22 May 2026 19:50:50 -0700 Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-7.2
+branch HEAD: 98f0adb2284a0a4599a40337a30bef429167bb7b  selftests/cgroup: enable memory controller in hugetlb memcg test
 
-> On Fri, 22 May 2026 15:06:18 -0700 Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
-> 
-> > Memcg currently keeps a "stock" of 64 pages per-cpu to cache pre-charged
-> > allocations, allowing small allocations to avoid walking the expensive
-> > mem_cgroup hierarchy traversal and atomic operations on each charge.
-> > This design introduces a fastpath, but there is room for improvement:
-> 
-> This iteration was developed and tested on top of mm-stable.
-> I'm seeing now that Sashiko cannot apply this patch, and I think it expects
-> it to have been built on top of mm-new.
-> 
-> Reviewers -- would it make sense to rebase this on top of mm-new and
-> re-send this as a v3, or should I wait for feedback on this cycle
-> before sending out a new version?
-> 
-> In any case, this could have been avoided if I just developed on top of
-> mm-new. I'll be mindful to do that in the future.
+elapsed time: 1339m
 
-Sashiko does attempt various branches, including mm-stable so I'm not
-sure what went wrong here.
+configs tested: 101
+configs skipped: 6
 
-It's a bit of a crapshoot at this time, as mm-new is still growing like
-a weed (19 patches yesterday, 24 so far today).  Slowing way down soon!
-I'll be pushing mm-new later this evening and after that it shouldn't change
-much for several days because we all take weekends off, don't we?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Convention appears to say "wait a week before resending" but IMO
-there's value in parallelizing Sashiko review with human review.  And
-it's understandable if some humans aren't very motivated to review
-until the AI thing has had a shot at it, because that might result in
-alterations.  So I'd say that a resend-for-Sashiko is appropriate.
+tested configs:
+alpha                   allnoconfig    gcc-15.2.0
+alpha                  allyesconfig    gcc-15.2.0
+alpha                     defconfig    gcc-15.2.0
+arc                    allmodconfig    gcc-15.2.0
+arc                     allnoconfig    gcc-15.2.0
+arc                    allyesconfig    gcc-15.2.0
+arc                       defconfig    gcc-15.2.0
+arc         randconfig-001-20260523    gcc-10.5.0
+arc         randconfig-002-20260523    gcc-14.3.0
+arm                     allnoconfig    clang-23
+arm                    allyesconfig    gcc-15.2.0
+arm         randconfig-001-20260523    gcc-10.5.0
+arm         randconfig-002-20260523    clang-19
+arm         randconfig-003-20260523    clang-23
+arm         randconfig-004-20260523    gcc-10.5.0
+arm64                  allmodconfig    clang-19
+arm64                   allnoconfig    gcc-15.2.0
+arm64                randconfig-001    gcc-8.5.0
+arm64       randconfig-001-20260523    gcc-15.2.0
+arm64                randconfig-002    gcc-14.3.0
+arm64       randconfig-002-20260523    gcc-8.5.0
+arm64                randconfig-003    clang-23
+arm64       randconfig-003-20260523    gcc-9.5.0
+arm64                randconfig-004    clang-23
+arm64       randconfig-004-20260523    clang-23
+csky                   allmodconfig    gcc-15.2.0
+csky                    allnoconfig    gcc-15.2.0
+csky                      defconfig    gcc-15.2.0
+csky                 randconfig-001    gcc-10.5.0
+csky        randconfig-001-20260523    gcc-9.5.0
+csky                 randconfig-002    gcc-10.5.0
+csky        randconfig-002-20260523    gcc-15.2.0
+hexagon                allmodconfig    clang-17
+hexagon                 allnoconfig    clang-23
+hexagon                   defconfig    clang-23
+hexagon     randconfig-001-20260523    clang-23
+hexagon     randconfig-002-20260523    clang-23
+i386                   allmodconfig    gcc-14
+i386                    allnoconfig    gcc-14
+i386                   allyesconfig    gcc-14
+i386                      defconfig    clang-20
+loongarch              allmodconfig    clang-19
+loongarch               allnoconfig    clang-23
+loongarch   randconfig-001-20260523    gcc-15.2.0
+loongarch   randconfig-002-20260523    gcc-15.2.0
+m68k                   allmodconfig    gcc-15.2.0
+m68k                    allnoconfig    gcc-15.2.0
+m68k                   allyesconfig    gcc-15.2.0
+microblaze              allnoconfig    gcc-15.2.0
+microblaze             allyesconfig    gcc-15.2.0
+mips                    allnoconfig    gcc-15.2.0
+mips                   allyesconfig    gcc-15.2.0
+nios2                   allnoconfig    gcc-11.5.0
+nios2       randconfig-001-20260523    gcc-11.5.0
+nios2       randconfig-002-20260523    gcc-9.5.0
+openrisc                allnoconfig    gcc-15.2.0
+parisc                 allmodconfig    gcc-15.2.0
+parisc                  allnoconfig    gcc-15.2.0
+parisc                 allyesconfig    gcc-15.2.0
+powerpc                 allnoconfig    gcc-15.2.0
+powerpc       mpc836x_rdk_defconfig    clang-23
+riscv                  allmodconfig    clang-23
+riscv                   allnoconfig    gcc-15.2.0
+riscv                  allyesconfig    clang-16
+riscv       randconfig-001-20260523    gcc-8.5.0
+riscv       randconfig-002-20260523    gcc-8.5.0
+s390                   allmodconfig    clang-18
+s390                    allnoconfig    clang-23
+s390                   allyesconfig    gcc-15.2.0
+s390        randconfig-001-20260523    clang-23
+s390        randconfig-002-20260523    clang-23
+sh                     allmodconfig    gcc-15.2.0
+sh                      allnoconfig    gcc-15.2.0
+sh                     allyesconfig    gcc-15.2.0
+sh                        defconfig    gcc-15.2.0
+sh          randconfig-001-20260523    gcc-15.2.0
+sh          randconfig-002-20260523    gcc-11.5.0
+sparc                   allnoconfig    gcc-15.2.0
+sparc       randconfig-001-20260523    gcc-8.5.0
+sparc       randconfig-002-20260523    gcc-8.5.0
+sparc64                allmodconfig    clang-23
+sparc64                   defconfig    clang-20
+sparc64     randconfig-001-20260523    clang-23
+sparc64     randconfig-002-20260523    gcc-15.2.0
+um                     allmodconfig    clang-19
+um                      allnoconfig    clang-23
+um                     allyesconfig    gcc-14
+um                        defconfig    clang-23
+um                   i386_defconfig    gcc-14
+um          randconfig-001-20260523    gcc-14
+um          randconfig-002-20260523    gcc-14
+um                 x86_64_defconfig    clang-23
+x86_64                 allmodconfig    clang-20
+x86_64                  allnoconfig    clang-20
+x86_64                 allyesconfig    clang-20
+x86_64                    defconfig    gcc-14
+x86_64      randconfig-005-20260523    gcc-14
+x86_64                rhel-9.4-rust    clang-20
+xtensa                  allnoconfig    gcc-15.2.0
+xtensa      randconfig-001-20260523    gcc-15.2.0
+xtensa      randconfig-002-20260523    gcc-8.5.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
