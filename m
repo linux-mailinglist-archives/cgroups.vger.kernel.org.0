@@ -1,193 +1,189 @@
-Return-Path: <cgroups+bounces-16241-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16242-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mCIIKZbkE2rhHAcAu9opvQ
-	(envelope-from <cgroups+bounces-16241-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 25 May 2026 07:56:38 +0200
+	id iP4XB0ISFGr0JQcAu9opvQ
+	(envelope-from <cgroups+bounces-16242-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 25 May 2026 11:11:30 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D20E5C61AA
-	for <lists+cgroups@lfdr.de>; Mon, 25 May 2026 07:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 740585C860D
+	for <lists+cgroups@lfdr.de>; Mon, 25 May 2026 11:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4635F3037499
-	for <lists+cgroups@lfdr.de>; Mon, 25 May 2026 05:55:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 560983004C6E
+	for <lists+cgroups@lfdr.de>; Mon, 25 May 2026 09:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204E235F176;
-	Mon, 25 May 2026 05:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D620F3E4C62;
+	Mon, 25 May 2026 09:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YheZVrb8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA4535E1A4;
-	Mon, 25 May 2026 05:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A87C30C17E
+	for <cgroups@vger.kernel.org>; Mon, 25 May 2026 09:07:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779688533; cv=none; b=CbnWUCGyuXhwU8ZcOtLD/ZFjuujEyr9EW/G7zbQ+glIxUvwYl3TWXvNB0Vt0P98fdE7dRVN4arJ6FLTkcFUVXZOLSAkmRF9xyO61xojmADIlf3narQ09JolSQat9KXRnXujFofadQBAWxsZfzPflo6kJS/iUL5UpSD/LGVzkUag=
+	t=1779700075; cv=none; b=UXR1g7L0BpbDKvLB5ZY5QNnnSV7wOvZAbm1VnbLcQELkh82LiRdtQdFu+wkWTMR6dhbJpJh1gthiihs9WHKcTiXHu5QMZ8k2DUDrAAtI/+/xKjyzOo+6NXT2aUkfHfaR0Np0Tz0Cc2kOuOfy8vOL9kDhLdkd7TjFzNNg18PFk6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779688533; c=relaxed/simple;
-	bh=ktOk/GvLve51kE1T9N84D/rZ4ewXUW0v2NqXJU89u+4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bW8yWRCdTSdfV0Wda3r4uijrbyOrh6qccL6kXQQPebWs4HCipSF2/gwKb+fVcRa+EpgWRTTcV2XUctYjX6B9fK4IYDJf6sOyQwq1fh3JI3lvl4dmvFrIcpbVA07cTt273Z3U/Z0I1pe6QfGMawPIYtxCwBqyx7fQCxRDmNjEW/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 532822f057fe11f1aa26b74ffac11d73-20260525
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS
-	GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:cd665136-72d9-49bd-9825-e40b1ed7c5ba,IP:20,
-	URL:0,TC:0,Content:100,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:120
-X-CID-INFO: VERSION:1.3.12,REQID:cd665136-72d9-49bd-9825-e40b1ed7c5ba,IP:20,UR
-	L:0,TC:0,Content:100,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTI
-	ON:quarantine,TS:120
-X-CID-META: VersionHash:e7bac3a,CLOUDID:e31643a14b2771712a6429d1f3648d56,BulkI
-	D:260525135528FZ0IOAOM,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|81|82|12
-	7|865|898,TC:nil,Content:3|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:n
-	il,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BR
-	E:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 532822f057fe11f1aa26b74ffac11d73-20260525
-X-User: cuitao@kylinos.cn
-Received: from ctao-book.. [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <cuitao@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1325786295; Mon, 25 May 2026 13:55:25 +0800
-From: Tao Cui <cuitao@kylinos.cn>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Tao Cui <cuitao@kylinos.cn>
-Subject: [RFC PATCH rdma-next 5/5] cgroup/rdma: update cgroup resource list for QP, MR and MR_MEM
-Date: Mon, 25 May 2026 13:55:06 +0800
-Message-ID: <20260525055506.2002985-6-cuitao@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260525055506.2002985-1-cuitao@kylinos.cn>
-References: <20260525055506.2002985-1-cuitao@kylinos.cn>
+	s=arc-20240116; t=1779700075; c=relaxed/simple;
+	bh=pJdx2xij+cxLMzXfJM2Aq01QHnppLs9Fm+DnOtJadtM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P4jcSEKnjn57IrZOES+9guI8VJHtldU73CmqBNQl2QvFDcH5niNe0TElQH2rukvABxmzaInpcBXQix6ToyM4brypmWX5ohHaFZJajtybG/b12mRXjSJyuJmpVqZpB7i4qPVZR2Jl9dfMvlbMg+Im9a3yPCaCq2zUTIvlZ5M4MHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YheZVrb8; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-49048e043e5so18749175e9.1
+        for <cgroups@vger.kernel.org>; Mon, 25 May 2026 02:07:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1779700072; x=1780304872; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RKeRa75/JRbjnQhRaK29cTWmGYwVkcNGukeCupRKFx4=;
+        b=YheZVrb8Xs/qRQAmHcZqtapMj/pzno/xFFhyGmd4OldCxWJ73U4iGJFtuVIurKyBcd
+         krN0vcOhPJFCq6S3Ll1JzasFDCr5dGJvkSZlhz28OjFhklF01J4BH5GHiPVjF3m+gSL6
+         LMCr9ucCr2RiM2uaiBtjcio94Q/ONfr/xd7dDdI+7xDEolOpkP4kQT/6xU1PMoMO4rR4
+         aa07upXiQdQqjOBOtVhNe66TuHG2EPGtyjfXCQH9Xr8bjjgKHMHRnNTPD0nF3BIV3x/v
+         LXdBFtuYWp5nWCeIu35E63zffD/gdfCiH6NPnxtQHC71pKyXqXEZyxzLGL9D/FzqYv6F
+         Lc1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779700072; x=1780304872;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RKeRa75/JRbjnQhRaK29cTWmGYwVkcNGukeCupRKFx4=;
+        b=ML9IDh1SIVYfH0LtccxVyHBViSGGz23K7wJO5GlWTbTAbschP7PpVp3XqdYUQ1PNLO
+         1gxAru+50au9V9vihZocNsIsKydO1ZgCGNLiphPZzQs6Eki0nn9219JndndbxeyU7X9z
+         XpOKSFxDRCeAceUNdNNlURsTkpsm9Y0++sRk7tkJ1FrjX9b9SwaFrh9zj70QnMvbhEeC
+         6028GRlQkAR3EhuwW1M0l/icmHQYOEkIVoLCh7JH+xrOOA51+EQnkNo8TfS/byLA8r0e
+         E6Nzq7ICAhviSssiCtZzoHKNkShMiWJ+mSuKzozGMGcWwvWmojLz+CY7KI5irc9L81QR
+         adtw==
+X-Forwarded-Encrypted: i=1; AFNElJ8z4NXhOO8h0sOiIBpTExlQJomMvz7wDTxQCLL2YZRmynU69eJydq7xoe21SYc86sOZO9q38/te@vger.kernel.org
+X-Gm-Message-State: AOJu0YxlvIn5jLY6AW4qcETWxGvTsXRxYvny1jABVHiVxvvY7jwhWWcv
+	KbOkXGGv0elw0KtUCvVkii0Xz977ciAzeqQ6SR+Qj1nwIuOgrqhs7u6RMjeVIoZwbVs=
+X-Gm-Gg: Acq92OFkgLCz88hwZm7+4tTBd/Z/eSAbpimgD8g0haEI0hd4/KfYFNyXKP6XtecYZ+9
+	L/f+7IHJYIt3AAcblBcqItWCM19aWdhnRrqsTDXN1XEq3zFWb+ff9bLmRjnSiwWag4+HKub3CZ1
+	1A3rb5eZQ4sniQAacZIoZrV6DPPXHDFm1vdWjlWe9Nvf+4yfVe/HiZGGRAzEMy9B/BfLhaR5z7o
+	o/MRAd+4fD+pczx5NjUNxa6zmLCOjwW2RObD+2WqCgJTkxLh+8lYEX5/EIoZOl+RmAULuLf4t+W
+	SK9P+1LsAzlw+Bwk5/C+6zlakKo41l0XbYRSCQR+BMwdL7rrTC1qKw7QczJxz3ZMsmhNeSboPXX
+	VWqlU53Sud14NbDgpXnJoaiOwWpSWJxT2vH8JGCvlVTZUz0gBINC99Z6zqhX960ZRAFV/OM0oSF
+	+ZSSyRnXHb05jn3mluXUcJ/SdT60V2gsgCLS/h
+X-Received: by 2002:a05:600c:3d96:b0:490:5429:1513 with SMTP id 5b1f17b1804b1-49054291bbamr145600515e9.6.1779700072522;
+        Mon, 25 May 2026 02:07:52 -0700 (PDT)
+Received: from localhost (109-81-80-247.rct.o2.cz. [109.81.80.247])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45eb6d5e484sm24638766f8f.30.2026.05.25.02.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 May 2026 02:07:52 -0700 (PDT)
+Date: Mon, 25 May 2026 11:07:50 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, Harry Yoo <harry@kernel.org>,
+	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memcg: use round-robin victim selection in refill_stock
+Message-ID: <ahQRZlXliL6dhRXv@tiehlicka>
+References: <20260521223751.3794625-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260521223751.3794625-1-shakeel.butt@linux.dev>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16241-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16242-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.988];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,kylinos.cn:mid,kylinos.cn:email]
-X-Rspamd-Queue-Id: 0D20E5C61AA
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 740585C860D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The RDMA cgroup now supports per-type resource counting for QP, MR
-(count) and MR_MEM (cumulative memory size in bytes).  Update the
-rdma.rst document to list all five resources and revise the usage
-examples accordingly.
+On Thu 21-05-26 15:37:51, Shakeel Butt wrote:
+> Harry Yoo reported that get_random_u32_below() is not safe to call in
+> the nmi context and memcg charge draining can happen in nmi context.
+> 
+> More specifically get_random_u32_below() is neither reentrant- nor
+> NMI-safe: it acquires a per-cpu local_lock via local_lock_irqsave() on
+> the batched_entropy_u32 state. An NMI that lands on a CPU mid-update of
+> the ChaCha batch state and recurses into the random subsystem would
+> corrupt that state. The memcg_stock local_trylock prevents re-entry
+> on the percpu stock itself, but cannot protect an unrelated
+> subsystem's per-cpu lock.
+> 
+> Replace the random pick with a per-cpu round-robin counter stored in
+> memcg_stock_pcp and serialized by the same local_trylock that already
+> guards cached[] and nr_pages[]. No atomics, no random calls, no extra
+> locks needed.
+> 
+> Fixes: f735eebe55f8f ("memcg: multi-memcg percpu charge cache")
+> Reported-by: Harry Yoo <harry@kernel.org>
+> Closes: https://lore.kernel.org/4e20f643-6983-4b6e-b12d-c6c4eb20ae0c@kernel.org/
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Signed-off-by: Tao Cui <cuitao@kylinos.cn>
----
- Documentation/admin-guide/cgroup-v2.rst | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 993446ab66d0..512af59e302a 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2769,12 +2769,15 @@ RDMA Interface Files
- 	  ==========	=============================
- 	  hca_handle	Maximum number of HCA Handles
- 	  hca_object 	Maximum number of HCA Objects
-+	  qp		Maximum number of Queue Pairs
-+	  mr		Maximum number of Memory Regions
-+	  mr_mem	Maximum cumulative MR memory size in bytes
- 	  ==========	=============================
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=2 hca_object=2000
--	  ocrdma1 hca_handle=3 hca_object=max
-+	  mlx4_0 hca_handle=2 hca_object=2000 qp=100 mr=500 mr_mem=1073741824
-+	  ocrdma1 hca_handle=3 hca_object=max qp=max mr=max mr_mem=max
- 
-   rdma.current
- 	A read-only file that describes current resource usage.
-@@ -2782,8 +2785,8 @@ RDMA Interface Files
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=1 hca_object=20
--	  ocrdma1 hca_handle=1 hca_object=23
-+	  mlx4_0 hca_handle=1 hca_object=20 qp=5 mr=10 mr_mem=10485760
-+	  ocrdma1 hca_handle=1 hca_object=23 qp=3 mr=8 mr_mem=8388608
- 
-   rdma.peak
- 	A read-only nested-keyed file that exists for all the cgroups
-@@ -2792,8 +2795,8 @@ RDMA Interface Files
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=1 hca_object=20
--	  ocrdma1 hca_handle=0 hca_object=23
-+	  mlx4_0 hca_handle=1 hca_object=20 qp=5 mr=10 mr_mem=10485760
-+	  ocrdma1 hca_handle=0 hca_object=23 qp=3 mr=8 mr_mem=8388608
- 
-   rdma.events
- 	A read-only nested-keyed file which exists on non-root
-@@ -2815,7 +2818,7 @@ RDMA Interface Files
- 
- 	An example for mlx4 device follows::
- 
--	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=3 hca_object.max=0 hca_object.alloc_fail=0
-+	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=3 hca_object.max=0 hca_object.alloc_fail=0 qp.max=0 qp.alloc_fail=0 mr.max=0 mr.alloc_fail=0 mr_mem.max=0 mr_mem.alloc_fail=0
- 
-   rdma.events.local
- 	Similar to rdma.events but the fields in the file are local
-@@ -2836,7 +2839,7 @@ RDMA Interface Files
- 
- 	An example for mlx4 device follows::
- 
--	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=0 hca_object.max=0 hca_object.alloc_fail=0
-+	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=0 hca_object.max=0 hca_object.alloc_fail=0 qp.max=0 qp.alloc_fail=0 mr.max=0 mr.alloc_fail=0 mr_mem.max=0 mr_mem.alloc_fail=0
- 
- DMEM
- ----
+Thanks!
+
+> ---
+>  mm/memcontrol.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 0eb50e639f0a..6392a2704441 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2031,6 +2031,7 @@ struct memcg_stock_pcp {
+>  
+>  	struct work_struct work;
+>  	unsigned long flags;
+> +	uint8_t drain_idx;
+>  };
+>  
+>  static DEFINE_PER_CPU_ALIGNED(struct memcg_stock_pcp, memcg_stock) = {
+> @@ -2214,7 +2215,9 @@ static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	if (!success) {
+>  		i = empty_slot;
+>  		if (i == -1) {
+> -			i = get_random_u32_below(NR_MEMCG_STOCK);
+> +			i = stock->drain_idx++;
+> +			if (stock->drain_idx == NR_MEMCG_STOCK)
+> +				stock->drain_idx = 0;
+>  			drain_stock(stock, i);
+>  		}
+>  		css_get(&memcg->css);
+> -- 
+> 2.53.0-Meta
+
 -- 
-2.43.0
-
+Michal Hocko
+SUSE Labs
 
