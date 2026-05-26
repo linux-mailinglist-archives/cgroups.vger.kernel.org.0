@@ -1,76 +1,65 @@
-Return-Path: <cgroups+bounces-16319-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16320-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4A2jBc3HFWpNbQcAu9opvQ
-	(envelope-from <cgroups+bounces-16319-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 18:18:21 +0200
+	id kMEUCH6/FWrYZgcAu9opvQ
+	(envelope-from <cgroups+bounces-16320-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 17:42:54 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A91AE5D985E
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 18:18:19 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id B95285D8F4B
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 17:42:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EEF12307C7C7
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 15:29:20 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 53A2D306485D
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 15:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 913E02F3C0A;
-	Tue, 26 May 2026 15:29:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BA2A366065;
+	Tue, 26 May 2026 15:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="FAHVvM5S"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xi7XAV3l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A031D5CFB
-	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 15:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85BD30F80C
+	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 15:33:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779809359; cv=none; b=e5enIRq92ewt3GlL/XqrAnIKfNVedeRbf/IFBipLyZU0aVBnIQX+KDKEsyI6ei6WjS4xNIBBKUNLwsgCWG9/eTihYFscH658ywfW/NH6LcwX7ElvGiLZjFWTjSoU8eXDbOVBYwovknQ7k6pzlrYPBm/IOpj/VVwZB8pzI7z1WLU=
+	t=1779809629; cv=none; b=lqzEMu4gnT7MYrXvuAQUpsai6Uc3eu69qKgw7b2xP6HqFA7Z7wdwDCdx+XQnhfT56IpebCygFNRCvMrEtiXWHlhWfOaGQTrd2EOAo2S+0PtX6LsybCvKe2DlW1iWwJOearwYA8Vgrl9W1xPTuW2/6nU5TShxB5UEppGVn1rZj0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779809359; c=relaxed/simple;
-	bh=iaW2egWuutOQzQJPttk8wofrRQitMAilX88Xtvmq36k=;
+	s=arc-20240116; t=1779809629; c=relaxed/simple;
+	bh=xpnjY2kxhcf877bhzUZaTGKn9SA3OCRNvKpGKrLX+NA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nsIzW/V6oF57xbDXntDNJtDAO8n3YfizFIsnzCBGp9zPeipHjVcHgajEeLfIQ7cURe6f2EVIUlD8NZ8xN4hWaIbQPjj0bnj3YecEqm/rHk0rmqDugTAUJWbudHbcAL16dpndmiPqJ8ypqgkNPzKlAijqqS6jBYAWF5w4ehmBT34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=FAHVvM5S; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ZLf7M1stN9U84hzkxEqcuZtCDYEdgMJTdlio6Z+ay38=; b=FAHVvM5STRmvOPklSgnsY1Hh0B
-	IaOATo77sSgHBrDCAqzqQ8+eUU3SWKrkeG2bMeyIrNTIH6T1OkZaCoqBq3f36glGl/C6Nzeeq1kzY
-	Pok0OkXKmyxUJVWVDtt6pljX9dgpnLlDfAFxveExd20FjTnqHv3CPd6S2LS+aEZXo6qHcp145MSR4
-	b+uH/zJ1W1Fcw6vsLDNcuO1KZmxVMcu48mh9S1xYrpSK6KU3y3BzYapJIo7vaJiU0uZ++wToktsId
-	LWzGcP/+ztp5d3RWmEMHgDv6eMU6dYLHOCE0QEgNqLrSL1+S19jZ/AV/nSxKr1pPMdcbdzdZUIu5Z
-	GVpSKkcw==;
-Received: from 179-125-91-155-dinamico.pombonet.net.br ([179.125.91.155] helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1wRtiE-008UnI-Rg; Tue, 26 May 2026 17:28:59 +0200
-Date: Tue, 26 May 2026 12:28:49 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: Natalie Vock <natalie.vock@gmx.de>
-Cc: Maarten Lankhorst <dev@lankhorst.se>,
-	Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Christian Koenig <christian.koenig@amd.com>,
-	Huang Rui <ray.huang@amd.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Tvrtko Ursulin <tursulin@ursulin.net>, cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v6 2/6] cgroup,cgroup/dmem: Add
- (dmem_)cgroup_common_ancestor helper
-Message-ID: <ahW8MY4XBox_nsmB@quatroqueijos.cascardo.eti.br>
-References: <20260313-dmemcg-aggressive-protect-v6-0-7c71cc1492db@gmx.de>
- <20260313-dmemcg-aggressive-protect-v6-2-7c71cc1492db@gmx.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LSDKvUu9TEAtvfFgX/mls9jiVYumW71hh4prlbVlC1EFRkSOhkOnMOGi89y04GKVfbvOnhhdD6b3NHIuaib0utNMwiECwt0+wPnZZ+TgT2w6miEjAq47RAJkr3DqZr0ItWMPxHJhRSbPyeQWUgCCNy0gmWTZR8tKPKFowAtlTBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xi7XAV3l; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 26 May 2026 23:33:37 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779809625;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NHV2IZakIJ6ChTDpKQtKC37v7LOZC1b1R6tmDq4OICA=;
+	b=Xi7XAV3lh9hYv2hFye5tI8gAsLnnSPo2uW/9r0tMSCh/Kd9CO/NqZYX0/zQtQch+Xf02+m
+	tDdsa0IFcReKI/y+7D2fLOL7nESYfktQq5z/ewCd8n800Ht2D8N5M9LUyimL08QfnFdF8c
+	GNqblj8Rv4P4X1DQvrp+bSOcQg+AKXk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Baoquan He <baoquan.he@linux.dev>
+To: Youngjun Park <youngjun.park@lge.com>
+Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kasong@tencent.com, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, baohua@kernel.org, gunho.lee@lge.com,
+	taejoon.song@lge.com, hyungjun.cho@lge.com, mkoutny@suse.com,
+	baver.bae@lge.com, matia.kim@lge.com
+Subject: Re: [PATCH v6 3/4] mm: memcontrol: add interfaces for swap tier
+ selection
+Message-ID: <ahW9UQH93jBT_VaD@MiWiFi-R3L-srv>
+References: <20260421055323.940344-1-youngjun.park@lge.com>
+ <20260421055323.940344-4-youngjun.park@lge.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -79,203 +68,145 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260313-dmemcg-aggressive-protect-v6-2-7c71cc1492db@gmx.de>
-X-Spamd-Result: default: False [-0.36 / 15.00];
+In-Reply-To: <20260421055323.940344-4-youngjun.park@lge.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16320-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16319-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net,vger.kernel.org,lists.freedesktop.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,redhat.com,lge.com,suse.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.959];
-	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[igalia.com:-];
+	FROM_NEQ_ENVFROM(0.00)[baoquan.he@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,gmx.de:email]
-X-Rspamd-Queue-Id: A91AE5D985E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: B95285D8F4B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Mar 13, 2026 at 12:40:01PM +0100, Natalie Vock wrote:
-> This helps to find a common subtree of two resources, which is important
-> when determining whether it's helpful to evict one resource in favor of
-> another.
-> 
-> To facilitate this, add a common helper to find the ancestor of two
-> cgroups using each cgroup's ancestor array.
-> 
-> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
-> ---
->  include/linux/cgroup.h      | 21 +++++++++++++++++++++
->  include/linux/cgroup_dmem.h |  9 +++++++++
->  kernel/cgroup/dmem.c        | 28 ++++++++++++++++++++++++++++
->  3 files changed, 58 insertions(+)
-> 
-> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index bc892e3b37eea..560ae995e3a54 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -561,6 +561,27 @@ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
->  	return cgrp->ancestors[ancestor_level];
+On 04/21/26 at 02:53pm, Youngjun Park wrote:
+...snip...
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c3d98ab41f1f..0f67572e5e3e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -68,6 +68,7 @@
+>  #include <net/ip.h>
+>  #include "slab.h"
+>  #include "memcontrol-v1.h"
+> +#include "swap_tier.h"
+>  
+>  #include <linux/uaccess.h>
+>  
+> @@ -4130,6 +4131,8 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
+>  	refcount_set(&memcg->id.ref, 1);
+>  	css_get(css);
+>  
+> +	swap_tiers_memcg_inherit_mask(memcg);
+> +
+>  	/*
+>  	 * Ensure mem_cgroup_from_private_id() works once we're fully online.
+>  	 *
+> @@ -5667,6 +5670,88 @@ static int swap_events_show(struct seq_file *m, void *v)
+>  	return 0;
 >  }
 >  
-> +/**
-> + * cgroup_common_ancestor - find common ancestor of two cgroups
-> + * @a: first cgroup to find common ancestor of
-> + * @b: second cgroup to find common ancestor of
-> + *
-> + * Find the first cgroup that is an ancestor of both @a and @b, if it exists
-> + * and return a pointer to it. If such a cgroup doesn't exist, return NULL.
-> + *
-> + * This function is safe to call as long as both @a and @b are accessible.
-> + */
-> +static inline struct cgroup *cgroup_common_ancestor(struct cgroup *a,
-> +						    struct cgroup *b)
+> +static int swap_tier_show(struct seq_file *m, void *v)
 > +{
-> +	int level;
+> +	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 > +
-> +	for (level = min(a->level, b->level); level >= 0; level--)
-> +		if (a->ancestors[level] == b->ancestors[level])
-> +			return a->ancestors[level];
-> +	return NULL;
+> +	swap_tiers_mask_show(m, READ_ONCE(memcg->tier_mask));
+> +	return 0;
 > +}
 > +
->  /**
->   * task_under_cgroup_hierarchy - test task's membership of cgroup ancestry
->   * @task: the task to be tested
-> diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
-> index 1a88cd0c9eb00..9d72457c4cb9d 100644
-> --- a/include/linux/cgroup_dmem.h
-> +++ b/include/linux/cgroup_dmem.h
-> @@ -28,6 +28,8 @@ bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *root,
->  			   struct dmem_cgroup_pool_state *test);
->  bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
->  			   struct dmem_cgroup_pool_state *test);
-> +struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dmem_cgroup_pool_state *a,
-> +							       struct dmem_cgroup_pool_state *b);
->  
->  void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
->  #else
-> @@ -75,6 +77,13 @@ static inline bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
->  	return false;
->  }
->  
-> +static inline
-> +struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dmem_cgroup_pool_state *a,
-> +							       struct dmem_cgroup_pool_state *b)
+> +static ssize_t swap_tier_write(struct kernfs_open_file *of,
+> +				char *buf, size_t nbytes, loff_t off)
 > +{
-> +	return NULL;
+> +	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+> +	char *pos, *token;
+> +	int ret = 0;
+> +	int original_mask = 0;
+> +
+> +	pos = strstrip(buf);
+> +
+> +	spin_lock(&swap_tier_lock);
+> +	if (!*pos) {
+> +		WRITE_ONCE(memcg->tier_mask, TIER_ALL_MASK);
+> +		goto sync;
+> +	}
+> +
+> +	original_mask = memcg->tier_mask;
+> +
+> +	while ((token = strsep(&pos, " \t\n")) != NULL) {
+> +		int mask;
+> +
+> +		if (!*token)
+> +			continue;
+> +
+> +		if (token[0] != '-' && token[0] != '+') {
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		mask = swap_tiers_mask_lookup(token+1);
+> +		if (!mask) {
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		/*
+> +		 * if child already set, cannot add that tiers for hierarch mismatching.
+> +		 * parent compatible, child must respect parent selected swap device.
+> +		 */
+
+This paragraph of code comment sounds a little unnatural. We are writing
+it into memcg, the child memcg is handled in
+swap_tiers_memcg_sync_mask(), isn't it? I don't get the 2nd sentence.
+Could you help explain?
+
+> +		switch (token[0]) {
+> +		case '-':
+> +			WRITE_ONCE(memcg->tier_mask,
+> +				   memcg->tier_mask & ~mask);
+> +			break;
+> +		case '+':
+> +			WRITE_ONCE(memcg->tier_mask,
+> +				   memcg->tier_mask | mask);
+> +			break;
+> +		default:
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (ret)
+> +			goto err;
+> +	}
+> +
+> +sync:
+> +	swap_tiers_memcg_sync_mask(memcg);
+> +err:
+> +	if (ret)
+> +		WRITE_ONCE(memcg->tier_mask, original_mask);
+> +	spin_unlock(&swap_tier_lock);
+> +	return ret ? ret : nbytes;
 > +}
 > +
->  static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool)
->  { }
->  
-> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-> index 28227405f7cfe..9ae085a7fcb73 100644
-> --- a/kernel/cgroup/dmem.c
-> +++ b/kernel/cgroup/dmem.c
-> @@ -756,6 +756,34 @@ bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
->  }
->  EXPORT_SYMBOL_GPL(dmem_cgroup_below_low);
->  
-> +/**
-> + * dmem_cgroup_get_common_ancestor(): Find the first common ancestor of two pools.
-> + * @a: First pool to find the common ancestor of.
-> + * @b: First pool to find the common ancestor of.
-> + *
-> + * Return: The first pool that is a parent of both @a and @b, or NULL if either @a or @b are NULL,
-> + * or if such a pool does not exist. A reference to the returned pool is grabbed and must be
-> + * released by the caller when it is done using the pool.
-> + */
-> +struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dmem_cgroup_pool_state *a,
-> +							       struct dmem_cgroup_pool_state *b)
-> +{
-> +	struct cgroup *ancestor_cgroup;
-> +	struct cgroup_subsys_state *ancestor_css;
-> +
-> +	if (!a || !b)
-> +		return NULL;
-> +
-> +	ancestor_cgroup = cgroup_common_ancestor(a->cs->css.cgroup, b->cs->css.cgroup);
-> +	if (!ancestor_cgroup)
-> +		return NULL;
-> +
-> +	ancestor_css = cgroup_e_css(ancestor_cgroup, &dmem_cgrp_subsys);
-
-cgroup_e_css must be called in RCU read context. Besides, a reference to
-ancestor_css must be got as later on, dmem_cgroup_pool_state_put will call
-css_put.
-
-Here is my fixup, which I tested and did not cause RCU or reference
-warnings whereas the original patch caused such issues.
-
-Feel free to use it with my sign-off.
-
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-
-Regards.
-Cascardo.
-
-
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 72ee8f1d69ef..28adb042baca 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -773,6 +773,7 @@ struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dmem_cgrou
- {
- 	struct cgroup *ancestor_cgroup;
- 	struct cgroup_subsys_state *ancestor_css;
-+	struct dmem_cgroup_pool_state *pool = NULL;
- 
- 	if (!a || !b)
- 		return NULL;
-@@ -781,9 +782,15 @@ struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dmem_cgrou
- 	if (!ancestor_cgroup)
- 		return NULL;
- 
-+	rcu_read_lock();
- 	ancestor_css = cgroup_e_css(ancestor_cgroup, &dmem_cgrp_subsys);
-+	if (css_tryget(ancestor_css))
-+		pool = get_cg_pool_unlocked(css_to_dmemcs(ancestor_css), a->region);
-+	if (!pool)
-+		css_put(ancestor_css);
-+	rcu_read_unlock();
- 
--	return get_cg_pool_unlocked(css_to_dmemcs(ancestor_css), a->region);
-+	return pool;
- }
- EXPORT_SYMBOL_GPL(dmem_cgroup_get_common_ancestor);
- 
--- 
-2.47.3
-
-
-> +
-> +	return get_cg_pool_unlocked(css_to_dmemcs(ancestor_css), a->region);
-> +}
-> +EXPORT_SYMBOL_GPL(dmem_cgroup_get_common_ancestor);
-> +
->  static int dmem_cgroup_region_capacity_show(struct seq_file *sf, void *v)
->  {
->  	struct dmem_cgroup_region *region;
-> 
-> -- 
-> 2.53.0
-> 
+...snip...
 
