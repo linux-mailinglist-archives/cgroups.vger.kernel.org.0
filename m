@@ -1,171 +1,212 @@
-Return-Path: <cgroups+bounces-16305-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16306-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YAVFKGt/FWqtWAcAu9opvQ
-	(envelope-from <cgroups+bounces-16305-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 13:09:31 +0200
+	id +DPbOReIFWpXWQcAu9opvQ
+	(envelope-from <cgroups+bounces-16306-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 13:46:31 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16E085D4AE1
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 13:09:30 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B185D5195
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 13:46:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BD0DF3018299
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 11:09:28 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E02AC300980B
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 11:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130C63DE452;
-	Tue, 26 May 2026 11:09:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3781C3ED127;
+	Tue, 26 May 2026 11:46:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bhj82YA0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RkVWvkUn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44143C5523;
-	Tue, 26 May 2026 11:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E623EB7E9
+	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 11:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779793765; cv=none; b=AneEDfVUAYWlOR3QWiNa93sFASkSx2UpTkefMmQ03gVJD0tfvpCO31ZcphbrKzc0Bzh1Jz6iqqRkITlwkioYjMJevgKJ1XP+SAIEdffqvkxsdNmJuFxT1d/J2H1IqIzu+tmfJBMCwRyxyrTqEUNSofaq2quShEmLbEorb2/5nAE=
+	t=1779795984; cv=none; b=esN+Ak2IeOzp5crSApUdA7i49+V35Zdun3DdUq7teuADkc2b+ExDZCfTucYpAcpD+iLKdl8kwIsl/vXAezNbDYLhOp1VhpbGJcD/w9LmSQg+mHT+WNR2ePKOG42cZc6GY/barGh0jA1SNRMLSHMqj1m37RAcCQnu1k0GuA8WjTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779793765; c=relaxed/simple;
-	bh=3tb/Bq+4xuotcPqSefpw8ff/qx48sZGrA5jTMiJqZns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uzKkGerSvorrr4Q41oSUbx93h3BCV5+Iq39996B8b1GcMVD0N2E5zdziZqxfcsijA0hakRFBS86sHFBXE1XORDAdsDxQgIz0Zg5rlEZacXfrw/lYUwImYkFBDqXoOYI9ZqG9+hI0dGPruXMdQma5R9v4RLfNNXAWjqlUoNUJxss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bhj82YA0; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=/L/pKQfUi0SfGq7Om76IMjN58fjpuxIzq6Zz0iNdLac=; b=bhj82YA0Xu8C60hQ9iJxO+Jf/I
-	cphTw8JggZgSy4V9VXy/A+Ah1WcuG4Fx39hV6V/gW3HOUYOQ9maij+ZQZvlJYJjTeKnSa2LnAFwzO
-	/N2ylj0oD0PDrmaroumhnxcD/p2waNm3n2hj67K16wkE/3tW1MW1bEVcV8XPLQJzqCma0trOFX2N1
-	IiXfk+Gl1FHGjTSbqwVdkeqV3Alcm8VteHiBb9+t8gyOKbA0ei1iTwZcKcLCy57ZJ4mk/3pbP4+gy
-	f//h4C1dPbWwi4aJs4Vl6PbQrYtqIcFjNMiWIeFwDebe1POcNRBreMoXsmDoWtFkbQKIK8KDFFLiI
-	R5C9jJIQ==;
-Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wRpcs-0000000B3Av-1FDb;
-	Tue, 26 May 2026 11:07:10 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 2B1C5300323; Tue, 26 May 2026 13:07:09 +0200 (CEST)
-Date: Tue, 26 May 2026 13:07:09 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Zhang Qiao <zhangqiao22@huawei.com>, mingo@kernel.org,
-	longman@redhat.com, chenridong@huaweicloud.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jstultz@google.com,
-	qyousef@layalina.io, Hui Tang <tanghui20@huawei.com>
-Subject: Re: [PATCH v2 10/10] sched/eevdf: Move to a single runqueue
-Message-ID: <20260526110709.GF4149641@noisy.programming.kicks-ass.net>
-References: <20260511113104.563854162@infradead.org>
- <20260511120628.206700041@infradead.org>
- <a06e4744-2393-724c-14ff-154f1caa22a6@huawei.com>
- <85116808-8643-47d7-b4e7-2a11c3999b20@amd.com>
- <20260526095210.GC4149641@noisy.programming.kicks-ass.net>
- <3f1fc681-a73b-4bd2-9a6a-e61b8fbd5826@amd.com>
+	s=arc-20240116; t=1779795984; c=relaxed/simple;
+	bh=HR7T48L4Vy+sBHGM47N+45shXRfXheO6QwhLsSflKE0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uhC5HNLuwMQT/NkOnhw0SPDaJaSQo+QS3/BMD+oxRkNRtyq4LygMYN99kPSRiXlDs0/qsSL7PNrbYGIHDidmn3BMcB5s7RpCnO7P9NZIcNy9HCuQ1OMh6Ih47xNBTHyeAsbeyV6GrVGjZp5HP0Pr4w9bxJcuwzm0YuMDapMcsyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RkVWvkUn; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c8025f1c227so8175574a12.2
+        for <cgroups@vger.kernel.org>; Tue, 26 May 2026 04:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779795973; x=1780400773; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=983/W68Px22eGNnSr2lTrxriWPgIBrKprA/JK1mMbWU=;
+        b=RkVWvkUnVvCZaxdNF6Ug4V08zeZ5G4svBoJNnUj+D4Str6VeL6jSEzpgaiGNra0EAT
+         V7ZvdNNJ3jOtBjisbSrLAMXrqHs806zWBdRke5kJbSnVbVTsX3Z4qGa43G7JdqDxG2oK
+         9yrBHabQsqIW/aMyXUKRe8wTvLH57ADdZf0Nt883DoaoldEVMye9v0Gn6LHhfeEzVGj1
+         wb79opPQinXgD0a0hRCwZH6Rl6Ksa6R4RaMMwPZMZO7Luv/uAeNEAT5NQa8HFfxJwjGW
+         626ohLYX2YUHWST8CuqKBmxs8cA8g1E+FFNJm2kYwURt6hM50jK65+V0pZ+sIaZy9qv+
+         HwuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779795973; x=1780400773;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=983/W68Px22eGNnSr2lTrxriWPgIBrKprA/JK1mMbWU=;
+        b=Nj8gs2iL6qsCP0f55HJsVVpQp7i8+u4mKjk/ZuSOL/jHi8whUcXHI2IgYPVsqPM3li
+         hA6v0rcFBM6P4Vf1+JbiQumTALVOAOPBZU1TRnlsTJQWZQw1M4IYaqBAKPBuf7zeX0q6
+         lusoggc9gYduX/CPXF8Jrva52Ug8ZO63FwvAlUYNtRp79fOToj+P/44bylOFoItLDb7T
+         lUsODVGdAv5nsasSv26BlmB4d9AVHEl5Zs7TZPOUmz8RsTvkgC66c+ndDTStuX6bIEfp
+         IEErJi1zpT6RyqslScJx/CwmlqXU+dXv3AzBzS5MDfApgRTWj2wBrij6tcwH88VwZT9U
+         NXhA==
+X-Gm-Message-State: AOJu0Yx+gPAEXzxH/wqLGYAgkQImfIkuCfFve0GaqUuQLi/ocktuTLQo
+	eo+P4NvZnvWhxcMbGNV62ewz9allSOy6JypcJ1xOMGslfrhsdueNI/t6
+X-Gm-Gg: Acq92OGI85RjPsetHes/sz8MN1Fj1T1c816S/t2NLl5tlei1Q/40E26MNSQeqHX+7zj
+	wLAdo21utrwtaijJweTrwh7s0Reut3isCjcqJ3CSQgSpDy0Oe+gBg/5tfX5gGTB9dw9QraR/9vm
+	DA/o8GOiuD/FEbgqAftmq9AoqEEXDADIuTsLl/SW6h8x6ti0AhrjH8ZccQr8EWrYmXa/+HdmF2j
+	O6qNmzmiGJMhWzLR5qLRO5VW9Wi5jG/aqonvJCnKRpH3EsWEe4pgB2t2qaoe9jrZ4pt+I7fbOOW
+	CuoBU6nc9ZY9gdXZK14pYH4abl30id5jTLDp28TPKBcYFWTl4jZviC77QfVQvv2ElEHSBIgXQjU
+	8B38azhiavZ77nqMqja26D4go0Jqoq8BJ3d/Jo3U3lbCCe+LB8urk1Vy1W4+uow8jUNEK7MqeJS
+	V1+o0WEj66Aubf0gZ9HVW39/f6JfluDhkSSuTnundypP0Y0t/E/Ew=
+X-Received: by 2002:a05:6a21:a45:b0:3aa:3fbf:d0a3 with SMTP id adf61e73a8af0-3b328fb7b6fmr20340231637.47.1779795973481;
+        Tue, 26 May 2026 04:46:13 -0700 (PDT)
+Received: from localhost.localdomain ([210.184.73.204])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c852028fe99sm10304341a12.4.2026.05.26.04.46.07
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 26 May 2026 04:46:12 -0700 (PDT)
+From: Hao Jia <jiahao.kernel@gmail.com>
+To: akpm@linux-foundation.org,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	shakeel.butt@linux.dev,
+	mhocko@kernel.org,
+	yosry@kernel.org,
+	mkoutny@suse.com,
+	nphamcs@gmail.com,
+	chengming.zhou@linux.dev,
+	muchun.song@linux.dev,
+	roman.gushchin@linux.dev
+Cc: cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Hao Jia <jiahao1@lixiang.com>
+Subject: [PATCH v3 0/4] mm/zswap: Implement per-cgroup proactive writeback
+Date: Tue, 26 May 2026 19:45:57 +0800
+Message-Id: <20260526114601.67041-1-jiahao.kernel@gmail.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f1fc681-a73b-4bd2-9a6a-e61b8fbd5826@amd.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16305-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16306-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,suse.com,gmail.com];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,infradead.org:dkim]
-X-Rspamd-Queue-Id: 16E085D4AE1
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: E6B185D5195
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 26, 2026 at 04:24:32PM +0530, K Prateek Nayak wrote:
-> Hello Peter,
-> 
-> On 5/26/2026 3:22 PM, Peter Zijlstra wrote:
-> > On Tue, May 26, 2026 at 02:45:45PM +0530, K Prateek Nayak wrote:
-> > 
-> >> The suggested diff above solves the crash in my case but your
-> >> mileage may vary. Peter can comment if this is the right thing
-> >> to do or not :-)
-> > 
-> > Is this a different issue than the one you raised before?
-> 
-> Yes, this is different. Essentially, this is what is happening:
-> 
->   throttle_cfs_rq_work()
->     task_rq_lock()
-> 
->     dequeue_task_fair(current)    /* Task is dequeued on cfs side */
->       __dequeue_task(current)
->         dequeue_hierarchy(current);
->           current->se.on_rq = 0;
->           /* update_load_sub() */
->     resched_curr();               /* Initiates a resched */
-> 
->     task_rq_unlock()
->       local_irq_enable();
-> 
->   =====> sched_tick()
->           task_tick_fair()
->              __calc_prop_weight()
->                /*
->                 * Oops: update_load_sub() above has
->                 * 0ed the weight of cfs_rq.
->                 */
->   <====
-> 
->   preempt_schedule_irq()
->     next = ...
->     put_prev_set_next_task() /* The runtime context is switched here */
-> 
+From: Hao Jia <jiahao1@lixiang.com>
 
-Ah, right. OK, I'll go have a poke once I get these proxy patches I've
-been spending too much time on posted.
+Zswap currently writes back pages to backing swap reactively, triggered
+either by the shrinker or by the pool reaching its size limit. Although
+proactive memory reclaim can automatically write back a portion of zswap
+pages via the shrinker, it cannot explicitly control the amount of
+writeback for a specific memory cgroup. Moreover, proactive memory reclaim
+may not always be triggered during a steady state.
 
-I think I've found a 'problem' with that PROXY_WAKING ==> '->is_blocked
-&& !->blocked_on' scheme :-(
+In certain scenarios, it is desirable to trigger writeback in advance to
+free up memory. For example, users may want to prepare for an upcoming
+memory-intensive workload by flushing cold memory to the backing storage
+when the system is relatively idle.
 
-> > We talked about throtte, and you were going to make a proper patch of that cleanup
-> > iirc.
-> 
-> I had rebased your suggestion on tip and fixed a couple of splats but
-> once it was functional, I noticed hackbench taking twice as long to
-> complete compared to tip and I was chasing that before I fell sick.
-> 
-> Let me go dig deeper to see where exactly it is all going sideways.
+This patch series introduces a "zswap_writeback_only" key to memory.reclaim
+cgroup interface, allowing users to proactively write back cold compressed
+pages from zswap to the backing swap device. When specified, this key
+bypasses standard memory reclaim and exclusively performs proactive zswap
+writeback up to the requested budget. If omitted, the default reclaim
+behavior remains unchanged.
 
-Sure, no worries. This happens; computers just never want to just DTRT
-already. I lost a day and then some trying to figure out why my
-seemingly 'trivial' proxy changes ended up trying to run a dead task
-last week...
+Example usage:
+  # Write back 100MB of pages from zswap to the backing swap
+  echo "100M zswap_writeback_only" > memory.reclaim
+
+Patch 1: Move the global zswap shrink cursor into struct mem_cgroup as a
+  per-memcg zswap_wb_iter, so patch 2 can scope writeback to a given memcg
+  and make forward progress across its subtree on repeated invocations.
+
+Patch 2: Extend the memory.reclaim cgroup v2 interface with a new
+  "zswap_writeback_only" key, allowing users to trigger proactive zswap
+  writeback up to a requested budget.
+
+Patch 3: Add a zswpwb_proactive counter to memory.stat and /proc/vmstat
+  to track the number of writebacks triggered by proactive writeback.
+
+Patch 4: Add tests for zswap proactive writeback.
+
+v2->v3:
+    - Align the return value of zswap_proactive_writeback() with
+      memory.reclaim and update the corresponding documentation accordingly.
+    - Resolve conflicts in test_zswap.c on the mm-unstable branch.
+    - Enhance the zswap proactive writeback selftests to guard against potential
+      future regressions.
+
+v1->v2:
+    - As suggested by Yosry and Nhat, extend the memory.reclaim cgroup v2
+      interface with a "zswap_writeback_only" key instead of adding a new
+      dedicated cgroup interface.
+    - Update the zswap documentation and add selftests for proactive writeback.
+
+[v2] https://lore.kernel.org/all/20260525122242.36127-1-jiahao.kernel@gmail.com
+[v1] https://lore.kernel.org/all/20260511105149.75584-1-jiahao.kernel@gmail.com
+
+
+Hao Jia (4):
+  mm/zswap: Make shrink_worker writeback cursor per-memcg
+  mm/zswap: Implement proactive writeback
+  mm/zswap: Add per-memcg stat for proactive writeback
+  selftests/cgroup: Add tests for zswap proactive writeback
+
+ Documentation/admin-guide/cgroup-v2.rst     |  22 +-
+ Documentation/admin-guide/mm/zswap.rst      |  11 +-
+ include/linux/memcontrol.h                  |   3 +
+ include/linux/vm_event_item.h               |   1 +
+ include/linux/zswap.h                       |  16 ++
+ mm/memcontrol.c                             |   4 +
+ mm/vmscan.c                                 |  14 +
+ mm/vmstat.c                                 |   1 +
+ mm/zswap.c                                  | 292 +++++++++++++++++---
+ tools/testing/selftests/cgroup/test_zswap.c | 155 ++++++++++-
+ 10 files changed, 471 insertions(+), 48 deletions(-)
+
+-- 
+2.34.1
+
 
