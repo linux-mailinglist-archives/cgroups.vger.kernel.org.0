@@ -1,60 +1,60 @@
-Return-Path: <cgroups+bounces-16277-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16278-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0A41MjUOFWrVSQcAu9opvQ
-	(envelope-from <cgroups+bounces-16277-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:06:29 +0200
+	id t/BbJksOFWrYSQcAu9opvQ
+	(envelope-from <cgroups+bounces-16278-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:06:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA8D5D0320
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:06:29 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E12D5D0339
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:06:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8E0F13020EC3
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 03:06:25 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 601FB300ED86
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 03:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50AB2390C84;
-	Tue, 26 May 2026 03:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C0339281E;
+	Tue, 26 May 2026 03:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OEZUsMWJ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UBVtV9mq"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9B3382289;
-	Tue, 26 May 2026 03:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD6A3911AD;
+	Tue, 26 May 2026 03:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779764780; cv=none; b=IBu9ClLN8anDDXEvxFscs6u0LxDySGcOalOmatPbtqbyR7uTiU/efiKdSnZ4HAdrFN/FBxl7+7lABfG6pr9qGzJpP1XNVD/xgXVxzZlcU3xjk3SgWf/jz+Zx7CC0zwOzs0xQYqQ3VIbgqZ4xRt6aoOqdHXeq0SIqe3orW/f3T0g=
+	t=1779764781; cv=none; b=tAsDI5lLrtZ9sxgI3GkCIxiSIkTOvQcpEbuZcA2SD9S+lZ0IUtb0YIYW+PYDBQg/f9xcySRyzcytgFOYYqJfnaHfjHaKvzQjcayXgf5DKaIa/Uu1eVved/lDK4C/1TX1dCa9sDXNXoDpmqE7nNhm1d6hSWvfM/eJPCwWI7Vi0QA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779764780; c=relaxed/simple;
-	bh=PLfC3hhP65/R8Ef/PrNCGEFxKULcxSgtxTKT3eRkj68=;
+	s=arc-20240116; t=1779764781; c=relaxed/simple;
+	bh=FcRDw5Lbl0rZsMa2D63vn2uDZkbv4VZcgb8y5LuG+pU=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=GW23eJtxmJ4fjj/ckfclDhVWKwSobkQH1Wmhrp+abXAW9fZKbQ31r+/N/pK3cEJGtzlnd22kdDPZg1chDAHdMV8+ftmrlT7F2urNTWIUVlVSUb4iF+CkBC+DN+whUHNMCQ2FhHTVd9K7Kk5UouBlOZOU/qyT8xhskiOx/Hceulk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=fail (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OEZUsMWJ reason="signature verification failed"; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC6B91F000E9;
-	Tue, 26 May 2026 03:06:17 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=X0EbEQ9gNdqTy8J79tOHvfWRjK+AU8vthY2FF/1wHWnQNfFIl0488ELVuRNZOGOYT+qJnSBu0kWkOHaUKFDhRpUHs9PpK72nVtM5Qmhoj8Bdv7ZOcJAB5UuR7F+3/Z4qguznITAVNavNggnwr6Cmd34LimdGnFtzxzAZLkpQpkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=fail (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UBVtV9mq reason="signature verification failed"; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 839C51F00A3A;
+	Tue, 26 May 2026 03:06:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779764778;
-	bh=bD1DxynsoU0auV377W9yW3PuxMlzlNdl+Ii+zM/7Nyw=;
+	s=k20260515; t=1779764780;
+	bh=6yTA3niwkhttvCkwwpXJUgDLki0X86ZyRPiud/VTWNI=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=OEZUsMWJZw+E2RPT7SKO+DpKRsUypIy4D1QbA93XYWm2kMCltw5/oEklDClh5LEJy
-	 5lSKehzlacNUJqsYr+GRe7JLbgf1x09YNwO7zMvJGGT1yp3pMjzrZnqF3UqvsX0w2i
-	 UxGVr9958J6eJhwfaq84fQZCCRE0h6gXORUvlP+LILyQh1+uFhtvronjqICIH3k71a
-	 n7BEl4G6kAWOpsfMzLBBAfhFdlbakJ0krQreyQGgADtIIoAUjxAjgJ0Q4FB2f+PuLb
-	 cibao5KCroPmmz4ejin76N8MkSL1Bqy6pdPJ0XD7RvaFjAx5Y2A0QGCBOoERO3y869
-	 iZt6awx6fsXjg==
-Content-Type: multipart/mixed; boundary="===============1607772065207942128=="
+	b=UBVtV9mqmKcdwQzwwqF60MD2gRVk6VsAOk+ODNyT1Sst9Pl9FMmb9pqCzet6QsHv3
+	 YVTQtJd6/2BIVPeFPTxag3XABXwuNXm4C6BEXWWmDhVc84UJqMi+zQF0RjsREuhabc
+	 DP2z1c6bOiGGw/vNo2hZWgJ3L3Dwx6BXyDqBeh7ysTtoGt0gb+naI/5816NE0w1DDz
+	 fSgH9tDiPzryEtkPk7Xw9el2r+BpIAr0ZPjeQBw8U4R9ftQsFx9zo1y6lHi451jajZ
+	 2mTKHXhwXQ11+xhINqJ8CmNYXLWcL78T9GrQgY6G9Z7ebElVAw6lBjNYvt2pmY4aL+
+	 RnmkXY3JdCY1A==
+Content-Type: multipart/mixed; boundary="===============8971296676859346984=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8739793736cb8eb1ec6e271f59142e97a34af26ccb023469e23e5b47bed2aa61@mail.kernel.org>
-In-Reply-To: <8bfb7027abcc02c21db565cf52d6af78a6ce5b7d.1779760876.git.zhuhui@kylinos.cn>
-References: <8bfb7027abcc02c21db565cf52d6af78a6ce5b7d.1779760876.git.zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH bpf-next v7 03/11] libbpf: fix return value on memory allocation failure
+Message-Id: <89f1d1be0767b0146b61fdc7faad181e447ca7d669f467fb99d8c5a174430101@mail.kernel.org>
+In-Reply-To: <20bdaa33cc19364f5f10208c79ef94fe43bd5ac1.1779760876.git.zhuhui@kylinos.cn>
+References: <20bdaa33cc19364f5f10208c79ef94fe43bd5ac1.1779760876.git.zhuhui@kylinos.cn>
+Subject: Re: [RFC PATCH bpf-next v7 04/11] libbpf: introduce bpf_map__attach_struct_ops_opts()
 From: bot+bpf-ci@kernel.org
 To: hui.zhu@linux.dev, ast@kernel.org, daniel@iogearbox.net,
 	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
@@ -77,77 +77,134 @@ To: hui.zhu@linux.dev, ast@kernel.org, daniel@iogearbox.net,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
 	cgroups@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Cc: geliang@kernel.org,baohua@kernel.org,laoar.shao@gmail.com,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 26 May 2026 03:06:17 +0000 (UTC)
+Cc: geliang@kernel.org,baohua@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Tue, 26 May 2026 03:06:19 +0000 (UTC)
 X-Spamd-Result: default: False [2.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	CTYPE_MIXED_BOGUS(1.00)[];
 	ARC_REJECT(1.00)[signature check failed: fail, {[1] = sig:subspace.kernel.org:reject}];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	FREEMAIL_CC(0.00)[kernel.org,iogearbox.net,gmail.com,linux.dev,meta.com];
 	R_DKIM_REJECT(0.00)[kernel.org:s=k20260515];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,iogearbox.net,linux.dev,meta.com];
-	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16278-lists,cgroups=lfdr.de,bpf-ci];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16277-lists,cgroups=lfdr.de,bpf-ci];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	FREEMAIL_TO(0.00)[linux.dev,kernel.org,iogearbox.net,gmail.com,cmpxchg.org,linux-foundation.org,davemloft.net,fomichev.me,meta.com,distanz.ch,cestc.cn,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,huaweicloud.com,web.codeaurora.org,vger.kernel.org,kvack.org];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[kernel.org:-];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[69];
-	NEURAL_HAM(-0.00)[-0.736];
+	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+,1:+];
+	RCPT_COUNT_GT_50(0.00)[68];
+	NEURAL_HAM(-0.00)[-0.716];
 	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MIME_TRACE(0.00)[0:+,1:+]
-X-Rspamd-Queue-Id: 4CA8D5D0320
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mail.kernel.org:mid]
+X-Rspamd-Queue-Id: 7E12D5D0339
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
---===============1607772065207942128==
+--===============8971296676859346984==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index ab2071fdd3e8..1e8688975d16 100644
+> index 1e8688975d16..a1b54da1ded2 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -13701,7 +13701,7 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+
+[ ... ]
+
+> @@ -13683,11 +13683,18 @@ static int bpf_link__detach_struct_ops(struct bpf_link *link)
+>  	return close(link->fd);
+>  }
 >
->  	link = calloc(1, sizeof(*link));
->  	if (!link)
-> -		return libbpf_err_ptr(-EINVAL);
-> +		return libbpf_err_ptr(-ENOMEM);
+> -struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+> +struct bpf_link *bpf_map__attach_struct_ops_opts(const struct bpf_map *map,
+> +						 const struct bpf_struct_ops_opts *opts)
+>  {
+> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, link_opts);
+>  	struct bpf_link_struct_ops *link;
+> +	int err, fd, target_fd;
+>  	__u32 zero = 0;
+> -	int err, fd;
+> +
+> +	if (!OPTS_VALID(opts, bpf_struct_ops_opts)) {
+> +		pr_warn("map '%s': invalid opts\n", map->name);
+> +		return libbpf_err_ptr(-EINVAL);
+> +	}
 >
->  	/* kern_vdata should be prepared during the loading phase. */
->  	err = bpf_map_update_elem(map->fd, &zero, map->st_ops->kern_vdata, 0);
+>  	if (!bpf_map__is_struct_ops(map)) {
+>  		pr_warn("map '%s': can't attach non-struct_ops map\n", map->name);
 
-This is a pre-existing issue, but can this dereference a NULL map->st_ops
-pointer?
+[ ... ]
 
-If a user manually changes a map's type to BPF_MAP_TYPE_STRUCT_OPS using
-bpf_map__set_type(), or if a malformed BPF object file defines a map in the
-.maps section with this type, map->st_ops is never allocated.
+> @@ -13724,7 +13731,9 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
+>  		return &link->link;
+>  	}
+>
+> -	fd = bpf_link_create(map->fd, 0, BPF_STRUCT_OPS, NULL);
+> +	link_opts.flags = OPTS_GET(opts, flags, 0);
+> +	target_fd = OPTS_GET(opts, target_fd, 0);
+> +	fd = bpf_link_create(map->fd, target_fd, BPF_STRUCT_OPS, &link_opts);
 
-The bpf_object_init_struct_ops() function only allocates st_ops for maps
-found in the .struct_ops and .struct_ops.link sections.
+The expected_revision field declared in struct bpf_struct_ops_opts is never
+read or used. The code only reads flags and target_fd from opts, which could
+cause silent data loss if users set expected_revision expecting it to be
+honored.
 
-Because bpf_map__is_struct_ops() only checks map->def.type, could a missing
-NULL check on map->st_ops here and in bpf_map__init_kern_struct_ops() lead to
-a crash when privileged daemons parse untrusted BPF ELF files?
+Looking at similar opts structures (bpf_cgroup_opts, bpf_tcx_opts,
+bpf_netkit_opts), they all pass expected_revision to bpf_link_create_opts.
+Should expected_revision be propagated here as well?
 
-Reviewed-by lore thread: https://lore.kernel.org/bpf/20260526024145.5309F1F000E9@smtp.kernel.org/
+This was raised by bot+bpf-ci@kernel.org in v3:
+https://lore.kernel.org/bpf/3af5210f45be4a508e584263a5517781ca762d28d4f6b831b987795662715e61@mail.kernel.org/
+
+>  	if (fd < 0) {
+>  		free(link);
+>  		return libbpf_err_ptr(fd);
+
+[ ... ]
+
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index bba4e8464396..18af178547ad 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -945,6 +945,20 @@ bpf_program__attach_cgroup_opts(const struct bpf_program *prog, int cgroup_fd,
+>  struct bpf_map;
+>
+>  LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map);
+> +
+> +struct bpf_struct_ops_opts {
+> +	/* size of this struct, for forward/backward compatibility */
+> +	size_t sz;
+> +	__u32 flags;
+> +	__u32 target_fd;
+> +	__u64 expected_revision;
+> +	size_t :0;
+> +};
+> +#define bpf_struct_ops_opts__last_field expected_revision
+> +
+> +LIBBPF_API struct bpf_link *
+> +bpf_map__attach_struct_ops_opts(const struct bpf_map *map,
+> +				const struct bpf_struct_ops_opts *opts);
+>  LIBBPF_API int bpf_link__update_map(struct bpf_link *link, const struct bpf_map *map);
+>
+>  struct bpf_iter_attach_opts {
+
+[ ... ]
 
 
 ---
@@ -155,5 +212,5 @@ AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
 See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/26429228214
---===============1607772065207942128==--
+--===============8971296676859346984==--
 
