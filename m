@@ -1,456 +1,473 @@
-Return-Path: <cgroups+bounces-16316-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16317-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UDx4D+ijFWprWwcAu9opvQ
-	(envelope-from <cgroups+bounces-16316-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 15:45:12 +0200
+	id QInmMbGvFWr2XwcAu9opvQ
+	(envelope-from <cgroups+bounces-16317-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 16:35:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA0D55D6C4E
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 15:45:11 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0B45D7B1F
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 16:35:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DF9553054FD0
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 13:41:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0AD3B302F7CB
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 14:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3C03FAE1A;
-	Tue, 26 May 2026 13:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="d76OzVGL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44003FF1A3;
+	Tue, 26 May 2026 14:28:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from CWXP265CU010.outbound.protection.outlook.com (mail-ukwestazon11022131.outbound.protection.outlook.com [52.101.101.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB14F3BB125
-	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 13:41:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779802899; cv=none; b=SPbhq4DullEgIC3XV1kzCH43urKZ3x36LkV1ylKHVLEg6yhwgFhKjbR+yw+SKxBirpXQVc7gWkvomqAg9I2aW5LbLqvM8eF4v7wuol6ihcj/4UeE/5LfanxJWTC20lUvR3J5nrGqqLIRqgjC4Wom78Wgv7ZWJMGmpTdZZwgY2ow=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779802899; c=relaxed/simple;
-	bh=FVetYywmiuHKcPJdtST6NyKUkUztr/+0JDae0Hb2XTw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cp8C5c+bPcdfrJTGmi9rZbKScxtq5xgb0wFLiHrWwp5rQQ3sgBPw4glJxkyeJil0P2m3P4VGKlXtsvxG/jBwLN/H2DhxqVC2QtzIAs+qouBtIp4gext3jWiQF4LNIWM/xmD428JkvO/54tRWgRxAaN7oQDA7Jljj2XWdHuN1ftY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=d76OzVGL; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779802884;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KyRENNPrPzM2/fviijUVJk5HSnNAssJF903Rhb6e2Mk=;
-	b=d76OzVGLJbU1zoCXJ9bJ7R1se++18xtgLejNzeRe7oQIA2LnZrQ4p7gIay+GqLUzIifEaG
-	9JtVBNrLmQ3WKMZoGW03GH35B6F7t1T2y2WJikUpv/2ISyIARvFjJB6aRTC/3JJyGkK6Kh
-	ZwadHb/Op2Jf4nWQcnYEkmHtPpnNotI=
-From: Usama Arif <usama.arif@linux.dev>
-To: Hui Zhu <hui.zhu@linux.dev>
-Cc: Usama Arif <usama.arif@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>,
-	davem@davemloft.net,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	KP Singh <kpsingh@kernel.org>,
-	Tao Chen <chen.dylane@linux.dev>,
-	Mykyta Yatsenko <yatsenko@meta.com>,
-	Leon Hwang <leon.hwang@linux.dev>,
-	Anton Protopopov <a.s.protopopov@gmail.com>,
-	Amery Hung <ameryhung@gmail.com>,
-	Tobias Klauser <tklauser@distanz.ch>,
-	Eyal Birger <eyal.birger@gmail.com>,
-	Rong Tao <rongtao@cestc.cn>,
-	Hao Luo <haoluo@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Jeff Xu <jeffxu@chromium.org>,
-	mkoutny@suse.com,
-	Jan Hendrik Farr <kernel@jfarr.cc>,
-	Christian Brauner <brauner@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Brian Gerst <brgerst@gmail.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Jason Xing <kerneljasonxing@gmail.com>,
-	Paul Chaignon <paul.chaignon@gmail.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Lance Yang <lance.yang@linux.dev>,
-	Jiayuan Chen <jiayuan.chen@linux.dev>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59883FE34B;
+	Tue, 26 May 2026 14:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.101.131
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779805727; cv=fail; b=tksa6hF/xyXnfWq9kSClBu2Ae190ueHb0MYDJzAFO2KG2jI9pGlWuoM2ZYnezOLvjZKFyQ7KACtZkCG4JLlTW2XElRVRBcv86QBnuw0YYm2HLxJ9/9iajj2OZbTPs9ip1REVO5iSq1+JQLcX/r1D0SKv2k42ru9zmoY4wdN8X/o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779805727; c=relaxed/simple;
+	bh=9tJ+uhtesdTNg6Mjsd+6RCtbqLxTf2c6z8WQ38ONNxY=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ZPSwPzf7vwHBhp6jfAWxCOiKKb/JfPk41OFCY3Bs1tNpqQyl9+Ot1Nc0XlTM3aw6SuA2WP/P4BLUA9ipo3D6cpxklMBvmE6DCr9xTgOZEps/MhfAXem24DMWLF7VID1JQeda3URgkn7RpChBreRPoC0elbIPd+LeaGwDA6DCjMg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.101.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=gIQnQyznQNXaOsyeKeJfv1GBGaUb1+8/dXi3vt9owirZiyI8ol55xU9C7gK3DIuBIOPkdf5x3oXeVi9aYEKe5Yl8uRs6Ezlx2WPYqwNCzGdOdDQAZAx9/59L+uzz+gFNRvZ1A9glGE1E7KUmVn8qoWsqQVXOkMZzxCiBdHlhRo2Y/WbCgr3u/kvR9vkNYMHKT1sN/8THekS/+m+BxJAxnoxARCLVixD5g/hrMhyha/FyFTrQPTUgw+r0ihjEjprC3FMfRL3uCVwXUNcbRXzIEkwSglzj+4PM1prfhnyHkm/8wvJWMyFYU/mIGqgHgg7UgcKUI2KqnMsqCq5Mr4+yug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
+ bh=kkSpMoMM/iUVslj1HBanotjmRqjjeZF2J8WHzGzMJuQ=;
+ b=EMYoxA8xKG4eYs6kW2vdxuOCjFr/qBEJzQEHElAK9W2FdYiMaQeFZgf/R0BzyADkLqO3Z1Am8SZ9TJfRVBHpuCCSTaCPrXuCe3/DmVJcwVIL6YwdrfVobRAoWsaeOsh3JHptiz1SdWBSzHRP0NwsjgvHIHnYlX39SNzoqT7e6ZDNzyVRY9nN/mNfvSnusJCS1JWxa7lxoyVaOUiZH8e99DjaM9A/xurRVXY+J8h6OND47DXDxPVRjwqVnEdTQJHtGYN+mV5YfDRZmlXnRjEKdsNvsIJeM0jUSyMIsikWE+DJYW41J+exT28MXScpC3zVAEgaJuNSWgZnct6SdPxMiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
+ dkim=pass header.d=atomlin.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=atomlin.com;
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:183::5)
+ by LO6P123MB6631.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:2b3::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.20; Tue, 26 May
+ 2026 14:28:41 +0000
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230]) by CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230%4]) with mapi id 15.21.0071.011; Tue, 26 May 2026
+ 14:28:41 +0000
+From: Aaron Tomlin <atomlin@atomlin.com>
+To: tsbogend@alpha.franken.de,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	stephen.smalley.work@gmail.com,
+	casey@schaufler-ca.com,
+	longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: chenridong@huaweicloud.com,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	kprateek.nayak@amd.com,
+	omosnace@redhat.com,
+	kees@kernel.org,
+	atomlin@atomlin.com,
+	neelx@suse.com,
+	sean@ashe.io,
+	chjohnst@gmail.com,
+	steve@abita.co,
+	mproche@gmail.com,
+	nick.lange@gmail.com,
 	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	geliang@kernel.org,
-	baohua@kernel.org,
-	Hui Zhu <zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH bpf-next v7 00/11] mm: BPF struct_ops for dynamic memory protection and async reclaim
-Date: Tue, 26 May 2026 06:41:02 -0700
-Message-ID: <20260526134115.816081-1-usama.arif@linux.dev>
-In-Reply-To: <cover.1779760876.git.zhuhui@kylinos.cn>
-References: 
+	linux-mips@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] security: Expand task_setscheduler LSM hook to include CPU affinity mask
+Date: Tue, 26 May 2026 10:28:38 -0400
+Message-ID: <20260526142838.774711-1-atomlin@atomlin.com>
+X-Mailer: git-send-email 2.51.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR07CA0007.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::17) To CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:400:183::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP123MB6607:EE_|LO6P123MB6631:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2dbc83a-2652-4d25-bbc9-08debb3315a3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|1800799024|7416014|376014|18002099003|56012099003|921020|5023799004|3023799007|6133799003;
+X-Microsoft-Antispam-Message-Info:
+	8uFGeHLBYESMl87G27hXJLzZNNeDBnwjQCHsQ6VKlp8p5mkvX3SwKoI/O1wYMS03k64qF2n6QHUP1sLxDmiNtvE1+1CpQBJyMeImVWs5j/eCe1mUaC02y3StXy3/KRT8gENt0PBdynFkAH+8494ibs6mKNuglfXHobj7zSA1FMSo9dU7eZJx6/BEE8cZKXmr6ZZx+yyIIXolUhAlphY0lmtE4hFi2xQGjCmfDKHOKua7TsjjrVnjfVHe9/S0LAEQ9LL3NXyK3B/iBeR9lMublawi/guuUnoyy4bmTw96H/yPVKyTDYMA9jW55AtNrT49PQvAaHtzPsJhfSLpp2MIYuYJlnN5Pa3ROU3TMuzszX03eruvqcYWGpO/BxkMtssH2C9mT+PcYVuwmAsM8LW0EpOxGCbG3Jx9Ath/AtnrTROEEtMCNW/fWtC/lzdrL7vYWfLHB8J7laKAc2cbzS9RZ4SrrSmWgatS0oaCKGbCMPp3TZ/QYTnzGTudl9jbRTD8iT2fT2tV1J28OyebUVQnsP5V9j/ar4RaObbxeYer41OvsPUvU7RRxtitKDESgIHAlp+2unFjSsRYwU8JxnQ/vtvdBdWSZrBNhxpueJP8C1r7kOu5O0J1qHfcrGBZ4bBz5kJscEBNGjzjL0eogQTxgwWB/TAzPEHd0voc0piDDj61CsYfIQ1LOLtgoq3i0eI08wE/KKXSBLNdfUcYDJfOOUmWZnOtzWIm3NUnn3Q1hARdVJfTlAaArxSBZbuIYznh
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014)(18002099003)(56012099003)(921020)(5023799004)(3023799007)(6133799003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?B7t7eu+uqMvLe/U4mCsi+3LBLrYeeCgAwlGebMfd3gTR8BysVilLf7QazfDQ?=
+ =?us-ascii?Q?bJ6xV1/cqGXktDKS9UQSdHxm0TFlZ4mGE+2ZAFnejZfCP6FSc/XB/QthLKt9?=
+ =?us-ascii?Q?fNQiTb4s6/Ahmr+C89Zcl3pHjaqxXuqasU326eMKs0nEatMGq3f0jaV4bN8o?=
+ =?us-ascii?Q?yms7fSuKGlTTF7FFma9jdjTzqojfVM3+k6t27qYxjPA11/qSzkkU54me3eYs?=
+ =?us-ascii?Q?aSAGZyzmBfsl0RibWKIABqbMkUdMRgjtboW7Fxy15gAND9T1JwoU4lvKSFrV?=
+ =?us-ascii?Q?a3+/Vez3O1QQR4Yck70HbXyXq/FSfZYBubK5ijPbuzXAr30EjRIcvK4wGtCl?=
+ =?us-ascii?Q?7z1QNnSfrMIaTZhnYgfypEWnQNIRVrnHZiKXFrwf9yx0uNEoJyToE8RKoASw?=
+ =?us-ascii?Q?mh8XmkU79AtmdGdnTNZT60Ew2vEWjzsJ67Cavw2wfNMk/bKUVBgMiuLwe00L?=
+ =?us-ascii?Q?boqva5v9r9sbKMCl7ipF72sCVOAzuAm3hOKSA2jex4sRJVxhfC2ePhnJQrIj?=
+ =?us-ascii?Q?vKhdXclNV+FlZPBbWsPB3rlIQzEjyAUGhue7eaDfT9NKS5uWUx9wQA5ouFs6?=
+ =?us-ascii?Q?RijItCuIBympv2tZn9gwJp0U9/gIOw9UCcw3kT6qcJEzyOsMwMHuLS0E+6Io?=
+ =?us-ascii?Q?LPmbZeDDOTOSeeWdiTXFT2ej7+jR3qzeRSK/mld2f44Udi/G/0Knu88yOHZc?=
+ =?us-ascii?Q?p1MgsDTW4POur4vG8uk4uImB4RoaRGxJp46mq99bv4sLRvTdji36u3nIr37U?=
+ =?us-ascii?Q?MHROKEecppT6yGmXfgGHVECfBGWbiuqSutWJNJ4baWPa6aQLcQo7rc+jV5YG?=
+ =?us-ascii?Q?IMlE+vjYmEchaggZb6NBMLUCjEtx08ML9yFbrjssp2zeZiNW04o0vvWDaD5s?=
+ =?us-ascii?Q?6u7TBmGphZqKLmZl/iY+5X6irsZoZC+Uw+PAr/4ijRU9f+PSZcFASzc2Xxma?=
+ =?us-ascii?Q?3k7Pt771zUU9GR8yTbk6Gm+7e6MtLrY4ZbBbPV0/69F3b2ezYqVKfi+HoAba?=
+ =?us-ascii?Q?UDDniWISsSfPLnPGKGXcL0FltjN2Xhorsd4H4OEYB5fgqYE9A4BDT7UmEp/1?=
+ =?us-ascii?Q?CIpyvNV1fSTy7wy1xvq0LJCRWnrIOLRsvKZIBgUlAvFNrfixs1Q1RymmVDZh?=
+ =?us-ascii?Q?v2vYApLP18fAbhfNuq8Rd5WrsFPR8Uh2402a5Xjhbk8gQImtShfBFmthdsxo?=
+ =?us-ascii?Q?A3vW6dPwmunM4hDFC1VwFErJuv9/xSQ1+t82LAeohDiUkaa0UfQZc4oRwN+y?=
+ =?us-ascii?Q?I9UOtpLFS/0d9aLWDgQ4P0ZgHJWZJJrUWumhOU9HjHhIDqvLQimCB/xJ+0dv?=
+ =?us-ascii?Q?TEkPYOVSmKCUMx9rEq6zo1nR3T1FGQIaozdbNVmYJMmmjXSrb9kykN2RpbgZ?=
+ =?us-ascii?Q?5414YdE+dcqtdkzKY+gOpOhqKFPzIZMSWUVKSHA+waszWo3YA7PMd8CAE0fZ?=
+ =?us-ascii?Q?PqeIgQi2S2xfhctgvOi0A4de0Ogng0cKRkTkzgpR/PxLCstYF9FJwN3Sm4l+?=
+ =?us-ascii?Q?ri+8ypPLCgO2ljB7vPaJBUdVTw4mE5dOaQm4MybqpLj864bSs4jUuOwAWbVY?=
+ =?us-ascii?Q?EtWewYethGvBtnoNSSbh4sgYfeaq4eZ/W04yvbGSSuYoeB/NMfj9sXUi8OAX?=
+ =?us-ascii?Q?7okmiwrF5851SwfCCoEUMouOK2lAqoDz19IRRLWSdUZCG8d6juq/zGcedWmL?=
+ =?us-ascii?Q?OHmO3QAo5FhhRM+rP+MBpVopwuPJ18K+IKYs4B900Yuo03XvHpKFLM+9jmRZ?=
+ =?us-ascii?Q?7/jf3Pcbig=3D=3D?=
+X-OriginatorOrg: atomlin.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2dbc83a-2652-4d25-bbc9-08debb3315a3
+X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2026 14:28:41.5378
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6FDIkw1dXhNgD7Xrg+zQ/15tilU/HU7FJe2oyCrRnKr+ayN81+z0AZnzkI08U+cdRr1NUpJKkYEXkTS9aEZ0Tw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO6P123MB6631
+X-Spamd-Result: default: False [3.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux.dev,iogearbox.net,gmail.com,kernel.org,cmpxchg.org,linux-foundation.org,davemloft.net,fomichev.me,meta.com,distanz.ch,cestc.cn,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,huaweicloud.com,vger.kernel.org,kvack.org,kylinos.cn];
-	TAGGED_FROM(0.00)[bounces-16316-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-16317-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,redhat.com,amd.com,kernel.org,atomlin.com,suse.com,ashe.io,gmail.com,abita.co,vger.kernel.org];
+	FREEMAIL_TO(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,infradead.org,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com];
 	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[atomlin.com];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[36];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[60];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-0.664];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,memory.events:url,kylinos.cn:email,patchew.org:url,linux.dev:email,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: EA0D55D6C4E
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[atomlin.com:mid,atomlin.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 5B0B45D7B1F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, 26 May 2026 10:20:00 +0800 Hui Zhu <hui.zhu@linux.dev> wrote:
+At present, the task_setscheduler LSM hook provides security modules
+with the opportunity to mediate changes to a task's scheduling policy.
+However, when invoked via sched_setaffinity(), the hook lacks
+visibility into the actual CPU affinity mask being requested.
+Consequently, BPF-based security modules are entirely blind to the
+target CPUs and cannot make granular access control decisions based on
+spatial isolation.
 
-> From: Hui Zhu <zhuhui@kylinos.cn>
-> 
-> Overview:
-> This series introduces BPF struct_ops support for the memory controller,
-> enabling userspace BPF programs to implement custom, dynamic memory
-> management policies per cgroup. The feature allows BPF programs to hook
-> into the core reclaim and charge paths without requiring kernel
-> modifications, providing a flexible alternative to static knobs such as
-> memory.low and memory.min.
->  
-> The series enables two complementary use cases.
->  
-> Dynamic memory protection: static memory protection thresholds
-> (memory.low, memory.min) are poor fits for workloads whose actual memory
-> activity varies over time. A high-priority cgroup holding a large working
-> set but temporarily idle will still suppress reclaim on its siblings,
-> wasting available memory. A BPF-driven approach can observe real workload
-> activity -- page faults, charge/uncharge events -- and activate or
-> withdraw protection dynamically. The test results at the end of this
-> letter quantify the difference: in a scenario where the high-priority
-> cgroup is idle, the BPF-controlled low-priority cgroup achieves roughly
-> 37x higher throughput than with static memory.low.
->  
-> Asynchronous proactive reclaim: the memcg_charged and memcg_uncharged
-> hooks, combined with the BPF workqueue mechanism and the new
-> bpf_try_to_free_mem_cgroup_pages() kfunc, enable BPF programs to perform
-> proactive background reclaim without blocking the charge path. The
-> pattern works as follows: the memcg_charged callback tracks accumulated
-> memory usage; when usage crosses a configurable threshold, it enqueues an
-> asynchronous work item via bpf_wq_start() and returns immediately without
-> throttling the charging task. The workqueue callback then invokes
-> bpf_try_to_free_mem_cgroup_pages() to reclaim pages from the target
-> cgroup; if usage remains elevated after reclaim, the callback re-enqueues
-> itself to continue. This allows a BPF program to keep a cgroup's
-> footprint below its hard limit (memory.max) entirely in the background,
-> avoiding the OOM killer or direct-reclaim stalls that would otherwise
-> occur. The selftest for this feature (patch 10/11) validates the
-> mechanism concretely: a workload that writes and mmaps a 64 MB file inside
-> a 32 MB cgroup reliably triggers memory.events "max" events without BPF;
-> with the async reclaim program attached, the "max" counter does not
-> increase at all across the same workload.
->  
+In modern multi-tenant and real-time environments, CPU isolation is a
+critical boundary. The inability to audit or restrict specific CPU
+pinning requests limits the effectiveness of eBPF-driven security
+policies, particularly when attempting to shield isolated or
+cryptographic cores from unprivileged or compromised tasks.
 
+This patch expands the security_task_setscheduler() hook signature to
+include a pointer to the requested cpumask. Because this is a shared
+hook used for multiple scheduling attribute changes, call sites that do
+not modify CPU affinity are updated to safely pass NULL.
+To protect against unverified dereferences, the parameter is annotated
+with __nullable in the LSM hook definition, ensuring the BPF verifier
+mandates explicit NULL checks for attached eBPF programs.
 
-Hi Hui,
+This change updates all in-tree security modules (SELinux and Smack) to
+accommodate the new parameter mechanically, whilst providing BPF LSMs
+with the necessary context to enforce strict affinity policies.
 
-Thanks for the series.
-Would it not be simpler to just have another memcg knob, something like
-memory.high_async.
-When memory usage > memory.high_async, queue a per-memcg work item that calls
-try_to_free_mem_cgroup_pages() until usage drops back below some threshold.
-I am not sure I see what programability aspect from bpf you need here.
+Signed-off-by: Aaron Tomlin <atomlin@atomlin.com>
+---
+This patch is strictly dependent on the prior acceptance of "mips:
+sched: Fix CPUMASK_OFFSTACK memory corruption in MT fpaff" (Message-ID:
+20260526141651.773306-1-atomlin@atomlin.com), as expanding the LSM hook
+signature requires passing the mask pointer from
+mipsmt_sys_sched_setaffinity().
 
-Thanks
+Changes since v2 [1]:
+ - Dropped patch 1. This is to be addressed by the cgroup cpuset
+   maintainer (Waiman Long)
 
->  
->   08/11  selftests/bpf: Add tests for memcg_bpf_ops
->          Adds prog_tests/memcg_ops.c covering three scenarios:
->          memcg_charged-only throttling, below_low + memcg_charged
->          interaction, and below_min + memcg_charged interaction. A
->          tracepoint on memcg:count_memcg_events (PGFAULT) is used to
->          detect memory pressure and trigger hooks accordingly.
->  
->   09/11  selftests/bpf: Add test for memcg_bpf_ops hierarchies
->          Validates BPF_F_ALLOW_OVERRIDE attachment semantics across a
->          three-level cgroup hierarchy: attach with ALLOW_OVERRIDE at the
->          root, override at the middle level without the flag, then assert
->          that attaching to the leaf correctly fails with -EBUSY.
->  
->   10/11  selftests/bpf: Add selftest for memcg async reclaim via BPF
->          Demonstrates and validates asynchronous memory reclaim: a BPF
->          program uses the memcg_charged/memcg_uncharged hooks to track
->          accumulated usage and, when a threshold is exceeded, enqueues a
->          bpf_wq_start() workqueue item that calls
->          bpf_try_to_free_mem_cgroup_pages() without blocking the charge
->          path. The test asserts that with the BPF program active,
->          memory.events "max" events do not increase under a workload
->          that would otherwise exceed the hard limit.
->  
->   11/11  samples/bpf: Add memcg priority control and async reclaim example
->          Adds a complete sample (samples/bpf/memcg.bpf.c + memcg.c)
->          demonstrating both features. The BPF side monitors PGFAULT
->          events on a high-priority cgroup; when the per-second fault
->          count crosses a configurable threshold, it activates below_low
->          or below_min protection for the high-priority cgroup and/or
->          applies a charge delay to the low-priority cgroup. Six
->          struct_ops variants are exported so userspace can attach only
->          the hooks needed. Async reclaim is optionally combined with
->          priority throttling via a shared low-cgroup ops map.
->  
-> Test Environment:
-> The following examples run on x86_64 QEMU (10 CPUs, 2 GB RAM), using
-> a tmpfs-backed file on the host as a swap device to reduce I/O impact.
-> Two cgroups are created -- high (high-priority) and low (low-priority)
-> -- and each test runs two concurrent stress-ng workloads, one per
-> cgroup, each requesting 3 GB of memory.
->  
->   # mkdir /sys/fs/cgroup/high /sys/fs/cgroup/low
->   # free -h
->                  total   used    free  shared  buff/cache  available
->   Mem:           1.9Gi  317Mi  1.6Gi   1.0Mi       144Mi      1.6Gi
->   Swap:          4.0Gi     0B  4.0Gi
->  
-> Baseline: no memory priority policy:
-> Both cgroups run without any reclaim protection. Results are roughly
-> equal, as expected:
->  
->   cgroup    bogo ops/s
->   high           4,979
->   low            4,927
->  
-> Test 1: memory.low protection:
-> Setting memory.low on the high-priority cgroup protects it from
-> reclaim, at the cost of pushing reclaim pressure onto the low-priority
-> cgroup:
->  
->   # echo $((3 * 1024 * 1024 * 1024)) > /sys/fs/cgroup/high/memory.low
->  
->   cgroup    bogo ops/s
->   high         450,290
->   low           11,307
->  
-> The high-priority cgroup benefits significantly, but memory.low relies
-> on static usage thresholds and cannot adapt to actual workload
-> behavior.
->  
-> Test 2: memory.low with an idle high-priority task:
-> Here the high-priority cgroup runs a Python script that allocates 3 GB
-> and then sleeps, simulating a low-activity but memory-holding workload.
-> Because the process is idle, it generates no page faults and does not
-> actively use its memory. Yet memory.low still protects it, continuing
-> to suppress the low-priority cgroup's performance:
->  
->   cgroup    bogo ops/s
->   low           14,757
->  
-> The low-priority cgroup remains significantly throttled despite the
-> high-priority cgroup being effectively idle -- a clear limitation of
-> static memory.low control.
->  
-> Test 3: memcg eBPF -- dynamic priority control:
-> memcg is a sample program introduced in this patch series
-> (samples/bpf/memcg.c + memcg.bpf.c). It loads a BPF program that
-> monitors PGFAULT events in the high-priority cgroup. When the
-> per-second fault count exceeds a configured threshold, the hook
-> activates below_min protection for one second; otherwise the cgroup
-> receives no special treatment.
->  
->   # ./memcg --low_path=/sys/fs/cgroup/low  \
->             --high_path=/sys/fs/cgroup/high \
->             --threshold=1 --use_below_min
->   Successfully attached!
->  
-> 3a. Both cgroups under active memory pressure:
->  
-> When both cgroups run stress-ng, the high-priority cgroup generates
-> frequent page faults and the BPF hook activates protection, matching
-> the behavior of memory.low:
->  
->   cgroup    bogo ops/s
->   high         404,392
->   low           11,404
->  
-> 3b. High-priority cgroup is idle (Python + sleep):
->  
-> Because the sleeping Python process generates no page faults, the BPF
-> hook never activates, and the low-priority cgroup is free to reclaim
-> memory normally:
->  
->   cgroup    bogo ops/s
->   low          551,083
->  
-> This is a ~37x improvement over the equivalent memory.low scenario
-> (Test 2), demonstrating that eBPF-driven dynamic control can
-> accurately reflect actual workload activity and avoid unnecessary
-> protection of idle high-priority tasks.
->  
-> Summary:
->   Scenario                          low-cgroup bogo ops/s
->   Baseline (no policy)                           ~4,927
->   memory.low, both active                       ~11,307
->   memory.low, high idle                         ~14,757
->   memcg eBPF, both active                       ~11,404
->   memcg eBPF, high idle                        ~551,083
->  
-> References:
-> [1] https://patchew.org/linux/20260127024421.494929-1-roman.gushchin@linux.dev/
-> 
-> Changelog:
-> v7:
-> Change base commits of "mm: BPF OOM" to v3.
-> Some fixes according to the comments of bpf-ci.
-> Rename get_high_delay_ms hook to memcg_charged; add memcg_uncharged
-> hook for tracking uncharge events.
-> Update below_low and below_min hooks to receive elow/emin and usage
-> as explicit arguments.
-> Add bpf_try_to_free_mem_cgroup_pages kfunc to expose cgroup reclaim
-> to BPF programs.
-> Add selftest for BPF-driven asynchronous page reclaim.
-> Extend samples/bpf/memcg to support async reclaim in addition to
-> priority throttling.
-> v6:
-> Based on the bot+bof-ci comments, fixed the following issues.
-> Added fast-path check with unlikely() before SRCU lock acquisition to
-> optimize the no-BPF case in BPF_MEMCG_CALL.
-> Add missing newline in pr_warn message to bpf_memcontrol_init.
-> Added comprehensive child process exit status checking with WIFEXITED()
-> and WEXITSTATUS(), and added zombie process prevention in
-> real_test_memcg_ops.
-> Changed malloc() to calloc() for BSS data allocation in all test
-> functions and samples main function.
-> Change srcu_read_lock(&memcg_bpf_srcu) to
-> lockdep_assert_held(&cgroup_mutex) in function memcontrol_bpf_online
-> and memcontrol_bpf_offline.
-> v5:
-> Based on the bot+bof-ci comments, fixed the following issues.
-> Fixed issues in memcg_ops.c and memcg.bpf.c by moving variable
-> declaration to the beginning of need_threshold() function.
-> The 'u64 current_ts' variable must be declared before any
-> executable statements
-> Improved input validation in samples/bpf/memcg.c by adding a new
-> parse_u64() helper function. This function properly handles errors
-> from strtoull() and provides better error messages when parsing
-> threshold and over_high_ms command-line arguments.
-> Move check for prog->sleepable after validating member offsets in
-> mm/bpf_memcontrol.c bpf_memcg_ops_check_member.
-> Fixed sscanf return value checking in prog_tests/memcg_ops.c.
-> Changed the condition from 'sscanf() < 0' to 'sscanf() != 1' because
-> sscanf returns the number of successfully matched items, not a negative
-> value on error. This makes the test more reliable when reading timing
-> data from temporary files.
-> v4:
-> Fix the issues according to the comments from bot+bof-ci.
-> According to JP Kobryn's comments, move exit(0) from
-> real_test_memcg_ops_child_work to real_test_memcg_ops.
-> Fix issues in the bpf_memcg_ops_reg function.
-> v3:
-> According to the comments from Michal Koutný and Chen Ridong, update hooks
-> to get_high_delay_ms, below_low, below_min, handle_cgroup_online, and
-> handle_cgroup_offline.
-> According to Michal Koutný's comments, add BPF_F_ALLOW_OVERRIDE
-> support to memcg_bpf_ops.
-> v2:
-> According to Tejun Heo's comments, rebased on Roman Gushchin's BPF
-> OOM patch series [1] and added hierarchical delegation support.
-> According to the comments from Roman Gushchin and Michal Hocko, designed
-> concrete use case scenarios and provided test results.
-> 
-> Hui Zhu (7):
->   bpf: Pass flags in bpf_link_create for struct_ops
->   mm: memcontrol: Add BPF struct_ops for memory controller
->   mm/bpf: Add bpf_try_to_free_mem_cgroup_pages kfunc
->   selftests/bpf: Add tests for memcg_bpf_ops
->   selftests/bpf: Add test for memcg_bpf_ops hierarchies
->   selftests/bpf: Add selftest for memcg async reclaim via BPF
->   samples/bpf: Add memcg priority control and async reclaim example
-> 
-> Roman Gushchin (4):
->   bpf: move bpf_struct_ops_link into bpf.h
->   bpf: allow attaching struct_ops to cgroups
->   libbpf: fix return value on memory allocation failure
->   libbpf: introduce bpf_map__attach_struct_ops_opts()
-> 
->  MAINTAINERS                                   |   6 +
->  include/linux/bpf-cgroup-defs.h               |   3 +
->  include/linux/bpf-cgroup.h                    |  16 +
->  include/linux/bpf.h                           |  10 +
->  include/linux/memcontrol.h                    | 250 ++++++-
->  include/uapi/linux/bpf.h                      |   5 +-
->  kernel/bpf/bpf_struct_ops.c                   |  67 +-
->  kernel/bpf/cgroup.c                           |  46 ++
->  mm/bpf_memcontrol.c                           | 355 +++++++++-
->  mm/memcontrol.c                               |  43 +-
->  samples/bpf/.gitignore                        |   1 +
->  samples/bpf/Makefile                          |   8 +-
->  samples/bpf/memcg.bpf.c                       | 380 +++++++++++
->  samples/bpf/memcg.c                           | 411 ++++++++++++
->  tools/include/uapi/linux/bpf.h                |   3 +-
->  tools/lib/bpf/libbpf.c                        |  22 +-
->  tools/lib/bpf/libbpf.h                        |  14 +
->  tools/lib/bpf/libbpf.map                      |   1 +
->  tools/testing/selftests/bpf/cgroup_helpers.c  |  41 ++
->  tools/testing/selftests/bpf/cgroup_helpers.h  |   2 +
->  .../bpf/prog_tests/memcg_async_reclaim.c      | 333 +++++++++
->  .../selftests/bpf/prog_tests/memcg_ops.c      | 634 ++++++++++++++++++
->  .../selftests/bpf/progs/memcg_async_reclaim.c | 203 ++++++
->  tools/testing/selftests/bpf/progs/memcg_ops.c | 132 ++++
->  24 files changed, 2952 insertions(+), 34 deletions(-)
->  create mode 100644 samples/bpf/memcg.bpf.c
->  create mode 100644 samples/bpf/memcg.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/memcg_async_reclaim.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/memcg_ops.c
->  create mode 100644 tools/testing/selftests/bpf/progs/memcg_async_reclaim.c
->  create mode 100644 tools/testing/selftests/bpf/progs/memcg_ops.c
-> 
-> -- 
-> 2.43.0
-> 
-> 
+ - Dropped patch 3. Will be submitted as a separate patch (Paul Moore)
+
+Changes since v1 [2]:
+ - Reordered the allocation and user-copy of new_mask in the MIPS
+   architecture's mipsmt_sys_sched_setaffinity() to occur before the
+   LSM hook is invoked. This ensures the security modules evaluate a fully
+   populated mask rather than uninitialised memory, while cleanly handling
+   error unwinding
+
+ - Updated cpuset_can_fork() to pass the destination cpuset's effective CPU
+   mask instead of NULL
+
+[1]: https://lore.kernel.org/lkml/20260509213803.968464-1-atomlin@atomlin.com/
+[2]: https://lore.kernel.org/lkml/20260509164847.939294-1-atomlin@atomlin.com/
+---
+ arch/mips/kernel/mips-mt-fpaff.c |  2 +-
+ fs/proc/base.c                   |  2 +-
+ include/linux/lsm_hook_defs.h    |  3 ++-
+ include/linux/security.h         | 11 +++++++----
+ kernel/cgroup/cpuset.c           |  4 ++--
+ kernel/sched/syscalls.c          |  4 ++--
+ security/commoncap.c             |  7 +++++--
+ security/security.c              | 11 ++++++-----
+ security/selinux/hooks.c         |  3 ++-
+ security/smack/smack_lsm.c       | 11 +++++++++--
+ 10 files changed, 37 insertions(+), 21 deletions(-)
+
+diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fpaff.c
+index 4fead87d2f43..c68d1676350e 100644
+--- a/arch/mips/kernel/mips-mt-fpaff.c
++++ b/arch/mips/kernel/mips-mt-fpaff.c
+@@ -110,7 +110,7 @@ asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid, unsigned int len,
+ 		goto out_unlock;
+ 	}
+ 
+-	retval = security_task_setscheduler(p);
++	retval = security_task_setscheduler(p, new_mask);
+ 	if (retval)
+ 		goto out_unlock;
+ 
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index d9acfa89c894..ac4096958a00 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2619,7 +2619,7 @@ static ssize_t timerslack_ns_write(struct file *file, const char __user *buf,
+ 		}
+ 		rcu_read_unlock();
+ 
+-		err = security_task_setscheduler(p);
++		err = security_task_setscheduler(p, NULL);
+ 		if (err) {
+ 			count = err;
+ 			goto out;
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 2b8dfb35caed..6ec7bc04a1b7 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -255,7 +255,8 @@ LSM_HOOK(int, 0, task_prlimit, const struct cred *cred,
+ 	 const struct cred *tcred, unsigned int flags)
+ LSM_HOOK(int, 0, task_setrlimit, struct task_struct *p, unsigned int resource,
+ 	 struct rlimit *new_rlim)
+-LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p)
++LSM_HOOK(int, 0, task_setscheduler, struct task_struct *p,
++	 const struct cpumask *in_mask__nullable)
+ LSM_HOOK(int, 0, task_getscheduler, struct task_struct *p)
+ LSM_HOOK(int, 0, task_movememory, struct task_struct *p)
+ LSM_HOOK(int, 0, task_kill, struct task_struct *p, struct kernel_siginfo *info,
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 41d7367cf403..8b74153daa43 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -196,7 +196,8 @@ extern int cap_mmap_addr(unsigned long addr);
+ extern int cap_task_fix_setuid(struct cred *new, const struct cred *old, int flags);
+ extern int cap_task_prctl(int option, unsigned long arg2, unsigned long arg3,
+ 			  unsigned long arg4, unsigned long arg5);
+-extern int cap_task_setscheduler(struct task_struct *p);
++extern int cap_task_setscheduler(struct task_struct *p,
++				 const struct cpumask *in_mask);
+ extern int cap_task_setioprio(struct task_struct *p, int ioprio);
+ extern int cap_task_setnice(struct task_struct *p, int nice);
+ extern int cap_vm_enough_memory(struct mm_struct *mm, long pages);
+@@ -531,7 +532,8 @@ int security_task_prlimit(const struct cred *cred, const struct cred *tcred,
+ 			  unsigned int flags);
+ int security_task_setrlimit(struct task_struct *p, unsigned int resource,
+ 		struct rlimit *new_rlim);
+-int security_task_setscheduler(struct task_struct *p);
++int security_task_setscheduler(struct task_struct *p,
++			       const struct cpumask *in_mask);
+ int security_task_getscheduler(struct task_struct *p);
+ int security_task_movememory(struct task_struct *p);
+ int security_task_kill(struct task_struct *p, struct kernel_siginfo *info,
+@@ -1392,9 +1394,10 @@ static inline int security_task_setrlimit(struct task_struct *p,
+ 	return 0;
+ }
+ 
+-static inline int security_task_setscheduler(struct task_struct *p)
++static inline int security_task_setscheduler(struct task_struct *p,
++					     const struct cpumask *in_mask)
+ {
+-	return cap_task_setscheduler(p);
++	return cap_task_setscheduler(p, in_mask);
+ }
+ 
+ static inline int security_task_getscheduler(struct task_struct *p)
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 5c33ab20cc20..7b3dfccb77d8 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3033,7 +3033,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 			goto out_unlock;
+ 
+ 		if (setsched_check) {
+-			ret = security_task_setscheduler(task);
++			ret = security_task_setscheduler(task, cs->effective_cpus);
+ 			if (ret)
+ 				goto out_unlock;
+ 		}
+@@ -3591,7 +3591,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
+ 	if (ret)
+ 		goto out_unlock;
+ 
+-	ret = security_task_setscheduler(task);
++	ret = security_task_setscheduler(task, cs->effective_cpus);
+ 	if (ret)
+ 		goto out_unlock;
+ 
+diff --git a/kernel/sched/syscalls.c b/kernel/sched/syscalls.c
+index b215b0ead9a6..68bc7e466fb1 100644
+--- a/kernel/sched/syscalls.c
++++ b/kernel/sched/syscalls.c
+@@ -540,7 +540,7 @@ int __sched_setscheduler(struct task_struct *p,
+ 		if (attr->sched_flags & SCHED_FLAG_SUGOV)
+ 			return -EINVAL;
+ 
+-		retval = security_task_setscheduler(p);
++		retval = security_task_setscheduler(p, NULL);
+ 		if (retval)
+ 			return retval;
+ 	}
+@@ -1213,7 +1213,7 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
+ 			return -EPERM;
+ 	}
+ 
+-	retval = security_task_setscheduler(p);
++	retval = security_task_setscheduler(p, in_mask);
+ 	if (retval)
+ 		return retval;
+ 
+diff --git a/security/commoncap.c b/security/commoncap.c
+index 3399535808fe..d86f1c2b9210 100644
+--- a/security/commoncap.c
++++ b/security/commoncap.c
+@@ -1222,13 +1222,16 @@ static int cap_safe_nice(struct task_struct *p)
+ /**
+  * cap_task_setscheduler - Determine if scheduler policy change is permitted
+  * @p: The task to affect
++ * @in_mask: Requested CPU affinity mask (ignored)
+  *
+  * Determine if the requested scheduler policy change is permitted for the
+- * specified task.
++ * specified task. The capabilities security module does not evaluate the
++ * @in_mask parameter, relying solely on cap_safe_nice().
+  *
+  * Return: 0 if permission is granted, -ve if denied.
+  */
+-int cap_task_setscheduler(struct task_struct *p)
++int cap_task_setscheduler(struct task_struct *p,
++			  const struct cpumask *in_mask __always_unused)
+ {
+ 	return cap_safe_nice(p);
+ }
+diff --git a/security/security.c b/security/security.c
+index 4e999f023651..53804ee40df5 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -3240,17 +3240,18 @@ int security_task_setrlimit(struct task_struct *p, unsigned int resource,
+ }
+ 
+ /**
+- * security_task_setscheduler() - Check if setting sched policy/param is allowed
++ * security_task_setscheduler() - Check if setting sched policy/param/affinity is allowed
+  * @p: target task
++ * @in_mask: requested CPU affinity mask, or NULL if not changing affinity
+  *
+- * Check permission before setting scheduling policy and/or parameters of
+- * process @p.
++ * Check permission before setting the scheduling policy, parameters, and/or
++ * CPU affinity of process @p.
+  *
+  * Return: Returns 0 if permission is granted.
+  */
+-int security_task_setscheduler(struct task_struct *p)
++int security_task_setscheduler(struct task_struct *p, const struct cpumask *in_mask)
+ {
+-	return call_int_hook(task_setscheduler, p);
++	return call_int_hook(task_setscheduler, p, in_mask);
+ }
+ 
+ /**
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 0f704380a8c8..5f0914db23f6 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -4557,7 +4557,8 @@ static int selinux_task_setrlimit(struct task_struct *p, unsigned int resource,
+ 	return 0;
+ }
+ 
+-static int selinux_task_setscheduler(struct task_struct *p)
++static int selinux_task_setscheduler(struct task_struct *p,
++				     const struct cpumask *in_mask __always_unused)
+ {
+ 	return avc_has_perm(current_sid(), task_sid_obj(p), SECCLASS_PROCESS,
+ 			    PROCESS__SETSCHED, NULL);
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 3f9ae05039a2..a77143beff44 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -2343,10 +2343,17 @@ static int smack_task_getioprio(struct task_struct *p)
+ /**
+  * smack_task_setscheduler - Smack check on setting scheduler
+  * @p: the task object
++ * @in_mask: Requested CPU affinity mask (ignored)
+  *
+- * Return 0 if read access is permitted
++ * Evaluate whether the current task has write access to the target task @p
++ * to change its scheduling policy. The Smack security module relies
++ * strictly on label-based access control and does not evaluate CPU
++ * affinity masks.
++ *
++ * Return: 0 if write access is permitted
+  */
+-static int smack_task_setscheduler(struct task_struct *p)
++static int smack_task_setscheduler(struct task_struct *p,
++				   const struct cpumask *in_mask __always_unused)
+ {
+ 	return smk_curacc_on_task(p, MAY_WRITE, __func__);
+ }
+
+base-commit: 5200f5f493f79f14bbdc349e402a40dfb32f23c8
+prerequisite-patch-id: f9200d420002c9fd0663d0ec00c83db866889c19
+-- 
+2.51.0
+
 
