@@ -1,241 +1,215 @@
-Return-Path: <cgroups+bounces-16323-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16324-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aPGQM1rwFWp7fQcAu9opvQ
-	(envelope-from <cgroups+bounces-16323-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 21:11:22 +0200
+	id 6GuZMGn6FWq/gQcAu9opvQ
+	(envelope-from <cgroups+bounces-16324-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 21:54:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F8435DBCF8
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 21:11:22 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B365DC280
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 21:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B9A2E304623F
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 19:09:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CF2893038A4B
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 19:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FBD3C0A11;
-	Tue, 26 May 2026 19:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ivLe6tSs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3327F3B895F;
+	Tue, 26 May 2026 19:54:10 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from LO0P265CU003.outbound.protection.outlook.com (mail-uksouthazon11022116.outbound.protection.outlook.com [52.101.96.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530A83C09EE
-	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 19:09:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779822573; cv=none; b=KnaJ+JR58szlbryOpICZVFwTkA9ONg3HXJJ/VGh52Uf4LLX5TteBb39DpsGD1X6J+bVQ40deAiUycugIbH1qZtTuznQrPyq1FFR0ONkq2wKbaorS7sEOIId0Ge4YxIZiGZCxM7ijUROmYGrgPQWAS/j9/NS17y5SvUheLnTgyRE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779822573; c=relaxed/simple;
-	bh=TTuLhNwRTfTLxZeJ+SuAgj27dQeErLAdR5dNCF27vtg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yw4J3SMAidUMeFqCLyPkbcxQ4Dg0VaNcjw+0NJ6kCB5+lSxCkSdv891Epyy36NlVvcLQLaAsmt/zeQ9hw2ihHfj/5weWgjr2umqc+JoTBH8kUFZFTOYVQ3TyjpIepbAgEczO7QRuLlek0zxjfry6G+ZgPZjG7Er/B1eDRaLKDV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ivLe6tSs; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1779822571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pfSdtXF2WOriI1uDkmCMHGwzpoCJM5Y7nO9dwQTIrxE=;
-	b=ivLe6tSsLQEzpIJC5DSsjjKSk1oi3TuuzvPvNrLfyaY8vWPnZG78yl4Md6ZYlqT5pcHmMg
-	Jqn68zY6IuLDBqZOdiSDlVPosPlMQG8ZSkpUDTrstvDI2Hm23GNKpRzyHFOZyu4bzD3GBD
-	7H/4DqeEZVrzhWJ4R84xkCNXAdulcAM=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-688-Y4fB0hNYNFOWg0IRFAgrHA-1; Tue,
- 26 May 2026 15:09:27 -0400
-X-MC-Unique: Y4fB0hNYNFOWg0IRFAgrHA-1
-X-Mimecast-MFC-AGG-ID: Y4fB0hNYNFOWg0IRFAgrHA_1779822566
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C34A618005B6;
-	Tue, 26 May 2026 19:09:25 +0000 (UTC)
-Received: from [10.22.65.22] (unknown [10.22.65.22])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B176D1956056;
-	Tue, 26 May 2026 19:09:23 +0000 (UTC)
-Message-ID: <6a439b99-d4e5-4686-b957-baf3b7843b49@redhat.com>
-Date: Tue, 26 May 2026 15:09:22 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B023A8739;
+	Tue, 26 May 2026 19:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.96.116
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779825249; cv=fail; b=OtTaoRAdqhVw1nmN0uWcPhe8INeN3KUXATbERah5mVDecsMFv/fTdELBY2zn1Gq3TMy6hGHw2v5UUUW9GSkskLhqCvB93JgWgdqE5rARY2vi4yevQj1A2XhwW22hSkvVxNkaY+sQFHtRn3vyggjPtApX2xAB8yZ8zvpFRUQBT3I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779825249; c=relaxed/simple;
+	bh=F04yg50kkwW5Z04Jn7RhChGbff16mHs7D/aLlMY6xnU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=rlNKS3G8UeFIIhnXY0HG45uEcz4HxXXxl4JWJGNVf10QfIcn+YavafbODJMYeplhHZiwzafiTl2TynWwXlzAqs5eSV3D13lsd06y8J+uikjDQAanoVjzOK0e3A8bYpqJ0H6bFC619eeQUSO5DL0t5wqtBogRvV45T41NYJr2OoE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.96.116
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=oKgRl4fxvXF6RTTOV/esHj1vhUk4VpDX15UrQ63FVe8ze6LB0OcdNaRDDtI02zT+6xYkN17+5amuDHRMpzYMgl8j8gsCizU+x64jEBge91Jfx97T9FB/2OLn+Exeq1sSIq00JBXn1BAAbrzLjXjwmabOKJE/SjgKcqf2DW1vFydgECH1Ay4Q2hDc5JmKd9oeg1mvkuldVSLGzbcx3JuABKeOr9zOCfxzTlMscXfFKBT36aAxiHPpZ5aZ5tBXIes4AlesGvt1djJAZ5FjxFneRAzEZVoiwZc2gObXNjTM49hr4hD5D16HigsfpPhIXkn+vKUYTgKb3atiPEEEanc8tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
+ bh=h4yEGomEertXpe0CX0e4veY5Abj3uCdyn95vK31y4cg=;
+ b=xaWscIOkvDviCNpYWFrwRhhNi4COsPOB6DiqjWYjYJJdPzS9FTh2zD6Th0OOfKh9oyrNYGJDM6LUUcNnu+cfjD/PppakDOu2avfgV9ferSIjwQ6+CQ6JDioNzZAtlUEHqmr6Vizd0nsKYs580rCYk5vqjS7QnHKu+tgWvay617RnmOiU2+FK24HfBuwcWvwdOrJFky5I/9leR+wuG+dzHXksUAnNcYvCX8pzHFvUB1AWqjKK+BoWOV4tpKsxkKa7mjKt3VwpQKJpkBT9wODY8QdNen4QRMm5fwioJQZnA64Hrt2eN3re3/tQ+imNo/l2TPCVUUEHT7N1fZMRYVC6FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
+ dkim=pass header.d=atomlin.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=atomlin.com;
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:183::5)
+ by CW1P123MB8017.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:24b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.48.20; Tue, 26 May
+ 2026 19:54:04 +0000
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230]) by CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230%4]) with mapi id 15.21.0071.011; Tue, 26 May 2026
+ 19:54:04 +0000
+Date: Tue, 26 May 2026 15:53:59 -0400
+From: Aaron Tomlin <atomlin@atomlin.com>
+To: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, 
+	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
+Cc: chenridong@huaweicloud.com, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
+	kprateek.nayak@amd.com, omosnace@redhat.com, kees@kernel.org, neelx@suse.com, 
+	sean@ashe.io, chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, 
+	nick.lange@gmail.com, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
+ include CPU affinity mask
+Message-ID: <5adzrz2gwuyihwcxksok2ix3k64qxhczpbxefl35lohkdt7whs@jclqteh3yr2b>
+References: <20260526142838.774711-1-atomlin@atomlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260526142838.774711-1-atomlin@atomlin.com>
+X-ClientProxiedBy: MN2PR18CA0002.namprd18.prod.outlook.com
+ (2603:10b6:208:23c::7) To CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:400:183::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Use effective_xcpus in partcmd_update
- add/del mask calculation
-To: Guopeng Zhang <zhangguopeng@kylinos.cn>,
- Sun Shaojie <sunshaojie@kylinos.cn>, Chen Ridong
- <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260522075357.127075-1-sunshaojie@kylinos.cn>
- <a1a89205-4e4b-4bb9-86fe-e106997ab1d5@kylinos.cn>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <a1a89205-4e4b-4bb9-86fe-e106997ab1d5@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP123MB6607:EE_|CW1P123MB8017:EE_
+X-MS-Office365-Filtering-Correlation-Id: d2d94856-5663-45c6-cc58-08debb6089be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|22082099003|18002099003|921020|56012099006|5023799004|6133799003;
+X-Microsoft-Antispam-Message-Info:
+	JELgg8RCiylCfEeTlfop5PEOC+g6gY5tC/iE4AiB8iPoRaLLh611qr8ihzBupPqYjHBRktPxXGSibKETJStGwpk/u3glaFR74TLT2qHFgARHcFYXjirQNHmQ09sJmvUIWCo2LRgxjSc5gzjCjfkNTjFw9/Blf/blEWE+7qxjANMxJ7QNQOLsF2qKWhRB1+iYLEcEc6uDEgMk1vMVEAjbJ2GbFyP/civ5bP6fuyQGLNSWpIQ9mAX73I2FeAv+xhlIN0bI3Nuc7Qgx2LbyHPFLQcYrAd//RtUYg7rg04MM+JwOWOaE4wTZ53ZYB45kGp4UL01gT19+Tc7BGYdYSe1BgOdE9NFv8hOLLzBPfMUyUxMDEo1gx5uwpDW7TXh/QfIlZerhOvyj9RYonU52tTSYZWMH0mtRNDa4yNQxuO1ZwlMRhkrLoZt15IdHPsU18ymAkczQDLVBTLCF20iSE0e4RHtms60DmkYsS0TwO8bgh/6ExescqLEariN40Eci8c6HqceJB1hFNzgF17QgpKFwV/p87i4ceq0TP03nSYzs8L/VpiFNzP3XAf7XFSnwHkUoeCWdZc0IDHC3xIQsRKuHLngkeOyikLJxbWdMhiLn3FBLG51/lTkH5GxIH+7axIt5Cz2+Fz19k7AQKmoBUIxoyT3aCnNXlJ+Dg8BOjJlbkyoPaC9w6ZUyoZqaHc6lSd0GcbpOuTw5hFgFp3TC+kHuqBuT8IlJqtfTUYIlGcjCdao=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(22082099003)(18002099003)(921020)(56012099006)(5023799004)(6133799003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dnVZT1dyRzZucmNiRUkyeStXY2xBc2lTNDdyZUhvVGx3RnN3TXBhVXBIVEw2?=
+ =?utf-8?B?QkF0YVd4NS85dWVYY3loUEJkNlUyTEp4U3RuL1I4bGtHcUtWSTB0am04SENk?=
+ =?utf-8?B?QkppSHdpNWM1bm5jRmpYanFYMmcxNUZocHN1cTJrMjlOQ2hJbHpWRytBN3Zw?=
+ =?utf-8?B?SEFPTVZDMExRajlEdFR5Yy9tUWo1RjhVTmVxampHYWZsVkExZGlHVFNTWWR1?=
+ =?utf-8?B?NThrWGFMaHVKbkJtTkVIK0lHcENNU1pmZktsWlhWUnA3TU81eHFNSUowSlBQ?=
+ =?utf-8?B?SThYcHJmUzdLUjdGZlI3dCtGSzlKVU1vajVVRzU0clBUTFFuY0VOL2hGNHl6?=
+ =?utf-8?B?aEtzbEZ4THkxTExDL3YvTlU0RzdNU01CNUpkR1NJa2E4TzdwYXNGTENtS2No?=
+ =?utf-8?B?NFRmYVVuSi9McStVSjJvOVI3MDVhOU8vWDVxWWhuOFU5ZXhBcDdhYkxxaFk0?=
+ =?utf-8?B?RnBsZ2FlYXFHeWFmb3RRaHN4ellmVXNzMk8vZVdJUUl0N216UzRVWDNLR0FG?=
+ =?utf-8?B?MCtUcTMxSFB5MFBEZzhGUGQ5OTNjRWRiTTkzeXN2VFRXSXQ3bERyTHdGT1Nm?=
+ =?utf-8?B?d0ZqRDY1aHFwM0J5ZXVQYmI1bXpUbDI3WmQ5Mm5pYllKZDBXbC96QUFGMXpi?=
+ =?utf-8?B?MThhV2RubklGRUxhN0dNTEkxYjBVREF4dC9VdGI1TUJNVTkzenY3RFFnbkdi?=
+ =?utf-8?B?aDhyV09EWUlXckpyR1VrMmlxRitmZWFseHVIdVFaSkk5eVpxVUtUb1lkUVZr?=
+ =?utf-8?B?QVRkeHRvOUZBOWRKY21iQnhROW5sdm5kYTNwU0VPUG44NTlzdThxNkVSTGFX?=
+ =?utf-8?B?R01HT1dwZE9uQ05hVU45aFl0SEdpVmN1Vmp4RGE2RGN2blBLNWNoUDk5dVox?=
+ =?utf-8?B?QnFtTzV4QW8zOGh6dEl4c2JibFZLYlhxdktWL0luUklKbjU4RHpDNUJMa3FI?=
+ =?utf-8?B?SkpqbDZldDRsMWltRmVxSFFrejRNWGJPeWRtdEd1c2N5M2R3dTBvVGxBbFNt?=
+ =?utf-8?B?L2toaXF0d1pHb0FyZlBOaHZaK2FkV1BpMlloVkRHRXpUbnp5d1JDZWc3d3dj?=
+ =?utf-8?B?d2NxZWFlc0hSdDJ6WTVpMnZaVUFuc0JIUHFtS2FmL1pQZVIvQW9ncC80dlNE?=
+ =?utf-8?B?M3hLdlZSQmFaZHA0dWxDcm5PaTd1L3YyTjNyN0JqV1hCZUpuQnZUSkw4Qzcz?=
+ =?utf-8?B?R3MvQ3plTnQ1a3VrZTlkbDFicUxVSGNFYTQvSlpXa3FpU1hsYitNcHVDUmZG?=
+ =?utf-8?B?SGY2QjZhdUNJd2JreUpab25WSFNQWHVic0hQT1pCcGFpV2p3WEc5d1Bzb21D?=
+ =?utf-8?B?cDIwQ1ExL0tRZVpTaVlBNWQweEN1TXRJZHBXaDk3YUFmZ3hvWVJsSjBKYlhn?=
+ =?utf-8?B?d3IvdjBSRWNzSEY1U2ZLcE1kTUFHaVhyYlFQcFVZbWh2WW5OUE9nZ1ZLMURN?=
+ =?utf-8?B?ZkFBNy9rYnlaa0gvTWpHUUV0cXd5RXFjOHZlZTVIMldLOWNuRHRuRTdOdWlJ?=
+ =?utf-8?B?VXFzdWtGZkVPbWh0WWNQcmJqcm9IL21sUnNpYWwzL1BrcGJrOXFxU1pKV0cw?=
+ =?utf-8?B?TEVDV3VYc0l6NWxKaTRZcTNSSzFTSzdrU1kyOE5OdGxDSTJ6WjRkMVZ5N2ll?=
+ =?utf-8?B?ZUV6OVhVZXQxM1Z1UWE0RGFMZEpVTDVBZWxVRGtMSVhTL1N5aVFpSzFJQzRS?=
+ =?utf-8?B?WTQyM0V3ZlBjM0czcW9JaFN5NFBKVE5xd2V4VnNNZ1BvVUErNG9xcjFQS3FJ?=
+ =?utf-8?B?UnhaT3FtLzIvNlI2OE1EYTZBTkVJenBkd05oNjFUalM4U1lQMnlldWxnVzZU?=
+ =?utf-8?B?T3UvbmJ3NnpvQ2tCTFNLOC9lRm51VW0zanpWWThZV25XZnRKSG8vRFZwWWlB?=
+ =?utf-8?B?WWxzM0srQUtDTFNrSTVYU2N3bGNnOE51V28zcUloU0Rjd1g1WWUwbmMvYUM3?=
+ =?utf-8?B?c3dBaGJGSzNmckVIVGpjcEVtZEM3Q0lYS0N3U2c2Mng5Q0xOcDV1RkZSaEli?=
+ =?utf-8?B?N1hXYTlMVE0vTVhzT2N4VUFJME41T2U4a1RscWFxYVF6L2FWVmQ1SlRtZDN6?=
+ =?utf-8?B?K3RnWnNzUlBIVXFCcmtDL3c0RlVtc0hPLzl4TFFuOFViYXN4UTgzTVM3Ujhk?=
+ =?utf-8?B?bjJyRGhHMHl6WnFFMklEWTFMOGU3amNaTktLLzc1Q0NyVHlDMUV6WGFmNnAv?=
+ =?utf-8?B?TTByR21XK1RHcUVLMHJuc2F2YlR0MVdQUG42Qmh2Y2hZUkRZQldOZDJydVM0?=
+ =?utf-8?B?Y2Ztd0dZckxjRkRvWWVPZC90OGdTeWdSTHVUZEg3aEd4ZHg1NjA5K0pyWkJy?=
+ =?utf-8?B?WmJHUVNwMk50eXljQW1UanFRbU9WYzcyaXRuR2dLMkl4QWk1MDNPUT09?=
+X-OriginatorOrg: atomlin.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2d94856-5663-45c6-cc58-08debb6089be
+X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2026 19:54:03.9615
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7oGWu3ngG5NzxDfIhcPKf6kRnyrffM0ngMiuCKrJqZYnkSiOckQFIePA4WFskt3nqqNTLqPIdqV9Gd2lqAPhSw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CW1P123MB8017
+X-Spamd-Result: default: False [2.54 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16324-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16323-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FREEMAIL_TO(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,infradead.org,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com];
+	DMARC_NA(0.00)[atomlin.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,redhat.com,amd.com,kernel.org,suse.com,ashe.io,gmail.com,abita.co,vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[36];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,kylinos.cn:email]
-X-Rspamd-Queue-Id: 6F8435DBCF8
+	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.812];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 78B365DC280
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/22/26 4:41 AM, Guopeng Zhang wrote:
->
-> 在 2026/5/22 15:53, Sun Shaojie 写道:
->> When sibling CPU exclusion occurs, a partition's user_xcpus may contain
->> CPUs that were never actually granted to it. These CPUs are present in
->> user_xcpus(cs) but not in cs->effective_xcpus.
->>
->> The partcmd_update path in update_parent_effective_cpumask() uses
->> user_xcpus(cs) (via the local variable xcpus) to compute the addmask
->> (CPUs to return to parent) and delmask (CPUs to request from parent).
->> This is incorrect:
->>
->>   1) When newmask removes a CPU that was previously excluded by a
->>      sibling, addmask incorrectly includes that CPU and tries to return
->>      it to the parent even though the partition never actually owned it,
->>      causing CPU overlap with sibling partitions and triggering warnings
->>      in generate_sched_domains().
->>
->>   2) When newmask adds a previously excluded CPU that is now available,
->>      delmask fails to request it from the parent because user_xcpus(cs)
->>      already includes it.
->>
->> Fix this by using cs->effective_xcpus instead of user_xcpus(cs) in all
->> partcmd_update paths that calculate addmask or delmask, including the
->> PERR_NOCPUS error handling paths.
->>
->> Reproducers:
->>
->>    Example 1 - Removing a sibling-excluded CPU incorrectly returns it:
->>
->>      # cd /sys/fs/cgroup
->>      # echo "0-1" > a1/cpuset.cpus
->>      # echo "root" > a1/cpuset.cpus.partition
->>      # echo "0-2" > b1/cpuset.cpus
->>      # echo "root" > b1/cpuset.cpus.partition
->>      # echo "2" > b1/cpuset.cpus
->>      # cat cpuset.cpus.effective
->>      # Actual: 0-1,3    Expected: 3
->>
->>    Example 2 - Expanding to a previously excluded CPU fails to request it:
->>
->>      # cd /sys/fs/cgroup
->>      # echo "0-1" > a1/cpuset.cpus
->>      # echo "root" > a1/cpuset.cpus.partition
->>      # echo "0-2" > b1/cpuset.cpus
->>      # echo "root" > b1/cpuset.cpus.partition
->>      # echo "member" > a1/cpuset.cpus.partition
->>      # echo "1-2" > b1/cpuset.cpus
->>      # cat cpuset.cpus.effective
->>      # Actual: 0-1,3    Expected: 0,3
->>
->> Fixes: 2a3602030d80 ("cgroup/cpuset: Don't invalidate sibling partitions on cpuset.cpus conflict")
->> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
->> ---
->>   kernel/cgroup/cpuset.c | 9 +++++----
->>   1 file changed, 5 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 1335e437098e..5a5fa2481467 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1821,11 +1821,11 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>   			deleting = cpumask_and(tmp->delmask,
->>   					newmask, parent->effective_xcpus);
->>   		} else {
->> -			cpumask_andnot(tmp->addmask, xcpus, newmask);
->> +			cpumask_andnot(tmp->addmask, cs->effective_xcpus, newmask);
->>   			adding = cpumask_and(tmp->addmask, tmp->addmask,
->>   					     parent->effective_xcpus);
->>   
->> -			cpumask_andnot(tmp->delmask, newmask, xcpus);
->> +			cpumask_andnot(tmp->delmask, newmask, cs->effective_xcpus);
->>   			deleting = cpumask_and(tmp->delmask, tmp->delmask,
->>   					       parent->effective_xcpus);
->>   		}
->> @@ -1864,7 +1864,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>   			part_error = PERR_NOCPUS;
->>   			deleting = false;
->>   			adding = cpumask_and(tmp->addmask,
->> -					     xcpus, parent->effective_xcpus);
->> +					     cs->effective_xcpus, parent->effective_xcpus);
->>   		}
->>   	} else {
->>   		/*
->> @@ -1886,7 +1886,8 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>   			part_error = PERR_NOCPUS;
->>   			if (is_partition_valid(cs))
->>   				adding = cpumask_and(tmp->addmask,
->> -						xcpus, parent->effective_xcpus);
->> +						     cs->effective_xcpus,
->> +						     parent->effective_xcpus);
->>   		} else if (is_partition_invalid(cs) && !cpumask_empty(xcpus) &&
->>   			   cpumask_subset(xcpus, parent->effective_xcpus)) {
->>   			struct cgroup_subsys_state *css;
-> Hi, Shaojie
->
-> The code change looks reasonable to me, but I think the comment above
-> the partcmd_update calculation should be updated as well.
->
-> Maybe it can be updated like this:
->
-> 		 * Compute add/delete mask to/from effective_cpus
-> 		 *
-> 		 * For valid partition:
-> -		 *   addmask = exclusive_cpus & ~newmask
-> +		 *   addmask = cs->effective_xcpus & ~newmask
-> 		 *			      & parent->effective_xcpus
-> -		 *   delmask = newmask & ~exclusive_cpus
-> +		 *   delmask = newmask & ~cs->effective_xcpus
-> 		 *		       & parent->effective_xcpus
-> 		 *
-> 		 * For invalid partition:
->
-> Does this look reasonable to you?
->
-> Tested-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+On Tue, May 26, 2026 at 10:28:38AM -0400, Aaron Tomlin wrote:
+> At present, the task_setscheduler LSM hook provides security modules
+> with the opportunity to mediate changes to a task's scheduling policy.
+> However, when invoked via sched_setaffinity(), the hook lacks
+> visibility into the actual CPU affinity mask being requested.
+> Consequently, BPF-based security modules are entirely blind to the
+> target CPUs and cannot make granular access control decisions based on
+> spatial isolation.
+> 
+> In modern multi-tenant and real-time environments, CPU isolation is a
+> critical boundary. The inability to audit or restrict specific CPU
+> pinning requests limits the effectiveness of eBPF-driven security
+> policies, particularly when attempting to shield isolated or
+> cryptographic cores from unprivileged or compromised tasks.
+> 
+> This patch expands the security_task_setscheduler() hook signature to
+> include a pointer to the requested cpumask. Because this is a shared
+> hook used for multiple scheduling attribute changes, call sites that do
+> not modify CPU affinity are updated to safely pass NULL.
+> To protect against unverified dereferences, the parameter is annotated
+> with __nullable in the LSM hook definition, ensuring the BPF verifier
+> mandates explicit NULL checks for attached eBPF programs.
+> 
+> This change updates all in-tree security modules (SELinux and Smack) to
+> accommodate the new parameter mechanically, whilst providing BPF LSMs
+> with the necessary context to enforce strict affinity policies.
 
-Shaojie, thanks for the fix. The changes look good to me. I also like 
-the suggested changes in the comment as suggested by Guopeng. Would you 
-mind sending a v2 with this additional change as well?
 
-Thanks,
-Longman
+Adding BPF Core to review the use of annotation "__nullable" in the LSM
+hook definition.
 
+
+
+Kind regards,
+-- 
+Aaron Tomlin
 
