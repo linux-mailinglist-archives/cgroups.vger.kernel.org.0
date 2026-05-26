@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-16285-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16286-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eGiQKjQWFWpoSgcAu9opvQ
-	(envelope-from <cgroups+bounces-16285-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:40:36 +0200
+	id GPP8H0oWFWpoSgcAu9opvQ
+	(envelope-from <cgroups+bounces-16286-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:40:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B996F5D067E
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90BEB5D068D
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 05:40:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B9009300292B
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 03:40:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 72FA730093BF
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 03:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC433B583D;
-	Tue, 26 May 2026 03:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29183988FA;
+	Tue, 26 May 2026 03:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fEU5/DyU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Je6Ijy+W"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C379383C94
-	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 03:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADCE3B27CE
+	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 03:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779766818; cv=none; b=FZQwt7OAaP8Q6s6zcWfwUIK3C/eeFytqG4ECseBGix8H553o08xhDphusQf3YYgSR0RxuLRkxF4HPAOrkLKVbx3/VPaUluAlRJuyktT6TWZMQcZ4ydNzUWk15Q4MaxHX59giEAS9PJspZ4u1NQXGQ+SJyYz46guM/c3T8R7jfxY=
+	t=1779766825; cv=none; b=idu9MEAkSmrXf1lM9lgR5BDB3xsRwapA7jk0LxjKqkopa4cAL5J6wc/4bLhNTNQiIL3BMkwoDc3bJR8xpiZs5p9+Hr2SrQ5bHhTaU6BBoAxIDNtpnwG3MvILa/18P7ANwtAw05x4x54cMpEpWNMgVGWrjNhEbvKRuLYwS6A8ZnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779766818; c=relaxed/simple;
-	bh=eDnLZ0By1XW+2gfnjXc5iFcL/khyto/SzDy2j0Mt0/I=;
+	s=arc-20240116; t=1779766825; c=relaxed/simple;
+	bh=wvOzrHJXCXfu+AtG3FTqF+X0QrpIulwbkMEfYzCnyUA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tUYZ7ldZUaEFMpUd79LKRVZK+9RxaLElAsJpCKJtAWRbAjVKqwJwaL73cvns0Ph85/t0oWqNFafZSkzbxPSMubZRvpsJ4jmpBDI2JlPXgyWzNcUVvr4R7MTHPnP9tXZ3Mvvy+pXGlGSZpehqHoBaJb+9djxT10L81HfeMd3u3DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fEU5/DyU; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version; b=jxOHD2f3vWJF60BIfynlBpsmx4BjRpltAyHzOxjDqG0zrQ+MIRSvXuDoNmJpMfw3ftsk7EXggq1BztOfXfrZF/7tMwGOtoS2rFQtaiXB3gwX4lUMfNZsSbbJosGkpcc2ryfaNneW4RA+JCMOcy57IC50Vu5/j14hZptQDfSQDo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Je6Ijy+W; arc=none smtp.client-ip=91.218.175.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779766814;
+	t=1779766822;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DhCjAMoSVz9odIihzeNS/7m2ssbSIYp4a1jvAvsbJjI=;
-	b=fEU5/DyU6aWgLcZRzwlOoaHUpbf3wC6CXYF4Nk89wq6qtBtJD7upZ9CgEWEORch3biQASN
-	EK/+xE9Ae6KPnLk45aegdJiNG33fImRIlaTzZbbk24OtpfDivoumCYqjEmQFA6rNYfssCV
-	LXdhdBGcizL2+3BW8PkvPs4ul0k2vYY=
+	bh=JUqtonBf8W/F4/BUz1cM/qYSJHRoI6UWWhfXJV6hdNs=;
+	b=Je6Ijy+WC/N5AGJ1y2KE5X+taxE9xddABSxY7PU8tcJ6CSnJ5gycwyj84UAjwTD1/8UgNc
+	h153RH/3//HSjvFmIx8ymq5CESp5HLezaBmIjlyPKED9ItKRV5b0TkNdIWACGQH75pHRbL
+	CpGWgrr1uMPmRVKYOjzVu0HlpPepyn4=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -61,9 +61,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v3 2/4] memcg: uint16_t for nr_bytes in obj_stock_pcp
-Date: Mon, 25 May 2026 20:39:29 -0700
-Message-ID: <20260526033931.1760588-3-shakeel.butt@linux.dev>
+Subject: [PATCH v3 3/4] memcg: int16_t for cached slab stats
+Date: Mon, 25 May 2026 20:39:30 -0700
+Message-ID: <20260526033931.1760588-4-shakeel.butt@linux.dev>
 In-Reply-To: <20260526033931.1760588-1-shakeel.butt@linux.dev>
 References: <20260526033931.1760588-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -88,7 +88,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,ghiti.fr,gmail.com,meta.com,kvack.org,vger.kernel.org,intel.com];
 	RCVD_COUNT_THREE(0.00)[3];
 	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-16285-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16286-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -103,37 +103,21 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:email,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: B996F5D067E
+X-Rspamd-Queue-Id: 90BEB5D068D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Currently struct obj_stock_pcp stores nr_bytes in an 'unsigned int'
-which is 4 bytes on 64-bit machines. Switch the field to uint16_t to
-shrink the per-CPU cache.
+Currently struct obj_stock_pcp stores cached slab stats in 'int' which
+is 4 bytes per counter on 64-bit machines. Switch them to int16_t to
+shrink the cached metadata.
 
-The kernel supports PAGE_SIZE_4KB, _8KB, _16KB, _32KB, _64KB and
-_256KB (see HAVE_PAGE_SIZE_* in arch/Kconfig). After the
-PAGE_SIZE-aligned flush in __refill_obj_stock(), the sub-page
-remainder fits in uint16_t up through 64KiB pages where PAGE_SIZE - 1
-== U16_MAX, but on 256KiB pages PAGE_SIZE - 1 == 0x3FFFF exceeds
-U16_MAX. The accumulator also needs to stay within uint16_t between
-page-aligned flushes on 64KiB pages where PAGE_SIZE itself is
-U16_MAX + 1.
-
-Accumulate the new total in an 'unsigned int' local, then on
-PAGE_SHIFT <= 16 flush whenever the accumulator would hit U16_MAX;
-together with the existing allow_uncharge flush at PAGE_SIZE this
-keeps the uint16_t safe.
-
-On configs with PAGE_SHIFT > 16 (PAGE_SIZE_256KB on hexagon and
-powerpc 44x, both 32-bit), uint16_t cannot represent the sub-page
-remainder. Define obj_stock_bytes_t as 'unsigned int' on those
-archs so nr_bytes can hold the full remainder and the normal
-page-boundary flush in __refill_obj_stock() and the page extraction
-in drain_obj_stock() both work correctly.
-
-The single-cache-line layout target only applies to PAGE_SHIFT <= 16;
-those archs are 32-bit embedded and not the optimization target.
+The existing PAGE_SIZE flush in __account_obj_stock() bounds *bytes at
+PAGE_SIZE on 4KiB and 16KiB page archs, well within int16_t. On 64KiB
+pages PAGE_SIZE is well above S16_MAX so that flush never fires, and a
+sufficiently long run of accumulations would overflow the cache. Add
+an explicit S16_MAX guard before each add: when the next add would
+push abs(*bytes) past S16_MAX, fold the cached value into @nr and
+flush directly via mod_objcg_mlstate() before the accumulation.
 
 Fixes: 01b9da291c49 ("mm: memcontrol: convert objcg to be per-memcg per-node type")
 Tested-by: kernel test robot <oliver.sang@intel.com>
@@ -143,80 +127,70 @@ Acked-by: Muchun Song <muchun.song@linux.dev>
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
 Changes since v2:
-- Based on Sashiko's concern regarding archs with 256KiB base pages, added
-  special handling for such arch and simplify the code overall.
-- Updated commit message.
-- Have kept the review tags as overall code remains same mostly. 
+- Simplify code based on David Laight's suggestion.
+- Collected tags
 
 Changes since v1:
 - Collected tags
-- Rearrange fields of obj_stock_pcp (David Laight)
-- Fix comparison operator (Harry)
 
- mm/memcontrol.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ mm/memcontrol.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 9bee9031171f..8c1b65e6da5d 100644
+index be82e52c7999..fbe0e9915daa 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2020,8 +2020,17 @@ static DEFINE_PER_CPU_ALIGNED(struct memcg_stock_pcp, memcg_stock) = {
- 
- struct obj_stock_pcp {
- 	local_trylock_t lock;
--	unsigned int nr_bytes;
+@@ -2035,8 +2035,8 @@ struct obj_stock_pcp {
  	struct obj_cgroup *cached_objcg;
-+#if PAGE_SHIFT > 16
-+	/*
-+	 * On rare archs with 256KiB base page size (hexagon and powerpc 44x)
-+	 * keep nr_bytes to unsigned int as uint16_t cannot represent the full
-+	 * sub-page remainder.
-+	 */
-+	unsigned int nr_bytes;
-+#else
-+	uint16_t nr_bytes;
-+#endif
+ 	obj_stock_bytes_t nr_bytes;
  	int16_t node_id;
- 	int nr_slab_reclaimable_b;
- 	int nr_slab_unreclaimable_b;
-@@ -3334,6 +3343,7 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
- 			       bool allow_uncharge)
+-	int nr_slab_reclaimable_b;
+-	int nr_slab_unreclaimable_b;
++	int16_t nr_slab_reclaimable_b;
++	int16_t nr_slab_unreclaimable_b;
+ 
+ 	struct work_struct work;
+ 	unsigned long flags;
+@@ -3173,7 +3173,7 @@ static void __account_obj_stock(struct obj_cgroup *objcg,
+ 				struct obj_stock_pcp *stock, int nr,
+ 				struct pglist_data *pgdat, enum node_stat_item idx)
  {
- 	unsigned int nr_pages = 0;
-+	unsigned int stock_nr_bytes;
+-	int *bytes;
++	int16_t *bytes;
  
- 	if (!stock) {
- 		nr_pages = nr_bytes >> PAGE_SHIFT;
-@@ -3342,21 +3352,24 @@ static void __refill_obj_stock(struct obj_cgroup *objcg,
- 		goto out;
+ 	/*
+ 	 * Though at the moment MAX_NUMNODES <= 1024 in all archs but let's make
+@@ -3210,21 +3210,20 @@ static void __account_obj_stock(struct obj_cgroup *objcg,
+ 
+ 	bytes = (idx == NR_SLAB_RECLAIMABLE_B) ? &stock->nr_slab_reclaimable_b
+ 					       : &stock->nr_slab_unreclaimable_b;
++
+ 	/*
+-	 * Even for large object >= PAGE_SIZE, the vmstat data will still be
+-	 * cached locally at least once before pushing it out.
++	 * Fold @nr into the cached value and decide whether to keep it cached
++	 * or flush it directly. Cache the combined value when it fits in the
++	 * int16_t storage and either the cache was empty (so even a value
++	 * above PAGE_SIZE gets a chance to be canceled by a paired delta) or
++	 * the combined value is within the PAGE_SIZE flush threshold.
+ 	 */
+-	if (!*bytes) {
++	nr += *bytes;
++	if (abs(nr) <= S16_MAX && (!*bytes || abs(nr) <= PAGE_SIZE)) {
+ 		*bytes = nr;
+ 		nr = 0;
+ 	} else {
+-		*bytes += nr;
+-		if (abs(*bytes) > PAGE_SIZE) {
+-			nr = *bytes;
+-			*bytes = 0;
+-		} else {
+-			nr = 0;
+-		}
++		*bytes = 0;
  	}
- 
-+	stock_nr_bytes = stock->nr_bytes;
- 	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
- 		drain_obj_stock(stock);
- 		obj_cgroup_get(objcg);
--		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-+		stock_nr_bytes = atomic_read(&objcg->nr_charged_bytes)
- 				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
- 		WRITE_ONCE(stock->cached_objcg, objcg);
- 
- 		allow_uncharge = true;	/* Allow uncharge when objcg changes */
- 	}
--	stock->nr_bytes += nr_bytes;
-+	stock_nr_bytes += nr_bytes;
- 
--	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
--		nr_pages = stock->nr_bytes >> PAGE_SHIFT;
--		stock->nr_bytes &= (PAGE_SIZE - 1);
-+	if ((allow_uncharge && (stock_nr_bytes > PAGE_SIZE)) ||
-+	    stock_nr_bytes > U16_MAX) {
-+		nr_pages = stock_nr_bytes >> PAGE_SHIFT;
-+		stock_nr_bytes &= (PAGE_SIZE - 1);
- 	}
-+	stock->nr_bytes = stock_nr_bytes;
- 
- out:
- 	if (nr_pages)
+ direct:
+ 	if (nr)
 -- 
 2.53.0-Meta
 
