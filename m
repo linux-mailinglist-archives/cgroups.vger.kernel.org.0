@@ -1,167 +1,241 @@
-Return-Path: <cgroups+bounces-16322-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16323-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SG9rCqHsFWogfAcAu9opvQ
-	(envelope-from <cgroups+bounces-16322-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 20:55:29 +0200
+	id aPGQM1rwFWp7fQcAu9opvQ
+	(envelope-from <cgroups+bounces-16323-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 21:11:22 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 906CA5DB9C1
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 20:55:28 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F8435DBCF8
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 21:11:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E9B393034A3E
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 18:55:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B9A2E304623F
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2026 19:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9C63C060E;
-	Tue, 26 May 2026 18:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16FBD3C0A11;
+	Tue, 26 May 2026 19:09:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHnIvnhR"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ivLe6tSs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4793C0624
-	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 18:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530A83C09EE
+	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 19:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779821721; cv=none; b=Nf4Ue0mUBltyu88U2AY9GA1UKUHTnesAFWIRL5oMUOF2vJk5nlKNLb5TifSS/MxDw1yzaA47ugwsFgV9k3Wmbb5LaGXCxQysadWxDY9AgapNps58prIJeOLzYvcaADKXPrSayIkTMrpHbu2y5X3zGOhN57UYFcRM10HS9tJ99qY=
+	t=1779822573; cv=none; b=KnaJ+JR58szlbryOpICZVFwTkA9ONg3HXJJ/VGh52Uf4LLX5TteBb39DpsGD1X6J+bVQ40deAiUycugIbH1qZtTuznQrPyq1FFR0ONkq2wKbaorS7sEOIId0Ge4YxIZiGZCxM7ijUROmYGrgPQWAS/j9/NS17y5SvUheLnTgyRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779821721; c=relaxed/simple;
-	bh=8+FwsiYbTLidaOQnE2uFrRvMyfohje7jhcb8w6PK6TY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dPDzk7bE3illxtgUFaWuvzjPzxAWBpgg8NsN1AV2HzBKOMigGVB9bdQSIXIumZPo8v0jaYj3YvLpm+F/ghdttNWiAiM/YrnFisa4lz7qW5UiKZBCoKICryCt/AOSix0HmaWpS+SRV91QSv5wJkIhEo05klRDs0okerd7M51pq1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHnIvnhR; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F021F00ADB
-	for <cgroups@vger.kernel.org>; Tue, 26 May 2026 18:55:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779821720;
-	bh=HXgROzGmAJcCsVgExpV6y9lWb3jWbK1tedmMBM0VEbA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=RHnIvnhRM1W6mbTga0AJ2W18mdbHTBIUsfWktHzxkzabHOXx6HhV3bom4Z3JB+sfq
-	 H7IoxkMH4PyD2oyO4F8xcw+M1RMdjljhyvX3yT4BrZTbTfAba90x7bur4hZh2Mlsx1
-	 ILNMnysvZgiLl+k6WSrNFe72sc7sDMNzKkXdQpWNVbshRLcWbLb+4HrATTQvpOtyFN
-	 XdBfoWD6Sr/SSKcDmCzWCw4LYhvPRwbBteT+f97ymjR9TTIsxfdSAByk3K4m7GI2TY
-	 rIZ3niXDNm+9n2Cfoex4Nb4cAWTk7+aekvP+4VE4nC1s3f2hFX55Fo9T4cn00HF4JJ
-	 TO+9UOCPKu72A==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-bd4d7f4fa02so1841032266b.3
-        for <cgroups@vger.kernel.org>; Tue, 26 May 2026 11:55:20 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ9f6erCY77pYSvUcII+cUidDbLB91lddruoLLtq3roRo9kXANY5ohDCuKPriCpC1ukfIuwZK8Nv@vger.kernel.org
-X-Gm-Message-State: AOJu0YyR3NCrdR6Nwm+PI9RiUWW6AtYl8Xnd/8CQU7p+8pyPHXOOJx2E
-	PMb8tXBKAFHj4coIEQf7dFVRb4iDh8AgOvyiVVosO1t/aRlb6RAs9tzaFNOK6qf0jesahU92RCg
-	Wi/laxe5eE4CzDfQAeEYOGt/gfOUoqbE=
-X-Received: by 2002:a17:907:d01:b0:bd4:f3e5:b0f6 with SMTP id
- a640c23a62f3a-bdd26cd21dbmr1255792266b.28.1779821718891; Tue, 26 May 2026
- 11:55:18 -0700 (PDT)
+	s=arc-20240116; t=1779822573; c=relaxed/simple;
+	bh=TTuLhNwRTfTLxZeJ+SuAgj27dQeErLAdR5dNCF27vtg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yw4J3SMAidUMeFqCLyPkbcxQ4Dg0VaNcjw+0NJ6kCB5+lSxCkSdv891Epyy36NlVvcLQLaAsmt/zeQ9hw2ihHfj/5weWgjr2umqc+JoTBH8kUFZFTOYVQ3TyjpIepbAgEczO7QRuLlek0zxjfry6G+ZgPZjG7Er/B1eDRaLKDV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ivLe6tSs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1779822571;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pfSdtXF2WOriI1uDkmCMHGwzpoCJM5Y7nO9dwQTIrxE=;
+	b=ivLe6tSsLQEzpIJC5DSsjjKSk1oi3TuuzvPvNrLfyaY8vWPnZG78yl4Md6ZYlqT5pcHmMg
+	Jqn68zY6IuLDBqZOdiSDlVPosPlMQG8ZSkpUDTrstvDI2Hm23GNKpRzyHFOZyu4bzD3GBD
+	7H/4DqeEZVrzhWJ4R84xkCNXAdulcAM=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-688-Y4fB0hNYNFOWg0IRFAgrHA-1; Tue,
+ 26 May 2026 15:09:27 -0400
+X-MC-Unique: Y4fB0hNYNFOWg0IRFAgrHA-1
+X-Mimecast-MFC-AGG-ID: Y4fB0hNYNFOWg0IRFAgrHA_1779822566
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C34A618005B6;
+	Tue, 26 May 2026 19:09:25 +0000 (UTC)
+Received: from [10.22.65.22] (unknown [10.22.65.22])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B176D1956056;
+	Tue, 26 May 2026 19:09:23 +0000 (UTC)
+Message-ID: <6a439b99-d4e5-4686-b957-baf3b7843b49@redhat.com>
+Date: Tue, 26 May 2026 15:09:22 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260525122242.36127-1-jiahao.kernel@gmail.com>
- <20260525122424.3b2818f06832d9d55da8d69b@linux-foundation.org> <9b2ac88c-a67f-2512-d898-3dadd50ec03e@gmail.com>
-In-Reply-To: <9b2ac88c-a67f-2512-d898-3dadd50ec03e@gmail.com>
-From: Yosry Ahmed <yosry@kernel.org>
-Date: Tue, 26 May 2026 11:55:06 -0700
-X-Gmail-Original-Message-ID: <CAO9r8zO1+brQroYufMZ2K=ZH_PBBpzYPsdYm-DT3K2GxoKJs9A@mail.gmail.com>
-X-Gm-Features: AVHnY4LLc2VbUgRMQJCSwM_5Avx8xJ-cNYKTtyXz3u-0Ot15a8J2I4eMGnrIBmI
-Message-ID: <CAO9r8zO1+brQroYufMZ2K=ZH_PBBpzYPsdYm-DT3K2GxoKJs9A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] mm/zswap: Implement per-cgroup proactive writeback
-To: Hao Jia <jiahao.kernel@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, tj@kernel.org, hannes@cmpxchg.org, 
-	shakeel.butt@linux.dev, mhocko@kernel.org, mkoutny@suse.com, 
-	nphamcs@gmail.com, chengming.zhou@linux.dev, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Hao Jia <jiahao1@lixiang.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: Use effective_xcpus in partcmd_update
+ add/del mask calculation
+To: Guopeng Zhang <zhangguopeng@kylinos.cn>,
+ Sun Shaojie <sunshaojie@kylinos.cn>, Chen Ridong
+ <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260522075357.127075-1-sunshaojie@kylinos.cn>
+ <a1a89205-4e4b-4bb9-86fe-e106997ab1d5@kylinos.cn>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <a1a89205-4e4b-4bb9-86fe-e106997ab1d5@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16322-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,suse.com,gmail.com,vger.kernel.org,kvack.org,lixiang.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16323-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 906CA5DB9C1
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,kylinos.cn:email]
+X-Rspamd-Queue-Id: 6F8435DBCF8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 26, 2026 at 4:56=E2=80=AFAM Hao Jia <jiahao.kernel@gmail.com> w=
-rote:
+On 5/22/26 4:41 AM, Guopeng Zhang wrote:
 >
+> 在 2026/5/22 15:53, Sun Shaojie 写道:
+>> When sibling CPU exclusion occurs, a partition's user_xcpus may contain
+>> CPUs that were never actually granted to it. These CPUs are present in
+>> user_xcpus(cs) but not in cs->effective_xcpus.
+>>
+>> The partcmd_update path in update_parent_effective_cpumask() uses
+>> user_xcpus(cs) (via the local variable xcpus) to compute the addmask
+>> (CPUs to return to parent) and delmask (CPUs to request from parent).
+>> This is incorrect:
+>>
+>>   1) When newmask removes a CPU that was previously excluded by a
+>>      sibling, addmask incorrectly includes that CPU and tries to return
+>>      it to the parent even though the partition never actually owned it,
+>>      causing CPU overlap with sibling partitions and triggering warnings
+>>      in generate_sched_domains().
+>>
+>>   2) When newmask adds a previously excluded CPU that is now available,
+>>      delmask fails to request it from the parent because user_xcpus(cs)
+>>      already includes it.
+>>
+>> Fix this by using cs->effective_xcpus instead of user_xcpus(cs) in all
+>> partcmd_update paths that calculate addmask or delmask, including the
+>> PERR_NOCPUS error handling paths.
+>>
+>> Reproducers:
+>>
+>>    Example 1 - Removing a sibling-excluded CPU incorrectly returns it:
+>>
+>>      # cd /sys/fs/cgroup
+>>      # echo "0-1" > a1/cpuset.cpus
+>>      # echo "root" > a1/cpuset.cpus.partition
+>>      # echo "0-2" > b1/cpuset.cpus
+>>      # echo "root" > b1/cpuset.cpus.partition
+>>      # echo "2" > b1/cpuset.cpus
+>>      # cat cpuset.cpus.effective
+>>      # Actual: 0-1,3    Expected: 3
+>>
+>>    Example 2 - Expanding to a previously excluded CPU fails to request it:
+>>
+>>      # cd /sys/fs/cgroup
+>>      # echo "0-1" > a1/cpuset.cpus
+>>      # echo "root" > a1/cpuset.cpus.partition
+>>      # echo "0-2" > b1/cpuset.cpus
+>>      # echo "root" > b1/cpuset.cpus.partition
+>>      # echo "member" > a1/cpuset.cpus.partition
+>>      # echo "1-2" > b1/cpuset.cpus
+>>      # cat cpuset.cpus.effective
+>>      # Actual: 0-1,3    Expected: 0,3
+>>
+>> Fixes: 2a3602030d80 ("cgroup/cpuset: Don't invalidate sibling partitions on cpuset.cpus conflict")
+>> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
+>> ---
+>>   kernel/cgroup/cpuset.c | 9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 1335e437098e..5a5fa2481467 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -1821,11 +1821,11 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+>>   			deleting = cpumask_and(tmp->delmask,
+>>   					newmask, parent->effective_xcpus);
+>>   		} else {
+>> -			cpumask_andnot(tmp->addmask, xcpus, newmask);
+>> +			cpumask_andnot(tmp->addmask, cs->effective_xcpus, newmask);
+>>   			adding = cpumask_and(tmp->addmask, tmp->addmask,
+>>   					     parent->effective_xcpus);
+>>   
+>> -			cpumask_andnot(tmp->delmask, newmask, xcpus);
+>> +			cpumask_andnot(tmp->delmask, newmask, cs->effective_xcpus);
+>>   			deleting = cpumask_and(tmp->delmask, tmp->delmask,
+>>   					       parent->effective_xcpus);
+>>   		}
+>> @@ -1864,7 +1864,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+>>   			part_error = PERR_NOCPUS;
+>>   			deleting = false;
+>>   			adding = cpumask_and(tmp->addmask,
+>> -					     xcpus, parent->effective_xcpus);
+>> +					     cs->effective_xcpus, parent->effective_xcpus);
+>>   		}
+>>   	} else {
+>>   		/*
+>> @@ -1886,7 +1886,8 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+>>   			part_error = PERR_NOCPUS;
+>>   			if (is_partition_valid(cs))
+>>   				adding = cpumask_and(tmp->addmask,
+>> -						xcpus, parent->effective_xcpus);
+>> +						     cs->effective_xcpus,
+>> +						     parent->effective_xcpus);
+>>   		} else if (is_partition_invalid(cs) && !cpumask_empty(xcpus) &&
+>>   			   cpumask_subset(xcpus, parent->effective_xcpus)) {
+>>   			struct cgroup_subsys_state *css;
+> Hi, Shaojie
 >
+> The code change looks reasonable to me, but I think the comment above
+> the partcmd_update calculation should be updated as well.
 >
-> On 2026/5/26 03:24, Andrew Morton wrote:
-> > On Mon, 25 May 2026 20:22:38 +0800 Hao Jia <jiahao.kernel@gmail.com> wr=
-ote:
-> >
-> >> Zswap currently writes back pages to backing swap reactively, triggere=
-d
-> >> either by the shrinker or by the pool reaching its size limit. Althoug=
-h
-> >> proactive memory reclaim can automatically write back a portion of zsw=
-ap
-> >> pages via the shrinker, it cannot explicitly control the amount of
-> >> writeback for a specific memory cgroup. Moreover, proactive memory rec=
-laim
-> >> may not always be triggered during a steady state.
-> >>
-> >> In certain scenarios, it is desirable to trigger writeback in advance =
-to
-> >> free up memory. For example, users may want to prepare for an upcoming
-> >> memory-intensive workload by flushing cold memory to the backing stora=
-ge
-> >> when the system is relatively idle.
-> >>
-> >> This patch series introduces a "zswap_writeback_only" key to memory.re=
-claim
-> >> cgroup interface, allowing users to proactively write back cold compre=
-ssed
-> >> pages from zswap to the backing swap device. When specified, this key
-> >> bypasses standard memory reclaim and exclusively performs proactive zs=
-wap
-> >> writeback up to the requested budget. If omitted, the default reclaim
-> >> behavior remains unchanged.
-> >
-> > Thanks.  AI review found a few things to complain about, one of them
-> > described as "preexisting".
-> >
+> Maybe it can be updated like this:
 >
-> Thanks Andrew.  I have replied to the AI's review comments in a separate
-> email and posted v3.
-> https://lore.kernel.org/all/20260526114601.67041-1-jiahao.kernel@gmail.co=
-m
+> 		 * Compute add/delete mask to/from effective_cpus
+> 		 *
+> 		 * For valid partition:
+> -		 *   addmask = exclusive_cpus & ~newmask
+> +		 *   addmask = cs->effective_xcpus & ~newmask
+> 		 *			      & parent->effective_xcpus
+> -		 *   delmask = newmask & ~exclusive_cpus
+> +		 *   delmask = newmask & ~cs->effective_xcpus
+> 		 *		       & parent->effective_xcpus
+> 		 *
+> 		 * For invalid partition:
+>
+> Does this look reasonable to you?
+>
+> Tested-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
 
-Generally speaking, please give time for reviewers to take a look
-before sending a new version. Less than a day is usually too fast
-(unless you're iterating super fast with the reviewers). Review
-feedback does not have to be addressed immediately, usually wait for a
-bit to collect as much feedback as possible before spinning a new
-version.
+Shaojie, thanks for the fix. The changes look good to me. I also like 
+the suggested changes in the comment as suggested by Guopeng. Would you 
+mind sending a v2 with this additional change as well?
 
-I will take a look at v3 soon, thank you.
+Thanks,
+Longman
+
 
