@@ -1,164 +1,186 @@
-Return-Path: <cgroups+bounces-16340-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16341-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QG2fDcGXFmq1ngcAu9opvQ
-	(envelope-from <cgroups+bounces-16340-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 09:05:37 +0200
+	id EH9JIiieFmq1ngcAu9opvQ
+	(envelope-from <cgroups+bounces-16341-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 09:32:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2825E031F
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 09:05:36 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA8E95E07E7
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 09:32:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 981C8301F188
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 07:05:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7B4C630117E2
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 07:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B855F3B7B9E;
-	Wed, 27 May 2026 07:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEC23B4E8C;
+	Wed, 27 May 2026 07:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PCCWz1j4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41F122339;
-	Wed, 27 May 2026 07:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2967126E706;
+	Wed, 27 May 2026 07:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779865532; cv=none; b=o4aVcZ/LY+Sz4MT2Jc7qQ91VF6AV6SgbMQo3e9/wqXJvxwwM+ZEopfguzRa0uPdDY47eRXSgcKlIx3KaADYnQZdJX/psEIQjPAIBVQt4SNpuhTFHoLmXbkT2ArlOkkTNiL8H1Bj2zcIdhYNk8b8vR+Y/l1yXvHYWvHmIfQNEoDg=
+	t=1779867170; cv=none; b=ft6vn49/6dCbwGegPpcU9uosWvNy+rzyjzNWzqgyY5wj2d4l+lCfkrtSSb5ZaAH/j+bKUacxwYCo0mN5jlUoIbN2OiYZ7FAFjDte9XVyIXpcYDG+mNcUqc+hp44RK081Wp0oWtnREZlYpLClFO3+8C7tf56kTDV7pt+DGhER3uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779865532; c=relaxed/simple;
-	bh=VEsHvxZJHPU9nLj5yBeu8jcW9WEiHxVruMlXWI4eyRo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Dfq/JMzjLDJGYwKDKf/5oVrdm0r/jdtgWOS7Yf98wPPC7905PmXFAnb+CD6AMEaZWvQMsz+0+B54p2RYuK2kty8SctRJHnr2Wuck8gNCyvSCP4jPhuPuPYWVtJ7VoZugDfRb58nVw82Q+DbceVPXDbiWz40jsmngF+f/hsJMueU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 6e771ffa599a11f1aa26b74ffac11d73-20260527
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
-	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD
-	HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN
-	HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS
-	HR_TO_CHARSET, HR_TO_CHARSET_NUM, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:ce686c43-7d84-46e0-8979-c54fba9f3255,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:ce686c43-7d84-46e0-8979-c54fba9f3255,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:927e0f360854b200a12624a74309bb5d,BulkI
-	D:26052715052409ZW2TFC,BulkQuantity:0,Recheck:0,SF:10|38|66|78|81|82|102|1
-	27|850|865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,B
-	ulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR
-	:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 6e771ffa599a11f1aa26b74ffac11d73-20260527
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 2088613332; Wed, 27 May 2026 15:05:23 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zhangguopeng@kylinos.cn,
-	Sun Shaojie <sunshaojie@kylinos.cn>
-Subject: [PATCH v2 2/2] cgroup/cpuset: Add test cases for sibling CPU exclusion on partition update
-Date: Wed, 27 May 2026 15:05:09 +0800
-Message-Id: <20260527070509.648304-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260527064329.640060-2-sunshaojie@kylinos.cn>
-References: <20260527064329.640060-2-sunshaojie@kylinos.cn>
+	s=arc-20240116; t=1779867170; c=relaxed/simple;
+	bh=WHWc0txs7kNyZfa20rRhNwMun3w8c8BVw7S4+xjEPHQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sfbzfAfTvchlBzX/fTaKVzE9N3yDkdC4MEPoo96q9TvJqwqj8YiBXFWYYNZxDXaf9f+RIFykxvj7JzbeUu55KLUj0SLnfD/IlMWwFt2hyz6yueMi5ohO/w4jzFqdtLBs2kONOCcjQjUzSWynqwGK6ozFO44OUALw1ovhKvj0LuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PCCWz1j4; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 27 May 2026 15:32:39 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779867166;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YFls7SMJ02XKWGF99vSkvxNkfAWR2qq2XwYkVeiy+vw=;
+	b=PCCWz1j4mW3PNJnnTeEbWMBbkf0qRUvPxxxLRYR7FXDXUD8H1wd5TFr7te9ET+1LBlOxxz
+	2oWaltWYrqQlnGaulkhjMgm46jeBcdHAaiSsxkUyHV7jx4L19CmHkNrpCU0ERdrB+Y6evb
+	smGKlfO2ukHe0xg+jswt3ARvH7drz+U=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Baoquan He <baoquan.he@linux.dev>
+To: Youngjun Park <youngjun.park@lge.com>
+Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kasong@tencent.com, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	baohua@kernel.org, gunho.lee@lge.com, taejoon.song@lge.com,
+	hyungjun.cho@lge.com, mkoutny@suse.com, baver.bae@lge.com,
+	matia.kim@lge.com
+Subject: Re: [PATCH v7 4/4] mm: swap: filter swap allocation by memcg tier
+ mask
+Message-ID: <ahaeFxC6BzXnLqhc@MiWiFi-R3L-srv>
+References: <20260527062247.3440692-1-youngjun.park@lge.com>
+ <20260527062247.3440692-5-youngjun.park@lge.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.04 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260527062247.3440692-5-youngjun.park@lge.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16340-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16341-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,lge.com,suse.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[sunshaojie@kylinos.cn,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.975];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[baoquan.he@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: AA2825E031F
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim]
+X-Rspamd-Queue-Id: DA8E95E07E7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When sibling CPU exclusion occurs, a partition's effective_xcpus may be
-a subset of its user_xcpus. The partcmd_update path must use
-effective_xcpus instead of user_xcpus when calculating CPUs to return
-to or request from the parent.
+On 05/27/26 at 03:22pm, Youngjun Park wrote:
+> Apply memcg tier effective mask during swap slot allocation to
+> enforce per-cgroup swap tier restrictions.
+> 
+> In the fast path, check the percpu cached swap_info's tier_mask
+> against the folio's effective mask. If it does not match, fall
+> through to the slow path. In the slow path, skip swap devices
+> whose tier_mask is not covered by the folio's effective mask.
+> 
+> This works correctly when there is only one non-rotational
+> device in the system and no devices share the same priority.
+> However, there are known limitations:
+> 
+>  - When non-rotational devices are distributed across multiple
+>    tiers, and different memcgs are configured to use those
+>    distinct tiers, they may constantly overwrite the shared
+>    percpu swap cache. This cache thrashing leads to frequent
+>    fast path misses.
+> 
+>  - Combined with the above issue, if same-priority devices exist
+>    among them, a percpu cache miss (overwritten by another memcg)
+>    forces the allocator to round-robin to the next device
+>    prematurely, even if the current cluster is not fully
+>    exhausted.
+> 
+> These edge cases do not affect the primary use case of
+> directing swap traffic per cgroup. Further optimization is
+> planned for future work.
+> 
+> Signed-off-by: Youngjun Park <youngjun.park@lge.com>
+> ---
+>  mm/swapfile.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 
-Add two test cases to verify this behavior:
+LGTM,
 
-  1) Narrowing cpuset.cpus to only the sibling-excluded CPUs should not
-     return CPUs to parent that the partition never actually owned.
+Reviewed-by: Baoquan He <baoquan.he@linux.dev>
 
-  2) Expanding cpuset.cpus after a sibling becomes a member should
-     correctly request the additional CPUs from parent.
-
-Co-developed-by: Zhang Guopeng <zhangguopeng@kylinos.cn>
-Signed-off-by: Zhang Guopeng <zhangguopeng@kylinos.cn>
-Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
----
- tools/testing/selftests/cgroup/test_cpuset_prs.sh | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index a56f4153c64d..683b05062810 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -492,6 +492,16 @@ REMOTE_TEST_MATRIX=(
- 	"  C1-5:P1   .  C1-4:P1   C2-3     .       .  \
- 	      .      .     .       P1      .       .     p1:5|c11:1-4|c12:5 \
- 							 p1:P1|c11:P1|c12:P-1"
-+	# Narrowing cpuset.cpus to previously sibling-excluded CPUs should
-+	# not return CPUs that were never actually owned.
-+	"  C1-4:P1   .   C1-2:P1  C1-3:P2  .       .  \
-+	      .      .     .         C3    .       .     p1:4|c11:1-2|c12:3 \
-+							 p1:P1|c11:P1|c12:P2 3"
-+	# Expanding cpuset.cpus to include a previously sibling-excluded CPU
-+	# after the sibling has become a member should correctly request it.
-+	"  C1-4:P1   .   C1-2:P1  C1-3:P2  .       .  \
-+	      .      .      P0     C2-3    .       .     p1:1,4|c11:1|c12:2-3 \
-+							 p1:P1|c11:P0|c12:P2 2-3"
- )
- 
- #
--- 
-2.43.0
-
+> 
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 9a86ebe992f4..1a2d29735b71 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1365,14 +1365,18 @@ static bool swap_alloc_fast(struct folio *folio)
+>  	struct swap_cluster_info *ci;
+>  	struct swap_info_struct *si;
+>  	unsigned int offset;
+> +	int mask = folio_tier_effective_mask(folio);
+>  
+>  	/*
+>  	 * Once allocated, swap_info_struct will never be completely freed,
+>  	 * so checking it's liveness by get_swap_device_info is enough.
+>  	 */
+>  	si = this_cpu_read(percpu_swap_cluster.si[order]);
+> +	if (!si || !swap_tiers_mask_test(si->tier_mask, mask))
+> +		return false;
+> +
+>  	offset = this_cpu_read(percpu_swap_cluster.offset[order]);
+> -	if (!si || !offset || !get_swap_device_info(si))
+> +	if (!offset || !get_swap_device_info(si))
+>  		return false;
+>  
+>  	ci = swap_cluster_lock(si, offset);
+> @@ -1392,10 +1396,14 @@ static bool swap_alloc_fast(struct folio *folio)
+>  static void swap_alloc_slow(struct folio *folio)
+>  {
+>  	struct swap_info_struct *si, *next;
+> +	int mask = folio_tier_effective_mask(folio);
+>  
+>  	spin_lock(&swap_avail_lock);
+>  start_over:
+>  	plist_for_each_entry_safe(si, next, &swap_avail_head, avail_list) {
+> +		if (!swap_tiers_mask_test(si->tier_mask, mask))
+> +			continue;
+> +
+>  		/* Rotate the device and switch to a new cluster */
+>  		plist_requeue(&si->avail_list, &swap_avail_head);
+>  		spin_unlock(&swap_avail_lock);
+> -- 
+> 2.34.1
+> 
+> 
 
