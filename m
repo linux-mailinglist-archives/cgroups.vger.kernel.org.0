@@ -1,171 +1,157 @@
-Return-Path: <cgroups+bounces-16348-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16349-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2HHvFuX1FmrUywcAu9opvQ
-	(envelope-from <cgroups+bounces-16348-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 15:47:17 +0200
+	id iLaaCCkCF2o70wcAu9opvQ
+	(envelope-from <cgroups+bounces-16349-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 16:39:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FB4A5E54D5
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 15:47:16 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900FF5E60D1
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 16:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A0CAF305C568
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 13:34:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C0652303D2F3
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 14:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40355410D06;
-	Wed, 27 May 2026 13:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1959542668E;
+	Wed, 27 May 2026 14:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="BrZjRvoI"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b="TYMJkmNK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6342C40F8E6
-	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 13:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98A8410D30
+	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 14:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779888844; cv=none; b=eshgCn4kAUdDvZynVNqDcEDyOaXsgFz7Vkw+UWyE9EdqzzDw+Vc7k/NZub8cfXj6LRMOxvqJ2gzDW7EH9i3jailxGLYK0mPK2O7oEkiz56+bCt9IhnWC8MhxaJ4BoAAub8EQuoY6+hybPmld3yA2dD7iTq2vwSrVc+i5/+UitTQ=
+	t=1779892686; cv=none; b=IvkiELBuTrT+n8DNC9g38B5qQNPawlEdjKvGA7IeSori7gyfRpfzZLSoioa/kWowMObc9k75UnuD7RJA/FN5xtt2hrZ45EAIv9hdbuo6dBFM8wA6GJN0nMxjRLxFavJg4ww7vmmiomYQOIZEXjpirXtSsxWaPMzIdz8QpMSD36Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779888844; c=relaxed/simple;
-	bh=SX/btaHg8hisQE4HPjWH8PXnsnxSqCDOj4S+rvTli/4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EIObmsGO943Sa9jN+GP3wJ9ULCbW2wvd97fsA2a65Hg0RP5QkowlrZGRSmxW0xpV8Xxqag4VzQUyrfHXMinHgW2B/pdhaD/Xy6DE+aLJAE/HlNBDl2yOjca8raz3TlX+H47TndtgAXS8tH0NOfaO1ZaptGyi7BaAqJeEiK7I+f4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=BrZjRvoI; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-95fb6411e01so5122744241.1
-        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 06:34:02 -0700 (PDT)
+	s=arc-20240116; t=1779892686; c=relaxed/simple;
+	bh=/UrVToUCN1/dFd9xlbwyZOXPSWDC8n0F587aoKesJTU=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=U5/kqEgMH7spyGJK+Ip2a94A2g22q9WAcS18sGuGtdexEODAlKKqjulSGEkAGEjfNysoB8floQjtRR9bDt03JS87OyWRAOV7+7NVQMAudzCDm3gQLQYU3iEqPhj3x3ZHHy+RrKUpo0UB0ltKIFLR8FX54lMVlanJ8ogMk/XrcN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=TYMJkmNK; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-7dcd17e19b6so6631506a34.1
+        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 07:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1779888841; x=1780493641; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+e2bIG+i9gyjJiiA+ouh3//Pf3aD7RE7geFrfA4l6SY=;
-        b=BrZjRvoITH5BXAfXA2jkpD1rp5AioNGjGttSCb4XDYtDBBBfFXe318dOvCGO4dNmWO
-         5s2W0PRQx0CtOGTYAilzdJSxxiJ01MQzqQcNV6wofvLUK6n2kpbaRjBXO1C+18SUBFAJ
-         yUJ37dLVPqQMiAX0lA5//nOC8p9837wal7BH+2iiUKdYeVX329hot3zOkQ+VVSxemS29
-         pDWLtFKFeK56ECkBag0jTJh7mwPsNvF/0XiSR4o5Sy9sJwsL5g5lb5yufCeZ6TZf7sJl
-         jP7DwqjWpqtOEa9fLfqvBN09ynhi3Z47M7kedXQSEpFdommyA62wK8YXKSXUL9EZa0mR
-         neJw==
+        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1779892684; x=1780497484; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KqdZyQ8TepaAQlegTcjHUyFuT9L+aZqIlpDGn7XrdU4=;
+        b=TYMJkmNK70rtnNf3wttlrWdJb+7NUATnxHQJfA0604qnUOv2FTghGuh6vG+Ny99M/E
+         F2tSyQEPA8GDYJVs/eVrxarcwqyyQtebTC1+mJsNt6Gb1vPoOSK23ArTkAohrHdckzxG
+         IbJCci4RbkYGy3/oJW4w5AI6rBlUvJUtHrKGbdS7qZlhnXLr0dfu0Zk186XKrdPtTfAA
+         /GfysEW0nA5YSw/PtHi9y2x/5Ncq6t8NgztYflIZBsE+jUpKxnoHPS/VZkCn/NwmExWu
+         uiJZtVrd1zGnHouLR6VxYn1I68KgH8ZcveFMpBBOKqjwi16j/+SsuppiH62mdzFVyx8S
+         AZdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779888841; x=1780493641;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+e2bIG+i9gyjJiiA+ouh3//Pf3aD7RE7geFrfA4l6SY=;
-        b=QLM5Zimnx6deY9xcagdQqC0GmEOfZb7/QlR4zKxzM66p9Eks60CXPFO50MPU9ild54
-         QyMOL28jwIvrKqLVQGmrZC4Rb8WOQ2KJ4L64gltkyKYCzMbDI3NzuqXjKJoz6VvCOu4X
-         c3+4BmG/Yq4iE1Oailf76qifEdRlAMGNEZxHFFiyZZR5ekiKf+UcpBfNskzbWW0k6t1X
-         8ppNgE8OBf7ujc2xCRL29L/L6oCJV6+mjqEXnsABv6GdpdVqDNGVvnJUP2ohUmD0ooq1
-         HyGJrAFGyreOxw9/2BWpcI4xfl9OhlW4hE4/r0wPNBnRuyptm0QwBZcbqief537ljx5e
-         ql6g==
-X-Forwarded-Encrypted: i=1; AFNElJ9uDw7ecNQ+C6B7FzuJQsRRclNwBCyA6sSFrR+zrCMTMpcmp6550Y3KihiojKU8JmgvJaiM7May@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEGaINu4TIi5NzuCWDzbdV071yJqff9FZoSjVwm2iFT4Jjr1ck
-	wYMxDw2U9sJCh/V7C8CGQAyd9L1vM40aWU+Xftz2nqoxNH/Ew7iCp73cMndD5XI0tvY=
-X-Gm-Gg: Acq92OFxSN2zcCjafTcWCfkfM90MEP7L/XSyb7brp1ysDQWTa5YTPhHwG8TxYstabgD
-	plkEjT0JyjldDKeAYjAYaLAPIfgS80Mxe18znap44Y0txR0wztNgZK2syJHy94Iyzhb+7aLXaOc
-	JRFxtHp1cKzAOSuS0cLojbuxpg/zSZ3f/rt8+8iPq+ZCmhzYOFh7H+z4/na7KsrEp21a536pLrC
-	t55g7eU7zC3K7tuLqC2fVvSchGXHkUxmRDJSbXGDYWJ52r6k5+TEwaXJRuZGELPYMhsUupP2kK1
-	j333112EQ6QGn0xFttRd1N9/vTQrqS3G6P9JCIuOiDkQ+KggYb9YtZGGRRwgFBUD5tVUxSJEEUk
-	oeXSgrd5z9k7fSM+DG4sgP1/Yz5L7x0reITlSmrSLB+pkTpuQaEB+HngMbUunnCgis9PP5naD7o
-	dP4SaM7+RwAGQv2EL2V9m0TasjF2BO/tU4KVZ+zXOPfzKCzqIvZg2tbbS6fcDqgPQE+hT5HNR3y
-	qiXegYsKOYzVhfe
-X-Received: by 2002:a05:6102:688f:b0:631:81d6:e158 with SMTP id ada2fe7eead31-67c8fcbdbdfmr12092231137.27.1779888841412;
-        Wed, 27 May 2026 06:34:01 -0700 (PDT)
-Received: from ziepe.ca (crbknf0213w-47-54-130-67.pppoe-dynamic.high-speed.nl.bellaliant.net. [47.54.130.67])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f87034a2sm476927185a.16.2026.05.27.06.34.00
+        d=1e100.net; s=20251104; t=1779892684; x=1780497484;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=KqdZyQ8TepaAQlegTcjHUyFuT9L+aZqIlpDGn7XrdU4=;
+        b=sVOGf0pqzWPGhpsuQcrsW/32OFNf8sZl6IwqOWavHh9G7kdjcJagoovLYBMNfgU+Dr
+         87bu5CPKq8LFZtzI1c2ooM9l/nGikR+pvQjRKgZiQEAm3ZFzBovRr4b+/w572/sTt6Yg
+         2D0tgM7syLggJOJHuCMbPLCWbdDof109aHdrCqB3S9b4CjWEn828EfuFUsxcsdX0Hw4O
+         MjA/xr8qdxq+YZFnAa7ZjT1hVSmP+GY/nHW/pIrxyV4mhuh2SkzQXGxHCnVAtVcm6jll
+         bIB0xSeuDk3tBSr6JXwGnHGHV4AhDs5rYijW5ArVIMIEDYd0sDaGq8kLZVfTwnV3R5MM
+         eElw==
+X-Forwarded-Encrypted: i=1; AFNElJ87gVlE6qVAJdd8vYDNB3BnFblzZ1JSTPyZYc669JZnMKy2LvfpvEMpr4PHAr6SQvm6UzQVuCMB@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZ+SRAeImmJM3FByRi/5wwwRQP3EGx9W88RKW3khFgolpoYEbc
+	BsLH2xYAskM7bo2zLonuSVKuhvZyaQqAG60CwAi7O6ohm1lPH3ncO03Vtr/IbxMc74c=
+X-Gm-Gg: Acq92OH8AmozNfJAwZ0QpIZ6xbj/ZWvY+dLrroV/h6vWtBzAwNqzXR3VdvMro8LsNNr
+	Ypk3wppOZAG1KB5DjYwYs56prJCU87omVzXh3t/fpKU//kmVRWDl3PV1z4xxoslmoB1Ai1/VEQO
+	68Qdp4BDQWdaaa9mohYa/fV8NRxof2hTcM/+w/9QXopC7wLDD0hlUXPgrInQWGLGFcfOWQFS1iy
+	4P8L8V0ueh6eCE0kPtdODEPtrZj87T2T9sg+V8Sw4OhC6RBJl9AxypUQkAy5O/0Ue/VZBmv4Wzq
+	u7zYAF6LpTNOZimOIMoj7wKQpN32PgHl8b67WLfd0Do5pxjgUAyi0wrFVm+hggadaY476VcppOr
+	66AFom0GY5odrGQVEpxwo3qQacsM/+QHRe6vEA11aTd6MX8umCT0qiiC/dMqegDi2Apth8gQH+7
+	Eb51sBkWg/GtbtfdzC/PE39cuATUQ7qFCOYRItLxakoF4Qrt2N6UPirW0ZgIU8u5TsEHIWMd3AG
+	0E=
+X-Received: by 2002:a05:6820:4c83:b0:694:8c46:e2c3 with SMTP id 006d021491bc7-69d7eb6b527mr11938897eaf.14.1779892683791;
+        Wed, 27 May 2026 07:38:03 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-43b6351a772sm16950878fac.3.2026.05.27.07.38.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 06:34:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1wSEOW-0000000EPtJ-0OFT;
-	Wed, 27 May 2026 10:34:00 -0300
-Date: Wed, 27 May 2026 10:34:00 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Tao Cui <cuitao@kylinos.cn>
-Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, leon@kernel.org,
-	linux-rdma@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH rdma-next 0/5] cgroup/rdma: add per-type resource
- accounting for QP, MR and MR memory
-Message-ID: <20260527133400.GM2487554@ziepe.ca>
-References: <20260525055506.2002985-1-cuitao@kylinos.cn>
- <20260525134314.GI7702@ziepe.ca>
- <b8269d9b-bd14-4ba1-be60-a210a9a1d093@kylinos.cn>
+        Wed, 27 May 2026 07:38:02 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: tj@kernel.org, josef@toxicpanda.com, cgroups@vger.kernel.org, 
+ Tao Cui <cuitao@kylinos.cn>
+Cc: linux-block@vger.kernel.org, 
+ Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+In-Reply-To: <20260522091530.1901437-1-cuitao@kylinos.cn>
+References: <20260522091530.1901437-1-cuitao@kylinos.cn>
+Subject: Re: [PATCH v2] blk-throttle: schedule parent dispatch in
+ tg_flush_bios()
+Message-Id: <177989268208.742656.5047337286671399342.b4-ty@b4>
+Date: Wed, 27 May 2026 08:38:02 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b8269d9b-bd14-4ba1-be60-a210a9a1d093@kylinos.cn>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15.2
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[kernel-dk.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	TAGGED_FROM(0.00)[bounces-16348-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[ziepe.ca];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DMARC_NA(0.00)[kernel.dk];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16349-lists,cgroups=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel-dk.20251104.gappssmtp.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,ziepe.ca:mid,ziepe.ca:dkim]
-X-Rspamd-Queue-Id: 7FB4A5E54D5
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kernel-dk.20251104.gappssmtp.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 900FF5E60D1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 27, 2026 at 07:28:59PM +0800, Tao Cui wrote:
-> Hi,Jason
+
+On Fri, 22 May 2026 17:15:30 +0800, Tao Cui wrote:
+> tg_flush_bios() schedules pending_timer on the child tg's own
+> service_queue, which causes throtl_pending_timer_fn() to dispatch from
+> the child's pending_tree.  For leaf cgroups this tree is empty, so the
+> timer fires and exits without dispatching the throttled bio.
 > 
-> Thanks for the review.
+> The throttled bio sits in the parent's pending_tree with disptime set
+> to jiffies (THROTL_TG_CANCELING zeroes all dispatch times), but the
+> parent's timer is never explicitly rescheduled.  The bio only gets
+> dispatched when the parent timer eventually fires at its previously
+> scheduled expiry.
 > 
-> 在 2026/5/25 21:43, Jason Gunthorpe 写道:
-> > 
-> > I would agree to mr_mem as a reasonable extension, but not splitting
-> > out objects to finer grains. There are endless objects we don't want a
-> > 100 different cgroup knobs, it is not usable.
-> > 
-> 
-> Understood.  Our initial motivation was
-> multi-tenant isolation: a tenant could consume disproportionate
-> resources by creating many objects of a single type.  In hindsight,
-> though, the real bottleneck is pinned memory, not object counts —
-> modern hardware has large object pools, and the scarce resource is
-> how much physical memory gets registered through MRs.  mr_mem
-> addresses that directly, while hca_object remains sufficient for
-> coarse object accounting.
+> [...]
 
-This was the same motivation that lead us to a single object
-limit. Inside a modern NIC the objects tend to pool from the same memory
-pool so it doesn't matter if you have 100 QPs or 100 SRQs or whatever
-they sort of cost the same.
+Applied, thanks!
 
-memory pin accounting should ideally be limited by the cgroup directly
-but we argued about that for a while and could never get an agreement
-of an acceptable implementation. There are many nasty corner cases
-around cgroups and fork and other cases IIRC
+[1/1] blk-throttle: schedule parent dispatch in tg_flush_bios()
+      commit: 6235ea3f8b8ffca0333ade0863992f3cd69592ea
 
-So I'm not sure if making it rdma specific can easially solve these
-problems
+Best regards,
+-- 
+Jens Axboe
 
-Jason
+
+
 
