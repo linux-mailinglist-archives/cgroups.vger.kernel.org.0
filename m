@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-16330-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16331-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ABWmAxRSFmqPlAcAu9opvQ
-	(envelope-from <cgroups+bounces-16330-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 04:08:20 +0200
+	id iFwIDjdUFmo+lQcAu9opvQ
+	(envelope-from <cgroups+bounces-16331-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 04:17:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2445DE79D
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 04:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 977435DE7F0
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 04:17:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D80FA3029625
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 02:08:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CD7943042C47
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 02:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04631305688;
-	Wed, 27 May 2026 02:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1929D351C13;
+	Wed, 27 May 2026 02:17:10 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB12124DD15
-	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 02:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4169615B998
+	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 02:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779847691; cv=none; b=dTjBHKQuqUjgG11yvFzAKT5gdVASOckdmFjIKtTKjmzB0cmXG9G+4mpyWXiI9pHiY9RRmIVkIuM9/xE7nvcULH+WjorPAj4+9HAa4PMmLfqJkn9h7WCe7dAVto6bHzmIUXoRDsW1dvZ2iNlDLVYIXfhAhSvlSCS1jgJh4cDC+LA=
+	t=1779848229; cv=none; b=gnjH7ruzRx3u8s9lKyWScl9SluLFCoToFvVEdOkkzv3acVcobbNpM/+4DhGReh1zOfpXTYa8OimUBoYWTSmYsFQvhob7d1c42M6KikzXWwYUXy3kLbiyuKh1+MLgihikwX5qLtUwmcCr/BQceh23qsYWJcNG+puLghgfa4wBNWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779847691; c=relaxed/simple;
-	bh=YtOGXPKzjwHe3CBze1OxbTjnaP/Q1E0k/DEeaU6VamU=;
+	s=arc-20240116; t=1779848229; c=relaxed/simple;
+	bh=QceR/h9l49suMYoHkd7/50YxKiX96eBfnlwbqRGe+Xs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ANuaQzR/XpTwsQrzfiEKGLh3xmtW/Bf9HA6Fhvd6koWl/PJfE/nOMcp5Hbolv2Ka9ODA/RdFSqUxDIkl/Gr1/26O1t71Ufiht+6RVjFe7ezBSuPyFhCh7cZ+OwV/u+39sUq1Y9YCIbsGh27szPYvOH0F/bA4SSg7Fz/sicERNzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+	 Content-Type:Content-Disposition:In-Reply-To; b=HhfS7QqBUKL04flfq/jj4vylrgmiSCycXZqC3JIxE4ZMZAXT+V1uDEgKKDzrecktK5oAyqDqqMtzP3rDaoM1/7xzBrWbvNun9qOqdpVskOC7yKj/v/O6JR7c2oa/tOaT8h0mk6WF251PGr88uLWIdAFr5xG3SU9USZuEtHtoJ+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 27 May 2026 11:08:07 +0900
+	by 156.147.51.103 with ESMTP; 27 May 2026 11:17:05 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
-Date: Wed, 27 May 2026 11:08:06 +0900
+Date: Wed, 27 May 2026 11:17:05 +0900
 From: YoungJun Park <youngjun.park@lge.com>
 To: Baoquan He <baoquan.he@linux.dev>
 Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
@@ -47,12 +47,12 @@ Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
 	bhe@redhat.com, baohua@kernel.org, gunho.lee@lge.com,
 	taejoon.song@lge.com, hyungjun.cho@lge.com, mkoutny@suse.com,
 	baver.bae@lge.com, matia.kim@lge.com
-Subject: Re: [PATCH v6 3/4] mm: memcontrol: add interfaces for swap tier
- selection
-Message-ID: <ahZSBsSiSeQnJZrn@yjaykim-PowerEdge-T330>
+Subject: Re: [PATCH v6 4/4] mm: swap: filter swap allocation by memcg tier
+ mask
+Message-ID: <ahZUIQHreEaqd6z4@yjaykim-PowerEdge-T330>
 References: <20260421055323.940344-1-youngjun.park@lge.com>
- <20260421055323.940344-4-youngjun.park@lge.com>
- <ahYzNVQHnWlwYq8u@MiWiFi-R3L-srv>
+ <20260421055323.940344-5-youngjun.park@lge.com>
+ <ahZMHmMbhnNPspQj@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -61,7 +61,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ahYzNVQHnWlwYq8u@MiWiFi-R3L-srv>
+In-Reply-To: <ahZMHmMbhnNPspQj@MiWiFi-R3L-srv>
 X-Spamd-Result: default: False [-0.86 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
@@ -74,88 +74,111 @@ X-Spamd-Result: default: False [-0.86 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16330-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16331-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,redhat.com,lge.com,suse.com];
+	URIBL_MULTI_FAIL(0.00)[lge.com:server fail,tor.lore.kernel.org:server fail];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.996];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.997];
-	TAGGED_RCPT(0.00)[cgroups];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,redhat.com,lge.com,suse.com];
 	R_DKIM_NA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 5F2445DE79D
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lge.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 977435DE7F0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, May 27, 2026 at 07:56:37AM +0800, Baoquan He wrote:
+On Wed, May 27, 2026 at 09:42:54AM +0800, Baoquan He wrote:
 > On 04/21/26 at 02:53pm, Youngjun Park wrote:
-> ...snip...
-> > diff --git a/mm/swap_tier.c b/mm/swap_tier.c
-> > index 9019b8978770..b53d6cc67d1e 100644
-> > --- a/mm/swap_tier.c
-> > +++ b/mm/swap_tier.c
-> ...snip...
-> > @@ -374,6 +404,80 @@ bool swap_tiers_update(void)
-> >  			break;
-> >  		swap_tiers_assign_dev(swp);
-> >  	}
-> > +	/*
-> > +	 * XXX: Unused tiers default to ON, disabled after next tier added.
-> > +	 * Use removed tier mask to clear settings for removed/re-added tiers.
-> > +	 * (Could hold tier refs, but better to keep cgroup config independent)
-> > +	 */
-> > +	if (mask)
-> > +		swap_tier_memcg_propagate(mask);
+> > Apply memcg tier effective mask during swap slot allocation to
+> > enforce per-cgroup swap tier restrictions.
+> > 
+> > In the fast path, check the percpu cached swap_info's tier_mask
+> > against the folio's effective mask. If it does not match, fall
+> > through to the slow path. In the slow path, skip swap devices
+> > whose tier_mask is not covered by the folio's effective mask.
+> > 
+> > This works correctly when there is only one non-rotational
+> > device in the system and no devices share the same priority.
+> > However, there are known limitations:
+> > 
+> >  - When non-rotational devices are distributed across multiple
+> >    tiers, and different memcgs are configured to use those
+> >    distinct tiers, they may constantly overwrite the shared
+> >    percpu swap cache. This cache thrashing leads to frequent
+> >    fast path misses.
+> > 
+> >  - Combined with the above issue, if same-priority devices exist
+> >    among them, a percpu cache miss (overwritten by another memcg)
+> >    forces the allocator to round-robin to the next device
+> >    prematurely, even if the current cluster is not fully
+> >    exhausted.
+> > 
+> > These edge cases do not affect the primary use case of
+> > directing swap traffic per cgroup. Further optimization is
+> > planned for future work.
+> > 
+> > Signed-off-by: Youngjun Park <youngjun.park@lge.com>
+> > ---
+> >  mm/swapfile.c | 13 ++++++++++++-
+> >  1 file changed, 12 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > index d5abc831cde7..8734e5d26b08 100644
+> > --- a/mm/swapfile.c
+> > +++ b/mm/swapfile.c
+> > @@ -1352,15 +1352,22 @@ static bool swap_alloc_fast(struct folio *folio)
+> >  	struct swap_cluster_info *ci;
+> >  	struct swap_info_struct *si;
+> >  	unsigned int offset;
+> > +	int mask = folio_tier_effective_mask(folio);
+> >  
+> >  	/*
+> >  	 * Once allocated, swap_info_struct will never be completely freed,
+> >  	 * so checking it's liveness by get_swap_device_info is enough.
+> >  	 */
+> >  	si = this_cpu_read(percpu_swap_cluster.si[order]);
+> > +	if (!si || !swap_tiers_mask_test(si->tier_mask, mask) ||
+> > +		!get_swap_device_info(si))
+> > +		return false;
+> > +
+> >  	offset = this_cpu_read(percpu_swap_cluster.offset[order]);
+> > -	if (!si || !offset || !get_swap_device_info(si))
+> > +	if (!offset) {
+> > +		put_swap_device(si);
+> >  		return false;
+> > +	}
 > 
-> Code is neat, and high efficiency, while it's not easy to understand. I
-> just sat in front of my computer the whole day yesterday to recall and
-> understand why it's done like this, even though I made it clear to my
-> self in the past. I think more words would be helpful to decrease the
-> difficulty for people to undersntand it. E.g below two paragraphes. Just
-> a suggestion and for your reference.
-
-Thanks for the review again :)
-
-Okay I see.
-This explanation seems heavily abbreviated.
-
-> diff --git a/mm/swap_tier.c b/mm/swap_tier.c
-> index b53d6cc67d1e..0a6adf14ab91 100644
-> --- a/mm/swap_tier.c
-> +++ b/mm/swap_tier.c
-> @@ -405,9 +405,17 @@ bool swap_tiers_update(int mask)
->  		swap_tiers_assign_dev(swp);
->  	}
->  	/*
-> -	 * XXX: Unused tiers default to ON, disabled after next tier added.
-> -	 * Use removed tier mask to clear settings for removed/re-added tiers.
-> -	 * (Could hold tier refs, but better to keep cgroup config independent)
-> +	 * When a tier is removed, its index (bit position in the mask) becomes
-> +	 * free for reassignment to a future tier.  If a memcg had previously
-> +	 * disabled this tier (cleared the bit in its swap.tiers file), the
-> +	 * effective mask would keep that bit clear -- meaning the new tier at
-> +	 * the same index would be silently unavailable, an invisible cgroup
-> +	 * constraint left behind by a tier that no longer exists.
-> +	 *
-> +	 * To prevent this, OR the removed tier's mask bit into every memcg's
-> +	 * tier_mask and tier_effective_mask.  This resets the bit so the new
-> +	 * tier is accessible by default; users who want to restrict it must
-> +	 * explicitly disable it after the tier is re-created.
+> The whole patch looks good to me except of one nitpick. Is it a lille
+> cleaner with below tiny adjustment?
+> 
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 2864cd8c2da9..cdf453bf6b80 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1359,15 +1359,12 @@ static bool swap_alloc_fast(struct folio *folio)
+>  	 * so checking it's liveness by get_swap_device_info is enough.
 >  	 */
+>  	si = this_cpu_read(percpu_swap_cluster.si[order]);
+> -	if (!si || !swap_tiers_mask_test(si->tier_mask, mask) ||
+> -		!get_swap_device_info(si))
+> +	if (!si || !swap_tiers_mask_test(si->tier_mask, mask))
+>  		return false;
+>  
+>  	offset = this_cpu_read(percpu_swap_cluster.offset[order]);
+> -	if (!offset) {
+> -		put_swap_device(si);
+> +	if (!offset || !get_swap_device_info(si))
+>  		return false;
+> -	}
 
-The explanation seems good.
+Thanks!
 
-it explains why we must clear the "disabled bit",
-when a new tier comes and we don't automatically diable,
-it can implicitly disable "new tier" which user might not want.
-
-This comes from that fact we don't have a cgroup refecounting on the tier land.
-it is the corner case, we must sync for correct behavior.
-
-I will change the comments as like it is.
+Your suggested version of code is simpler than privious one.
+I will apply it.
 
