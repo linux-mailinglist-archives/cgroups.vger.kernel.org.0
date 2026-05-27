@@ -1,223 +1,206 @@
-Return-Path: <cgroups+bounces-16364-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16365-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KPMdJttBF2p8+wcAu9opvQ
-	(envelope-from <cgroups+bounces-16364-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 21:11:23 +0200
+	id wN9+GFRNF2r7AAgAu9opvQ
+	(envelope-from <cgroups+bounces-16365-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 22:00:20 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E82765E9613
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 21:11:22 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652E15E9D72
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 22:00:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D1D27305D854
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 19:10:58 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 35627302E2CD
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 19:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C65D364927;
-	Wed, 27 May 2026 19:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10373B19D1;
+	Wed, 27 May 2026 19:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gLaDRtSg";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="sfz1h2uT"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ELTN3QR6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE031364939
-	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 19:10:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4183E2F3C26;
+	Wed, 27 May 2026 19:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779909058; cv=none; b=QDVX/RDKSrV4ZLjtll3ZdWKE44MGxuB7wxP9pN2NgZ+mtXkfIM9eDXNJod1dTMP3vYtqpGM0ZmEnMBWAlwtbp4EKlrWhBsnZFTB9apceHDdYcnkVv8WwUb2YpsE4db9cxIt2kGNMIqfo30VQ9QRtaDlFaGHGJG7/xeSYIdDqSj4=
+	t=1779911972; cv=none; b=dHKixEKKKrHCZDAR/a0LUKXrI9REBrkX9nbyC3YUnmEXke6ab/pLHDq9ZAvhm8Clcz3WZJtMGZ2aEK1bySiLbuXEVLeisLhF4hoinaM9kYqF7OMxsvxTQTdeDBHF8IdASh7M2ze/IQQqQTS8Icq3OZTh/9coY2etJ0GOntDvuwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779909058; c=relaxed/simple;
-	bh=nAP+UkwFMeiPRtMLEhgLbQeO3ddCP9DTym3xnAPg2B0=;
+	s=arc-20240116; t=1779911972; c=relaxed/simple;
+	bh=dGLzAB7+QWK1Gwqw39KPEq+ogXaxGhIVT7a7pkAe2yE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jt3AZt1b2zyLAzw4NGlX7JyLuSFMSNhgfDPYkT3LN8Tz7AxJvccwAnXb865x5ktaE3olD+seStLpkGpfXYnppWg10+MOft7ZpEZPW8COL0tARN18UqdjrWY9zhETgRp/eDR+DYGISgC0ogPJPTM/CbVj16wqE7gtLaU/Hk2GC7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gLaDRtSg; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=sfz1h2uT; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1779909056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fOfRGPugae13jAxurJtrxuSo8jWBso3MtJfxNQrI0Jc=;
-	b=gLaDRtSgDNmD6v2LjKuZ0Ct5hDQYgz4hbfzk+VOPrur0nkDgSF15yXIDWQD2ZluoMlLx5V
-	Y0j3mLgW4ihpzIz561U8SZ6cyiUC/5MaTg2ysMrsjysTeg8QEGhDEXwxl31Tydlps+LaHb
-	3fs+rrMYPA2km1bMv23RwjHFFfIYTGI=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-169-OedKP-U3P46mWuhY-jHUsA-1; Wed, 27 May 2026 15:10:50 -0400
-X-MC-Unique: OedKP-U3P46mWuhY-jHUsA-1
-X-Mimecast-MFC-AGG-ID: OedKP-U3P46mWuhY-jHUsA_1779909050
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-514551d5f2aso35845751cf.2
-        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 12:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1779909050; x=1780513850; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fOfRGPugae13jAxurJtrxuSo8jWBso3MtJfxNQrI0Jc=;
-        b=sfz1h2uTS5r8ZVhzp3aKesp7EAZAfH3UbsW1sI2NyYs7CIylEt5niUhX2qj/X/xTCK
-         Am9PBuwFlJ6txCYqkUXBzaiSDntjA1e3TgirmogUimEf2GNn/C8wTmRCacYylRy1UIUK
-         SvMjAZcKBrQLnkj7kMQKcMuRWhNNmMH0+JyijRKiZJV8K2BU/fu5dwXUzS0vdECWT/0x
-         LYbtt1TzW7RFmp+lVrrBuNmilhFjK6wb7lsmVo77yur8IufKReR08ygks+j+tx+VjVk6
-         WHDl4CDOZKHxsi9a8w1pJW+TrsRiX9L1KOpSz0+PIbwEP3VGCjpohtktgV1driGm8u1Y
-         VdQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779909050; x=1780513850;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fOfRGPugae13jAxurJtrxuSo8jWBso3MtJfxNQrI0Jc=;
-        b=GZME0ulzzjhmszrChfZAnednfQP2ctWT4y9cNzhr+FoIJ45AMInNXEWb1iwwHJ/cZA
-         oiQtm+r/RZwcdZ/yCsRnb2x+t/qeI7nbsFy5Xjzm2ofc2GqVy+UeeeUzb5EURMGfzq1c
-         t+8Jydhub5CpPzrEs/zYcELlCgiy7oC9MQOVOF5kYS/F8W45ARb+suBN1Ex87So/G0a3
-         eacFOKcJzWZMaimx6udWgDt0E9vQma76g6tmCJzhT3j/NIUpYdzuiPPfVVU77q5jSrUW
-         Am+Sqssy77CxR9IBMmt7PZb3bJNwEh+NDY5/TgcJxJqNaN5b300DvLx2JDeaF3euOUVy
-         0HLQ==
-X-Forwarded-Encrypted: i=1; AFNElJ+538YmiSIIADpq8a6fNWEN190RcysLOsLrugjUlALpLIbuXg/L12vbzHyiqfJQsIa3IxDGj+kd@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3/rXnRenT4WOp8odbGMKH+aSV7SGSEtDzngzeRwszr2Wh5j2v
-	wf9OER9HTB24qLhy4O9R+WsPlJAy1VK6G9ANcTQ7BDRezr/K2WaXwezn8wQx68GenLDhJhOy4zr
-	XROL7rpZSyG/VV4Em/6GSuBkEG6zpdMqG7VjVeBhzaZJKJSfWkupueodzXWc=
-X-Gm-Gg: Acq92OG04z58E4vpzm9aPuCp1FzV0F0ZWouMkXCr0GQ3fxDZP2XCwntbca28udHjvE4
-	BMkG0LncN9Aom7CJzOLe/ly5NEzPqel7n8RbWuIU0YXto+3QqECImh2ogWYDTS/CY3lekFhNMpW
-	mx5i02sLPq/ftLJd9G4KaUt+IEwZMOy2pXTINPH2V7oHkba6jTA1GUno4K7IKQYyfP75Q/lavbo
-	tjk/r3V5a5Nn8LOyFwRIHt4rdld0Mn6/q2+XJ0A8yAXpaof1bpRoqbV0avA3X3qV38Y1pUOpcR2
-	d2Sohtl5LsoFyQ8Dq0ov9g+QMflEpvDjjut2PxXF0Kj9qSqFAKEJkcK2jf46CYVFZ+sXcEDSbiZ
-	WSoLiOVFnMZeKL2oDYYbQoqFesOXVB7+KZ3K9khTmtyood4Z8IrspA6TEcawXSJsxb/WQ44poXk
-	En
-X-Received: by 2002:a05:622a:2d5:b0:516:4fc0:27ac with SMTP id d75a77b69052e-516d43e4561mr348875551cf.50.1779909049491;
-        Wed, 27 May 2026 12:10:49 -0700 (PDT)
-X-Received: by 2002:a05:622a:2d5:b0:516:4fc0:27ac with SMTP id d75a77b69052e-516d43e4561mr348874431cf.50.1779909048607;
-        Wed, 27 May 2026 12:10:48 -0700 (PDT)
-Received: from localhost (pool-100-17-21-205.bstnma.fios.verizon.net. [100.17.21.205])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51706adc8f3sm51751971cf.18.2026.05.27.12.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 12:10:47 -0700 (PDT)
-Date: Wed, 27 May 2026 15:10:47 -0400
-From: Eric Chanudet <echanude@redhat.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Maarten Lankhorst <dev@lankhorst.se>, 
-	Maxime Ripard <mripard@kernel.org>, Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Shuah Khan <skhan@linuxfoundation.org>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	"T.J. Mercier" <tjmercier@google.com>, Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, 
-	Maxime Ripard <mripard@redhat.com>, Albert Esteve <aesteve@redhat.com>, 
-	Dave Airlie <airlied@gmail.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm/memcontrol: add dmem charge/uncharge functions
-Message-ID: <ahWfypvuTVsB-pHQ@x1nano>
-References: <20260519-cgroup-dmem-memcg-double-charge-v2-0-db4d1407062b@redhat.com>
- <20260519-cgroup-dmem-memcg-double-charge-v2-1-db4d1407062b@redhat.com>
- <ahB7pCu_G4vuswc0@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nS4p6eq1l4xNNY+JFbkNDNQMpjNpNgPJ+zujRRbpIzHJG+qoMlVWwOFEMwoWV3BbpQBnd+UEgUt7yh0WHXkTfbMwIBGYqNY5r9vhE682Yl+ybPCzzogoMfiUBQE3mZoE3MaDFk4qLdGs4ByTgK588xPaO0hwq0Bv42OfbxUwQKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ELTN3QR6; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=dGLzAB7+QWK1Gwqw39KPEq+ogXaxGhIVT7a7pkAe2yE=; b=ELTN3QR6sMG44bP9QyVSBeLylu
+	8lRV9ni3yRDtklEwyJmFsAeypKQNkkXvFE7GlkSBXjY8sF/U8CFy1tQ0mpAusLZpZTEKzCjOAHypl
+	GjVqkLWx5uykPyxnm3NfS31r4/wADnQww1ntE/gYwJhlEmn9nu9cFgs9yZxE/VFUBQbYqHo0LjUNs
+	8sqjWNdLqqRvj8nf9ADfisaUJnTzne+bIbnMIP9byI2TAhGaMOlwKcruGBWP9liQQtllCFNevGLBn
+	Cp5biHaoWTFBUbgy3liMkWfM1OVjdTb4G7f5ExW9ApcDzqwlUmizXFDn1xd9nD+nSf5R8DJYOZB/J
+	4aRGLMyg==;
+Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
+	id 1wSKP6-0000000ErAf-0irf;
+	Wed, 27 May 2026 19:59:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id D3CC6300CB5; Wed, 27 May 2026 21:58:58 +0200 (CEST)
+Date: Wed, 27 May 2026 21:58:58 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Aaron Tomlin <atomlin@atomlin.com>
+Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org,
+	serge@hallyn.com, mingo@redhat.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com,
+	casey@schaufler-ca.com, longman@redhat.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, chenridong@huaweicloud.com,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com,
+	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io,
+	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com,
+	nick.lange@gmail.com, cgroups@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
+ include CPU affinity mask
+Message-ID: <20260527195858.GC3493090@noisy.programming.kicks-ass.net>
+References: <20260526142838.774711-1-atomlin@atomlin.com>
+ <20260527085221.GQ3126523@noisy.programming.kicks-ass.net>
+ <bgjagepcfb7gz6jawatu6kpfmecw46gwg5cvb6r7dl3dn7bt4l@rtymdaslx7ef>
+ <20260527155404.GV3126523@noisy.programming.kicks-ass.net>
+ <ov33cu2wosubbfufcmfyoinfatecskjgmkvqyit33komlcla2d@2qgj45724bql>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="o0gcLVW1g+NX126n"
 Content-Disposition: inline
-In-Reply-To: <ahB7pCu_G4vuswc0@linux.dev>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+In-Reply-To: <ov33cu2wosubbfufcmfyoinfatecskjgmkvqyit33komlcla2d@2qgj45724bql>
+X-Spamd-Result: default: False [-2.76 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16364-lists,cgroups=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,lankhorst.se,gmx.de,suse.com,lwn.net,linuxfoundation.org,vger.kernel.org,kvack.org,lists.freedesktop.org,google.com,amd.com,redhat.com,gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16365-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com,huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,amd.com,ashe.io,abita.co,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[echanude@redhat.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: E82765E9613
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,infradead.org:dkim,noisy.programming.kicks-ass.net:mid]
+X-Rspamd-Queue-Id: 652E15E9D72
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, May 22, 2026 at 08:53:10AM -0700, Shakeel Butt wrote:
-> On Tue, May 19, 2026 at 11:59:01AM -0400, Eric Chanudet wrote:
-> > Add mem_cgroup_dmem_charge() and mem_cgroup_dmem_uncharge() to allow
-> > dmem pool allocations to optionally be double-charged against the memory
-> > controller. Take the struct cgroup from the dmem pool's css as there is
-> > no convenient object exported to represent these allocations. These will
-> > resolve the effective memory css from that cgroup and perform the
-> > charge.
-> > 
-> > Introduce a MEMCG_DMEM stat counter to memory.stat to make the cgroup's
-> > dmem charge visible.
-> > 
-> > Signed-off-by: Eric Chanudet <echanude@redhat.com>
-> > ---
-> >  include/linux/memcontrol.h | 16 ++++++++++++
-> >  mm/memcontrol.c            | 65 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 81 insertions(+)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index dc3fa687759b45748b2acee6d7f43da325eb50c1..8e1d49b87fb64e6114f3eb920293e14920290fe7 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -39,6 +39,7 @@ enum memcg_stat_item {
-> >  	MEMCG_ZSWAP_B,
-> >  	MEMCG_ZSWAPPED,
-> >  	MEMCG_ZSWAP_INCOMP,
-> > +	MEMCG_DMEM,
-> >  	MEMCG_NR_STAT,
-> >  };
-> >  
-> > @@ -1872,6 +1873,21 @@ static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-> >  }
-> >  #endif
-> >  
-> > +#if defined(CONFIG_MEMCG) && defined(CONFIG_CGROUP_DMEM)
-> > +bool mem_cgroup_dmem_charge(struct cgroup *cgrp, unsigned int nr_pages,
-> > +			    gfp_t gfp_mask);
-> > +void mem_cgroup_dmem_uncharge(struct cgroup *cgrp, unsigned int nr_pages);
-> > +#else
-> > +static inline bool mem_cgroup_dmem_charge(struct cgroup *cgrp,
-> > +					  unsigned int nr_pages, gfp_t gfp_mask)
-> 
-> Please follow Johannes's request to pass the actually memory object instead of
-> naked numbers.
 
-Sorry, I misunderstood Johannes' comment. I am not sure what to use
-here. Since these are called from dmem.c, they don't have access to what
-was allocated.
+--o0gcLVW1g+NX126n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Looking at zswap, it uses obj_cgroup. I thought of resolving the
-obj_cgroup from dmem_cgroup_try_charge and keep it in the
-dmem_cgroup_pool_state, but that made me realize there is a catch with
-this patch set, with something like:
-A: +memory{max:32M}/+dmem
-A/B: +memory{max:16M}
+On Wed, May 27, 2026 at 01:41:52PM -0400, Aaron Tomlin wrote:
 
-It gets the CSS from the dmem's cgroup with
-  cgroup_get_e_css(cgrp, &memory_cgrp_subsys);
-  mem_cgroup_from_css(mem_css);
+> > > The actual use case here is multi-tenant workload isolation and visib=
+ility.
+> > > Passing the evaluated cpumask to the BPF LSM allows operators to writ=
+e a
+> > > simple eBPF program to detect spatial boundary overlaps (e.g., loggin=
+g an
+> > > event if a requested mask intersects with platform-reserved cores).
 
-Which would resolve to A's memcg and not enforce the memory.max limit
-set in B when dmem.memcg is set for that region.
+Why isn't cgroups good enough to enforce this? If you create a cgroup
+hierarchy per tenant, and constrain them using the cpuset controller,
+they should not be able to escape, rendering this event impossible.
 
--- 
-Eric Chanudet
+> > > If this justification makes more sense, I will focus strictly on the
+> > > seccomp pointer limitations and multi-tenant workload isolation.
+> >=20
+> > I suppose it does, my only remaining question is if that is indeed
+> > proper use of LSM -- I really don't know much about that.
+> >=20
+>=20
+> We are not creating a bespoke BPF hook here; rather, we are rectifying a
+> historical blind spot within the API. The existing LSM hook is invoked
+> during sched_setaffinity(), yet it presently receives only the task_struct
+> pointer. Consequently, the security module is essentially asked, "Should
+> Process A be permitted to alter Process B's affinity?" without being
+> informed of the proposed affinity itself. Providing in_mask simply
+> furnishes the existing hook with the requisite payload to make an informed
+> decision.
 
+It occurs to me that this same argument would require to also pass in
+the new sched_attr, no? That way the LSM can inspect the new policy
+before it becomes effective.
+
+> Were the objective solely one of observability, a tracepoint would indeed
+> be the most suitable mechanism. However, if the aim within multi-tenant
+> environments is active enforcement (namely, safely returning -EPERM to de=
+ny
+> the pinning request before the scheduler applies it), the LSM layer remai=
+ns
+> the standard, architecturally supported gateway for returning syscall
+> errors in accordance with administrative policy.
+
+Indeed; but being constrained in a cpuset cgroup would result in the
+same, no?
+
+> I shall defer to Paul Moore and the LSM maintainers for their final
+> blessing on the LSM API semantics.
+
+Yes, I think that this is an interesting test-case of the LSM purpose.
+
+You seem to be mostly aiming at resource control, something that is
+traditionally done elsewhere.
+
+> Thank you once again for the thorough review and for keeping the
+> architectural boundaries honest.
+
+No problem, just trying to understand myself ;-)
+
+--o0gcLVW1g+NX126n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEv3OU3/byMaA0LqWJdkfhpEvA5LoFAmoXTP0ACgkQdkfhpEvA
+5LoosQ//XlaEdrjiSG7UqRemo3EjCKgYC4JnDuk0gK8Jjj7CT4JOA1uvnNt84hC9
+JUsAkRQ984DrAwXrsIkJuPu3D9NziW+8W7Z9vYczAtTVgptyNIkGP15S6cXFX4yC
+0Qd9bBNG0EhB31fLvONobc8iMpCT1zvCtUYJeq+TYvqKAwitQD8smMUpk1PKgZcf
+Ij5E7jrX4WpvD1GsLZn7vd/vGhGvUXz2WABj1urHNyMK3F6itWDpei8uODKK9cJz
+Ea6GUDNenHPMZbXCCRCDJUVfAPQHeeL+zWF8SYyt6+nruQNW561/UjVOD0+bEW5F
+tLLcgYYblXI/BNdVPfs7O8Cu99644DSJxvd2smVS5od0IwZTMe7bqAZ747a7drNu
+B9RwbYTb46/nHRNe1ad1KUpLDSkMOQm2PRjkdpA2OL3HhDdE49KutblbSI1kvLh1
+sOJdZIGIcPvkrNosZTXu/tc2AOfc90Zp/WcaLjfqc+5LY5o8jnHBksn36SohPBqf
+MM8FGqbBrq5DfyVrE/59aCPEJyTYQz25JBT+2NbELDVCFI1sinCA1qIKWBB5iIOK
+Tq5G37nzhDw2WAp/e9BCnF+3adNqUuUbldIL4PsuobrPlIQHgIq6I9rKul3OkhYw
+5L4lfLU/lFF/HfpMY5xlWEHzEO47vS4dG7DpHHlUynEmoLTSu88=
+=rSBb
+-----END PGP SIGNATURE-----
+
+--o0gcLVW1g+NX126n--
 
