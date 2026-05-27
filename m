@@ -1,63 +1,65 @@
-Return-Path: <cgroups+bounces-16351-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16352-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4HHIAy0TF2pf3QcAu9opvQ
-	(envelope-from <cgroups+bounces-16351-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 17:52:13 +0200
+	id ALtHKhoQF2o12wcAu9opvQ
+	(envelope-from <cgroups+bounces-16352-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 17:39:06 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A3245E734C
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 17:52:11 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6083A5E700F
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 17:39:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 29F8430BA8F8
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 15:38:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5070D303EA6C
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 15:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FF03D5246;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87543D9DB2;
 	Wed, 27 May 2026 15:38:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b6Mg9gRo"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R9lkNS0K"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCF329405
-	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 15:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B7C37A488
+	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 15:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779896331; cv=none; b=TvvisXcQG+TVMwG6fUFVn+kL1nWg2rDEG1SC/9s6XL5A8G4pWKc7oGA29ef1GpgUd+kEJeWYzafTOmCnzJrHn4V5DIRFPb6I+qQKaFXB3tO7K8tLroCnUEvs3NcDjZfjWbIg/Kuxb0cJ9aaLvNjBOH3JeE6dU8hW4c7HEHbVxms=
+	t=1779896331; cv=none; b=R2jOpvfItW9Vit8R80109f0xJTMzAGXiruy3CyexAs+XI3ZtFc3cNFoir3IUUfc/DwxNqyv/RMOvPmBKtdSUBRvCkZ+Ty325ScPn2DZUdyuo23l6DNE2LyNa+kL/QtoePuftWUeBcWmkSq4tU0m5hTKNRV2oQHHF94Ue6oJ3/vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1779896331; c=relaxed/simple;
-	bh=t47uX9LfNk/VS3b0UOzJFpGA6+4KBzYW1wQwcbN010E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k9DEKbKnNj89t2rU0HxxML1RFBuiaMbN1QJY7bBnqvWG05GpFTQvsY+cygi5mtiebNuk081N4h/Lkg8pQU0SS/Z0D1b2Uogk+mkhAATkNdBByVywaxl2IsfFOM5YqVIubveu6i1J4edjm97qvViqG7PNI3Me8MYx16qOk5VqlRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b6Mg9gRo; arc=none smtp.client-ip=170.10.133.124
+	bh=ja8QwMW/mmlNgmqfj0hBpJdp841yTjdEA77sLJvBLk0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=gSkNsUkteW75xzvSwVvNe3FjtGceKnV2Db/8p4ctSV56YqakD+CJ1PIegL+CCnOxTxxDCHG5fxVdFDdemxvJeBTmWWjFpDPMqIB2aeiIAPOxrmn9Wzs+UmDpzj/rvQPBc6jczKa6KQU5NKOd0m2594yA3zd/PDJfAEHthyiNAbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R9lkNS0K; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	s=mimecast20190719; t=1779896329;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=F12bV2mWWMDi602T7nrlB9gUt0uM29kW2bkxAW2G9zE=;
-	b=b6Mg9gRoTId+F6dB6S+lnMxr9fBTH7tgga2t/so/LQRI0qPeGJ5o+kdmYvSyVawns6B5Cw
-	RbbNtGtFpHyUQ3xZKSWFjoWRCVk3gJXJ2+Fyp6BakwsT0lq6Roosx+kI+DGQ/oF/0cd4YM
-	Z70KuFArTwofEzjhAOA3iRGqac7+auQ=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tdylMAS/gkAyE0POz57Y8ng1h9gF+KWnXVKL0TsaNFQ=;
+	b=R9lkNS0KZ6r8fwyB9iUXphjiHFN1gsyYfpgO4QykU5Sc+ErydF1ZoaYZxudKIy23PhZHpQ
+	xzQNf/SVJRVghUQJAVjSuC8j8nukRNp+s2kx00+/cZNrMa8SHCES96SRc7M9gz/WnaKWcv
+	0IG+oLbGvOkVnvCaS4FKHW+GkXisAaA=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-472-zwbd547OO9aHaS3dHadGVw-1; Wed,
- 27 May 2026 11:38:45 -0400
-X-MC-Unique: zwbd547OO9aHaS3dHadGVw-1
-X-Mimecast-MFC-AGG-ID: zwbd547OO9aHaS3dHadGVw_1779896324
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-646-Ds-_atucNM2ea22E4Shkkw-1; Wed,
+ 27 May 2026 11:38:47 -0400
+X-MC-Unique: Ds-_atucNM2ea22E4Shkkw-1
+X-Mimecast-MFC-AGG-ID: Ds-_atucNM2ea22E4Shkkw_1779896326
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5BB9819560B7;
-	Wed, 27 May 2026 15:38:43 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E04CC18002F0;
+	Wed, 27 May 2026 15:38:45 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.81.53])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3DC631800465;
-	Wed, 27 May 2026 15:38:40 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B4D3B1800576;
+	Wed, 27 May 2026 15:38:43 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Chen Ridong <chenridong@huaweicloud.com>,
 	Tejun Heo <tj@kernel.org>,
@@ -69,9 +71,11 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Aaron Tomlin <atomlin@atomlin.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH-next v3 0/5] cgroup/cpuset: Support multiple source/destination cpusets for cpuset_*attach()
-Date: Wed, 27 May 2026 11:37:55 -0400
-Message-ID: <20260527153800.1557449-1-longman@redhat.com>
+Subject: [PATCH-next v3 1/5] cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
+Date: Wed, 27 May 2026 11:37:56 -0400
+Message-ID: <20260527153800.1557449-2-longman@redhat.com>
+In-Reply-To: <20260527153800.1557449-1-longman@redhat.com>
+References: <20260527153800.1557449-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,12 +90,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16351-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16352-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -104,57 +108,104 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 5A3245E734C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 6083A5E700F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
- v3:
-  - Rebased to the lastest linux-next tree.
-  - Keep cpuset_attach_old_cs as suggested by Chen Ridong and replace
-    patch 3 by a new one to make it track task group leader.
+Extract the DL bandwidth allocation code in cpuset_attach() to a new
+cpuset_reserve_dl_bw() helper to simplify code.
 
-Sashiko AI review of another cpuset patch had found that cpuset_attach()
-and cpuset_can_attach() can be passed a cgroup_taskset with tasks
-migrating from one source cpuset to multiple destination cpusets and
-vice versa.  Further testing of the cpuset code indicates that this is
-indeed the case when the v2 cpuset controller is enabled or disabled.
+No functional change is expected.
 
-Unfortunately, cpuset_attach() and cpuset_can_attach() still assume that
-there will be one source and one destinaton cpuset which may result in
-inocrrect behavior.
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cpuset.c | 53 ++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 23 deletions(-)
 
-This patch series is created to fix this issue. The first 2 patches are
-just preparatory patches to make the remaining patches easier to review.
-
-Patch 3 makes cpuset_attach_old_cs to track group leader for use by
-cpuset_migrate_mm().
-
-Patch 4 moves mpol_rebind_mm() and cpuset_migrate_mm() inside
-cpuset_attach_task() to make CLONE_INTO_CGROUP flag of clone(2) works
-more like moving task from one cpuset to another one, while also make
-supporting multiple source and destination cpusets easier.
-
-Patch 5 makes the necessary changes to enable the support of multiple
-source and destination cpusets by keeping all the source and destination
-cpusets found during task iterations in two singly linked lists for
-source and destination cpusets respectively.
-
-Waiman Long (5):
-  cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
-  cgroup/cpuset: Expand the scope of cpuset_can_attach_check()
-  cgroup/cpuset: Made cpuset_attach_old_cs track task group leaders
-  cgroup/cpuset: Move mpol_rebind_mm/cpuset_migrate_mm() calls inside
-    cpuset_attach_task()
-  cgroup/cpuset: Support multiple source/destination cpusets for
-    cpuset_*attach()
-
- kernel/cgroup/cpuset-internal.h |   6 +
- kernel/cgroup/cpuset.c          | 375 ++++++++++++++++++++++----------
- 2 files changed, 263 insertions(+), 118 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 51327333980a..d720bcc7ef83 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2980,6 +2980,25 @@ static int cpuset_can_attach_check(struct cpuset *cs)
+ 	return 0;
+ }
+ 
++static int cpuset_reserve_dl_bw(struct cpuset *cs)
++{
++	int cpu, ret;
++
++	if (!cs->sum_migrate_dl_bw)
++		return 0;
++
++	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
++	if (unlikely(cpu >= nr_cpu_ids))
++		return -EINVAL;
++
++	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
++	if (ret)
++		return ret;
++
++	cs->dl_bw_cpu = cpu;
++	return 0;
++}
++
+ static void reset_migrate_dl_data(struct cpuset *cs)
+ {
+ 	cs->nr_migrate_dl_tasks = 0;
+@@ -2994,7 +3013,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	struct cpuset *cs, *oldcs;
+ 	struct task_struct *task;
+ 	bool setsched_check;
+-	int cpu, ret;
++	int ret;
+ 
+ 	/* used later by cpuset_attach() */
+ 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
+@@ -3050,31 +3069,19 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 		}
+ 	}
+ 
+-	if (!cs->sum_migrate_dl_bw)
+-		goto out_success;
+-
+-	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
+-	if (unlikely(cpu >= nr_cpu_ids)) {
+-		ret = -EINVAL;
+-		goto out_unlock;
+-	}
+-
+-	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
+-	if (ret)
+-		goto out_unlock;
+-
+-	cs->dl_bw_cpu = cpu;
+-
+-out_success:
+-	/*
+-	 * Mark attach is in progress.  This makes validate_change() fail
+-	 * changes which zero cpus/mems_allowed.
+-	 */
+-	cs->attach_in_progress++;
++	ret = cpuset_reserve_dl_bw(cs);
+ 
+ out_unlock:
+-	if (ret)
++	if (ret) {
+ 		reset_migrate_dl_data(cs);
++	} else {
++		/*
++		 * Mark attach is in progress.  This makes validate_change() fail
++		 * changes which zero cpus/mems_allowed.
++		 */
++		cs->attach_in_progress++;
++	}
++
+ 	mutex_unlock(&cpuset_mutex);
+ 	return ret;
+ }
 -- 
 2.54.0
 
