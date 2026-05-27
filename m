@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-16370-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16371-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +EZZIbxYF2oPBQgAu9opvQ
-	(envelope-from <cgroups+bounces-16370-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 22:49:00 +0200
+	id 4O1aBJxYF2oPBQgAu9opvQ
+	(envelope-from <cgroups+bounces-16371-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 22:48:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E08FE5EA318
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 22:48:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 796F45EA2DD
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 22:48:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EB6C6308ED43
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 20:48:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 95BA930621CE
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 20:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CBC93B7B8B;
-	Wed, 27 May 2026 20:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D2EA3BE15F;
+	Wed, 27 May 2026 20:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="uyN+DClH"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="UeJF5SHG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2953B5F50
-	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 20:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 716BD36F438
+	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 20:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779914895; cv=none; b=EzPMRNeCP/Ai2pV3FTtkthsJpa+CCLmhfsiwHrUwX2v4noE2v/ZGCM1rwPA8Rx2CGiU00J6Xe/MrtZTQ9G80B/btDzbQ28Kb3wEnG97qHE2EUioGTtogE4UA3ZfoI3xlqeFp2GY0YhTbktKSBBoSsZMMasMSMYNUswThOruGO3Y=
+	t=1779914896; cv=none; b=tCXWLCfgnR87LeZ3SbzteyJm7/AkKuP/Aq9V8TFxAlTHWDIEWbYi7dI5ABXIKe+6BqDQcEnfv7s4BA8YLVx7DILHgGT/t/4sWkzw+a/uRpSjl8ULEEWFKsHV44URIu8wBAbrIsI52K6OJfyGTJ8lrciSp6VBNGPZ4mY81eM+XoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779914895; c=relaxed/simple;
-	bh=c1f+DX2H5xUC03KS0fGkNUDbCLWT6iyE15zMiC1PVlI=;
+	s=arc-20240116; t=1779914896; c=relaxed/simple;
+	bh=twE9vUEfezOAkp4ZHRWC6Tg0E59cYU8YT+AlrQhkxVk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fqfS4+lCdfyUkpsEXLCVxei7WnYGoeWT2aRfnXjJqkaAlL9PPnoIobuwLYETjP1Rj8i91IyqAQ6CJItTAP9AKF0HKbOBVGWW7/F1sEhiXNj4JOMvP+VmMUUhkPZmxtjv5/j0GTSagOdjU4mLDe1QQx3QdN0WOcPfY8WnJdLiJW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=uyN+DClH; arc=none smtp.client-ip=209.85.160.173
+	 MIME-Version; b=NAQDIg1C65hrX+7ftX5FDPBo31kqcSZAq/Xm1+L/FBQ6ZSr4FRhCM7eVsostrXD9HKe1ygkFRfhreQf8Ov2mIA8sVPr0wTIK7jMMYY4mW8W8VD0hyV2nxFagE4J7syw6SBQJVSVrixT17Ryl67anSyJO0XupoRHFIT7wGjbop80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=UeJF5SHG; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-516d65a15f6so57698381cf.1
-        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 13:48:13 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-914db83362aso405582785a.1
+        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 13:48:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1779914891; x=1780519691; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1779914893; x=1780519693; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sDvTkX11jVGNHNrahXzBPb3ZfYee1UhmGAXLDAQTujI=;
-        b=uyN+DClHYRu0RexPP4ecU+sMVANxESB3BQmZgRdra2FUnddQMP7C4sgRCfOeXK2CsN
-         tmQiAOhvaYQK8H4j6m/qpGuIjR5U2QspVNffgC81sS7sIMhTVh6mnQKjmS/76y7xDfeP
-         4b0zfr9hxduzyGg/CEWSjH1wvwE62MoML5jR4VbX+i+u8aaggvnPxMHTDsXoHdsovwW4
-         iCgGVL5tlrlninPLdzCe0WgL1RZKoOS4PJsmYHyo1GmN8eWhyG0kNSHQ2wPFiu6+pPTd
-         bc4mxpzKldSDq2DwYXUhoEdRfVJvjoZw8R4DKaz1P0IDlpDdi/f4QdHtBEWye6eh46L6
-         qf/w==
+        bh=5D0XhUH8wxuCdonGZS3m1jXTkJvh4TQTyemwB8RtUGE=;
+        b=UeJF5SHGfGQkmPqjCD+y6FwDBqzvYgJH1Kz7iZIvV0wsgLLaiogeM8Zkjdv1sc3Xmi
+         RnQjv87UulchFK4yR2ZVB4o8tyNhLvWI5QZ2OKgj/xIjFUNNDLKgJm0v8t1BydaiRIoV
+         adLyc8TE7vnZrDHMQUJLg8nFXWfoN265DYvsiClIyPOU0eE+71obGMKujGbr+WVhI9D6
+         +wLbuQox5t1zdxz87kX7K4yKJqlgJAxux2+JuGr+8ldiSlgWbL37O1KLhh7Q5327TKqy
+         0Y6Cof7FSvAtEi/RcJUkqJp26GhkrZdvbqYGsYiHsQetj177PgB1wYQnnDwFE6mzGQD2
+         90yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779914891; x=1780519691;
+        d=1e100.net; s=20251104; t=1779914893; x=1780519693;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=sDvTkX11jVGNHNrahXzBPb3ZfYee1UhmGAXLDAQTujI=;
-        b=EAfHAz6ZbPSZZk55x/qvwlLmMIgixNScxD1LPlhyv89qIZ6VZv6X9jyC3VsYonp2Oc
-         OvbWq3wdrWZQTPR0QhBViPIFmPm21ksV+lgLPrg2I6QOEs51iRm/1s0qnyBEp9V8axdJ
-         W1CEDlot7iH8VvdkPnfMQgetUHs4NBKxhCRmHbEx8lIEW5m/6/FIBUf6yv06QjyxMqWR
-         EvpMfBRHdL3nBsIxx7b+Meh+lQbGP8+3kDFdJt43Q4HC1cQafr/EqpiCoS5aR9QeULAk
-         k822acKhovCuIA0VLJPljDGH7XUuClLfT6wOi2m3+jxwPHeEniigbwwIlXfjB83N4leW
-         JlzA==
-X-Forwarded-Encrypted: i=1; AFNElJ8ddUDgAqfNOLWcvD9U+QwwR1wo1TNUqFUaNJg+Ykqye9NcAU3ejyUl1J/BrHap/jlzIeF8JDPI@vger.kernel.org
-X-Gm-Message-State: AOJu0YzH5F5/JIoHJapwxHRUNcbN8T492/H4qg4a9OlZ9wEh0n5xGT1C
-	X+J/cbT3uLCQ+MgO2Fw8SaTvjP7nWF8ZnIpN30nIFgBllTVzlk9YN85dRsMC9LA1J98=
-X-Gm-Gg: Acq92OGZr1EYIw2oSIOElG8OzTEtsGGcd2KrE890vWPUp9w4i+x5ItpNL3n7wUXwgZ6
-	CBtbF65Qu5E03z1xyKr7BfgNflw/BZx0AzcwVtE1a5171ZzdqJcDvg4nb70zCniZH3nO24g4xws
-	tPncH4NwmSFJWpPku25nO+1Xue+WMw60pz3FrrBrzUF3un2KzfQkxGt1fPTvX1RCocGC5i3omTS
-	v6hVmyXA/ywfab3y1mviW1ASP+oeTlKxs2iUC1cddTPPZKiAbBC+fUf6+/8KTelzMksueEDdzRA
-	pH6BDPyPrZ95EYrHpgg283s6nsyR0kGo6JxuxfHDbmlsM2xIDXpZ+gcXu8wq9QQVR/MU6iJkfy8
-	mo7uTop5Ti5zCnIIgoFvPQGsOxfRx7IwG9uhlormiR/pX44RQFKVE1/E92KkitNlzlRxNkueygZ
-	splNtaQRDmMKYciGNnZZzRgVsIUBf+BXu0
-X-Received: by 2002:ac8:7f8f:0:b0:50f:a53b:9d3 with SMTP id d75a77b69052e-516d58a803emr268033681cf.27.1779914891532;
-        Wed, 27 May 2026 13:48:11 -0700 (PDT)
+        bh=5D0XhUH8wxuCdonGZS3m1jXTkJvh4TQTyemwB8RtUGE=;
+        b=Q/4ZbeAC9mH40KfRdCcGcc/lR7pymCURXSiOusK6fqoZWzqykFhvEeo+Lz6H/DVPdj
+         IFN5cqCLBhaRPOCMxTjS/lSYmqCS+elkR4O4zcYvwX7GF2jxaBQFnh4+X7irCgPbMEIH
+         XGKjyn9E6HbOK0pRQvaIIiQOO+leRjcvKYT3/T8Z8VKAlPoMcQHzS/ZSNa/RdL2ubbXB
+         61XeArlR0rGkmPq6NfNt1j7QEpI2ANJHuneNuztijpq4QqovTnH70dzzF4d9GAoP9b1p
+         sXQaSScpHPDLIhc5BH0r6PQxHGOfi4qu3KnPFSSvIAb62RwcFpkdK1sQL9j4p5ejWFDs
+         HoKg==
+X-Forwarded-Encrypted: i=1; AFNElJ8le7BOGsgOEvYpDvLJes73T5Y7YkZoJ2awQhQscH3MjjfirTIWnmu3r1AHvHbzack7kMDQnLYG@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywax1zxiYbk43iTKgOIDpHdPnOlDRZSCscF/TIUSRMyby2hBNYP
+	vWfJE1+LamSOcZZxKwG7Zh2/KJe1CwsNYdIIt4RdsXSLkauMsGcTy9JWnh/pdteXPCA=
+X-Gm-Gg: Acq92OG7PZ0Lx67afsChi75+FUNeE9fXXz9YZj7wuYY9OOE6DGNCnA3InvpOtQj7wdB
+	sbTcDA62mB4ZR36oocseoi95GFZNIjnLq5WpLYz/UQdX3of36VOe+397Tf4PN/ZQ4VlpxC4+p6J
+	TUW0Mdc7B6M4bqUa9Ezl0y5iLpggJrrAxn30kTqr+/L/v1BSQx/u2hSqbV4JjdlL6kFeeKZdpCT
+	Q6UZ92x4vjMzZVNWZIBZgtI7VtA6lbqMQj8EypwCgoH04Z+w5RHsFQObUPRHwfRMjfWTGCtrDvp
+	8SPiZL5GZcOECp/hRT2A81Zni8RyP31mp8cRR8uxmreMNaHYjaxWRhxEcbb6ymB5EiORCkYCTsD
+	ZBPESmekZYs0YinepSGULDga9oiRWNCF5S+MTWYjGcZzv9+8Lr2Kk5mwwCky2fTE69XOkkU0BVm
+	+Zy6rjaD4rgs3O1m5HSwosTm3QihyjNaeN
+X-Received: by 2002:a05:620a:40c5:b0:90f:786c:4a82 with SMTP id af79cd13be357-914a240d00cmr3496069885a.39.1779914893344;
+        Wed, 27 May 2026 13:48:13 -0700 (PDT)
 Received: from localhost ([2603:7001:f100:500:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51706b0bad4sm53558101cf.31.2026.05.27.13.48.09
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f881f214sm578376685a.45.2026.05.27.13.48.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 May 2026 13:48:10 -0700 (PDT)
+        Wed, 27 May 2026 13:48:12 -0700 (PDT)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>,
@@ -104,9 +104,9 @@ Cc: David Hildenbrand <david@kernel.org>,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/9] mm: list_lru: deduplicate unlock_list_lru()
-Date: Wed, 27 May 2026 16:45:10 -0400
-Message-ID: <20260527204757.2544958-4-hannes@cmpxchg.org>
+Subject: [PATCH v5 4/9] mm: list_lru: move list dead check to lock_list_lru_of_memcg()
+Date: Wed, 27 May 2026 16:45:11 -0400
+Message-ID: <20260527204757.2544958-5-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260527204757.2544958-1-hannes@cmpxchg.org>
 References: <20260527204757.2544958-1-hannes@cmpxchg.org>
@@ -123,18 +123,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
 	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_TWELVE(0.00)[27];
 	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	TAGGED_FROM(0.00)[bounces-16370-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16371-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
@@ -145,13 +145,14 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,cmpxchg.org:mid,cmpxchg.org:dkim,linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,infradead.org:email]
-X-Rspamd-Queue-Id: E08FE5EA318
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:email,infradead.org:email]
+X-Rspamd-Queue-Id: 796F45EA2DD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The MEMCG and !MEMCG variants are the same. lock_list_lru() has the
-same pattern when bailing. Consolidate into a common implementation.
+Only the MEMCG variant of lock_list_lru() needs to check if there is a
+race with cgroup deletion and list reparenting. Move the check to the
+caller, so that the next patch can unify the lock_list_lru() variants.
 
 Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
@@ -159,70 +160,49 @@ Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Liam R. Howlett (Oracle) <liam@infradead.org>
 ---
- mm/list_lru.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ mm/list_lru.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 77999ed78fa5..5497034e80f3 100644
+index 5497034e80f3..7d0523e44010 100644
 --- a/mm/list_lru.c
 +++ b/mm/list_lru.c
-@@ -15,6 +15,14 @@
- #include "slab.h"
- #include "internal.h"
+@@ -68,17 +68,12 @@ list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
+ 	return &lru->node[nid].lru;
+ }
  
-+static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
-+{
-+	if (irq_off)
-+		spin_unlock_irq(&l->lock);
-+	else
-+		spin_unlock(&l->lock);
-+}
-+
- #ifdef CONFIG_MEMCG
- static LIST_HEAD(memcg_list_lrus);
- static DEFINE_MUTEX(list_lrus_mutex);
-@@ -67,10 +75,7 @@ static inline bool lock_list_lru(struct list_lru_one *l, bool irq)
+-static inline bool lock_list_lru(struct list_lru_one *l, bool irq)
++static inline void lock_list_lru(struct list_lru_one *l, bool irq)
+ {
+ 	if (irq)
+ 		spin_lock_irq(&l->lock);
  	else
  		spin_lock(&l->lock);
- 	if (unlikely(READ_ONCE(l->nr_items) == LONG_MIN)) {
--		if (irq)
--			spin_unlock_irq(&l->lock);
--		else
--			spin_unlock(&l->lock);
+-	if (unlikely(READ_ONCE(l->nr_items) == LONG_MIN)) {
+-		unlock_list_lru(l, irq);
+-		return false;
+-	}
+-	return true;
+ }
+ 
+ static inline struct list_lru_one *
+@@ -90,9 +85,13 @@ lock_list_lru_of_memcg(struct list_lru *lru, int nid,
+ 	rcu_read_lock();
+ again:
+ 	l = list_lru_from_memcg_idx(lru, nid, memcg_kmem_id(*memcg));
+-	if (likely(l) && lock_list_lru(l, irq)) {
+-		rcu_read_unlock();
+-		return l;
++	if (likely(l)) {
++		lock_list_lru(l, irq);
++		if (likely(READ_ONCE(l->nr_items) != LONG_MIN)) {
++			rcu_read_unlock();
++			return l;
++		}
 +		unlock_list_lru(l, irq);
- 		return false;
  	}
- 	return true;
-@@ -101,14 +106,6 @@ lock_list_lru_of_memcg(struct list_lru *lru, int nid,
- 	*memcg = parent_mem_cgroup(*memcg);
- 	goto again;
- }
--
--static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
--{
--	if (irq_off)
--		spin_unlock_irq(&l->lock);
--	else
--		spin_unlock(&l->lock);
--}
- #else
- static void list_lru_register(struct list_lru *lru)
- {
-@@ -147,14 +144,6 @@ lock_list_lru_of_memcg(struct list_lru *lru, int nid,
- 
- 	return l;
- }
--
--static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
--{
--	if (irq_off)
--		spin_unlock_irq(&l->lock);
--	else
--		spin_unlock(&l->lock);
--}
- #endif /* CONFIG_MEMCG */
- 
- /* The caller must ensure the memcg lifetime. */
+ 	/*
+ 	 * Caller may simply bail out if raced with reparenting or
 -- 
 2.54.0
 
