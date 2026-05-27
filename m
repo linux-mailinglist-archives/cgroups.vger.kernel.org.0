@@ -1,152 +1,235 @@
-Return-Path: <cgroups+bounces-16343-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16344-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0CDNLSCxFmokogcAu9opvQ
-	(envelope-from <cgroups+bounces-16343-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 10:53:52 +0200
+	id YELfHvu5FmqLqAcAu9opvQ
+	(envelope-from <cgroups+bounces-16344-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 11:31:39 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70BA65E161B
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 10:53:52 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99C3E5E1D74
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 11:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A50F8304358B
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 08:52:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DB8BA300398F
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2026 09:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28AB3E315C;
-	Wed, 27 May 2026 08:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40F33BD657;
+	Wed, 27 May 2026 09:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sF9XrJaE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fsjTDaB0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1325A3E2768;
-	Wed, 27 May 2026 08:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF9237AA7A
+	for <cgroups@vger.kernel.org>; Wed, 27 May 2026 09:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779871972; cv=none; b=V73Laogp+s0b/jFzzaIiw/E/Tj4Ro5QMUigwk3ytir0usa41Vivau5F9+81afdG9Kl/LAfQfEilwVsxzS6NByWSuH3yIJdmJ+hl4DfZpyBGwUz2WxpMMBHHFxI1t+rtMsVsjalKK5D2Gs76gsYTHyTsZ9lRYeptb9lI68CndHj8=
+	t=1779874296; cv=none; b=GXdMGebyNHPjNQbiGXDXZpUg0gJ+1L9nrz4lVro/RZ1/SZeHq6Wx73oT/AFKTJxQ8mGlCP0ka5YgNpM8uYzeD+quXGlnSfAolhZCZCLhIIb5Q4Ua0g9H8nbOfmvIkGvSGpioNEDYtlMuWpZrpXMDIRQOnySJpOvTzNgbcysB4KQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779871972; c=relaxed/simple;
-	bh=0vP6dAM0qtYEDeOo7lT2iXRxIT57lFamfuJ6xdotRDw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kugm2MBQJeIktBoecjw/ASngDlElxhJ21P7jpULhIZUTwaSk+5qOtrePcNqJdx6LnSsywnD+ZZTSsnVig/6YJfFVJcfaVQGui09c4/kbwOr7TDFeD4K7TbtCKbRjRYtz8uNLqUzgmGbzi414e7DvnNevJrEQObj7q8HihbKpzRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sF9XrJaE; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5SrhJd8D5kdySamJgDjj4vcaR6oJNFYx6iGp8z9Ljdo=; b=sF9XrJaEIa3q2QUrVJVXpFkrkJ
-	+VEb7zw04rbo+YGauRNWAGaqofL2ZmjQkNVqLfDFRE/slMRdhN7woW1SGlwXk7RrrhN8jgM5kSNcD
-	U1KuBHgMP9JOihHIWcqbZXXaTi2gZJxhz4fI+OVLKxtibDYeUTB/GGm2t48P967isrtfDSNfe6Ir9
-	sfT0oOmpU7rltytq+hA5xXy6cHFCk2TmwrPy3/66VFIxTJTl8EianR0qwL29d8o8aNx45atJrDI25
-	DIpbgBaFSEA7wjVCBACAAgm0/ckup9yvsEF5IsmxQCgeXedwymdEntAHQW8KGIBNJB427Cunfovzi
-	0wDVOKRg==;
-Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wS9zy-000000028Ul-0UWa;
-	Wed, 27 May 2026 08:52:22 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 7BB34300673; Wed, 27 May 2026 10:52:21 +0200 (CEST)
-Date: Wed, 27 May 2026 10:52:21 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Aaron Tomlin <atomlin@atomlin.com>
-Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org,
-	serge@hallyn.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com,
-	casey@schaufler-ca.com, longman@redhat.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, chenridong@huaweicloud.com,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com,
-	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io,
-	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com,
-	nick.lange@gmail.com, cgroups@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
- include CPU affinity mask
-Message-ID: <20260527085221.GQ3126523@noisy.programming.kicks-ass.net>
-References: <20260526142838.774711-1-atomlin@atomlin.com>
+	s=arc-20240116; t=1779874296; c=relaxed/simple;
+	bh=Ucv7tb+rmrQP+8WizGjWiU6fScLBdmJqqU5mtPvlgP4=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=QLMwhoX6O82w72ntiypqzEX069oHVydOq7tA64dWKTpn/bMqZNtaIGs11Nr35cvpQIEgMfBo4R0yRVOf0hg6D00e7gpnkUr01vFJo4T/3eG9xEJ/K9wWSLK76/hVaHbwvopCRxEoequ2eJ+gRs1UgkElbFYBLuO0aUGksUtTEic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fsjTDaB0; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260526142838.774711-1-atomlin@atomlin.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779874291;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cuHmtgVXBwRM6gWFejLSgCD1TBA09WsjOdpw2obbiq8=;
+	b=fsjTDaB0b5qte/WIAecQkAPIKuw6nVsSpbTIf+6BctJmOUjYfsumfoQYf78vDzLMK/tLkg
+	sYJMZhqLPfJv6F3AW/vyoB54xZhJCtm5zSdmguKpEea7cU/8I/fEoI2pbaMG2IUuW4Eml/
+	Q0UQQ2PfILGhwbSHJD8pIjDYJGnG6cI=
+Date: Wed, 27 May 2026 09:31:25 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "teawater" <hui.zhu@linux.dev>
+Message-ID: <7f440116b23fba1e20fe70fda502ad66f7dbf158@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH bpf-next v7 00/11] mm: BPF struct_ops for dynamic
+ memory protection and async reclaim
+To: "Usama Arif" <usama.arif@linux.dev>
+Cc: "Usama Arif" <usama.arif@linux.dev>, "Daniel Borkmann"
+ <daniel@iogearbox.net>, "John Fastabend" <john.fastabend@gmail.com>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Kumar
+ Kartikeya Dwivedi" <memxor@gmail.com>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>, "Jiri Olsa"
+ <jolsa@kernel.org>, "Johannes Weiner" <hannes@cmpxchg.org>, "Michal
+ Hocko" <mhocko@kernel.org>, "Roman Gushchin" <roman.gushchin@linux.dev>,
+ "Shakeel Butt" <shakeel.butt@linux.dev>, "Muchun Song"
+ <muchun.song@linux.dev>, "JP Kobryn" <inwardvessel@gmail.com>, "Andrew
+ Morton" <akpm@linux-foundation.org>, "Shuah Khan" <shuah@kernel.org>,
+ davem@davemloft.net, "Jakub Kicinski" <kuba@kernel.org>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>, "KP
+ Singh" <kpsingh@kernel.org>, "Tao Chen" <chen.dylane@linux.dev>, "Mykyta
+ Yatsenko" <yatsenko@meta.com>, "Leon Hwang" <leon.hwang@linux.dev>,
+ "Anton Protopopov" <a.s.protopopov@gmail.com>, "Amery Hung"
+ <ameryhung@gmail.com>, "Tobias Klauser" <tklauser@distanz.ch>, "Eyal
+ Birger" <eyal.birger@gmail.com>, "Rong Tao" <rongtao@cestc.cn>, "Hao Luo"
+ <haoluo@google.com>, "Peter Zijlstra" <peterz@infradead.org>, "Miguel
+ Ojeda" <ojeda@kernel.org>, "Nathan Chancellor" <nathan@kernel.org>, "Kees
+ Cook" <kees@kernel.org>, "Tejun Heo" <tj@kernel.org>, "Jeff Xu"
+ <jeffxu@chromium.org>, mkoutny@suse.com, "Jan Hendrik Farr"
+ <kernel@jfarr.cc>, "Christian Brauner" <brauner@kernel.org>, "Randy
+ Dunlap" <rdunlap@infradead.org>, "Brian Gerst" <brgerst@gmail.com>,
+ "Masahiro Yamada" <masahiroy@kernel.org>, "Willem de Bruijn"
+ <willemb@google.com>, "Jason Xing" <kerneljasonxing@gmail.com>, "Paul
+ Chaignon" <paul.chaignon@gmail.com>, "Chen Ridong"
+ <chenridong@huaweicloud.com>, "Lance Yang" <lance.yang@linux.dev>,
+ "Jiayuan Chen" <jiayuan.chen@linux.dev>, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ geliang@kernel.org, baohua@kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
+In-Reply-To: <20260526134115.816081-1-usama.arif@linux.dev>
+References: <20260526134115.816081-1-usama.arif@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16343-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com,huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,amd.com,ashe.io,abita.co,vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux.dev,iogearbox.net,gmail.com,kernel.org,cmpxchg.org,linux-foundation.org,davemloft.net,fomichev.me,meta.com,distanz.ch,cestc.cn,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,huaweicloud.com,vger.kernel.org,kvack.org,kylinos.cn];
+	TAGGED_FROM(0.00)[bounces-16344-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[35];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[infradead.org:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_GT_50(0.00)[60];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[hui.zhu@linux.dev,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,infradead.org:dkim]
-X-Rspamd-Queue-Id: 70BA65E161B
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: 99C3E5E1D74
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, May 26, 2026 at 10:28:38AM -0400, Aaron Tomlin wrote:
-> At present, the task_setscheduler LSM hook provides security modules
-> with the opportunity to mediate changes to a task's scheduling policy.
-> However, when invoked via sched_setaffinity(), the hook lacks
-> visibility into the actual CPU affinity mask being requested.
-> Consequently, BPF-based security modules are entirely blind to the
-> target CPUs and cannot make granular access control decisions based on
-> spatial isolation.
-> 
-> In modern multi-tenant and real-time environments, CPU isolation is a
-> critical boundary. The inability to audit or restrict specific CPU
-> pinning requests limits the effectiveness of eBPF-driven security
-> policies, particularly when attempting to shield isolated or
-> cryptographic cores from unprivileged or compromised tasks.
-> 
-> This patch expands the security_task_setscheduler() hook signature to
-> include a pointer to the requested cpumask. Because this is a shared
-> hook used for multiple scheduling attribute changes, call sites that do
-> not modify CPU affinity are updated to safely pass NULL.
-> To protect against unverified dereferences, the parameter is annotated
-> with __nullable in the LSM hook definition, ensuring the BPF verifier
-> mandates explicit NULL checks for attached eBPF programs.
-> 
-> This change updates all in-tree security modules (SELinux and Smack) to
-> accommodate the new parameter mechanically, whilst providing BPF LSMs
-> with the necessary context to enforce strict affinity policies.
+>=20
+>=20On Tue, 26 May 2026 10:20:00 +0800 Hui Zhu <hui.zhu@linux.dev> wrote:
+>=20
+>=20>=20
+>=20> From: Hui Zhu <zhuhui@kylinos.cn>
+> >=20=20
+>=20>  Overview:
+> >  This series introduces BPF struct_ops support for the memory control=
+ler,
+> >  enabling userspace BPF programs to implement custom, dynamic memory
+> >  management policies per cgroup. The feature allows BPF programs to h=
+ook
+> >  into the core reclaim and charge paths without requiring kernel
+> >  modifications, providing a flexible alternative to static knobs such=
+ as
+> >  memory.low and memory.min.
+> >=20=20
+>=20>  The series enables two complementary use cases.
+> >=20=20
+...
+...
+...
+>=20>=20=20
+>=20>  Asynchronous proactive reclaim: the memcg_charged and memcg_unchar=
+ged
+> >  hooks, combined with the BPF workqueue mechanism and the new
+> >  bpf_try_to_free_mem_cgroup_pages() kfunc, enable BPF programs to per=
+form
+> >  proactive background reclaim without blocking the charge path. The
+> >  pattern works as follows: the memcg_charged callback tracks accumula=
+ted
+> >  memory usage; when usage crosses a configurable threshold, it enqueu=
+es an
+> >  asynchronous work item via bpf_wq_start() and returns immediately wi=
+thout
+> >  throttling the charging task. The workqueue callback then invokes
+> >  bpf_try_to_free_mem_cgroup_pages() to reclaim pages from the target
+> >  cgroup; if usage remains elevated after reclaim, the callback re-enq=
+ueues
+> >  itself to continue. This allows a BPF program to keep a cgroup's
+> >  footprint below its hard limit (memory.max) entirely in the backgrou=
+nd,
+> >  avoiding the OOM killer or direct-reclaim stalls that would otherwis=
+e
+> >  occur. The selftest for this feature (patch 10/11) validates the
+> >  mechanism concretely: a workload that writes and mmaps a 64 MB file =
+inside
+> >  a 32 MB cgroup reliably triggers memory.events "max" events without =
+BPF;
+> >  with the async reclaim program attached, the "max" counter does not
+> >  increase at all across the same workload.
+> >=20
+>=20Hi Hui,
+>=20
+>=20Thanks for the series.
+> Would it not be simpler to just have another memcg knob, something like
+> memory.high_async.
+> When memory usage > memory.high_async, queue a per-memcg work item that=
+ calls
+> try_to_free_mem_cgroup_pages() until usage drops back below some thresh=
+old.
+> I am not sure I see what programability aspect from bpf you need here.
+>=20
+>=20Thanks
 
-I'm not sure I really buy the Real-Time argument here; that really feels
-like a straw man. Real-Time will need to account for the shared resource
-usage inherent in using a single kernel image across the CPUs, affinity
-alone does not Real-Time make in any way shape or form.
+Hi Usama,
 
-And the compromised task vs crypto thing feels like it wants sandboxing,
-but wasn't that what seccomp is for, rather than lsm?
+That's a good question.
 
-So while I don't think I object very much to the patch, I do find the
-whole Changelog to be utterly questionable. Which makes me very
-suspicious as to wtf this is actually for.
+By introducing a new BPF kfunc bpf_try_to_free_mem_cgroup_pages,
+a BPF program can flexibly control when to start and stop async
+reclaim, rather than being constrained to trigger and stop based
+solely on memcg usage or one or two fixed events, as with
+traditional proactive reclaim interfaces.
+
+For example, async reclaim could be triggered based on PSI, or
+on the number of page faults, or even on a combination of
+multiple events working together to decide both when to start
+and when to stop async reclaim.
+
+That is the motivation behind adding the BPF kfunc
+bpf_try_to_free_mem_cgroup_pages in this patch set.
+
+I admit the cover letter did not explain this well enough, and
+the example code does not demonstrate this use case either. I
+will address both in the next version.
+
+Best,
+Hui
+
+>=20
+>=20>=20
+>=20> 08/11 selftests/bpf: Add tests for memcg_bpf_ops
+> >  Adds prog_tests/memcg_ops.c covering three scenarios:
+> >  memcg_charged-only throttling, below_low + memcg_charged
+> >  interaction, and below_min + memcg_charged interaction. A
+> >  tracepoint on memcg:count_memcg_events (PGFAULT) is used to
+> >  detect memory pressure and trigger hooks accordingly.
+...
+...
+...
+> >  --=20
+>=20>  2.43.0
+> >
+>
 
