@@ -1,59 +1,58 @@
-Return-Path: <cgroups+bounces-16388-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16389-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gDQHDUZCGGr3hwgAu9opvQ
-	(envelope-from <cgroups+bounces-16388-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 15:25:26 +0200
+	id yM9OAINFGGr5iAgAu9opvQ
+	(envelope-from <cgroups+bounces-16389-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 15:39:15 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F16ED5F2AF2
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 15:25:24 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54A725F2DCF
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 15:39:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9C7DB3022E26
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 13:25:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 464C6306296A
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 13:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFACB1E376C;
-	Thu, 28 May 2026 13:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAFF3F20F4;
+	Thu, 28 May 2026 13:32:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YEvhW7kY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MiU8TddY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF783E8688
-	for <cgroups@vger.kernel.org>; Thu, 28 May 2026 13:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D073AF677
+	for <cgroups@vger.kernel.org>; Thu, 28 May 2026 13:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779974720; cv=none; b=e7TnK7MIHGW8DWxtf1fTvLFhOqEWjgcCMFptSDALj4l/MDPXAdFde78JW+I5Y9yH0GDqt6NtNWhCNpM5cVcAC9LGTFVQaOZufAnINejB2j8eIKpXIW5Z67WUCh3O75Nuk8Eh6i9YjLqTFka9qC1gVNUHKTsgCy7i1TnzoHhe97M=
+	t=1779975153; cv=none; b=hIMv5sDkaZcDTKzDallrvSZuk5xc8an17Sk39mGIMY+X6NOTqI7C9Ib92F5rno1GI5hnN/o3FCGkF4c2NLIwNN1/QmJrVu0IX5ssjCSHH1kUf0PIaiqqZUq1TD7EYpgP2KRY3b+UmG7rX76PQRGpCKrD2ECH0x9fjNgthPHXrfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779974720; c=relaxed/simple;
-	bh=RhDb/aNKMcsSQE3bA2/50m6XCLP5QV/togbf+h/lDlQ=;
+	s=arc-20240116; t=1779975153; c=relaxed/simple;
+	bh=boO5Pr7r8Ns7RLP2Bda22en1ccII9rcdpLXY3jloMBE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eGFGfdnrSTSCPomjzp1QaOY9YaVwGWWh8V6EuwoP5mvuvuTr1N2npAqNzcsHyqRbV+rQgbJYfD6QXH4FyLigRP9Kzxvd0Ur0Jcl2KvVYGyTnhMoAdg4+3RkxXMZFPLVUzJ/UzOWQODwioi03apK5E1cEoAOsNjp5KDNEpkFPM6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YEvhW7kY; arc=none smtp.client-ip=91.218.175.172
+	 In-Reply-To:Content-Type; b=XzzbP6zGM3nAQZzdU5VJlO7GMtJgl/oAx45dIUjxJ0W3nGYx3/v0G6PLET74GSG88j3pWHVo/oaZColHDiAdH1oJ0zEou1P5XcmmAWDV+u4zGLZ/HVoWfZsUHBgwKapwE/t0b5d3H0fhLNqbX+CfHrJ5uvbRvsKhAj5PwlAraBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MiU8TddY; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1eb96ce9-6959-403a-980c-c3bbd5843bbf@linux.dev>
+Message-ID: <6f9c78b2-3846-4f75-bcc2-41bf91230513@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779974716;
+	t=1779975139;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YxcsNZRecDEaQahSiT11cWudtxXnG0dORG1khJbfvIw=;
-	b=YEvhW7kYNXlm9pb0Nco0953goxoB6e2HwGldUUyQg0h4AiIlLCtrtHHxY4j3AVrbcVvkJd
-	7SFNPBQ4KBvQR080l/wF3xGV3MqI6+ouBvUM6L7PsZminoYSLEtGXCdRL7erGMsSznoYqi
-	3kgIoNNi/FUaCW8CRstXYBtAhtdDVc8=
-Date: Thu, 28 May 2026 14:25:10 +0100
+	bh=mK9p/d9INJUnJjRfPuNzLbC2SvilH/rgU+fuHkGUigQ=;
+	b=MiU8TddYjqp0YAIW6vK65c2gTNAqz6sba9wwiZPfAp0DNVaVGgf9vBqL8/Y/aF1QY2Lx+v
+	8i1v6Fs9OZ23Ha/H4jwGv+TCwXEvZj2aH13jAB4kcNqFRP5eBwWIwo9OXgpL+ZBSpnFDkH
+	TE+tfrF66VN9lUdQeM2jyamvTO5NLDI=
+Date: Thu, 28 May 2026 14:32:06 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 1/9] mm: list_lru: fix set_shrinker_bit() call during
- race with cgroup deletion
+Subject: Re: [PATCH v5 9/9] mm: switch deferred split shrinker to list_lru
 To: Johannes Weiner <hannes@cmpxchg.org>,
  Andrew Morton <akpm@linux-foundation.org>
 Cc: David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
@@ -70,69 +69,128 @@ Cc: David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
  Nico Pache <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
  cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 References: <20260527204757.2544958-1-hannes@cmpxchg.org>
- <20260527204757.2544958-2-hannes@cmpxchg.org>
+ <20260527204757.2544958-10-hannes@cmpxchg.org>
 Content-Language: en-US
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Usama Arif <usama.arif@linux.dev>
-In-Reply-To: <20260527204757.2544958-2-hannes@cmpxchg.org>
+In-Reply-To: <20260527204757.2544958-10-hannes@cmpxchg.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	TAGGED_FROM(0.00)[bounces-16388-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-16389-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
 	RCPT_COUNT_TWELVE(0.00)[27];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: F16ED5F2AF2
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: 54A725F2DCF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
 
 On 27/05/2026 21:45, Johannes Weiner wrote:
-> When list_lru_add() races with cgroup deletion, the shrinker bit is set
-> on the wrong group and lost. This can cause a shrinker run to miss the
-> cgroup that actually has the object.
+> The deferred split queue handles cgroups in a suboptimal fashion. The
+> queue is per-NUMA node or per-cgroup, not the intersection. That means
+> on a cgrouped system, a node-restricted allocation entering reclaim
+> can end up splitting large pages on other nodes:
 > 
-> When the passed in memcg is dead, the function finds the first non-dead
-> parent from the passed in memcg and adds the object there; but the
-> shrinker bit is set on the memcg that was passed in.
+>         alloc/unmap
+>           deferred_split_folio()
+>             list_add_tail(memcg->split_queue)
+>             set_shrinker_bit(memcg, node, deferred_shrinker_id)
 > 
-> This bug is as old as the shrinker bitmap itself.
+>         for_each_zone_zonelist_nodemask(restricted_nodes)
+>           mem_cgroup_iter()
+>             shrink_slab(node, memcg)
+>               shrink_slab_memcg(node, memcg)
+>                 if test_shrinker_bit(memcg, node, deferred_shrinker_id)
+>                   deferred_split_scan()
+>                     walks memcg->split_queue
 > 
-> Fix it by returning the "effective" memcg from the locking function, and
-> have the caller use that.
+> The shrinker bit adds an imperfect guard rail. As soon as the cgroup
+> has a single large page on the node of interest, all large pages owned
+> by that memcg, including those on other nodes, will be split.
 > 
-> Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
-> Reported-by: Usama Arif <usama.arif@linux.dev>
-> Reported-by: Sashiko
+> list_lru properly sets up per-node, per-cgroup lists. As a bonus, it
+> streamlines a lot of the list operations and reclaim walks. It's used
+> widely by other major shrinkers already. Convert the deferred split
+> queue as well.
+> 
+> The list_lru per-memcg heads are instantiated on demand when the first
+> object of interest is allocated for a cgroup, by calling
+> folio_memcg_alloc_deferred(). Add calls to where splittable pages are
+> created: anon faults, swapin faults, khugepaged collapse.
+> 
+> These calls create all possible node heads for the cgroup at once, so
+> the migration code (between nodes) doesn't need any special care.
+> 
+> Reported-by: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+> Tested-by: Mikhail Zaslonko <zaslonko@linux.ibm.com>
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > ---
->  mm/list_lru.c | 26 +++++++++++++++-----------
->  1 file changed, 15 insertions(+), 11 deletions(-)
+>  include/linux/huge_mm.h    |   7 +-
+>  include/linux/memcontrol.h |   4 -
+>  include/linux/mmzone.h     |  12 --
+>  mm/huge_memory.c           | 364 +++++++++++++------------------------
+>  mm/internal.h              |   2 +-
+>  mm/khugepaged.c            |   5 +
+>  mm/memcontrol.c            |  12 +-
+>  mm/memory.c                |   4 +
+>  mm/mm_init.c               |  15 --
+>  mm/swap_state.c            |  10 +
+>  10 files changed, 150 insertions(+), 285 deletions(-)
 > 
 
-Acked-by: Usama Arif <usama.arif@linux.dev>
+[...]
 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 135f5c0f57bd..f22e61d8c8de 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -5222,6 +5222,10 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+>  			folio_put(folio);
+>  			goto next;
+>  		}
+> +		if (order > 1 && folio_memcg_alloc_deferred(folio)) {
+> +			folio_put(folio);
+
+Ah sorry, should have caught this in the previous version, do we need
+
+count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK);
+
+here?
+
+or maybe we just goto next instead of goto fallback and trty next
+viable order?
+
+
+> +			goto fallback;
+> +		}
+>  		folio_throttle_swaprate(folio, gfp);
+>  		/*
+>  		 * When a folio is not zeroed during allocation
 
