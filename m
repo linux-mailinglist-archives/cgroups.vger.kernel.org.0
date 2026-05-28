@@ -1,288 +1,174 @@
-Return-Path: <cgroups+bounces-16379-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16380-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yihvNR6YF2qiKggAu9opvQ
-	(envelope-from <cgroups+bounces-16379-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 03:19:26 +0200
+	id dJ/bGqHEF2qiQAgAu9opvQ
+	(envelope-from <cgroups+bounces-16380-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 06:29:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F2215EB865
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 03:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D2C2C5EC802
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 06:29:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5810B30258AD
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 01:19:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6B0EC3043390
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 04:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6574199EAD;
-	Thu, 28 May 2026 01:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872E82F8E88;
+	Thu, 28 May 2026 04:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mMaCQqUD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from CWXP265CU008.outbound.protection.outlook.com (mail-ukwestazon11020140.outbound.protection.outlook.com [52.101.195.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B45191;
-	Thu, 28 May 2026 01:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.195.140
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779931162; cv=fail; b=Fq2UqqsREoSA6hVF4oCcJrJ3T9bCESZdrhhaZB3VbyNVNhQT7ShtV2r0Ox0rUwLsMqfeDfiZnygPJElS5yhz1bWspqB8W8YNr2YgSv1RlorqOTDl0eZCoiaDOnJn05cNOpu9IjT/SPqTDUJ5ztCqvmy6FDV2rXB719BpmTigl2w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779931162; c=relaxed/simple;
-	bh=ekcAlTHlrP+u+ylOfb4hCE57kyvpdf6hz/Wt9AThXeA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=KP4IVeOkcpIFKsJrAw8W+a4s1dK0z4Z+PSW/HAHCeeqVW7qhVdigYXHZne27mE6kvzcMtbFsNXKv1mf/Hmp1TIBtl+Gp29OnxBUKWamMj0im6wL1PpE7C9KZU6V+PQA9woCoRhulCnvVePiwJhG70K3mnKG641H11BvIL3uuqB4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.195.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GBrnoDarmLOlK02kBEa7OCw0jW2mPNSVAGSZ9Nu6ePfaOQ9H+aA7k0XxWuBpyQ/Ir2Davxpj+EF2C/8YdXPauJ2asbbB40H8BDH8/z0GgZb5634rLCGM39LPaTJriahurA+L2avX3a1otMFlyOT5MHJ7ffD/E0qgyf0Mcoc/0C89HtNngUuZDT41CIe/VZu1Jmll7k87xsyirlXtaDPSs02nFtICv/Mqms+tq+nQGWSAl4/Z79HkjN+29Jsaolgb4mrT18NeeQExhisru+hZeLDV9HhP4m9FAdduXTsVSueVIH6LrBNYbNLL1czzU4y1pRBv4YXvObpsGlP03srJJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
- bh=ekcAlTHlrP+u+ylOfb4hCE57kyvpdf6hz/Wt9AThXeA=;
- b=dwhy7f2n/24wySFMU5EdjDGV3oNpfAgwNciqUv9V6UCgs5vV8tjDN1f+KGCE0HXIFqpyJpmAjXYDx7KmymcNae4RaR4Jkb1JcIvBTM9XFDQt284DVfo2LZgZxnZk3XLbJveFVuNdo2sAl7X3FfgTYFdpBRPHjPzu8picYkarMdxX41PaNJpgpbWO/3l/3fZcz+nRVzrwOPu0mPictdimip/qadGYCWn13474zuz/ny72B4uwotCrHhulVMuL5CzRf4JDCrp2k7KHQreSyeJJ6LgMS6ArlD8J32PiX8/TOFcp9wmhuTLfEBZxl1CNZQsImN8d4gEIx4d5bLh6wxC4JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
- dkim=pass header.d=atomlin.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=atomlin.com;
-Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:183::5)
- by CWLP123MB6178.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:1a4::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.14; Thu, 28 May
- 2026 01:19:11 +0000
-Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
- ([fe80::cec4:77ab:262e:d230]) by CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
- ([fe80::cec4:77ab:262e:d230%4]) with mapi id 15.21.0071.011; Thu, 28 May 2026
- 01:19:10 +0000
-Date: Wed, 27 May 2026 21:19:06 -0400
-From: Aaron Tomlin <atomlin@atomlin.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, mingo@redhat.com, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, 
-	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, 
-	chenridong@huaweicloud.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, 
-	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io, 
-	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, nick.lange@gmail.com, 
-	cgroups@vger.kernel.org, linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
- include CPU affinity mask
-Message-ID: <6hqq5oxvlcpmjvyns42dy2vtfvvixy7q4xyyjrrn46jrvsx5ar@gkmjsteqlpzd>
-References: <20260526142838.774711-1-atomlin@atomlin.com>
- <20260527085221.GQ3126523@noisy.programming.kicks-ass.net>
- <bgjagepcfb7gz6jawatu6kpfmecw46gwg5cvb6r7dl3dn7bt4l@rtymdaslx7ef>
- <20260527155404.GV3126523@noisy.programming.kicks-ass.net>
- <ov33cu2wosubbfufcmfyoinfatecskjgmkvqyit33komlcla2d@2qgj45724bql>
- <20260527195858.GC3493090@noisy.programming.kicks-ass.net>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kszlm3lx6cl6sn4w"
-Content-Disposition: inline
-In-Reply-To: <20260527195858.GC3493090@noisy.programming.kicks-ass.net>
-X-ClientProxiedBy: BN0PR03CA0034.namprd03.prod.outlook.com
- (2603:10b6:408:e7::9) To CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:400:183::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165F72C3259
+	for <cgroups@vger.kernel.org>; Thu, 28 May 2026 04:29:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779942556; cv=none; b=LoGmVi6VMesBRtxS/ufmpKfRG6A6CIgoMtTWiWdy5kpIoGH4bchV+zUZmgfBGifkksPhAlgJpJcMX7f/9v0dgMYeMtCNgx2BSMgLabnOaz+cxX9je0ElGEah3/7pdhImRdlVpgEqITtKk+tjFYAoMaiKlQFkATQbIih0JvTO0UE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779942556; c=relaxed/simple;
+	bh=cY2a5W/nIKwHBly6hYcs7h3YMk2FJ4n2UXhDqpuNXGk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ps3J/aIIC1h63a6yzcb8YU2APPunvvOZ68HW6kXtlWoD8s4frIbRzaTrAHkKVDhGOj/4juWndqouzNnxm1H/Z5/I2pPTh1X61A+P9snKAQR2rhAFoyUXFX+uc/PuZyTKKdnPFXmo/NFlCqcV80EpxW2yNN+dMTdz6Cl1IB7GBNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mMaCQqUD; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-824c9da9928so6054446b3a.3
+        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 21:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779942554; x=1780547354; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EhiW+uhYb7yOkQVsq9tZ39UUfuEazA56TlzvJ4Ekon0=;
+        b=mMaCQqUDV+0qLDvKG0FrJ8s77aiCs9DXhJU2ZHcab/TURPoLWNkXriCYNlgKa0oOCK
+         fetzswzOXKVy6cA9fJzryrDZFLIJvMALDwGVRgkZW4qS2SN5OYyC6EVHMufzaeqo0Buk
+         IPXIWN1gbUO2+FunQV80Gn9MSRETs+jnwlznpMyaRaDGEg3iwGAkgskgeTVNABHgXfcx
+         oTQO0HCyndJPB0dkeqQpKR4qnGhFBLsxhFi5ZhIiehi5rHG2FEsFYgDqHjh+yKHR+3uH
+         lTLHj1FNN02yPPg62NVmqbtt1s1hNkN6GYbVj0EXaJjFqdbfKx2V5lj0q5Dcd7klz/FI
+         ICMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779942554; x=1780547354;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EhiW+uhYb7yOkQVsq9tZ39UUfuEazA56TlzvJ4Ekon0=;
+        b=AAGIvC5N2xHqQWoy+dG97u1o41zblTSmXSk+N0xa6L00guH3Yj8Oc7krbh7hNncDqH
+         E+NcFMne0eeqp2RnJ5LqjK+0L9reXXE9v+N8aBiI1Ui7M4t5F0bedWpDoFV0H3JUvlGt
+         rcqC9/UVgjnasxzfJEdXZv3ooMmjg8h4fBywm3lIDdA9xPdDvIf0eOxu6Ivd+WoM5aay
+         k7xv/yfEDHnoZ1BjKPdJDyNvWre6rZlH20AW1gyfhJNx9FI8m2fKjOkzZeGQGMha+eO5
+         6qNYWGIQXZF88WxGcY0GnPpQQsCyvBMfO43QBkWMGF9XEyyIYIbt28gobBB70eWzCav8
+         k3yQ==
+X-Gm-Message-State: AOJu0Yx0QbJxb+UN5Fckw4eQPMJriL+3CXNgBR3w0ecMn5oFWq51NbdV
+	uS6eqaaDqq5Maqf0Y0txXAJT0zfPUQqZpZ4D+Vy8sh6xS3gxpw1TFJV3
+X-Gm-Gg: Acq92OFGMhU/9jHOlBeHJ+uQ0FUDJxb7aiSg0l8mFeloEZX1OOW4AW0CKS1kwSla77I
+	6K0yojNfo+Jzk7Rb3g+2uvKyXpB9EbOR8eO/m7IG5FdeFiNnNbluYW4wdrzRYd82kXnNGMBNTbd
+	hE679ePjbeU9VLFzj6fueDE0EtG6SxyBwr685uD8tcCSAir6xM68dmXYWsKd4w5BahtXTNA1zl0
+	1YtZSKZYLUKyEMX1Fxwr1gsVNBwIlw3gylBpGjeX1EZDMf525aavToEyvTY2Y3q4xBdzvhZ7dLx
+	uPPCkmQCjF6yFWq+DKw3EqtiE3CHEcyQeC2v7ppzQDA62nzzsXOcjX3x2cRY8g8tDDRJchJyYfA
+	alR8kRTHnK+8CIdRBRv5n/8IM1EP2oihV2QQfI+O8xjvi04OsRCT7gs5g8OxsdANlXcS1eI2vPN
+	F0bLaoii+jd5ODmwdcj8ksHABG1OS/uxNOjd9a9VPUN0vjS9xY2g==
+X-Received: by 2002:a05:6a00:140e:b0:83a:4846:90b0 with SMTP id d2e1a72fcca58-8415f3c6635mr25622392b3a.46.1779942554488;
+        Wed, 27 May 2026 21:29:14 -0700 (PDT)
+Received: from elysia090-Inspiron-7790-AIO ([2400:2411:d120:da00:480:dca6:feb8:54eb])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-841d6eb3aa5sm3808022b3a.22.2026.05.27.21.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 May 2026 21:29:14 -0700 (PDT)
+From: Ren Tamura <ren.tamura.oss@gmail.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Ren Tamura <ren.tamura.oss@gmail.com>
+Subject: [PATCH] cgroup: pair max limit READ_ONCE() with WRITE_ONCE()
+Date: Thu, 28 May 2026 13:28:39 +0900
+Message-ID: <20260528042839.28472-1-ren.tamura.oss@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP123MB6607:EE_|CWLP123MB6178:EE_
-X-MS-Office365-Filtering-Correlation-Id: fc399a0c-eba2-4750-2970-08debc571f0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|6133799003|22082099003|18002099003|56012099006|4143699003|5023799004|3023799007;
-X-Microsoft-Antispam-Message-Info:
-	uRVEXOkZ30QIHQNWJEGhMF339rRI4DnylgNMmG2Cob1xGS7jOohRARLWXf9Xnk95nzDDeU156XOb4O//sLZ9bZRO5FmhJ4YbZfnhiUtnyGtcPdVkTzrXf1Enm8dsIpZNsUpaPox7TTHSf8UBDpknPEx6nd515OOrB5Q/e/c4oSsU2ayxIEEfXlawzI7xxAYIyySg47gje/aLneQZcSP3+7tAzBpdKGu1AUQpHjQVoTnvF4XxCq4JBfqumfhp8t+qk98Mi3H++xFkhn031HFqxQDTrFjLV0EUXCEbTaA25U8SeLP1cNLTd5YwabbhXT6OXTuzWwXYnIG7D90+rMD2flGPX94dMf39Vi6F3GOV8Tnpb5BYOZAX0ntJSElsSxHpahZWyl8OQdTl1LArLIipVz9+/5mRhCxxrRfAXvU2hEOj+9tgGM89Y6tLg8peT2xJ00vrthXXtOBYFsiQAJcSsC+PJfT7f84hKV1x3dTv/Q1VS//ZWY2+6r3FU36QKb6wnFSmRDuMada0soeKgyRGPK/dXZuP7lUID+0tjWUEGmJpXfbd2I7wexaW1ZUm6N2FevPIZWZz4VxvGq8iKZ8Jda/UHHt69LeWfppiHnrW7gtGvqn4eJQsijjDPbXxZog88C0D4/3yROiKuiiX1A9toxlRTZDSB5TIqYB/RBT+k1TLenoEI6+BLlBnWEUapg/K
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(6133799003)(22082099003)(18002099003)(56012099006)(4143699003)(5023799004)(3023799007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Sld0d2h6YWF1eFNBWmttL1pOSzJWVFhLOFNwMkFWOGsweHU2Y3BtclhkZHNG?=
- =?utf-8?B?ZEQ4VlNxYTZSUEFMUy8vTnJLTHRGbmVRb0o1aXFaYklFaXVYem1UbWlrYk0v?=
- =?utf-8?B?VnJNUXZXYWVwbm1UTmxzdDZKS2VJMUhBeGVRS2ZENWNMZ3dRY1V5cE5qcVZx?=
- =?utf-8?B?Zzh5TjRnRkpCMG9Qd2lKRVBEN3pmTjVhR1VnQXNIeXlPNExoeVBXWmZ6M1Z0?=
- =?utf-8?B?dURYZzFYVHNlVkUyTy9FNFMvL1hEUEoza29xc1ZYRXBtK1d2QVVocnhNVHZ3?=
- =?utf-8?B?akhCUlJoaVIzZW5kZ1lUd21FbU4rc0Jqb1d3d2NkMk8wSjhjK1ExMmJib24z?=
- =?utf-8?B?U1J3YnZSWFcxZUs1LzI4MEZ0TVl0ZCtrVXJrcHRTM25aTHhyVVJKMTlhakZn?=
- =?utf-8?B?TVovRmRIQjVDQjZmbVk3L3llSFFCZy9jTS85bDBkQThwaGpqZk03aFp6aWM5?=
- =?utf-8?B?RStZMm5pbUNCaW1vdXhhdERtVG8rOEhIc3lWdDFENmZyTkx1OElPb3AzWW9k?=
- =?utf-8?B?NUZCSHdRbXZmUnMybzJ0YkR0WENZVXY2WUZMY1E1QWtFTTZhSVl5amQ5YUdu?=
- =?utf-8?B?YTRLWlN5VUw4WURUL0tHbTVmNldhVmhybEFqblorb213dElzK3MzM0hzZkxX?=
- =?utf-8?B?YjBjWkxjRkZLN0c3QW00aTRJbS8xbW55UE5KWmJDQ1dQZERHbVdiU0ZMUzVD?=
- =?utf-8?B?WjhVSGdnOWRWd2hJaE1wUjBmVm9MU1U0QU4xTTNJVGVVQWltOEpaTnFXQnVo?=
- =?utf-8?B?OWo4elBHNXFHV2cyOUJiSzNPOWMrU1lkaGdLZytnWEtrWXoxTUdMK0M3L3V2?=
- =?utf-8?B?d29oRzlkRURRMUhJMllYdmY0VjZ5QmRWL2tGM2xkWFdJL1huWk5FQmNYRXRk?=
- =?utf-8?B?QjcvQ3lzelIyU2NjWUN5emhkNm9rRStZVHhlbE9vRjUvNHZHajhLQ2xVWmRK?=
- =?utf-8?B?WjQzZ1pJK1JYWmpHNkhEd0E2TE01TnRiNDlUcFpCMXFoVmZJWUQ3YXhuYmhF?=
- =?utf-8?B?dmIvMm5Sak9pWHU1bUVwSldUQ2J4L21YWi83c2hpaEtYMCtqa0RzcmM1UWRT?=
- =?utf-8?B?OFFTelJ6czQ1Z2p6dVVlb1lyaEtOS0R1emNOT2NtdkZlVjBMZUJiOWVDQVBS?=
- =?utf-8?B?aTJaczdVRFJRaEMvYkJNM1ZZSlg5ZkxiVlJ1TkhqV1JkdHlHdUZ6YmlXSVR2?=
- =?utf-8?B?Y2tOMm9LSWRUVWJWS1RrU0JYR3haY1lRbWNnOTNXVklDbzM4bndhcVNkTExP?=
- =?utf-8?B?dmhxcm5OeXhwaDIwWFA3d0lhcTlHSWh5dnZTc0RyN2VCd01Kd1ZvVEVMQ2xo?=
- =?utf-8?B?d3NYbHlkYVl5SmlmRmhTZEtqdkV6WWhWb3J6UTBQdEQvOXRoN21VcDVCOG81?=
- =?utf-8?B?OXN6bTF2OWhONmRud0czU2Q1dWN2bS9oSkZwdVFFcmt2UFF5czVIRThlTC9r?=
- =?utf-8?B?TFl3aEVDQTYzdjFBWHJ1MFlDSXZqWTJhWHRuN2JnZWdIN3NQZ1dJS3FCNW91?=
- =?utf-8?B?M2dzb3V5NWtpS0hQcmpJRDlCc3VmcDdyWFhlTHhsN0pFK0tld3cxbjQyQ3I3?=
- =?utf-8?B?NEJvUXoxR2QwSitXL1lzblFtaGVWTThhcURiallmY293SlV1VGNTR3JHeThv?=
- =?utf-8?B?N1FPS0MxOUl2OFFyK2lzYXF1OTJOclhiUFJKcUZxUUtPVC9NWHFXaGIrQkdv?=
- =?utf-8?B?YU1IWEowYW9kdCs0MWdXYTVwS0hnK2ZDNFNZR1hld2kyMkJwZXZYSEhxcmNQ?=
- =?utf-8?B?WXBzWldBd25hRFVzU2t3VlJoT0xXWk1sQU93aHBxY1Z6R3J1eWV2THhkbXc2?=
- =?utf-8?B?UFhSbVowbjh5dFhtUnIzRTE1WWEzNjZDT2xQRGZvb3ZQQU82eDJldVphNnNv?=
- =?utf-8?B?RFQ3UEtmZklSb25kT2xYbmtOL0RaekVNNkxIZno3T1RsdFNKSVRtczVVUkxY?=
- =?utf-8?B?WDlSYVpXVGo2aHBtV2VBLzVtMnVib3ZMa1NhdmltTWJBUWJYRnZJUlZwVWxT?=
- =?utf-8?B?SFpidGZVNGZFZUdZd1pYYWlMbHk3ekMxSWl5Q0tQN1ppN2JUWWJxbkhUaFBT?=
- =?utf-8?B?ZUt3bVl3emw1d0tpQzBLL0R1UEVFc0VMK292WmFraTFFZDhhcUw1aTAveFpo?=
- =?utf-8?B?Q3dPM0hIcVQvNmdIWUt4ZG9OeUR1TElPVkxQTlExSFdmM3lZazV1enRjOGF3?=
- =?utf-8?B?NGdrUG4xT29sTU9FVklhajJjM3l6Tit5Smk5eEpXSlFobm55SE1uVWJ4aU4r?=
- =?utf-8?B?b09uSGh5RkM2NkhnaHRPZ2F6TER0S2svaDJjMXdCdWQrK0ZwK0o4YWFHaWN3?=
- =?utf-8?B?bllHeGtuenFUVmJrM3BoeVRxc2phRzYwNi9ScVNVSWtxSjNRZ0Y1UT09?=
-X-OriginatorOrg: atomlin.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc399a0c-eba2-4750-2970-08debc571f0f
-X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2026 01:19:10.6207
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7LWN3jPZarCCym+5B4TsL3SlnpirQbKqu+jXCIKiD3yr+JyLbrc1CfDe/hoyfN3rNoBuzEH1/mjfDVSFLej0bA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP123MB6178
-X-Spamd-Result: default: False [0.44 / 15.00];
-	SIGNED_PGP(-2.00)[];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_RHS_NOT_FQDN(0.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16379-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[atomlin.com];
-	RCPT_COUNT_TWELVE(0.00)[35];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FREEMAIL_CC(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com,huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,amd.com,ashe.io,abita.co,vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.995];
-	TAGGED_RCPT(0.00)[cgroups];
-	R_DKIM_NA(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16380-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[rentamuraoss@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 3F2215EB865
+X-Rspamd-Queue-Id: D2C2C5EC802
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
---kszlm3lx6cl6sn4w
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
- include CPU affinity mask
-MIME-Version: 1.0
+cgroup.max.descendants and cgroup.max.depth are shown through seq_file.
+Their show callbacks read cgrp->max_descendants and cgrp->max_depth with
+READ_ONCE(), respectively.
 
-On Wed, May 27, 2026 at 09:58:58PM +0200, Peter Zijlstra wrote:
-> On Wed, May 27, 2026 at 01:41:52PM -0400, Aaron Tomlin wrote:
->=20
-> > > > The actual use case here is multi-tenant workload isolation and vis=
-ibility.
-> > > > Passing the evaluated cpumask to the BPF LSM allows operators to wr=
-ite a
-> > > > simple eBPF program to detect spatial boundary overlaps (e.g., logg=
-ing an
-> > > > event if a requested mask intersects with platform-reserved cores).
->=20
-> Why isn't cgroups good enough to enforce this? If you create a cgroup
-> hierarchy per tenant, and constrain them using the cpuset controller,
-> they should not be able to escape, rendering this event impossible.
+The corresponding write callbacks update the same scalar fields while
+holding the cgroup lock, but the seq_file show path does not serialize
+against those stores. This leaves the lockless show-side loads annotated
+with READ_ONCE(), while the corresponding stores remain plain stores.
 
-Hi Peter,
+Use WRITE_ONCE() for the updates so the intended lockless access is marked
+consistently on both sides. This does not change locking, ordering, or
+user-visible semantics.
 
-You raise a very fair point. The cpuset cgroup controller is indeed the
-kernel's primary vehicle for spatial enforcement, and under normal
-circumstances, it successfully prevents a tenant from escaping their
-designated cores.
+Assisted-by: OpenAI-Codex:gpt-5.5
+Signed-off-by: Ren Tamura <ren.tamura.oss@gmail.com>
+---
+ kernel/cgroup/cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The cpuset controller does govern resource limits, but does not audit
-intent. When __sched_setaffinity() is invoked, the kernel compares the
-requested in_mask against the task's allowed cpuset. If there is only a
-partial intersection, the kernel silently truncates the requested mask to
-fit the cpuset, without raising any alarm.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 6152add0c..daddfc2b9 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3726,7 +3726,7 @@ static ssize_t cgroup_max_descendants_write(struct kernfs_open_file *of,
+ 	if (!cgrp)
+ 		return -ENOENT;
+ 
+-	cgrp->max_descendants = descendants;
++	WRITE_ONCE(cgrp->max_descendants, descendants);
+ 
+ 	cgroup_kn_unlock(of->kn);
+ 
+@@ -3769,7 +3769,7 @@ static ssize_t cgroup_max_depth_write(struct kernfs_open_file *of,
+ 	if (!cgrp)
+ 		return -ENOENT;
+ 
+-	cgrp->max_depth = depth;
++	WRITE_ONCE(cgrp->max_depth, depth);
+ 
+ 	cgroup_kn_unlock(of->kn);
+ 
 
-The BPF LSM hook, conversely, receives the raw, untruncated in_mask,
-affording operators the visibility to detect, audit, and even reject these
-violations of intent before the kernel silently sanitises the input.
+base-commit: eb3f4b7426cfd2b79d65b7d37155480b32259a11
+-- 
+2.53.0
 
-This patch does not seek to replace the cpuset controller, but rather to
-complement it by providing auditing capabilities.
-
-> > We are not creating a bespoke BPF hook here; rather, we are rectifying a
-> > historical blind spot within the API. The existing LSM hook is invoked
-> > during sched_setaffinity(), yet it presently receives only the task_str=
-uct
-> > pointer. Consequently, the security module is essentially asked, "Should
-> > Process A be permitted to alter Process B's affinity?" without being
-> > informed of the proposed affinity itself. Providing in_mask simply
-> > furnishes the existing hook with the requisite payload to make an infor=
-med
-> > decision.
->=20
-> It occurs to me that this same argument would require to also pass in
-> the new sched_attr, no? That way the LSM can inspect the new policy
-> before it becomes effective.
-
-I agree, the underlying logic does indeed extend perfectly to sched_attr.
-
-Presently, the LSM is equally oblivious as to whether a process is
-requesting a benign transition to SCHED_BATCH, or attempting to escalate
-its privileges by requesting a real-time policy such as SCHED_FIFO with
-maximum priority. Just as with the CPU mask, providing the sched_attr
-payload would rectify this parallel blind spot, allowing BPF policies to
-inspect and mediate scheduling attributes before they become effective.
-
-If you are amenable, I should be more than happy to expand the scope of the
-forthcoming patch to include this. Alternatively, we could address the
-sched_attr expansion in a separate, subsequent patch. Personally, I would
-favour the latter approach, but please do let me know your preference.
-
-I very much look forward to hearing Paul's thoughts on whether this aligns
-with the broader LSM vision.
-
-Thank you.
-
-
-Kind regards,
---=20
-Aaron Tomlin
-
---kszlm3lx6cl6sn4w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEeQaE6/qKljiNHm6b4t6WWBnMd9YFAmoXmAoACgkQ4t6WWBnM
-d9ZTGA/+I+wiTJFbsU4kq9EMg4TeuzCfcjQ28UFOCrZqIdAGyQc/SMUZjEyD1bSs
-TD2LmeQdBROf9rJBJ5viAl8Gtbhbe1S4cuv2QHitAGE6cKA1RbWwwU2sKKedmi/Q
-gkT9BPQ+ABz47zzaQsHHqFnpygR2XtCDeTt4BsYWVOMcQXt908ONk6pD+XNpIwvx
-/hG84SrTXffIoJFXENGv4rJTFlks7TCYca+1PfBtA33IQugYHHV8ZV3kLKCQaAdL
-z0EtPNy7vRxx7MPed8Az5RSqHC22127TFam/9atjUZ40/AcDjwQ+dLCpdwxO4N5m
-HOwkd66G8zdXlP2kdMw8lE/1ngTtNl4DBnCYQTwGYT5NizppJJ3q25z7DTWAkf7R
-X/yNxQMflP2pDPoOuBO5zHCBG3vs7BregVqskz4BnS8RkJZ7zGAn9PZmj3StizC5
-drRi0+Gn1hrSiDGiwsL88rer2lrCA8mnbAP+N7zak0bG1d6BgTAMRnErzeWVXhH3
-Dos+Iv3kzwKKKMfLMF9b8F8bM0zYCM9YNzIK4TTDhMf2SncZVDpY8/VNVyt0AS5Z
-Fobwo8NLfkWmsGfi6xRgVfPRHFqi+FpyTrCvQqwQoQ7BSIGQYM0Ig1QphRTF8EB5
-G5gW8RXBLkT4LSzMWRHp4l2IU4A8gLz450bfZ2vcbunm4hmYGPo=
-=KjrL
------END PGP SIGNATURE-----
-
---kszlm3lx6cl6sn4w--
 
