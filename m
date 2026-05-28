@@ -1,189 +1,448 @@
-Return-Path: <cgroups+bounces-16391-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16392-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4DOuEJJNGGomiwgAu9opvQ
-	(envelope-from <cgroups+bounces-16391-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 16:13:38 +0200
+	id qBdROuJPGGpMiwgAu9opvQ
+	(envelope-from <cgroups+bounces-16392-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 16:23:30 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC9BE5F37C6
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 16:13:37 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02A835F39F2
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 16:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A585C30B5A5D
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 14:03:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6BB4630E40ED
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 14:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E202D97A6;
-	Thu, 28 May 2026 14:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039FE3AEF22;
+	Thu, 28 May 2026 14:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="AYJV2VuL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PTFfu1Vo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3431129A9E9
-	for <cgroups@vger.kernel.org>; Thu, 28 May 2026 14:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC6C38A72C;
+	Thu, 28 May 2026 14:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779976996; cv=none; b=IwZKwt6z7h52lhq48MIBlUyNymqWOpxZmSSg0c0IHG+oZMTiZOIWoykyB3yw9X1tXjjQ35Rwln7Af6aOClNT+mldauRt8mnEBxDhVznAVH/cCOc8IvE7aM/8E/q8GWd4nKnD5zrjgA7kPSaytyrWIM6P/Y+PVkBkhxfudAeaHYQ=
+	t=1779977407; cv=none; b=KnNwSkMw1NzHh87Hi5OaBwwuPc5kcLhzr19Wn5toBiFmN9Ca8OJZlA4WhAAV/MGKSFniK5wEJuB4kVslHMSdK8Ga8KnJuYF5C2UPFn5eE7Pkh/PxMIPPqDdnkhjp2WpQkOh5vKxsgILsEeH3B5jcuK4EX9dNmWO7LCm0U8U25OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779976996; c=relaxed/simple;
-	bh=UhfW80sle2YKirikOWRjeTGOLnc1ebIamFxQXTh+pa4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ea4MpEFk9Pe1cud0VnxMC48oy9t3y6T1j/WxPm6KOZksSGWtHhWeInLCGvNq+qwNvZCYb9m6JL83yeb4uVehpDYMEDRmYrlixqmJor1XrSgLr6ORRD+kESbDGWZjDz7kB7DRRjGc1r7JKGOWnHOwAnWquejMW1XBSjrxLQBsM84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=AYJV2VuL; arc=none smtp.client-ip=209.85.167.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-479fc1fc048so9254656b6e.1
-        for <cgroups@vger.kernel.org>; Thu, 28 May 2026 07:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1779976994; x=1780581794; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rO+A7GjX2+2QgmOEjNdtI+NV3B5SN9zhDQg6nEMiyz4=;
-        b=AYJV2VuLBt2oRyq60ozTe6w83zbY6Kfu90WUbXYBMYXJXMJ500FmKgufkgJi8lj4FR
-         75liT9ysvV4TMjQ8m+ljyc7/ijIwnM04GprGLyVuXog4AadwXvNt1gljifkFN69sYFQi
-         OLIUgpiZTmEB+0Qj6BZhdIN4j8pZ8KcNwLE8zN6juVmXSds8oC/OUqhtfjqTlyF8FDNx
-         NAeopIOTdOMAOEYl0pFkXsQ3mVaVQG85Pc48L7A2Ww4tTD89kuz1B73OFuoOb56M+r76
-         yeBIpPtLpfBs/8MSc6g+BP7IlDFrK1FqbpuMCWD/YMNfQVxn89NCmxG+8cMflXLqBmbT
-         Lv+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779976994; x=1780581794;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rO+A7GjX2+2QgmOEjNdtI+NV3B5SN9zhDQg6nEMiyz4=;
-        b=tWl+td86DJJALf3h1c/yif06tAxNg5h89Ak16IqtDaviBk2Uq5XhDYmMi4554rUOLX
-         6C1R1D0B+IbhRFmYLOVqIFseL7BuXdmm5f/nqVBtVsQuBIc2fRyxOBeTrUFOUxc9rfAK
-         ldz7RiY9irybmhoLpN2gmOXxaUHSnwKhr5Dx7KfP4UTLXy/T5a5QmHbcf+atm9aHsi0x
-         qPIB/N/NeQa9CaZqpj3LmIpU8GAso68GnQJLTZ/kn2mnnd50qg6eBSGFgBJmmSlciHty
-         zqjpXyBCiBYh+4e5AvqAcZpLcd5nejWWcI3pnYdgeVoH3L9sRmsd9QmLlBWO79Bnqola
-         2MuA==
-X-Forwarded-Encrypted: i=1; AFNElJ+FwH3WJcZU1YxBLSeNr+wY2kaqU3lgq6cGD+qOBABp7bAU2sTcP/AvPV0RNJ9BtpTCuDndqpQX@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyz/FRcAoIPUpN85VPC5u5ZXkv+enjOq3i69r4ifRAd+8TpQUk8
-	EwueJFuO7xtEhdCtllLKFHOLSBkbr0IyUlv+z8Q/ZLpollXw+5yVYxmjqRTAmgc5EZE=
-X-Gm-Gg: Acq92OGWet40ar6xhNYleuIJiy6B8GQODtx59j62lsXgORJvZFFQMm+L33BwE6JyIOj
-	X1IrNNttkcUlQ+5TjzfpDUiwm8cqsjJzhl72OOYbWR+amCEg7o9H/ReCCNuydtJe5PGvjZ7sNw6
-	xvfhAnQ+AxNWLqNl1Gtaa93MnohRqqotSM0z2GA5ITUXfj1b2SO2o8g+0dgBkBFjO1wEOT6kVAt
-	NXfX2Qjwv72i9M1cjPiQ3TdBeWnsxdruRKOOjivjaSQiKiYbjC4k2ug+JNn0zxM+ty2PAJQSB/8
-	ic/cuEB52PML6Ey4wOhjE4Lxn+xG6wcDul9aG4aj/BqCMdkWd4jw629H7QEU23i8w35Ujwi2raO
-	uUdTWUcnG8Qiq1CZO9LIoiUsOfvzTtJOoCx8NA6wO2ACBLPsN6v3DJiqei4fbbgrHtlDA24p6Ow
-	lHzXVbrgKPBofoVVeFUlJY55AR8bg/xJBrdn9oeYOL7z8=
-X-Received: by 2002:a05:6808:191a:b0:485:48da:132e with SMTP id 5614622812f47-4854a224419mr15508945b6e.27.1779976993865;
-        Thu, 28 May 2026 07:03:13 -0700 (PDT)
-Received: from localhost ([2603:7001:f100:500:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51706af4fd2sm73661071cf.25.2026.05.28.07.03.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2026 07:03:12 -0700 (PDT)
-Date: Thu, 28 May 2026 10:03:12 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>,
-	Dave Chinner <david@fromorbit.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>, Zi Yan <ziy@nvidia.com>,
-	"Liam R . Howlett" <liam@infradead.org>,
-	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
-	Vlastimil Babka <vbabka@kernel.org>, Kairui Song <ryncsn@gmail.com>,
-	Mikhail Zaslonko <zaslonko@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Barry Song <baohua@kernel.org>, Dev Jain <dev.jain@arm.com>,
-	Lance Yang <lance.yang@linux.dev>, Nico Pache <npache@redhat.com>,
-	Ryan Roberts <ryan.roberts@arm.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 9/9] mm: switch deferred split shrinker to list_lru
-Message-ID: <ahhLIBSC7rxgXSEU@cmpxchg.org>
-References: <20260527204757.2544958-10-hannes@cmpxchg.org>
- <20260528070807.144064-1-sj@kernel.org>
+	s=arc-20240116; t=1779977407; c=relaxed/simple;
+	bh=SW6AbvY66GmQj6TqS0+DbeFgb+pvqwPRFu4mSfAykAk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mktWXTYfn5eaZ/E8Q76BI0esLHAjgV98RMoSVbIILk+/VwCsVF1A69gemYEe004oQjKnllgyxt8iY11X+VeFuTLn6YQWCsnzTWA2ZnClRdXhs39jZlWdC/yIhktD73B8ds6g30nT7DEOKqLBBi3Vy4ZeoS44yRWuT2TsDvJBYNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PTFfu1Vo; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1779977406; x=1811513406;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=SW6AbvY66GmQj6TqS0+DbeFgb+pvqwPRFu4mSfAykAk=;
+  b=PTFfu1Voby/5FZJpzPYIOZ+A3/r41rOM8Z2wJ9fv6smkjRzHXLEt2nY7
+   0AWWRYdaMCIfHUx+W0aVihPcm4JC9sMWilhazFNL6ZRBGouUHoe3RiEW4
+   /JkQ/8Sq5TwJHbPO2UHguDQUkO4wWHhtKHxx9zgKv5FC76i3sidWY3TZe
+   jzYOiPAgSxyjdstJwvj0j9khVA0CoYTdK0asGvQY2xaurFAVN5Q2vJvPx
+   EKqXQ9YpwCbI70UxlCMWA0FqOdFXxNLH3zLB2auNeMqHgUsSw8aGAKkMK
+   mB0M0HVJ2kWOrgM3AQMOiO5zRyHPa4VTfPumYriW5plxb1WL+YIlYFYwF
+   A==;
+X-CSE-ConnectionGUID: 0+y3qXa8ShOYjvASi1N73Q==
+X-CSE-MsgGUID: NpRuL8TYSd+PC6CoyQi1hw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11800"; a="91506919"
+X-IronPort-AV: E=Sophos;i="6.24,173,1774335600"; 
+   d="scan'208";a="91506919"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2026 07:10:04 -0700
+X-CSE-ConnectionGUID: HBJXSwdSRpuM7qHgaecLug==
+X-CSE-MsgGUID: Mw2wXSFaR2KUP/QqICzFuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,173,1774335600"; 
+   d="scan'208";a="272897642"
+Received: from abityuts-desk.ger.corp.intel.com (HELO [10.245.244.43]) ([10.245.244.43])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2026 07:10:00 -0700
+Message-ID: <9d175d92-61c2-4dc6-a62a-2793a1197fb7@linux.intel.com>
+Date: Thu, 28 May 2026 16:09:40 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260528070807.144064-1-sj@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] cgroup/dmem: implement dmem.high soft limit via
+ prioritized eviction
+To: Qiliang Yuan <realwujing@gmail.com>,
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Natalie Vock <natalie.vock@gmx.de>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org
+References: <20260528-feature-dmem-high-v3-1-c642b34bcb2f@gmail.com>
+Content-Language: en-US
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20260528-feature-dmem-high-v3-1-c642b34bcb2f@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	TAGGED_FROM(0.00)[bounces-16391-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16392-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	FREEMAIL_TO(0.00)[gmail.com,amd.com,intel.com,kernel.org,suse.de,ffwll.ch,cmpxchg.org,suse.com,gmx.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[cmpxchg.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[maarten.lankhorst@linux.intel.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,cmpxchg.org:email,cmpxchg.org:mid,cmpxchg.org:dkim]
-X-Rspamd-Queue-Id: AC9BE5F37C6
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.intel.com:mid,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,intel.com:dkim]
+X-Rspamd-Queue-Id: 02A835F39F2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, May 28, 2026 at 12:08:05AM -0700, SeongJae Park wrote:
-> From 23b5800dd49085707baee5774b74782c3e424f24 Mon Sep 17 00:00:00 2001
-> From: SeongJae Park <sj@kernel.org>
-> Date: Wed, 27 May 2026 23:58:07 -0700
-> Subject: [PATCH] mm/huge_mm: define memcg_alloc_deferred() for
->  !CONFIG_TRANSPARENT_HUGEPPAGE
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 8bit
-> 
-> Without this, UM mode kunit fails like below.
-> 
->     $ ./tools/testing/kunit/kunit.py run --kunitconfig mm/damon/tests/
->     [00:00:02] Configuring KUnit Kernel ...
->     [00:00:02] Building KUnit Kernel ...
->     Populating config with:
->     $ make ARCH=um O=.kunit olddefconfig
->     Building with:
->     $ make all compile_commands.json scripts_gdb ARCH=um O=.kunit --jobs=8
->     ERROR:root:../mm/swap_state.c: In function ‘__swap_cache_alloc’:
->     ../mm/swap_state.c:468:26: error: implicit declaration of function ‘folio_memcg_alloc_deferred’ [-Wimplicit-function-declaration]
->       468 |         if (order > 1 && folio_memcg_alloc_deferred(folio)) {
->           |                          ^~~~~~~~~~~~~~~~~~~~~~~~~~
->     make[4]: *** [../scripts/Makefile.build:289: mm/swap_state.o] Error 1
->     make[4]: *** Waiting for unfinished jobs....
->     make[3]: *** [../scripts/Makefile.build:548: mm] Error 2
->     make[3]: *** Waiting for unfinished jobs....
->     make[2]: *** [/home/lkhack/linux/Makefile:2143: .] Error 2
->     make[1]: *** [/home/lkhack/linux/Makefile:248: __sub-make] Error 2
->     make: *** [Makefile:248: __sub-make] Error 2
-> 
-> Fix by implementing the function for CONFIG_TRANSPARENT_HUGEPPAGE unset
-> case.
-> 
-> Fixes: https://lore.kernel.org/20260527204757.2544958-10-hannes@cmpxchg.org
-> Signed-off-by: SeongJae Park <sj@kernel.org>
+Hello,
 
-Whoops, thanks for the fix, SJ. I'll incorporate UM builds into my
-final compile test before sending.
+Den 2026-05-28 kl. 14:03, skrev Qiliang Yuan:
+> The dmem cgroup v2 controller currently only provides a hard "max"
+> limit, which causes immediate allocation failures when a cgroup's
+> device memory usage reaches its quota.  GPU-bound AI workloads need
+> smoother over-subscription support: a soft limit that temporarily
+> allows excess usage while applying backpressure through reclaim
+> rather than outright failure.
+> 
+> Add dmem.high, a soft limit that penalizes over-limit cgroups by
+> evicting their buffer objects first when eviction is triggered (e.g.
+> due to a "max" limit hit).  Unlike the rejected v1 approach which
+> used sleep-on-allocation throttling, this version provides a
+> meaningful recovery action through prioritized reclaim.
+> 
+> Expose "high" as a new cgroupfs control file per region via
+> set_resource_high() and get_resource_high(), and initialize it to
+> PAGE_COUNTER_MAX in reset_all_resource_limits().  Like get_resource_max(),
+> get_resource_high() returns PAGE_COUNTER_MAX when the pool is NULL.
+> 
+> Extend dmem_cgroup_state_evict_valuable() with a "try_high"
+> parameter.  When set, the function walks the page_counter parent
+> chain to check whether any ancestor exceeds its high limit, then
+> verifies that the pool is above its effective minimum to respect
+> dmem.min protection.  Only pools meeting both criteria are evicted.
+> 
+> Refactor ttm_bo_evict_alloc() into a 3-pass eviction strategy.
+> Pass 1 uses trylock and targets only BOs whose cgroup exceeds
+> dmem.high.  Pass 2 falls back to the standard above-elow eviction.
+> Pass 3 begins with a properly-locked high-priority pass in case
+> Pass 1 failed due to trylock contention, then proceeds with the
+> standard repeat-while-making-progress loop with low-watermark
+> fallback.
+> 
+> Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
+> ---
+> Introduce a "high" soft limit for the dmem cgroup v2 controller.
+> When a "max" limit is hit and eviction is triggered, buffer objects
+> belonging to cgroups that exceed their dmem.high limit are targeted
+> first, providing a meaningful recovery action through reclaim.
+> 
+> The dmem cgroup currently only supports hard "max" limits, which
+> cause immediate allocation failures for GPU-bound workloads. A soft
+> limit enables smoother over-subscription by penalizing over-limit
+> cgroups via prioritized eviction rather than outright rejection.
+> 
+> The implementation adds a "high" cgroupfs control file per region,
+> a try_high parameter to dmem_cgroup_state_evict_valuable() for
+> tier-1 eviction, and a 3-pass strategy in ttm_bo_evict_alloc().
+> ---
+> V2 -> V3:
+> - Walk the page_counter parent chain in the try_high pass to prevent
+>   child cgroups from evading the penalty when a parent cgroup exceeds
+>   its dmem.high limit.
+> - Check dmem.min protection in the try_high pass to avoid evicting
+>   BOs below the effective minimum.
+> - Add a properly-locked high-priority retry at the beginning of Pass 3
+>   so that actively-used over-limit BOs (which failed trylock in Pass 1)
+>   are not skipped while innocent cgroups are evicted.
+> - Fix get_resource_high(NULL) returning 0 instead of PAGE_COUNTER_MAX
+>   to match the behavior of get_resource_max().
+> 
+> V1 -> V2:
+> - Replace sleep-on-allocation throttling with prioritized eviction.
+>   When a "max" limit is hit, BOs from cgroups exceeding dmem.high are
+>   evicted first in a dedicated pass. No throttling or sleeping is
+>   performed in the charge path.
+> - Remove task throttling (schedule_timeout_killable, TIF_NOTIFY_RESUME,
+>   resume_user_mode_work() integration) entirely.
+> - Add dmem.high cgroupfs control file per region.
+> - Extend dmem_cgroup_state_evict_valuable() with try_high parameter
+>   to target over-limit cgroups as tier-1 eviction.
+> - Refactor ttm_bo_evict_alloc() into a 3-pass eviction strategy:
+>   (1) trylock: evict only BOs exceeding dmem.high
+>   (2) trylock: above-elow
+>   (3) proper-lock: repeat with low fallback.
+> - Initialize high to PAGE_COUNTER_MAX in reset_all_resource_limits().
+> 
+> v1: https://lore.kernel.org/all/20260520-feature-dmem-high-v1-1-97ca0cb7f95a@gmail.com
+> v2: https://lore.kernel.org/all/20260522-feature-dmem-high-v2-1-d805deddecbb@gmail.com
+> ---
+>  drivers/gpu/drm/ttm/ttm_bo.c | 35 ++++++++++++++++++++----
+>  include/linux/cgroup_dmem.h  |  4 +--
+>  kernel/cgroup/dmem.c         | 65 ++++++++++++++++++++++++++++++++++++++++++--
+>  3 files changed, 94 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+> index bcd76f6bb7f02..2f2b428f1d30a 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+> @@ -505,6 +505,8 @@ struct ttm_bo_evict_walk {
+>  
+>  	/** @limit_pool: Which pool limit we should test against */
+>  	struct dmem_cgroup_pool_state *limit_pool;
+> +	/** @try_high: Whether to only evict BO's above the high watermark (first pass) */
+> +	bool try_high;
+>  	/** @try_low: Whether we should attempt to evict BO's with low watermark threshold */
+>  	bool try_low;
+>  	/** @hit_low: If we cannot evict a bo when @try_low is false (first pass) */
+> @@ -518,7 +520,8 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
+>  	s64 lret;
+>  
+>  	if (!dmem_cgroup_state_evict_valuable(evict_walk->limit_pool, bo->resource->css,
+> -					      evict_walk->try_low, &evict_walk->hit_low))
+> +					      evict_walk->try_high, evict_walk->try_low,
+> +					      &evict_walk->hit_low))
+>  		return 0;
+>  
+>  	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk->place))
+> @@ -577,31 +580,51 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+>  	};
+>  	s64 lret;
+>  
+> +	/*
+> +	 * Pass 1 (trylock): Only evict BOs whose cgroup is above its
+> +	 * dmem.high soft limit. This penalizes over-limit cgroups first.
+> +	 */
+>  	evict_walk.walk.arg.trylock_only = true;
+> +	evict_walk.try_high = true;
+>  	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+> +	evict_walk.try_high = false;
+> +	if (lret)
+> +		goto out;
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+I believe the first pass for 'high' should not be trylock only. High needs to be
+preferentially evicted, even if the objects are locked elsewhere.
+
+
+> -	/* One more attempt if we hit low limit? */
+> +	/*
+> +	 * Pass 2 (trylock): Evict BOs above the effective low watermark.
+> +	 * Falls back to low-priority eviction if needed.
+> +	 */
+> +	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>  	if (!lret && evict_walk.hit_low) {
+>  		evict_walk.try_low = true;
+>  		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>  	}
+> +
+>  	if (lret || !ticket)
+>  		goto out;
+>  
+> -	/* Reset low limit */
+> +	/*
+> +	 * Pass 3+ (properly locked): Evict while making progress.
+> +	 * First retry the high-priority pass with proper locking in case
+> +	 * Pass 1 failed due to trylock contention on over-limit BOs.
+> +	 * If that still fails, fall back to the standard low-priority eviction.
+> +	 */
+>  	evict_walk.try_low = evict_walk.hit_low = false;
+> -	/* If ticket-locking, repeat while making progress. */
+>  	evict_walk.walk.arg.trylock_only = false;
+> +	evict_walk.try_high = true;
+> +	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+> +	evict_walk.try_high = false;
+> +	if (lret)
+> +		goto out;
+>  
+>  retry:
+>  	do {
+> -		/* The walk may clear the evict_walk.walk.ticket field */
+>  		evict_walk.walk.arg.ticket = ticket;
+>  		evict_walk.evicted = 0;
+>  		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>  	} while (!lret && evict_walk.evicted);
+>  
+> -	/* We hit the low limit? Try once more */
+>  	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
+>  		evict_walk.try_low = true;
+>  		goto retry;
+> diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
+> index dd4869f1d736e..06115d35509b1 100644
+> --- a/include/linux/cgroup_dmem.h
+> +++ b/include/linux/cgroup_dmem.h
+> @@ -23,7 +23,7 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region *region, u64 size,
+>  void dmem_cgroup_uncharge(struct dmem_cgroup_pool_state *pool, u64 size);
+>  bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  				      struct dmem_cgroup_pool_state *test_pool,
+> -				      bool ignore_low, bool *ret_hit_low);
+> +				      bool try_high, bool ignore_low, bool *ret_hit_low);
+>  
+>  void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
+>  #else
+> @@ -54,7 +54,7 @@ static inline void dmem_cgroup_uncharge(struct dmem_cgroup_pool_state *pool, u64
+>  static inline
+>  bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  				      struct dmem_cgroup_pool_state *test_pool,
+> -				      bool ignore_low, bool *ret_hit_low)
+> +				      bool try_high, bool ignore_low, bool *ret_hit_low)
+>  {
+>  	return true;
+>  }
+> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> index 4753a67d0f0f2..c80444c0da177 100644
+> --- a/kernel/cgroup/dmem.c
+> +++ b/kernel/cgroup/dmem.c
+> @@ -156,6 +156,12 @@ set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val)
+>  	page_counter_set_low(&pool->cnt, val);
+>  }
+>  
+> +static void
+> +set_resource_high(struct dmem_cgroup_pool_state *pool, u64 val)
+> +{
+> +	page_counter_set_high(&pool->cnt, val);
+> +}
+> +
+>  static void
+>  set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
+>  {
+> @@ -167,6 +173,11 @@ static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
+>  	return pool ? READ_ONCE(pool->cnt.low) : 0;
+>  }
+>  
+> +static u64 get_resource_high(struct dmem_cgroup_pool_state *pool)
+> +{
+> +	return pool ? READ_ONCE(pool->cnt.high) : PAGE_COUNTER_MAX;
+> +}
+> +
+>  static u64 get_resource_min(struct dmem_cgroup_pool_state *pool)
+>  {
+>  	return pool ? READ_ONCE(pool->cnt.min) : 0;
+> @@ -186,6 +197,7 @@ static void reset_all_resource_limits(struct dmem_cgroup_pool_state *rpool)
+>  {
+>  	set_resource_min(rpool, 0);
+>  	set_resource_low(rpool, 0);
+> +	set_resource_high(rpool, PAGE_COUNTER_MAX);
+>  	set_resource_max(rpool, PAGE_COUNTER_MAX);
+>  }
+>  
+> @@ -289,10 +301,13 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_pool_state *limit_pool,
+>   * dmem_cgroup_state_evict_valuable() - Check if we should evict from test_pool
+>   * @limit_pool: The pool for which we hit limits
+>   * @test_pool: The pool for which to test
+> + * @try_high: Only evict BOs whose usage exceeds the high limit (first pass)
+>   * @ignore_low: Whether we have to respect low watermarks.
+>   * @ret_hit_low: Pointer to whether it makes sense to consider low watermark.
+>   *
+>   * This function returns true if we can evict from @test_pool, false if not.
+> + * When @try_high is set, only pools with usage above their high limit are
+> + * evictable, enabling prioritized eviction of over-limit cgroups.
+>   * When returning false and @ignore_low is false, @ret_hit_low may
+>   * be set to true to indicate this function can be retried with @ignore_low
+>   * set to true.
+> @@ -301,7 +316,7 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_pool_state *limit_pool,
+>   */
+>  bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  				      struct dmem_cgroup_pool_state *test_pool,
+> -				      bool ignore_low, bool *ret_hit_low)
+> +				      bool try_high, bool ignore_low, bool *ret_hit_low)
+>  {
+>  	struct dmem_cgroup_pool_state *pool = test_pool;
+>  	struct page_counter *ctest;
+> @@ -331,9 +346,38 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  
+>  	ctest = &test_pool->cnt;
+>  
+> +	used = page_counter_read(ctest);
+> +
+> +	if (try_high) {
+> +		struct page_counter *c;
+> +
+> +		/*
+> +		 * Walk the page_counter parent chain to check whether any
+> +		 * ancestor cgroup exceeds its dmem.high limit.  This prevents
+> +		 * child cgroups from evading the penalty when a parent cgroup
+> +		 * is over its high limit.
+> +		 */
+> +		if (used <= READ_ONCE(ctest->high)) {
+> +			for (c = ctest->parent; c; c = c->parent) {
+> +				if (page_counter_read(c) > READ_ONCE(c->high))
+> +					break;
+> +			}
+> +			if (!c)
+> +				return false;
+> +		}
+> +
+> +		/*
+> +		 * Respect dmem.min protection: do not evict BOs below the
+> +		 * effective minimum even during the high-priority pass.
+> +		 */
+> +		dmem_cgroup_calculate_protection(limit_pool, test_pool);
+> +		min = READ_ONCE(ctest->emin);
+> +
+> +		return used > min;
+> +	}
+> +
+>  	dmem_cgroup_calculate_protection(limit_pool, test_pool);
+>  
+> -	used = page_counter_read(ctest);
+>  	min = READ_ONCE(ctest->emin);
+>  
+>  	if (used <= min)
+> @@ -835,6 +879,17 @@ static ssize_t dmem_cgroup_region_low_write(struct kernfs_open_file *of,
+>  	return dmemcg_limit_write(of, buf, nbytes, off, set_resource_low);
+>  }
+>  
+> +static int dmem_cgroup_region_high_show(struct seq_file *sf, void *v)
+> +{
+> +	return dmemcg_limit_show(sf, v, get_resource_high);
+> +}
+> +
+> +static ssize_t dmem_cgroup_region_high_write(struct kernfs_open_file *of,
+> +					  char *buf, size_t nbytes, loff_t off)
+> +{
+> +	return dmemcg_limit_write(of, buf, nbytes, off, set_resource_high);
+> +}
+> +
+>  static int dmem_cgroup_region_max_show(struct seq_file *sf, void *v)
+>  {
+>  	return dmemcg_limit_show(sf, v, get_resource_max);
+> @@ -868,6 +923,12 @@ static struct cftype files[] = {
+>  		.seq_show = dmem_cgroup_region_low_show,
+>  		.flags = CFTYPE_NOT_ON_ROOT,
+>  	},
+> +	{
+> +		.name = "high",
+> +		.write = dmem_cgroup_region_high_write,
+> +		.seq_show = dmem_cgroup_region_high_show,
+> +		.flags = CFTYPE_NOT_ON_ROOT,
+> +	},
+>  	{
+>  		.name = "max",
+>  		.write = dmem_cgroup_region_max_write,
+
+The rest of the patch looks good.
+
 
