@@ -1,310 +1,288 @@
-Return-Path: <cgroups+bounces-16378-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16379-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id /mH4Ho2WF2qvKQgAu9opvQ
-	(envelope-from <cgroups+bounces-16378-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 03:12:45 +0200
+	id yihvNR6YF2qiKggAu9opvQ
+	(envelope-from <cgroups+bounces-16379-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 03:19:26 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEC65EB805
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 03:12:44 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F2215EB865
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 03:19:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B8C91302DF7C
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 01:12:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5810B30258AD
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2026 01:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06FF1A0712;
-	Thu, 28 May 2026 01:12:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6574199EAD;
+	Thu, 28 May 2026 01:19:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CWXP265CU008.outbound.protection.outlook.com (mail-ukwestazon11020140.outbound.protection.outlook.com [52.101.195.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AD378F2B
-	for <cgroups@vger.kernel.org>; Thu, 28 May 2026 01:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.79
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779930752; cv=none; b=HujKrDQ8FsjVmkpu8fwPoIBojPyY7R5BgFOXrWKXF4xT4mKZglK/wwcbKwiJV8XMs5GZTgjur5i8C6mP+smgqA8ZJn+gPuCVAxdUGG6e5KGzqtW7HDDtljFn1nkctngCLEXV6+9RHy25ER0Ju4ZIMNRwt3X61WcpxdQqUZ6aWu4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779930752; c=relaxed/simple;
-	bh=eNCb8eSHaGQEwOI0h1a5TwyH7i4RwD75ly/B1Spcv5Q=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=hWVFvMyJXkroALP/DegbsJuAcao+3WAD3vsFGGgQuqYDL2lVFd5ZzMd7qtojiodIrUwWA2vpmmEklkpJ3kEKHLm57OOqz1Z1FEIugkXEZLPP3dO9nuJZrBPPeMmvTNfbgClQxQczHqMCHFHy9QhlCv382v7onJT7AIyt6BDw0co=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-69d8e34058cso4149354eaf.1
-        for <cgroups@vger.kernel.org>; Wed, 27 May 2026 18:12:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779930750; x=1780535550;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9TEmRizXMIbGZYx1Ws9m3mt6dQBmNYp3px/KVX87cR4=;
-        b=AGV2St2vCPc/M0w2rGsygRn/MCQKr8PQ5GJbms4asbeGcb0NAdGZaEVccn5CpMvwr3
-         W+E7lPPfyZtoup1VPYCKGxn5marJuuur1Soit9GEzQK4ulaG1Msyxzt1ZTub4tj3ZVbG
-         v22Z+XCpsk6Q8yhZqFCWiZQOhweIa5+3BNLH3z2mcuM7onUIGchVwiGDIfK74rp6EsaS
-         0b//ZBMcgykT9CR2H18w3DjM3jO9N3cyQMXe30xEF3OTsvviOEfgXPcjzTgREHUvQILE
-         dbpqO+b60JxcluPJabTEHpO+2z1sSMjth045v/d981HoYgoldpJlK2lOPSjM+XVR56Su
-         FKyQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8I7bpN0L5pYtx8Ae8YH4TY2B8c+7A32+9y+87GpfNrNKfdwd6LQ9A0IpB3VZrWgHf6oJi3JkMa@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVmoSs3veYOpzG+Tddsy0V53uvxTU7NPCyYQJlHBek6wO8SpNa
-	PgSaXWI0VsB+7IdDYt/uIdTYL4T5+/x1uB7LTCSsLhrf+32cBWhKCmWb7p4JWhglMYXXX+WUPiU
-	glarEizOSYoSwhHbuJG/xaY/V4KAblQZoHw1ENw9/m2czNvIUKjf/qUxgIDg=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B45191;
+	Thu, 28 May 2026 01:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.195.140
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779931162; cv=fail; b=Fq2UqqsREoSA6hVF4oCcJrJ3T9bCESZdrhhaZB3VbyNVNhQT7ShtV2r0Ox0rUwLsMqfeDfiZnygPJElS5yhz1bWspqB8W8YNr2YgSv1RlorqOTDl0eZCoiaDOnJn05cNOpu9IjT/SPqTDUJ5ztCqvmy6FDV2rXB719BpmTigl2w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779931162; c=relaxed/simple;
+	bh=ekcAlTHlrP+u+ylOfb4hCE57kyvpdf6hz/Wt9AThXeA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=KP4IVeOkcpIFKsJrAw8W+a4s1dK0z4Z+PSW/HAHCeeqVW7qhVdigYXHZne27mE6kvzcMtbFsNXKv1mf/Hmp1TIBtl+Gp29OnxBUKWamMj0im6wL1PpE7C9KZU6V+PQA9woCoRhulCnvVePiwJhG70K3mnKG641H11BvIL3uuqB4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.195.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=GBrnoDarmLOlK02kBEa7OCw0jW2mPNSVAGSZ9Nu6ePfaOQ9H+aA7k0XxWuBpyQ/Ir2Davxpj+EF2C/8YdXPauJ2asbbB40H8BDH8/z0GgZb5634rLCGM39LPaTJriahurA+L2avX3a1otMFlyOT5MHJ7ffD/E0qgyf0Mcoc/0C89HtNngUuZDT41CIe/VZu1Jmll7k87xsyirlXtaDPSs02nFtICv/Mqms+tq+nQGWSAl4/Z79HkjN+29Jsaolgb4mrT18NeeQExhisru+hZeLDV9HhP4m9FAdduXTsVSueVIH6LrBNYbNLL1czzU4y1pRBv4YXvObpsGlP03srJJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
+ bh=ekcAlTHlrP+u+ylOfb4hCE57kyvpdf6hz/Wt9AThXeA=;
+ b=dwhy7f2n/24wySFMU5EdjDGV3oNpfAgwNciqUv9V6UCgs5vV8tjDN1f+KGCE0HXIFqpyJpmAjXYDx7KmymcNae4RaR4Jkb1JcIvBTM9XFDQt284DVfo2LZgZxnZk3XLbJveFVuNdo2sAl7X3FfgTYFdpBRPHjPzu8picYkarMdxX41PaNJpgpbWO/3l/3fZcz+nRVzrwOPu0mPictdimip/qadGYCWn13474zuz/ny72B4uwotCrHhulVMuL5CzRf4JDCrp2k7KHQreSyeJJ6LgMS6ArlD8J32PiX8/TOFcp9wmhuTLfEBZxl1CNZQsImN8d4gEIx4d5bLh6wxC4JQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
+ dkim=pass header.d=atomlin.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=atomlin.com;
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:183::5)
+ by CWLP123MB6178.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:1a4::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.71.14; Thu, 28 May
+ 2026 01:19:11 +0000
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230]) by CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230%4]) with mapi id 15.21.0071.011; Thu, 28 May 2026
+ 01:19:10 +0000
+Date: Wed, 27 May 2026 21:19:06 -0400
+From: Aaron Tomlin <atomlin@atomlin.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, mingo@redhat.com, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, 
+	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, 
+	chenridong@huaweicloud.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, 
+	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io, 
+	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, nick.lange@gmail.com, 
+	cgroups@vger.kernel.org, linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
+ include CPU affinity mask
+Message-ID: <6hqq5oxvlcpmjvyns42dy2vtfvvixy7q4xyyjrrn46jrvsx5ar@gkmjsteqlpzd>
+References: <20260526142838.774711-1-atomlin@atomlin.com>
+ <20260527085221.GQ3126523@noisy.programming.kicks-ass.net>
+ <bgjagepcfb7gz6jawatu6kpfmecw46gwg5cvb6r7dl3dn7bt4l@rtymdaslx7ef>
+ <20260527155404.GV3126523@noisy.programming.kicks-ass.net>
+ <ov33cu2wosubbfufcmfyoinfatecskjgmkvqyit33komlcla2d@2qgj45724bql>
+ <20260527195858.GC3493090@noisy.programming.kicks-ass.net>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kszlm3lx6cl6sn4w"
+Content-Disposition: inline
+In-Reply-To: <20260527195858.GC3493090@noisy.programming.kicks-ass.net>
+X-ClientProxiedBy: BN0PR03CA0034.namprd03.prod.outlook.com
+ (2603:10b6:408:e7::9) To CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:400:183::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:221d:b0:69d:e3b4:4e1b with SMTP id
- 006d021491bc7-69de3b44f12mr2974690eaf.55.1779930749986; Wed, 27 May 2026
- 18:12:29 -0700 (PDT)
-Date: Wed, 27 May 2026 18:12:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a17967d.5bfaf17f.38d970.0000.GAE@google.com>
-Subject: [syzbot] [cgroups?] [mm?] INFO: rcu detected stall in clone3 (6)
-From: syzbot <syzbot+774c2dfaebdf78f984c5@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	jackmanb@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	mhocko@suse.com, surenb@google.com, syzkaller-bugs@googlegroups.com, 
-	vbabka@kernel.org, ziy@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-0.36 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=8d24a1331e060dda];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP123MB6607:EE_|CWLP123MB6178:EE_
+X-MS-Office365-Filtering-Correlation-Id: fc399a0c-eba2-4750-2970-08debc571f0f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|376014|7416014|366016|1800799024|6133799003|22082099003|18002099003|56012099006|4143699003|5023799004|3023799007;
+X-Microsoft-Antispam-Message-Info:
+	uRVEXOkZ30QIHQNWJEGhMF339rRI4DnylgNMmG2Cob1xGS7jOohRARLWXf9Xnk95nzDDeU156XOb4O//sLZ9bZRO5FmhJ4YbZfnhiUtnyGtcPdVkTzrXf1Enm8dsIpZNsUpaPox7TTHSf8UBDpknPEx6nd515OOrB5Q/e/c4oSsU2ayxIEEfXlawzI7xxAYIyySg47gje/aLneQZcSP3+7tAzBpdKGu1AUQpHjQVoTnvF4XxCq4JBfqumfhp8t+qk98Mi3H++xFkhn031HFqxQDTrFjLV0EUXCEbTaA25U8SeLP1cNLTd5YwabbhXT6OXTuzWwXYnIG7D90+rMD2flGPX94dMf39Vi6F3GOV8Tnpb5BYOZAX0ntJSElsSxHpahZWyl8OQdTl1LArLIipVz9+/5mRhCxxrRfAXvU2hEOj+9tgGM89Y6tLg8peT2xJ00vrthXXtOBYFsiQAJcSsC+PJfT7f84hKV1x3dTv/Q1VS//ZWY2+6r3FU36QKb6wnFSmRDuMada0soeKgyRGPK/dXZuP7lUID+0tjWUEGmJpXfbd2I7wexaW1ZUm6N2FevPIZWZz4VxvGq8iKZ8Jda/UHHt69LeWfppiHnrW7gtGvqn4eJQsijjDPbXxZog88C0D4/3yROiKuiiX1A9toxlRTZDSB5TIqYB/RBT+k1TLenoEI6+BLlBnWEUapg/K
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024)(6133799003)(22082099003)(18002099003)(56012099006)(4143699003)(5023799004)(3023799007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Sld0d2h6YWF1eFNBWmttL1pOSzJWVFhLOFNwMkFWOGsweHU2Y3BtclhkZHNG?=
+ =?utf-8?B?ZEQ4VlNxYTZSUEFMUy8vTnJLTHRGbmVRb0o1aXFaYklFaXVYem1UbWlrYk0v?=
+ =?utf-8?B?VnJNUXZXYWVwbm1UTmxzdDZKS2VJMUhBeGVRS2ZENWNMZ3dRY1V5cE5qcVZx?=
+ =?utf-8?B?Zzh5TjRnRkpCMG9Qd2lKRVBEN3pmTjVhR1VnQXNIeXlPNExoeVBXWmZ6M1Z0?=
+ =?utf-8?B?dURYZzFYVHNlVkUyTy9FNFMvL1hEUEoza29xc1ZYRXBtK1d2QVVocnhNVHZ3?=
+ =?utf-8?B?akhCUlJoaVIzZW5kZ1lUd21FbU4rc0Jqb1d3d2NkMk8wSjhjK1ExMmJib24z?=
+ =?utf-8?B?U1J3YnZSWFcxZUs1LzI4MEZ0TVl0ZCtrVXJrcHRTM25aTHhyVVJKMTlhakZn?=
+ =?utf-8?B?TVovRmRIQjVDQjZmbVk3L3llSFFCZy9jTS85bDBkQThwaGpqZk03aFp6aWM5?=
+ =?utf-8?B?RStZMm5pbUNCaW1vdXhhdERtVG8rOEhIc3lWdDFENmZyTkx1OElPb3AzWW9k?=
+ =?utf-8?B?NUZCSHdRbXZmUnMybzJ0YkR0WENZVXY2WUZMY1E1QWtFTTZhSVl5amQ5YUdu?=
+ =?utf-8?B?YTRLWlN5VUw4WURUL0tHbTVmNldhVmhybEFqblorb213dElzK3MzM0hzZkxX?=
+ =?utf-8?B?YjBjWkxjRkZLN0c3QW00aTRJbS8xbW55UE5KWmJDQ1dQZERHbVdiU0ZMUzVD?=
+ =?utf-8?B?WjhVSGdnOWRWd2hJaE1wUjBmVm9MU1U0QU4xTTNJVGVVQWltOEpaTnFXQnVo?=
+ =?utf-8?B?OWo4elBHNXFHV2cyOUJiSzNPOWMrU1lkaGdLZytnWEtrWXoxTUdMK0M3L3V2?=
+ =?utf-8?B?d29oRzlkRURRMUhJMllYdmY0VjZ5QmRWL2tGM2xkWFdJL1huWk5FQmNYRXRk?=
+ =?utf-8?B?QjcvQ3lzelIyU2NjWUN5emhkNm9rRStZVHhlbE9vRjUvNHZHajhLQ2xVWmRK?=
+ =?utf-8?B?WjQzZ1pJK1JYWmpHNkhEd0E2TE01TnRiNDlUcFpCMXFoVmZJWUQ3YXhuYmhF?=
+ =?utf-8?B?dmIvMm5Sak9pWHU1bUVwSldUQ2J4L21YWi83c2hpaEtYMCtqa0RzcmM1UWRT?=
+ =?utf-8?B?OFFTelJ6czQ1Z2p6dVVlb1lyaEtOS0R1emNOT2NtdkZlVjBMZUJiOWVDQVBS?=
+ =?utf-8?B?aTJaczdVRFJRaEMvYkJNM1ZZSlg5ZkxiVlJ1TkhqV1JkdHlHdUZ6YmlXSVR2?=
+ =?utf-8?B?Y2tOMm9LSWRUVWJWS1RrU0JYR3haY1lRbWNnOTNXVklDbzM4bndhcVNkTExP?=
+ =?utf-8?B?dmhxcm5OeXhwaDIwWFA3d0lhcTlHSWh5dnZTc0RyN2VCd01Kd1ZvVEVMQ2xo?=
+ =?utf-8?B?d3NYbHlkYVl5SmlmRmhTZEtqdkV6WWhWb3J6UTBQdEQvOXRoN21VcDVCOG81?=
+ =?utf-8?B?OXN6bTF2OWhONmRud0czU2Q1dWN2bS9oSkZwdVFFcmt2UFF5czVIRThlTC9r?=
+ =?utf-8?B?TFl3aEVDQTYzdjFBWHJ1MFlDSXZqWTJhWHRuN2JnZWdIN3NQZ1dJS3FCNW91?=
+ =?utf-8?B?M2dzb3V5NWtpS0hQcmpJRDlCc3VmcDdyWFhlTHhsN0pFK0tld3cxbjQyQ3I3?=
+ =?utf-8?B?NEJvUXoxR2QwSitXL1lzblFtaGVWTThhcURiallmY293SlV1VGNTR3JHeThv?=
+ =?utf-8?B?N1FPS0MxOUl2OFFyK2lzYXF1OTJOclhiUFJKcUZxUUtPVC9NWHFXaGIrQkdv?=
+ =?utf-8?B?YU1IWEowYW9kdCs0MWdXYTVwS0hnK2ZDNFNZR1hld2kyMkJwZXZYSEhxcmNQ?=
+ =?utf-8?B?WXBzWldBd25hRFVzU2t3VlJoT0xXWk1sQU93aHBxY1Z6R3J1eWV2THhkbXc2?=
+ =?utf-8?B?UFhSbVowbjh5dFhtUnIzRTE1WWEzNjZDT2xQRGZvb3ZQQU82eDJldVphNnNv?=
+ =?utf-8?B?RFQ3UEtmZklSb25kT2xYbmtOL0RaekVNNkxIZno3T1RsdFNKSVRtczVVUkxY?=
+ =?utf-8?B?WDlSYVpXVGo2aHBtV2VBLzVtMnVib3ZMa1NhdmltTWJBUWJYRnZJUlZwVWxT?=
+ =?utf-8?B?SFpidGZVNGZFZUdZd1pYYWlMbHk3ekMxSWl5Q0tQN1ppN2JUWWJxbkhUaFBT?=
+ =?utf-8?B?ZUt3bVl3emw1d0tpQzBLL0R1UEVFc0VMK292WmFraTFFZDhhcUw1aTAveFpo?=
+ =?utf-8?B?Q3dPM0hIcVQvNmdIWUt4ZG9OeUR1TElPVkxQTlExSFdmM3lZazV1enRjOGF3?=
+ =?utf-8?B?NGdrUG4xT29sTU9FVklhajJjM3l6Tit5Smk5eEpXSlFobm55SE1uVWJ4aU4r?=
+ =?utf-8?B?b09uSGh5RkM2NkhnaHRPZ2F6TER0S2svaDJjMXdCdWQrK0ZwK0o4YWFHaWN3?=
+ =?utf-8?B?bllHeGtuenFUVmJrM3BoeVRxc2phRzYwNi9ScVNVSWtxSjNRZ0Y1UT09?=
+X-OriginatorOrg: atomlin.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc399a0c-eba2-4750-2970-08debc571f0f
+X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 May 2026 01:19:10.6207
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7LWN3jPZarCCym+5B4TsL3SlnpirQbKqu+jXCIKiD3yr+JyLbrc1CfDe/hoyfN3rNoBuzEH1/mjfDVSFLej0bA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP123MB6178
+X-Spamd-Result: default: False [0.44 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-16378-lists,cgroups=lfdr.de,774c2dfaebdf78f984c5];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	TAGGED_RCPT(0.00)[cgroups];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16379-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[atomlin.com];
+	RCPT_COUNT_TWELVE(0.00)[35];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FREEMAIL_CC(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com,huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,amd.com,ashe.io,abita.co,vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.995];
+	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[storage.googleapis.com:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,googlegroups.com:email,goo.gl:url]
-X-Rspamd-Queue-Id: BFEC65EB805
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 3F2215EB865
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello,
+--kszlm3lx6cl6sn4w
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
+ include CPU affinity mask
+MIME-Version: 1.0
 
-syzbot found the following issue on:
+On Wed, May 27, 2026 at 09:58:58PM +0200, Peter Zijlstra wrote:
+> On Wed, May 27, 2026 at 01:41:52PM -0400, Aaron Tomlin wrote:
+>=20
+> > > > The actual use case here is multi-tenant workload isolation and vis=
+ibility.
+> > > > Passing the evaluated cpumask to the BPF LSM allows operators to wr=
+ite a
+> > > > simple eBPF program to detect spatial boundary overlaps (e.g., logg=
+ing an
+> > > > event if a requested mask intersects with platform-reserved cores).
+>=20
+> Why isn't cgroups good enough to enforce this? If you create a cgroup
+> hierarchy per tenant, and constrain them using the cpuset controller,
+> they should not be able to escape, rendering this event impossible.
 
-HEAD commit:    e8c2f9fdadee Merge tag 'for-7.1/hpfs-fixes' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=131dcf96580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d24a1331e060dda
-dashboard link: https://syzkaller.appspot.com/bug?extid=774c2dfaebdf78f984c5
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+Hi Peter,
 
-Unfortunately, I don't have any reproducer for this issue yet.
+You raise a very fair point. The cpuset cgroup controller is indeed the
+kernel's primary vehicle for spatial enforcement, and under normal
+circumstances, it successfully prevents a tenant from escaping their
+designated cores.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7980daa950e4/disk-e8c2f9fd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8bdb257b9cb5/vmlinux-e8c2f9fd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/827a38d4946b/bzImage-e8c2f9fd.xz
+The cpuset controller does govern resource limits, but does not audit
+intent. When __sched_setaffinity() is invoked, the kernel compares the
+requested in_mask against the task's allowed cpuset. If there is only a
+partial intersection, the kernel silently truncates the requested mask to
+fit the cpuset, without raising any alarm.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+774c2dfaebdf78f984c5@syzkaller.appspotmail.com
+The BPF LSM hook, conversely, receives the raw, untruncated in_mask,
+affording operators the visibility to detect, audit, and even reject these
+violations of intent before the kernel silently sanitises the input.
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P17948/1:b..l
-rcu: 	(detected by 0, t=10503 jiffies, g=351569, q=826004 ncpus=2)
-task:syz.4.14533     state:R  running task     stack:25592 pid:17948 tgid:17948 ppid:10462  task_flags:0x400040 flags:0x00080002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5388 [inline]
- __schedule+0x1821/0x5740 kernel/sched/core.c:7189
- preempt_schedule_irq+0x4d/0xa0 kernel/sched/core.c:7513
- irqentry_exit_to_kernel_mode include/linux/irq-entry-common.h:539 [inline]
- irqentry_exit+0x14f/0x760 kernel/entry/common.c:164
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:697
-RIP: 0010:__rcu_read_unlock+0x0/0xe0 kernel/rcu/tree_plugin.h:431
-Code: d9 80 e1 07 80 c1 03 38 c1 7c dc 48 89 df e8 07 77 85 00 eb d2 0f 1f 44 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <f3> 0f 1e fa 41 57 41 56 41 55 41 54 53 49 bf 00 00 00 00 00 fc ff
-RSP: 0018:ffffc9000596f390 EFLAGS: 00000286
-RAX: c3ba2f73bc45e400 RBX: 00007f67769da601 RCX: 0000000000000046
-RDX: 0000000000000001 RSI: ffffffff8e220c4d RDI: ffffffff8c28b860
-RBP: dffffc0000000000 R08: 0000000000000022 R09: ffffffff8e95cce0
-R10: dffffc0000000000 R11: ffffffff81b0e040 R12: 00007fff7b795798
-R13: ffffc90005968000 R14: ffffc9000596f468 R15: ffffffff8176e256
- rcu_read_unlock include/linux/rcupdate.h:871 [inline]
- class_rcu_destructor include/linux/rcupdate.h:1181 [inline]
- unwind_next_frame+0x1bbf/0x2550 arch/x86/kernel/unwind_orc.c:709
- arch_stack_walk+0x11b/0x150 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0xa9/0x100 kernel/stacktrace.c:122
- save_stack+0x122/0x230 mm/page_owner.c:165
- __reset_page_owner+0x71/0x1f0 mm/page_owner.c:320
- reset_page_owner include/linux/page_owner.h:25 [inline]
- __free_pages_prepare mm/page_alloc.c:1402 [inline]
- __free_frozen_pages+0xbc7/0xd30 mm/page_alloc.c:2943
- __slab_free+0x274/0x2c0 mm/slub.c:5613
- qlink_free mm/kasan/quarantine.c:163 [inline]
- qlist_free_all+0x99/0x100 mm/kasan/quarantine.c:179
- kasan_quarantine_reduce+0x148/0x160 mm/kasan/quarantine.c:286
- __kasan_slab_alloc+0x22/0x80 mm/kasan/common.c:350
- kasan_slab_alloc include/linux/kasan.h:253 [inline]
- slab_post_alloc_hook mm/slub.c:4570 [inline]
- slab_alloc_node mm/slub.c:4899 [inline]
- kmem_cache_alloc_node_noprof+0x384/0x690 mm/slub.c:4951
- alloc_task_struct_node kernel/fork.c:187 [inline]
- dup_task_struct+0x52/0x840 kernel/fork.c:918
- copy_process+0x89b/0x4440 kernel/fork.c:2090
- kernel_clone+0x284/0x8f0 kernel/fork.c:2721
- __do_sys_clone3 kernel/fork.c:3025 [inline]
- __se_sys_clone3+0x33c/0x360 kernel/fork.c:3004
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x15f/0x560 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6775b9dc49
-RSP: 002b:00007fff7b795798 EFLAGS: 00000202 ORIG_RAX: 00000000000001b3
-RAX: ffffffffffffffda RBX: 00007f6775b591e0 RCX: 00007f6775b9dc49
-RDX: 00007f6775b591e0 RSI: 0000000000000058 RDI: 00007fff7b7957f0
-RBP: 00007f67769da6c0 R08: 00007f67769da6c0 R09: 00007fff7b7958d7
-R10: 0000000000000008 R11: 0000000000000202 R12: ffffffffffffffe8
-R13: 000000000000006e R14: 00007fff7b7957f0 R15: 00007fff7b7958d8
- </TASK>
-rcu: rcu_preempt kthread starved for 332 jiffies! g351569 f0x2 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:27536 pid:16    tgid:16    ppid:2      task_flags:0x208040 flags:0x00080000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5388 [inline]
- __schedule+0x1821/0x5740 kernel/sched/core.c:7189
- __schedule_loop kernel/sched/core.c:7268 [inline]
- schedule+0x164/0x360 kernel/sched/core.c:7283
- schedule_timeout+0x158/0x2c0 kernel/time/sleep_timeout.c:99
- rcu_gp_fqs_loop+0x312/0x11d0 kernel/rcu/tree.c:2095
- rcu_gp_kthread+0x9e/0x2b0 kernel/rcu/tree.c:2297
- kthread+0x389/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-rcu: Stack dump where RCU GP kthread last ran:
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 9543 Comm: kworker/u8:15 Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/18/2026
-Workqueue: wg-kex-wg1 wg_packet_handshake_send_worker
-RIP: 0010:on_stack arch/x86/include/asm/stacktrace.h:58 [inline]
-RIP: 0010:stack_access_ok arch/x86/kernel/unwind_orc.c:409 [inline]
-RIP: 0010:deref_stack_reg arch/x86/kernel/unwind_orc.c:419 [inline]
-RIP: 0010:unwind_next_frame+0xdd5/0x2550 arch/x86/kernel/unwind_orc.c:614
-Code: 61 0b ba 00 48 89 5c 24 60 4c 89 64 24 18 49 8d 5c 24 f8 4d 8b 66 10 48 b8 00 00 00 00 00 fc ff df 48 8b 4c 24 20 0f b6 04 01 <84> c0 0f 85 2c 12 00 00 41 83 3e 00 0f 95 c0 49 39 df 0f 96 c1 20
-RSP: 0018:ffffc90000a075f8 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffffc90000a07c28 RCX: 1ffff92000140ed9
-RDX: ffffffff914bec6a RSI: 0000000000000002 RDI: ffffffff8c28b800
-RBP: 1ffff92000140eda R08: 000000000000000b R09: ffffffff8e95cce0
-R10: dffffc0000000000 R11: ffffffff81b0e040 R12: ffffc90000a09000
-R13: 1ffff92000140edb R14: ffffc90000a076c8 R15: ffffc90000a01000
-FS:  0000000000000000(0000) GS:ffff888125387000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0dcae0021c CR3: 0000000090206000 CR4: 0000000000350ef0
-Call Trace:
- <IRQ>
- arch_stack_walk+0x11b/0x150 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0xa9/0x100 kernel/stacktrace.c:122
- kasan_save_stack mm/kasan/common.c:57 [inline]
- kasan_save_track+0x3e/0x80 mm/kasan/common.c:78
- kasan_save_free_info+0x46/0x50 mm/kasan/generic.c:584
- poison_slab_object mm/kasan/common.c:253 [inline]
- __kasan_slab_free+0x5c/0x80 mm/kasan/common.c:285
- kasan_slab_free include/linux/kasan.h:235 [inline]
- slab_free_hook mm/slub.c:2689 [inline]
- slab_free mm/slub.c:6251 [inline]
- kmem_cache_free+0x182/0x650 mm/slub.c:6378
- kfree_skb_reason include/linux/skbuff.h:1322 [inline]
- enqueue_to_backlog+0x69b/0xee0 net/core/dev.c:5421
- netif_rx_internal+0x120/0x560 net/core/dev.c:5719
- __netif_rx+0x78/0xc0 net/core/dev.c:5739
- loopback_xmit+0x43a/0x660 drivers/net/loopback.c:90
- __netdev_start_xmit include/linux/netdevice.h:5368 [inline]
- netdev_start_xmit include/linux/netdevice.h:5377 [inline]
- xmit_one net/core/dev.c:3888 [inline]
- dev_hard_start_xmit+0x2cd/0x830 net/core/dev.c:3904
- sch_direct_xmit+0x251/0x4c0 net/sched/sch_generic.c:372
- qdisc_restart net/sched/sch_generic.c:437 [inline]
- __qdisc_run+0xa83/0x1560 net/sched/sch_generic.c:445
- qdisc_run include/net/pkt_sched.h:120 [inline]
- __dev_xmit_skb net/core/dev.c:4292 [inline]
- __dev_queue_xmit+0x1d26/0x3950 net/core/dev.c:4831
- dev_queue_xmit include/linux/netdevice.h:3418 [inline]
- neigh_hh_output include/net/neighbour.h:544 [inline]
- neigh_output include/net/neighbour.h:558 [inline]
- ip_finish_output2+0xc68/0x1070 net/ipv4/ip_output.c:237
- NF_HOOK_COND include/linux/netfilter.h:307 [inline]
- ip_output+0x29f/0x450 net/ipv4/ip_output.c:438
- synproxy_send_client_synack+0x8c1/0xe30 net/netfilter/nf_synproxy_core.c:485
- nft_synproxy_eval_v4+0x34a/0x4e0 net/netfilter/nft_synproxy.c:60
- nft_synproxy_do_eval+0x305/0x580 net/netfilter/nft_synproxy.c:142
- expr_call_ops_eval net/netfilter/nf_tables_core.c:237 [inline]
- nft_do_chain+0x48d/0x1ae0 net/netfilter/nf_tables_core.c:285
- nft_do_chain_inet+0x360/0x4b0 net/netfilter/nft_chain_filter.c:162
- nf_hook_entry_hookfn include/linux/netfilter.h:158 [inline]
- nf_hook_slow+0xc5/0x220 net/netfilter/core.c:619
- nf_hook include/linux/netfilter.h:273 [inline]
- NF_HOOK+0x21f/0x3c0 include/linux/netfilter.h:316
- NF_HOOK+0x336/0x3c0 include/linux/netfilter.h:318
- __netif_receive_skb_one_core net/core/dev.c:6202 [inline]
- __netif_receive_skb net/core/dev.c:6315 [inline]
- process_backlog+0xaa3/0x1950 net/core/dev.c:6666
- __napi_poll+0xae/0x340 net/core/dev.c:7733
- napi_poll net/core/dev.c:7796 [inline]
- net_rx_action+0x627/0xf70 net/core/dev.c:7953
- handle_softirqs+0x22a/0x840 kernel/softirq.c:622
- do_softirq+0x76/0xd0 kernel/softirq.c:523
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0xf8/0x130 kernel/softirq.c:450
- blake2s_compress+0xf9/0x1eb0 lib/crypto/x86/blake2s.h:42
- blake2s_update+0x14b/0x450 lib/crypto/blake2s.c:119
- hmac+0x2d3/0x3b0 drivers/net/wireguard/noise.c:332
- kdf drivers/net/wireguard/noise.c:367 [inline]
- message_ephemeral+0x255/0x310 drivers/net/wireguard/noise.c:493
- wg_noise_handshake_create_initiation+0x257/0x830 drivers/net/wireguard/noise.c:545
- wg_packet_send_handshake_initiation drivers/net/wireguard/send.c:34 [inline]
- wg_packet_handshake_send_worker+0x18d/0x350 drivers/net/wireguard/send.c:51
- process_one_work kernel/workqueue.c:3314 [inline]
- process_scheduled_works+0xb5d/0x1860 kernel/workqueue.c:3397
- worker_thread+0xa53/0xfc0 kernel/workqueue.c:3478
- kthread+0x389/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+This patch does not seek to replace the cpuset controller, but rather to
+complement it by providing auditing capabilities.
+
+> > We are not creating a bespoke BPF hook here; rather, we are rectifying a
+> > historical blind spot within the API. The existing LSM hook is invoked
+> > during sched_setaffinity(), yet it presently receives only the task_str=
+uct
+> > pointer. Consequently, the security module is essentially asked, "Should
+> > Process A be permitted to alter Process B's affinity?" without being
+> > informed of the proposed affinity itself. Providing in_mask simply
+> > furnishes the existing hook with the requisite payload to make an infor=
+med
+> > decision.
+>=20
+> It occurs to me that this same argument would require to also pass in
+> the new sched_attr, no? That way the LSM can inspect the new policy
+> before it becomes effective.
+
+I agree, the underlying logic does indeed extend perfectly to sched_attr.
+
+Presently, the LSM is equally oblivious as to whether a process is
+requesting a benign transition to SCHED_BATCH, or attempting to escalate
+its privileges by requesting a real-time policy such as SCHED_FIFO with
+maximum priority. Just as with the CPU mask, providing the sched_attr
+payload would rectify this parallel blind spot, allowing BPF policies to
+inspect and mediate scheduling attributes before they become effective.
+
+If you are amenable, I should be more than happy to expand the scope of the
+forthcoming patch to include this. Alternatively, we could address the
+sched_attr expansion in a separate, subsequent patch. Personally, I would
+favour the latter approach, but please do let me know your preference.
+
+I very much look forward to hearing Paul's thoughts on whether this aligns
+with the broader LSM vision.
+
+Thank you.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Kind regards,
+--=20
+Aaron Tomlin
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--kszlm3lx6cl6sn4w
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+-----BEGIN PGP SIGNATURE-----
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+iQIzBAEBCgAdFiEEeQaE6/qKljiNHm6b4t6WWBnMd9YFAmoXmAoACgkQ4t6WWBnM
+d9ZTGA/+I+wiTJFbsU4kq9EMg4TeuzCfcjQ28UFOCrZqIdAGyQc/SMUZjEyD1bSs
+TD2LmeQdBROf9rJBJ5viAl8Gtbhbe1S4cuv2QHitAGE6cKA1RbWwwU2sKKedmi/Q
+gkT9BPQ+ABz47zzaQsHHqFnpygR2XtCDeTt4BsYWVOMcQXt908ONk6pD+XNpIwvx
+/hG84SrTXffIoJFXENGv4rJTFlks7TCYca+1PfBtA33IQugYHHV8ZV3kLKCQaAdL
+z0EtPNy7vRxx7MPed8Az5RSqHC22127TFam/9atjUZ40/AcDjwQ+dLCpdwxO4N5m
+HOwkd66G8zdXlP2kdMw8lE/1ngTtNl4DBnCYQTwGYT5NizppJJ3q25z7DTWAkf7R
+X/yNxQMflP2pDPoOuBO5zHCBG3vs7BregVqskz4BnS8RkJZ7zGAn9PZmj3StizC5
+drRi0+Gn1hrSiDGiwsL88rer2lrCA8mnbAP+N7zak0bG1d6BgTAMRnErzeWVXhH3
+Dos+Iv3kzwKKKMfLMF9b8F8bM0zYCM9YNzIK4TTDhMf2SncZVDpY8/VNVyt0AS5Z
+Fobwo8NLfkWmsGfi6xRgVfPRHFqi+FpyTrCvQqwQoQ7BSIGQYM0Ig1QphRTF8EB5
+G5gW8RXBLkT4LSzMWRHp4l2IU4A8gLz450bfZ2vcbunm4hmYGPo=
+=KjrL
+-----END PGP SIGNATURE-----
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--kszlm3lx6cl6sn4w--
 
