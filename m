@@ -1,188 +1,181 @@
-Return-Path: <cgroups+bounces-16432-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16434-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +Ca3Lt6KGWosxggAu9opvQ
-	(envelope-from <cgroups+bounces-16432-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:47:26 +0200
+	id UPUPCliLGWosxggAu9opvQ
+	(envelope-from <cgroups+bounces-16434-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:49:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C11366026E4
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:47:25 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 928EF602774
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:49:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F369D3046557
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 12:46:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8249F3080E73
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 12:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C28CC2192F4;
-	Fri, 29 May 2026 12:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA692222565;
+	Fri, 29 May 2026 12:48:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WHgAe9QK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KeNiSrYG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160C14964F
-	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 12:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62180230BE9;
+	Fri, 29 May 2026 12:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780058779; cv=none; b=O6RwLsPr9K7b5GjaRc4wdugwa42qc/rVBJ1Zgr/7uhZdZZjIz6rEZGrwX8IHaRGC58Ikcruu2DbEL6uTdCXjfi7VLwzx0YyybwUge5KEOe9FUP3tiP9xGBFmlAYxRWPJ+e+MaeuujeiFQCejCIK6Uf5CTUFlWOqGguoQBP2O4Kc=
+	t=1780058901; cv=none; b=frumHOBQcsVLZu5/BVETsszPF7b7u+oenury4MxOm9fAeL64hOoqq6IQ7IDeUDvAtiJgEtAcQlQrw137ol93vSmCCMqnaaQeAgM/44kenVVWE2h2MbXAo6H74CQPDY9xs2NCBhordNos3yBiBUIdjlEA281ROv3GZkkCfn30QKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780058779; c=relaxed/simple;
-	bh=RGatjCTq0s6ODBYqXaugc6ZnbAdhEsOzrvwF2bDqjzs=;
+	s=arc-20240116; t=1780058901; c=relaxed/simple;
+	bh=HO1WR6twZag3h0xFdgAKX/czudAafCz+VLFaYqj8tHY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NKykp3gREc/V9iGPeq7xGAvN8rlmiJxefuxmiYR9VNmgM62iBnKO9xd5L8ZzC19Dw2lnKGrDUajWbcMZpl7nsh0h5kJF6SNk0xPMNrWqYJ8br06ah+3TDA/8G1R9iRbMOSpuBbg6VHP8+p9vfvBM6tGecNUi1v3mA/LISPct7y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WHgAe9QK; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-49048e043e5so60920385e9.1
-        for <cgroups@vger.kernel.org>; Fri, 29 May 2026 05:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1780058776; x=1780663576; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VVuXTuvU9z6/Xk/ij86jv4B5J+bvOgp3qXIop/gYcXg=;
-        b=WHgAe9QKWcUAaRSkDzl1jIrfGNFTi1iph8+vKJPmV4aD3OgTlxSsIcfp9WyvPEQpK0
-         RyKaqE37wNftnUN+MIjEmQWYKYEiIYgPvSvyT262rJqVotvC4g8xYQOiekDUYD1SGYfT
-         ahRMqxwzDWf/enfr1ZEJLV2fLUYY/uVfmN5ZNPGAmpCEhjLfF7IWr9V2u0lI6xtLdIJA
-         YMMKUwpw3bKVqjoetXl7n7EVxncESpyrcheePOrob7juihsPvKwezOuTbVLaizrPU5q/
-         I/rYsxZXo31UTy3ZO0iK/rdzwo2iMXmHqRCZhy7ZsL2mAHucAbCbh3YyOR8ZUEJmngSt
-         R5Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780058776; x=1780663576;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VVuXTuvU9z6/Xk/ij86jv4B5J+bvOgp3qXIop/gYcXg=;
-        b=ep2oKtAxks1p+HPiSBjK5STSHpi9aSLhmdiv/CLWffYiFifhFakPUM1WEwATve0wi2
-         MNdPsaP7Ect88POs+NrEaeFn+3B6M1lo20yl2xVjt3LfkaiblIOm0B/w96qfDDaofY03
-         h+VOIq6AH3piBpx4EwMAuAoIDj7/P5ozD1TX0wdBV6HOe8oaITxOrvwvFXS+P2n/gvA7
-         0JRNIZ8GZjDl8/2fdbkwNQJDEJs8/3BfRoBULFltxMMmc0PMNrqLMA2NfqUf9cARjDBh
-         yBm0J9I2CU+FR9TISaLR3CpKQkGoBb0fGvXWD1qnXl2qF6GKN43NOJ1V6F1zBTSFeNzr
-         UO6w==
-X-Forwarded-Encrypted: i=1; AFNElJ+3mV4U7HhNQl6z/vTC+cFLWFhhtVtbOeQK41HWikwmKuxT4v+bG573w3klT6x5FhDsaS37fo2i@vger.kernel.org
-X-Gm-Message-State: AOJu0YxP/ebBfuTRNTzAk9BXvCUwDMsg560/V9zKf+syH34jM6BvrckQ
-	iLzHaewSLFrexQ514PL96fOIm0Q/DnE708twwFdf2qU2eJD9KY0WygOvjUoeOk264pA=
-X-Gm-Gg: Acq92OE8u+iHSWdMfnS52eMCdey7wmPAhMeoSUJWghCuvYaVYM5nW5cgpUkE4qQGzp9
-	MCVcpOvr8CkdY5oWe6AV9NdMitA0294qDA5U7SRU6m4k0dC7IqSGZbiMgNz5oCeL9IDsgQsskFl
-	np2CQjPeVzePGBvRtuKVTHqGsjRs4dWKBwK5fpGEcvBYeVinkYVL1IK0XFBt5Nl/51CT8MOyCr7
-	pQROkDGxMNfB5NDMgP//dCOLEbkjmwCOTfPMuJ8rRHtsY7EVdubxTNMo52onzFJaR8elL2ZbqH3
-	CSS/gdH3HXG93azilBl+d33c7/3W5Vegc5sPzrJRzQyFB6oIPzLSjS/Psa9iVvi1HvwyjTntigd
-	7Io03kbBL4bHUkL8LermhDOWAroqZU5/VTCyEXi8yRD4uJdUi3ltUGJflcDTSGvVzo6CR1H7T6K
-	Q8daspSnNRsZMK22OCZY1FcInIbA6gubnbCIKuacxfM0CNYDGy4mOi/cpxBwlal8oLUhBLEw==
-X-Received: by 2002:a05:600c:c16b:b0:48a:563c:c8c0 with SMTP id 5b1f17b1804b1-4909d2e8ff7mr50079895e9.7.1780058776583;
-        Fri, 29 May 2026 05:46:16 -0700 (PDT)
-Received: from localhost.localdomain (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909caa7faasm42612135e9.11.2026.05.29.05.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2026 05:46:16 -0700 (PDT)
-Date: Fri, 29 May 2026 14:46:14 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Tao Cui <cui.tao@linux.dev>
-Cc: tj@kernel.org, hannes@cmpxchg.org, leon@kernel.org, jgg@ziepe.ca, 
-	linux-rdma@vger.kernel.org, cgroups@vger.kernel.org, Tao Cui <cuitao@kylinos.cn>
-Subject: Re: [PATCH rdma-next v2 0/3] cgroup/rdma: add MR memory size
- resource tracking
-Message-ID: <ahmG_ualxJT5WU_B@localhost.localdomain>
-References: <20260529090733.2242822-1-cui.tao@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YBkHUJyfeq4/9YyPy6gb/u3KkkySSSwwQmgK4GfeOZgqIjve/C933+qsxHCPyRiJsxEEWqk2pPkeUTNy6TJVFxtNekGl0URPZ58hvWcLjp3JAhFPecjSp95MA6Nd+EVgYJQFN+63bmAYYCpSf7VsXbJRutcFMdLO8fV/T8K+FpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KeNiSrYG; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1780058901; x=1811594901;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HO1WR6twZag3h0xFdgAKX/czudAafCz+VLFaYqj8tHY=;
+  b=KeNiSrYGTnccyiKPNdbD2o5msj5UCid/4wK7VKxWXJYLAHCWb0ZBUh0Q
+   wBYVNs4Yqmk/Im77vb6Zgq7U4s3x1ge3bd5LYuUsTmruzHtXVkwL5ndqT
+   om4fgSXcv0kk3V1kWXktJwvLtOi6XvGiObh4e4y6yU5+Hxon/ZmJgNiIm
+   4C+krKgWPcJL7R03dhMyLkH/vj72LYEeN6ETYJYBjaWX35ne1SGrYWd00
+   6E2coVT635gmEKiBb8SccwqlrvW5kv/iqbaLLhVkGPDrYzzzQQfYZeUsV
+   XwMyyKWHUo74oY4sIPXws1swT9AZ8zdJhernWDm8qZlF2I8rYRWpAyeup
+   w==;
+X-CSE-ConnectionGUID: 60iPpsI/TJqi2bDv81Xjjw==
+X-CSE-MsgGUID: attDDFnGTiSsnSD9E7K9xA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11801"; a="81092967"
+X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
+   d="scan'208";a="81092967"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2026 05:48:20 -0700
+X-CSE-ConnectionGUID: U45MxQSeSeayqC7nDdmzOw==
+X-CSE-MsgGUID: lttKo//4TxeWrxIwEzQrzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
+   d="scan'208";a="240294353"
+Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 29 May 2026 05:48:16 -0700
+Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wSwdI-000000007EM-3wbN;
+	Fri, 29 May 2026 12:48:12 +0000
+Date: Fri, 29 May 2026 20:47:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yury Norov <ynorov@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+	Byungchul Park <byungchul@sk.com>,
+	Gregory Price <gourry@gourry.net>,
+	Ying Huang <ying.huang@linux.alibaba.com>,
+	Alistair Popple <apopple@nvidia.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Yury Norov <ynorov@nvidia.com>,
+	Farhad Alemi <farhad.alemi@berkeley.edu>,
+	Waiman Long <longman@redhat.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH] mm: don't allow empty relative nodemask in
+ mpol_relative_nodemask()
+Message-ID: <202605292049.eaIv99hr-lkp@intel.com>
+References: <20260528190337.878027-1-ynorov@nvidia.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tcierihojdco2ko5"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260529090733.2242822-1-cui.tao@linux.dev>
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_PGP(-2.00)[];
+In-Reply-To: <20260528190337.878027-1-ynorov@nvidia.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-16432-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16434-lists,cgroups=lfdr.de];
+	FREEMAIL_TO(0.00)[nvidia.com,linux-foundation.org,kernel.org,intel.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:email,suse.com:dkim,localhost.localdomain:mid]
-X-Rspamd-Queue-Id: C11366026E4
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,intel.com:email,intel.com:mid,intel.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 928EF602774
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Hi Yury,
 
---tcierihojdco2ko5
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH rdma-next v2 0/3] cgroup/rdma: add MR memory size
- resource tracking
-MIME-Version: 1.0
+kernel test robot noticed the following build warnings:
 
-Hi.
+[auto build test WARNING on akpm-mm/mm-everything]
 
-On Fri, May 29, 2026 at 05:07:30PM +0800, Tao Cui <cui.tao@linux.dev> wrote:
-> The real scarce resource in multi-tenant
-> deployments is pinned memory: how much physical memory gets registered
-> through MRs.
-> ...
-> 3. Overlap with memory cgroup: mr_mem does not count process memory
->    usage; it represents a per-device DMA registration budget: the
->    amount of memory this cgroup may register through a given HCA.
->    This is a different dimension from what memory cgroup tracks.  An
->    administrator might set mr_mem limits differently per device, which
->    memory cgroup cannot express.
->=20
->    In particular, mr_mem tracks the registered memory range associated
->    with the MR rather than exact dynamically pinned pages (e.g. for
->    ODP MRs).  This is a stable, policy-oriented approximation of
->    registration footprint, not an attempt at precise physical page
->    accounting.
+url:    https://github.com/intel-lab-lkp/linux/commits/Yury-Norov/mm-don-t-allow-empty-relative-nodemask-in-mpol_relative_nodemask/20260529-030835
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20260528190337.878027-1-ynorov%40nvidia.com
+patch subject: [PATCH] mm: don't allow empty relative nodemask in mpol_relative_nodemask()
+config: sparc64-randconfig-002-20260529 (https://download.01.org/0day-ci/archive/20260529/202605292049.eaIv99hr-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260529/202605292049.eaIv99hr-lkp@intel.com/reproduce)
 
-IIUC the pinned memory is regular RAM, i.e. it could be controlled with
-memcg as needed. Or is there "physical" limit of what can be assigned to
-a single device?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202605292049.eaIv99hr-lkp@intel.com/
 
-BTW, have a look at [1], it'd be good to converge to similar approach
-(the current proposal allows distinguishing whether charging should
-include or exempt memcg counting). Also it seems, that the dmem
-controller could be a one-stop solution for all DMA charges. Please tell
-me if there are any distinguishing factors between RDMA devices' memory
-and these dmem memory regions.
+All warnings (new ones prefixed by >>):
 
-Thanks,
-Michal
+   mm/mempolicy.c: In function 'mpol_relative_nodemask':
+>> mm/mempolicy.c:377:10: warning: 'return' with a value, in function returning void
+      return -EINVAL;
+             ^
+   mm/mempolicy.c:370:13: note: declared here
+    static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
+                ^~~~~~~~~~~~~~~~~~~~~~
 
 
-[1] https://lore.kernel.org/r/20260519-cgroup-dmem-memcg-double-charge-v2-0=
--db4d1407062b@redhat.com/
+vim +/return +377 mm/mempolicy.c
 
---tcierihojdco2ko5
-Content-Type: application/pgp-signature; name="signature.asc"
+   369	
+   370	static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
+   371					   const nodemask_t *rel)
+   372	{
+   373		unsigned int w = nodes_weight(*rel);
+   374		nodemask_t tmp;
+   375	
+   376		if (w == 0)
+ > 377			return -EINVAL;
+   378	
+   379		nodes_fold(tmp, *orig, w);
+   380		nodes_onto(*ret, tmp, *rel);
+   381	}
+   382	
 
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCahmKkhsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AjxUgD+OExioWktiqQ9OzC9IpGL
-l3Y0Srts+WHS89yla+uuu2IBALcEs0EwF6hOweZo9WWqnJ8ClpldY8i8TCukjmTp
-iTQN
-=I1f9
------END PGP SIGNATURE-----
-
---tcierihojdco2ko5--
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
