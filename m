@@ -1,227 +1,179 @@
-Return-Path: <cgroups+bounces-16464-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16467-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GHS0MgECGmqQ0ggAu9opvQ
-	(envelope-from <cgroups+bounces-16464-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 23:15:45 +0200
+	id mC+HED4FGmrK0ggAu9opvQ
+	(envelope-from <cgroups+bounces-16467-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 23:29:34 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F2B7608CDE
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 23:15:43 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 974A2608DFD
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 23:29:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2820B3029E60
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 21:14:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E5062304E0E8
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 21:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C57421F04;
-	Fri, 29 May 2026 21:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33BB73B6C11;
+	Fri, 29 May 2026 21:28:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mt5q4yEc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="giy7tgtU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72D73DD50D
-	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 21:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A1B03A63F2
+	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 21:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780089266; cv=none; b=qH0fbc4vjVLh0dzRZkXuV2Gpnn8PGF8wE2a9wTEgUF/cqhpr3ulTMe2Pvtj35AMeswC/pEiGdBIDL+Jzf7+qtx8E/N2ER5l/VxMjHm+4xC+qx2Pbg3xiR0y3cn4BTEGvjgHVHTlEm8zATwCiY+TiuQB4wFqMiHKo1kG3YomSDPI=
+	t=1780090135; cv=none; b=WkWnZwwqk4gV92ncpshg9DXYe1jTrJRZDgL/RWGIiKS7G9aiRCiAWpskI+CJqiRul/MV4AvJsDkDqtkz3d0FzPYwWrfkD6aByAMXJe8QGkkqVlh79aplGk6XjRJXjwySnVeok65GdbFhNrXqIcauFkEj3OdbUntsngOz2lKXG50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780089266; c=relaxed/simple;
-	bh=IXJ/fW4v6YEmX7UdLSm5aasq+tpsSacfX7N/jI01lJ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bSwVrJVd1jtDnhjndEY7c8YfFeQwDDMjw+/IkWkQRfOcDmRHrmhebjExopq0CUY3pQw2Lh6uXF2LUBn7UPw6Hkkyiqve4bXxYbQ0LYXWNBEzo3j8VvsX3I5ZPUD8VZbm8y3pWroP/qD4WF11wQcMltycoOe12JzhvSyPosq4Lfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mt5q4yEc; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ea3c6ed3-5d15-436e-9fa7-2e2d8ce26147@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780089261;
+	s=arc-20240116; t=1780090135; c=relaxed/simple;
+	bh=0cshPsnQwIcr+5VqQYjEZhIyyxzr/OIau2ixJwZ9yYQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sNOTUAcCQ4BSQmUjyrEKjAReetqnoA3/tsv1wdLnJYIu8KPYLTK/EjWnW4eibBhkT+4l17zVYuSk3s9cBBCNQF5Wncjr7SNFeMHog1sjwLckc4gVQQ4W1VRoEV/413IPTTsM5/rt31cz1ZZhR4Xft9qPIGnKsZbBOgQ8AUrLuzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=giy7tgtU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1780090131;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oAkmbr+OI++HT8zsiLOhQzkwD5SiBfLNC0Gds70M4nY=;
-	b=mt5q4yEcPHtz7/eDy+xc2Vjji6Z2FAwQXP1TLiEVesrvtL99oHtEKHzUHGuh93A/yi91eS
-	YiVAZ+d6XuV9IeDDAc8/WJcRRvbDJT2CXoEY6xjhgPrH6nop2Z4llc2X2YzMfoP4lkt2un
-	yJWDRmhyF54o2f5pR5xBWcZG/dijcZA=
-Date: Fri, 29 May 2026 14:14:11 -0700
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Uv6Y23LUodS/Zv6jMai00tlGP+SaZfgHwcOOf6Yl5Z0=;
+	b=giy7tgtUeEBfI72v4Gaq+gl6mY1qrbn419WXTj9+AUd257m1cVYJsRyyJPBv0K/KgTLtyK
+	f1S4ta8fYhkF74vJdXO31icilDChPrphnZikHTMoTJbxw0xOhSbYIIs2j7/oW69qMppPvB
+	+KrLqXSphz0ljRg7McEEbHsTIh5AHJg=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-605-I4eyyDWgOPGxTvESxo86Cg-1; Fri,
+ 29 May 2026 17:28:46 -0400
+X-MC-Unique: I4eyyDWgOPGxTvESxo86Cg-1
+X-Mimecast-MFC-AGG-ID: I4eyyDWgOPGxTvESxo86Cg_1780090124
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1FAAD180034C;
+	Fri, 29 May 2026 21:28:44 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.64.54])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C1D0019560A3;
+	Fri, 29 May 2026 21:28:40 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huaweicloud.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Peter Zijlstra <peterz@infradead.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Guopeng Zhang <guopeng.zhang@linux.dev>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-next v4 0/6] cgroup/cpuset: Support multiple source/destination cpusets for cpuset_*attach()
+Date: Fri, 29 May 2026 17:21:02 -0400
+Message-ID: <20260529212108.120506-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next v2 0/3] cgroup/rdma: add MR memory size resource
- tracking
-To: Tao Cui <cui.tao@linux.dev>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com, leon@kernel.org, jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org, cgroups@vger.kernel.org,
- Tao Cui <cuitao@kylinos.cn>
-References: <20260529090733.2242822-1-cui.tao@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "yanjun.zhu" <yanjun.zhu@linux.dev>
-In-Reply-To: <20260529090733.2242822-1-cui.tao@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16464-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16467-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yanjun.zhu@linux.dev,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,kylinos.cn:email]
-X-Rspamd-Queue-Id: 5F2B7608CDE
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 974A2608DFD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/29/26 2:07 AM, Tao Cui wrote:
-> From: Tao Cui <cuitao@kylinos.cn>
-> 
-> Currently the RDMA cgroup only tracks two aggregate counters:
-> hca_handle and hca_object.  The real scarce resource in multi-tenant
-> deployments is pinned memory: how much physical memory gets registered
-> through MRs.  The existing hca_object counter is too coarse to capture
-> this.
-> 
-> This series adds a single new resource type:
-> 
->    - mr_mem  - Cumulative MR memory size in bytes
-> 
-> The per-object-type counters (qp, mr) from RFC v1 have been removed
-> per review feedback [1]: modern NICs pool objects from the same memory
-> pool so the distinction between QP count and MR count is not
-> meaningful for resource limiting.  hca_object remains sufficient for
-> coarse object accounting.
-> 
-> After this series, an administrator can set limits like:
-> 
->      echo "mlx5_0 mr_mem=1073741824" > rdma.max
-> 
+ v4:
+  - Add a new patch 1 to fix inconsistency in node mask usage in
+    cpuset_update_tasks_nodemask() and cpuset_attach() and adjust
+    the subsequent patches accordingly.
+  - Update patch 3 to set the update flags whenever the CPU or node
+    mask is updated to address issue reported by Sashiko.
+  - Update patch 5 to remove unneeded setting of old_mems_allowed as
+    well as calling schedule_flush_migrate_mm() if queue_task_work is
+    set.
 
-Hi,
+ v3:
+  - Rebased to the lastest linux-next tree.
+  - Keep cpuset_attach_old_cs as suggested by Chen Ridong and replace
+    patch 3 by a new one to make it track task group leader.
 
-Thanks for the patchset! Introducing `mr_mem` to track and limit pinned
-memory size is a very practical enhancement for multi-tenant deployments.
+Sashiko AI review of another cpuset patch had found that cpuset_attach()
+and cpuset_can_attach() can be passed a cgroup_taskset with tasks
+migrating from one source cpuset to multiple destination cpusets and
+vice versa.  Further testing of the cpuset code indicates that this is
+indeed the case when the v2 cpuset controller is enabled or disabled.
 
-I have a question regarding how this new resource type interacts with
-Fast Registration (FRWR / FRMR), which is widely used in production
-environments (e.g., NVMe-oF, iSER) to achieve high performance.
+Unfortunately, cpuset_attach() and cpuset_can_attach() still assume that
+there will be one source and one destinaton cpuset which may result in
+inocrrect behavior.
 
-As we know, FRWR decouples the MR object allocation (`ib_alloc_mr`) from
-the actual memory page mapping (`ib_map_mr_sg`). The creation of FRWR
-Memory Regions is often managed via a pre-allocated page pool.
+This patch series is created to fix this issue.
 
-Could you clarify how `mr_mem` accounts for FRWR in the following scenarios?
+Patch 1 is to fix an inconsistency in the way node mask update is being
+handled in cpuset_update_tasks_nodemask() and cpuset_attach() so that
+they match each other.
 
-1. Accounting Granularity: Does `mr_mem` charge the maximum capacity of
-    the FRWR object at its allocation time (`ib_alloc_mr`), or does it
-    dynamically track the actual mapped bytes during the fast-reg data 
-path? If it's the former, it represents a "static maximum budget" per 
-pool, which seems more practical for performance.
+Patches 2 and 3 are just preparatory patches to make the remaining
+patches easier to review.
 
-2. Kernel-space vs Userspace: FRWR pools are frequently allocated by
-    kernel-space drivers (like NVMe-oF target/host). If these kernel
-    threads are not bound to a specific user cgroup, will their FRWR
-    allocations end up in the root cgroup, potentially bypassing the
-    per-tenant limits?
+Patch 4 makes cpuset_attach_old_cs to track group leader for use by
+cpuset_migrate_mm().
 
-Don't you think it would be beneficial to explicitly document or 
-consider the FRWR pattern in the design section, given its prevalence in
-real-world storage and networking workloads?
+Patch 5 moves mpol_rebind_mm() and cpuset_migrate_mm() inside
+cpuset_attach_task() to make CLONE_INTO_CGROUP flag of clone(2) works
+more like moving task from one cpuset to another one, while also make
+supporting multiple source and destination cpusets easier.
 
-Thanks,
-Zhu Yanjun
+Patch 6 makes the necessary changes to enable the support of multiple
+source and destination cpusets by keeping all the source and destination
+cpusets found during task iterations in two singly linked lists for
+source and destination cpusets respectively.
 
-> Design
-> ~~~~~~
-> 
-> mr_mem is not page-level ownership tracking; it is object-based
-> accounting tied to the MR lifetime:
-> 
->    - charged at MR registration time
->    - uncharged at MR destruction time
->    - the charge is pinned to the cgroup that created the MR for the
->      entire lifetime of the MR object
-> 
-> This model intentionally defines accounting semantics around MR
-> object lifetime rather than page ownership:
-> 
-> 1. fork(): fork() does not duplicate MR objects.  Even though the
->     child inherits the uverbs fd and can access the parent's ucontext,
->     the MR remains a single kernel object.  The charge is tied to the
->     MR object, not to the number of processes that can reach it, so
->     no splitting or re-accounting is needed.
-> 
-> 2. Cgroup migration: mr_mem follows the same semantics as the existing
->     hca_object; charge at creation time against the invoking task's
->     cgroup, uncharge at destruction time.  The RDMA cgroup does not
->     implement can_attach/attach callbacks today, so charges do not
->     migrate with the task.  This is a known limitation that applies
->     equally to hca_handle and hca_object.  mr_mem does not introduce
->     any new complication here.
-> 
-> 3. Overlap with memory cgroup: mr_mem does not count process memory
->     usage; it represents a per-device DMA registration budget: the
->     amount of memory this cgroup may register through a given HCA.
->     This is a different dimension from what memory cgroup tracks.  An
->     administrator might set mr_mem limits differently per device, which
->     memory cgroup cannot express.
-> 
->     In particular, mr_mem tracks the registered memory range associated
->     with the MR rather than exact dynamically pinned pages (e.g. for
->     ODP MRs).  This is a stable, policy-oriented approximation of
->     registration footprint, not an attempt at precise physical page
->     accounting.
-> 
-> Tao Cui (3):
->    cgroup/rdma: extend charge/uncharge API with s64 amount parameter
->    cgroup/rdma: add MR memory size resource tracking
->    cgroup/rdma: update cgroup resource list for MR_MEM
-> 
->   Documentation/admin-guide/cgroup-v2.rst       |  21 ++--
->   drivers/infiniband/core/cgroup.c              |  10 +-
->   drivers/infiniband/core/core_priv.h           |  12 +-
->   drivers/infiniband/core/rdma_core.c           |  20 +++-
->   drivers/infiniband/core/uverbs_cmd.c          |  61 +++++++++-
->   drivers/infiniband/core/uverbs_std_types_mr.c |  37 ++++++
->   include/linux/cgroup_rdma.h                   |   8 +-
->   include/rdma/ib_verbs.h                       |   1 +
->   kernel/cgroup/rdma.c                          | 108 +++++++++++++-----
->   9 files changed, 219 insertions(+), 59 deletions(-)
-> 
-> ---
-> Changes from RFC v1:
-> 
->    - Removed RDMACG_RESOURCE_QP and RDMACG_RESOURCE_MR per-type
->      counters following review feedback from Jason Gunthorpe [1].
->    - Retained only RDMACG_RESOURCE_MR_MEM as the sole new resource.
->    - Added detailed semantic notes to the commit messages addressing
->      fork(), cgroup migration, and overlap with memory cgroup [2].
->    - Renamed patches to reflect the narrower scope.
-> 
-> [1] https://lore.kernel.org/all/20260525134314.GI7702@ziepe.ca/
-> [2] https://lore.kernel.org/all/20260528075537.2170697-1-cuitao@kylinos.cn/
+Waiman Long (6):
+  cgroup/cpuset: Fix node inconsistencies between
+    cpuset_update_tasks_nodemask() and cpuset_attach()
+  cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
+  cgroup/cpuset: Expand the scope of cpuset_can_attach_check()
+  cgroup/cpuset: Made cpuset_attach_old_cs track task group leaders
+  cgroup/cpuset: Move mpol_rebind_mm/cpuset_migrate_mm() calls inside
+    cpuset_attach_task()
+  cgroup/cpuset: Support multiple source/destination cpusets for
+    cpuset_*attach()
+
+ kernel/cgroup/cpuset-internal.h |   6 +
+ kernel/cgroup/cpuset.c          | 424 +++++++++++++++++++++++---------
+ 2 files changed, 308 insertions(+), 122 deletions(-)
+
+-- 
+2.54.0
 
 
