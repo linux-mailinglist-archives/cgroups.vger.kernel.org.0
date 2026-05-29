@@ -1,67 +1,66 @@
-Return-Path: <cgroups+bounces-16423-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16424-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SNTaDUWFGWouxQgAu9opvQ
-	(envelope-from <cgroups+bounces-16423-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:23:33 +0200
+	id kIsKIBiGGWouxQgAu9opvQ
+	(envelope-from <cgroups+bounces-16424-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:27:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C99B602352
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:23:32 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D40656023EF
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 14:27:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7490F30524FB
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 12:19:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 18CE43087E57
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 12:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833BB3C9890;
-	Fri, 29 May 2026 12:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E83C93E0C44;
+	Fri, 29 May 2026 12:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="mCkTiPo2"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="BzvFiQIv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.44])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A41D3DFC93;
-	Fri, 29 May 2026 12:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1F23BA24F;
+	Fri, 29 May 2026 12:19:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780057178; cv=none; b=C1j3GMqJbfJdL7yIBwT7s4qZzlIjZYyntlJVCczBGDktfT3Ud52WUNAlW1w6RVBHhmbKCdzGpwbQcajO7SMR53mxyDGNAHoebhe34xdsngIb/tMDIqbWybvW2/J26g8dNjveYxWylZWqZ6txTgLMkIpAAH287S5JIoPMWaWIVhI=
+	t=1780057183; cv=none; b=sHbj+GWvHy3H844dRZwrRI+sjKeALAa1fKU2sZLGRr5MwkpiKcv1AkFAoa3Z6ZZJJHQZA2ahwVRO7LNBUeod0Zx97XYuAObVS9FSjkhYwjOgLbwmjje2XyAOuFL/1UMfyN3tYL3zf5uJELBl0Fqfd2cUHGiiL2yIV+ptAZtKQCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780057178; c=relaxed/simple;
-	bh=7jLMGW+raRr9jRp/zuJHoM7n9LG+68alAMBMXxBd+uo=;
+	s=arc-20240116; t=1780057183; c=relaxed/simple;
+	bh=UsDJ1SlBWLJpayBtQ4Q84psXrtlnhwGU8Oh1yWXjOXE=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=qDkI5DHzY+U0xD7pgQ5mi7LdDEFKDDfpLNjPZG4R+QfEOfywYS8i/BySrcQxuyTxlm+y4UaqBoyVD/3yt4QVFhsn9qbcq6ykOftY9gCstScORnfTXw22pOOB5UAm+m7aW3x4lbFsoW+iLcT2zc6Y4ZMW2cr54jCTFhJ0l2kkcM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=mCkTiPo2; arc=none smtp.client-ip=43.163.128.44
+	 MIME-Version; b=CBRHiWA/8r7fTcg6UsDvsMggdg0t+/luyZcuGhc+87XGtotLAX+4ZFmtGuIRvfHgBt97B9d+dS7geQeoybgt3IQ8Y+MJFhExQmKbxatI44wrWJ6q7TgGJWdlAGUkPdznv2mNcqqoVFVYvzblXHGKGG1vy93aUK9j7DlG2lAy338=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=BzvFiQIv; arc=none smtp.client-ip=43.163.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1780057172; bh=bVdSFaRs3+EuMAnxIy5DMxxMx3cOnErIMJI6trzSpzw=;
+	t=1780057173; bh=6upOtVdcSMEiWQj/LoAhI+cSqrQul/bXobDwKNZi3uE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=mCkTiPo2IHFozwt8DpBgCjFjySFOUCuCqTBoaeJIrfHDNtKRvPSy8ga8RIIhXoGD1
-	 +Vp+23K9Y/9cO0wv9B05pN4RsbWvBjmiFM6f2UqnZxxpT5BPdEDwYq0/0pvLDMdxkT
-	 ZT7UMm7mvMFjuQvpNyL+8DmLq55Qmg1UFp/uDPHI=
+	b=BzvFiQIvEF5lRfApXuRIxXloyfW601cGekF8ReFj0UlHXWD9RHUFiEFDrLk7GXs1J
+	 7at9eI/Y2ppncPSORnYgaR+zy2U5HhUJ6SEq4ztojqt0LsG3nv10NrU73s7W6HLBiQ
+	 UPA5LeF5x9NJmz9dXdOA+uSBXx+lGhzGX1PXPY9c=
 Received: from node68.. ([166.111.236.25])
 	by newxmesmtplogicsvrsza73-0.qq.com (NewEsmtp) with SMTP
 	id 4DC10017; Fri, 29 May 2026 20:19:28 +0800
-X-QQ-mid: xmsmtpt1780057168tzjwrsgd1
-Message-ID: <tencent_C78A02F3C41E15233C371816825C7DCF8708@qq.com>
-X-QQ-XMAILINFO: Mi3PnGw1zbXUjsp55hP//2TzDYS0KqexQwEQGN+M9bSC/Uz/t0z4g0+EhjTtIp
-	 aeC+9AOG4QF1yU3MizVH6jsjooanTR/YImuIOHMLZtLBWkfeahthNaouMCgnkq+4hSzD3tgQh2XG
-	 cqRup5WSheqyiCFxk21Z3mbwtSfMbOQMHLRbr+E/+chvZheENv8ppzUeBEI8UCEzfG1/jxZiFxyF
-	 JE7xjP8ub2ACuhw+tODKS062CDu4/T9QD8F4NdlKhcTl3Jc8EeTjr2kYsRQ5UK5Hk0KLHSrKMFhu
-	 mZLyoxhqmL1jKhtZL3fx+CpZe3qVa7BYYlggv4aTQdCjfE+gPcyezlNIe/RqbynSqgetnZZgsqdf
-	 tQ8sNXkXnO3Pz3ypFtgl71X/b7TsQgVV6YKTEJiTObQezFUY9yhVU03QB06s1/56FkU5WR5nm+6k
-	 3TV8h2C14/FRkpGI5zAxZguRacsR3epJaRo/i1fKKeTOOPLil7pQc6nrJsPOiHluEG5RqdTLXO4K
-	 cgqOd1uaAA1UEPNoiFIryuDsv+ioAjdNf0nRomgnDn/v2ha5Wcum3JEmj3UAPnSUaFL2CuEuSlGP
-	 XxQyizk8zeTOLyKJkYZbh1FIGsZ91Az/F18jOPCi5v1DxHim6oBqViPSqpO7QmKOeE1j2abubHlh
-	 Y0UD9hZObBOFfAZXXADZ7j85B5bFiXwYoJHkkTLrlRokRx1srF81L9m1TLVDMmlmsyIGNkAICdLj
-	 qlyDS0lRnH9L7NG1iBiExGC8Ys3vKHoeQjs5L9X+64zilXWEn2oOeXYVxAO44Edo9KYIjEU4G/BR
-	 l3jySsFO94cRwP9qfuxfnK1oYgBx7kzjFWri8MeLRAwaFANb0AcvRqLz5lw4qtItsg613ZSgXNIK
-	 IreARaqnQ0WTnkMJIBgyoZtL9itkNwxPi4V0HTRNt3cp4cMpSceA6PZyfd/wLkKN4HugFzokiodR
-	 yP0IMUMzY+oT7YKZlNRnMy7NsctfIbfvyV93nAb6jwA1Un3gbA9m8YXxYjEZLOj7Ox9RtHkiWbd9
-	 6tpV34wAsTreBbqm/Hw9CMLzwYvmtSTm/70HLX2IrRJayVsRbBlEiEnUB8qygbYNw9XXJA8d9Vpt
-	 DNjywgVE4gVz9JYNTNHYobOfd5IKqB8kxs12z+UbOK0fU3j6uV6lOBmLn2hw==
-X-QQ-XMRINFO: M/715EihBoGS47X28/vv4NpnfpeBLnr4Qg==
+X-QQ-mid: xmsmtpt1780057170tklm0azzd
+Message-ID: <tencent_930D3FD72B2ECF2379248F7CDE48587C700A@qq.com>
+X-QQ-XMAILINFO: OOyEews/EdUgGrC4kGz6V3LDdcHDMeu94hgH5yaIgtByJKumzwq6uB/LtnUX5R
+	 NhmcZbGtYlmURp2oM1N69k54MXOemCKwW531GwD9CHAQzgSkdUfQ+G51ao2t9n0h/ek1cueUGZjv
+	 oGf/2fN8/9HbK/4I7fQiyEx8TguKH2lXJAqD5ocJy0zjJndYW1p3bgE+aGbYgGe0+2e8w8vW48PQ
+	 rRQZVsbVSa0bCZbTax1zSG7ZZchB0vywtSbJ6tG/A3/vYjfJDm+89dV+PmTkiLLqaUDv07/yeUmn
+	 0/5BKilNIWIrY5caenuAr1qohxZjapyNZ4QcShN7K/ILv8ed0HZFwNMDh1YQBBg3TlI7sbOk39yX
+	 J9rrE97T7IMgYlE7UFzBAjsHGUH2opi9VGznwyWyG/nI4Ju+6CrOJwt71y+wlKAaCB2noNv+cdfC
+	 BL/Yw0pSDCNLsShxYtCEZXadUKNPMjD//CTiHS8I17KAZdhrCno6NX8i+3NWo3pe5vYwGWsRzEvr
+	 aAK4L3zS9JQiEVCcbzT+z0QcWKEcmYP1e7vuaWrWKg6Y+Glkam4raxVypRdI9qQJ6CV1VWRa0+ir
+	 wxbY1ByjmCzt5I2poqyT13EiBvgoSUcFuLKlTmvfVai43SZ8MDefdUrtZGTI8qme/WsA5xHIyMYC
+	 zYIUFPT0vCMiZp2sPWJHdDAq9r0sPFCp4bnfd98UkPA1m2MiGpokbzj1oxVrz4f4YR59fn3VAccP
+	 VYzyHyoORAeyGMnUahdrRLTbiZfyC3vlXlOMFzPrKTJ6qL3qS70aHdxHzO3sJE7TQrwcNTOAZLzy
+	 Inbj/ucF6w9UcFL3ZN2YqZbCsnkMRIJe5GiBw1SVfjxF+Jizz1UDAJ2NW2mEeBbat2GprN4ATd2P
+	 MHAV1jsF1QK1QVY92ZzgvKj8vKvqjDuFl8NjIcw+y9b+yxM0gxI1/N7lXLPHXZUuVJmjOGH7wEge
+	 VcobaFqn0REtwLVTc/GIFIHaW3Jni9Q9p4irGdaGOerWpqZJDNEnPhVaDf47gaxpibaSO/frPnma
+	 Aoj/hz08eLwq61sqEVp+hh2pCt0nkXSjZ93AvWh1h+CN5Dd7Dw
+X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
 From: fujunjie <fujunjie1@qq.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-mm@kvack.org,
@@ -78,9 +77,9 @@ Cc: Chris Li <chrisl@kernel.org>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
-Subject: [RFC PATCH v2 1/9] mm/zswap: expose range state for swapin policy
-Date: Fri, 29 May 2026 12:19:20 +0000
-X-OQ-MSGID: <20260529121928.4115683-1-fujunjie1@qq.com>
+Subject: [RFC PATCH v2 2/9] mm: let swap_read_folio() report retryable zswap races
+Date: Fri, 29 May 2026 12:19:21 +0000
+X-OQ-MSGID: <20260529121928.4115683-2-fujunjie1@qq.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <tencent_98CD9F78E48D08DC005A6471A13CFF28B60A@qq.com>
 References: <tencent_98CD9F78E48D08DC005A6471A13CFF28B60A@qq.com>
@@ -96,12 +95,12 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16423-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16424-lists,cgroups=lfdr.de];
 	FREEMAIL_TO(0.00)[linux-foundation.org,kvack.org,meta.com,tencent.com,gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_FROM(0.00)[qq.com];
@@ -118,140 +117,148 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	NEURAL_HAM(-0.00)[-0.998];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:email,qq.com:mid,qq.com:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 3C99B602352
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,qq.com:email,qq.com:mid,qq.com:dkim]
+X-Rspamd-Queue-Id: D40656023EF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Large folio swapin needs to know whether a candidate swap range is fully
-backed by zswap before it can choose an order. That decision should stay
-in common swapin code, not inside zswap.
+Large zswap loads need a way to ask the caller to drop a speculative large
+swapcache folio and retry order-0. A void swap_read_folio() cannot express
+that without turning a backend race into an IO failure.
 
-Export two zswap facts for that caller: a lockless range occupancy snapshot
-and the current zswap reclaim-pressure state. The range state is
-advisory only. Writeback or invalidation can change the backend after the
-snapshot, so users must recheck before issuing large-folio IO.
+Return int from swap_read_folio() and reserve -EAGAIN for retryable large
+zswap races. Existing order-0 paths keep treating the read as before; the
+synchronous swapin path only warns for now. A later patch will consume
+-EAGAIN and retry order-0.
 
 Signed-off-by: fujunjie <fujunjie1@qq.com>
 ---
- include/linux/zswap.h | 26 +++++++++++++++++++++++++
- mm/zswap.c            | 44 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 70 insertions(+)
+ mm/page_io.c    | 19 +++++++++++++++++--
+ mm/swap.h       |  5 +++--
+ mm/swap_state.c | 13 +++++++++++--
+ 3 files changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index 30c193a1207e..8f9aee97517c 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -9,6 +9,18 @@ struct lruvec;
+diff --git a/mm/page_io.c b/mm/page_io.c
+index f2d8fe7fd057..16724bdfb400 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -653,13 +653,21 @@ static void swap_read_folio_bdev_async(struct folio *folio,
+ 	submit_bio(bio);
+ }
  
- extern atomic_long_t zswap_stored_pages;
- 
+-void swap_read_folio(struct folio *folio, struct swap_iocb **plug)
 +/*
-+ * Advisory zswap occupancy snapshot for a swap range. This is not a complete
-+ * backend classifier; callers must recheck before depending on ALL_ZSWAP for
-+ * large-folio IO.
++ * Return -EAGAIN only when a locked large swapcache folio hit a retryable
++ * zswap backend race. The caller owns that still-locked folio and must drop or
++ * retry it. Other zswap errors are still reported through the usual folio
++ * state: the folio is unlocked without PG_uptodate and the fault path will
++ * turn that into an I/O error.
 + */
-+enum zswap_range_state {
-+	ZSWAP_RANGE_NEVER_ENABLED,
-+	ZSWAP_RANGE_NO_ZSWAP,
-+	ZSWAP_RANGE_ALL_ZSWAP,
-+	ZSWAP_RANGE_MIXED,
-+};
-+
- #ifdef CONFIG_ZSWAP
- 
- struct zswap_lruvec_state {
-@@ -27,6 +39,9 @@ struct zswap_lruvec_state {
- unsigned long zswap_total_pages(void);
- bool zswap_store(struct folio *folio);
- int zswap_load(struct folio *folio);
-+enum zswap_range_state zswap_probe_range(swp_entry_t swp,
-+					 unsigned int nr_pages);
-+bool zswap_pool_reclaim_pressure(void);
- void zswap_invalidate(swp_entry_t swp);
- int zswap_swapon(int type, unsigned long nr_pages);
- void zswap_swapoff(int type);
-@@ -49,6 +64,17 @@ static inline int zswap_load(struct folio *folio)
- 	return -ENOENT;
- }
- 
-+static inline enum zswap_range_state zswap_probe_range(swp_entry_t swp,
-+						       unsigned int nr_pages)
-+{
-+	return ZSWAP_RANGE_NEVER_ENABLED;
-+}
-+
-+static inline bool zswap_pool_reclaim_pressure(void)
-+{
-+	return false;
-+}
-+
- static inline void zswap_invalidate(swp_entry_t swp) {}
- static inline int zswap_swapon(int type, unsigned long nr_pages)
++int swap_read_folio(struct folio *folio, struct swap_iocb **plug)
  {
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 761cd699e0a3..da5297f7bd69 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -506,6 +506,19 @@ unsigned long zswap_total_pages(void)
- 	return total;
- }
+ 	struct swap_info_struct *sis = __swap_entry_to_info(folio->swap);
+ 	bool synchronous = sis->flags & SWP_SYNCHRONOUS_IO;
+ 	bool workingset = folio_test_workingset(folio);
+ 	unsigned long pflags;
+ 	bool in_thrashing;
++	int ret = 0;
  
-+/*
-+ * Expose whether zswap reclaim pressure is active. This is a backend fact:
-+ * zswap_check_limits() sets the state once the pool reaches the hard limit and
-+ * keeps it set until the pool falls below the accept threshold.
-+ */
-+bool zswap_pool_reclaim_pressure(void)
-+{
-+	if (zswap_never_enabled())
-+		return false;
-+
-+	return READ_ONCE(zswap_pool_reached_full);
-+}
-+
- static bool zswap_check_limits(void)
- {
- 	unsigned long cur_pages = zswap_total_pages();
-@@ -1559,6 +1572,37 @@ bool zswap_store(struct folio *folio)
- 	return ret;
- }
+ 	VM_BUG_ON_FOLIO(!folio_test_swapcache(folio) && !synchronous, folio);
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+@@ -681,8 +689,14 @@ void swap_read_folio(struct folio *folio, struct swap_iocb **plug)
+ 		goto finish;
+ 	}
  
-+enum zswap_range_state zswap_probe_range(swp_entry_t swp,
-+					 unsigned int nr_pages)
-+{
-+	unsigned int type = swp_type(swp);
-+	pgoff_t offset = swp_offset(swp);
-+	bool present = false, missing = false;
-+	unsigned int i;
-+
-+	/*
-+	 * This is an advisory, lockless snapshot for common swapin admission.
-+	 * Callers must recheck before depending on an all-zswap range for IO:
-+	 * concurrent writeback or invalidation can change the backend state.
-+	 */
-+	if (zswap_never_enabled())
-+		return ZSWAP_RANGE_NEVER_ENABLED;
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		struct xarray *tree = swap_zswap_tree(swp_entry(type, offset + i));
-+
-+		if (xa_load(tree, offset + i))
-+			present = true;
-+		else
-+			missing = true;
-+
-+		if (present && missing)
-+			return ZSWAP_RANGE_MIXED;
+-	if (zswap_load(folio) != -ENOENT)
++	ret = zswap_load(folio);
++	if (ret == -EAGAIN) {
++		VM_WARN_ON_ONCE_FOLIO(!folio_test_large(folio), folio);
+ 		goto finish;
 +	}
-+
-+	return present ? ZSWAP_RANGE_ALL_ZSWAP : ZSWAP_RANGE_NO_ZSWAP;
-+}
-+
- /**
-  * zswap_load() - load a folio from zswap
-  * @folio: folio to load
++	if (ret != -ENOENT)
++		goto finish;
++	ret = 0;
+ 
+ 	/* We have to read from slower devices. Increase zswap protection. */
+ 	zswap_folio_swapin(folio);
+@@ -701,6 +715,7 @@ void swap_read_folio(struct folio *folio, struct swap_iocb **plug)
+ 		psi_memstall_leave(&pflags);
+ 	}
+ 	delayacct_swapin_end();
++	return ret;
+ }
+ 
+ void __swap_read_unplug(struct swap_iocb *sio)
+diff --git a/mm/swap.h b/mm/swap.h
+index 77d2d14eda42..ea7e1f3c4410 100644
+--- a/mm/swap.h
++++ b/mm/swap.h
+@@ -241,7 +241,7 @@ extern void __swap_cluster_free_entries(struct swap_info_struct *si,
+ /* linux/mm/page_io.c */
+ int sio_pool_init(void);
+ struct swap_iocb;
+-void swap_read_folio(struct folio *folio, struct swap_iocb **plug);
++int swap_read_folio(struct folio *folio, struct swap_iocb **plug);
+ void __swap_read_unplug(struct swap_iocb *plug);
+ static inline void swap_read_unplug(struct swap_iocb *plug)
+ {
+@@ -381,8 +381,9 @@ static inline void folio_put_swap(struct folio *folio, struct page *page)
+ {
+ }
+ 
+-static inline void swap_read_folio(struct folio *folio, struct swap_iocb **plug)
++static inline int swap_read_folio(struct folio *folio, struct swap_iocb **plug)
+ {
++	return 0;
+ }
+ 
+ static inline void swap_write_unplug(struct swap_iocb *sio)
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 04f5ce992401..d37097913b30 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -628,6 +628,7 @@ static struct folio *swap_cache_read_folio(swp_entry_t entry, gfp_t gfp,
+ 					   struct swap_iocb **plug, bool readahead)
+ {
+ 	struct folio *folio;
++	int ret;
+ 
+ 	do {
+ 		folio = swap_cache_get_folio(entry);
+@@ -639,7 +640,13 @@ static struct folio *swap_cache_read_folio(swp_entry_t entry, gfp_t gfp,
+ 	if (IS_ERR_OR_NULL(folio))
+ 		return NULL;
+ 
+-	swap_read_folio(folio, plug);
++	ret = swap_read_folio(folio, plug);
++	/*
++	 * Swap readahead allocates order-0 folios. -EAGAIN is reserved for
++	 * retryable large zswap backend races and must be handled by the
++	 * synchronous common swapin path.
++	 */
++	VM_WARN_ON_ONCE(ret == -EAGAIN);
+ 	if (readahead) {
+ 		folio_set_readahead(folio);
+ 		count_vm_event(SWAP_RA);
+@@ -668,6 +675,7 @@ struct folio *swapin_sync(swp_entry_t entry, gfp_t gfp, unsigned long orders,
+ 			   struct vm_fault *vmf, struct mempolicy *mpol, pgoff_t ilx)
+ {
+ 	struct folio *folio;
++	int ret;
+ 
+ 	do {
+ 		folio = swap_cache_get_folio(entry);
+@@ -679,7 +687,8 @@ struct folio *swapin_sync(swp_entry_t entry, gfp_t gfp, unsigned long orders,
+ 	if (IS_ERR(folio))
+ 		return folio;
+ 
+-	swap_read_folio(folio, NULL);
++	ret = swap_read_folio(folio, NULL);
++	VM_WARN_ON_ONCE(ret == -EAGAIN);
+ 	return folio;
+ }
+ 
 -- 
 2.34.1
 
