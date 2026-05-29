@@ -1,158 +1,187 @@
-Return-Path: <cgroups+bounces-16414-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16415-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +JDdAstDGWqNuAgAu9opvQ
-	(envelope-from <cgroups+bounces-16414-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:44:11 +0200
+	id WEuMEWRVGWrTvQgAu9opvQ
+	(envelope-from <cgroups+bounces-16415-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 10:59:16 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F2B75FEB69
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:44:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F805FFA13
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 10:59:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C7BE304259F
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 07:40:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 851D8323CE10
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 08:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245DA3AD50B;
-	Fri, 29 May 2026 07:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D97E3C5546;
+	Fri, 29 May 2026 08:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b="njLFIoh5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nGtlxaml"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lankhorst.se (unknown [141.105.120.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95BB93AA1B6;
-	Fri, 29 May 2026 07:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3B63BB69F;
+	Fri, 29 May 2026 08:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780040414; cv=none; b=cB1VdVX2q0PXrJs82B5R2KWdSXMFR7hK3H/p5dHqDDGoHNWUyZBBu6areAo6s4BRFuk3Wf2m2J0qzMAMhpHLYcEzBPYrlHGacSXrOL0FGX7inxFZGYgIPEBtR8fNR/k/C6zOCg3MQLjYnS0XzALAFaWnophgLryjvBN6f+aR2gc=
+	t=1780044487; cv=none; b=SI3jm9wK9OTbLmqcTC72LXFHKWuVxVdRSw3mdkOpxIKgfubLZYiqS2Ogk5nT+EqYO2+h7awbla8Ge3R0SL9su+1TyfuO/pZQDl0iR4APzq5PkuGKrf/yzd9oC3xZyhDt9ZgcVswsBmIg33cUmT/SJR/oriyEmdpR8HZhg8bEu+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780040414; c=relaxed/simple;
-	bh=jQMKoFxjhXOg58Gu2goSrIvcgitzJfXOyS065eiSQOQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bLkBwjCtxqeECqXucnDM1xhvY3p3w12jiYEBrQhYEDUJsmuaniHq+0QDnqmaz2MoNy5tv8XCYK325HfbXUPugkfsHjtCxGUypxxatjGc4CcsVFwDN4/a4gXkki4sN4x+0BqG5K4FuHEiJB+vmfJgv3wm5qUg4QUt+kslpwxxsa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b=njLFIoh5; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lankhorst.se;
-	s=default; t=1780040071;
-	bh=jQMKoFxjhXOg58Gu2goSrIvcgitzJfXOyS065eiSQOQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=njLFIoh5+QF8qO2yk3lhUuM/T3YGzqoJcLI545XszXAraCyn/vqzqXbQpztEhe2qp
-	 TvvjZJh8sITmgxaNvTUvCrCWKTxfWZ5H1t6ucIVSwHpWHzYJrJ8zxulTWmtYdQuf1D
-	 S1iDf5BZX/zV0p/epJhWh88rH8FjbA70aH6aSBWLtYah/vlXYhULlnKNsLubUkU37E
-	 7eC5Et/rBQnmvo5b5xtczea6RnEY437dQfirB8BhtMrcEPhpaL015Dxlh69eFMoueV
-	 Uz25Xm/jB+pKTjyCi8f7ocYa5b9mJEfuoTwizogiCCJAbev4ZmKHjn5+RxJNWFSD8p
-	 6wFW6wpwDZIiQ==
-Message-ID: <89901220-0a43-4668-9d20-aaecc72c58dd@lankhorst.se>
-Date: Fri, 29 May 2026 09:34:28 +0200
+	s=arc-20240116; t=1780044487; c=relaxed/simple;
+	bh=6AWLmlUtfnCHN56YA869w6PKgs0+gUIV71eS29nK1aI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G1fPjMOgNL7/ZjQXsnB8G9DIufUEeeMLX6yUh8tG2kxNgaDgGhoaPV0HHQDoEqJ9YBmFkYIvgzxHRncuYSSUtaY+WYQUU+92mvahp54VZ4GXbGommmVJsCOCpivDBsdOLZLof8iER2rmmP4buhtm7kbPCupdyozrpNT5fHdiK7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nGtlxaml; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1780044484; x=1811580484;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6AWLmlUtfnCHN56YA869w6PKgs0+gUIV71eS29nK1aI=;
+  b=nGtlxamld/Izw09QfZpIb/yIOpfcwUABcHo7czeNd2MEgKLp1TU/T1hB
+   DLaWsCGChfpvr1TZnqZaxVt56+UoOdSC3Fwke+YmaxzBpL7VFepb+7muW
+   6GnSs2RBD08OMP6han3s+yp2yk2gtbWNT37s9y+kzg51/GY7qDKwYFkcQ
+   Oj8QuBgGtIlhMfyBRy5vMTy50NwEu5QkNUkGcjtsmfrk1FeoHCsBj1KoV
+   KsXcFYm/ROy/2waW0ku6PWnqSsoTd7LT9esyuQBGsGe6Iixd65RsaOda1
+   a56zy7XpOGqGDki6hIMzFdW75IiNBnNwcUxGu6qpUgKZtV4uFxHS90GZC
+   w==;
+X-CSE-ConnectionGUID: NPvJPQA4TvC3KhP4cRSxhA==
+X-CSE-MsgGUID: wzgBEHJSR/G+oBBHmfNLRQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11800"; a="98310082"
+X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
+   d="scan'208";a="98310082"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2026 01:48:04 -0700
+X-CSE-ConnectionGUID: FfDdqrpOQKCTSLgvgbJbPg==
+X-CSE-MsgGUID: cm7/T7dEQP+9c9ico/Is8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
+   d="scan'208";a="280915197"
+Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 29 May 2026 01:47:59 -0700
+Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wSssm-00000000702-1IAn;
+	Fri, 29 May 2026 08:47:56 +0000
+Date: Fri, 29 May 2026 16:47:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yury Norov <ynorov@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+	Byungchul Park <byungchul@sk.com>,
+	Gregory Price <gourry@gourry.net>,
+	Ying Huang <ying.huang@linux.alibaba.com>,
+	Alistair Popple <apopple@nvidia.com>, linux-kernel@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Yury Norov <ynorov@nvidia.com>,
+	Farhad Alemi <farhad.alemi@berkeley.edu>,
+	Waiman Long <longman@redhat.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH] mm: don't allow empty relative nodemask in
+ mpol_relative_nodemask()
+Message-ID: <202605291631.6MATSv6v-lkp@intel.com>
+References: <20260528190337.878027-1-ynorov@nvidia.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] cgroup/dmem: introduce a peak file
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock <natalie.vock@gmx.de>,
- Tvrtko Ursulin <tvrtko.ursulin@igalia.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
- dri-devel@lists.freedesktop.org, kernel-dev@igalia.com
-References: <20260514-dmem_peak-v3-1-b64ce5d3ac38@igalia.com>
- <ahCISfTlN10gD8e6@localhost.localdomain>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <ahCISfTlN10gD8e6@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260528190337.878027-1-ynorov@nvidia.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[lankhorst.se,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[lankhorst.se:s=default];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16414-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,linux.dev,linux-foundation.org,lwn.net,linuxfoundation.org,gmx.de,igalia.com,vger.kernel.org,kvack.org,lists.freedesktop.org];
-	RCPT_COUNT_TWELVE(0.00)[20];
+	TAGGED_FROM(0.00)[bounces-16415-lists,cgroups=lfdr.de];
+	FREEMAIL_TO(0.00)[nvidia.com,linux-foundation.org,kernel.org,intel.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev@lankhorst.se,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[lankhorst.se:+];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,igalia.com:email]
-X-Rspamd-Queue-Id: 0F2B75FEB69
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,intel.com:email,intel.com:mid,intel.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 97F805FFA13
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Hi Yury,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yury-Norov/mm-don-t-allow-empty-relative-nodemask-in-mpol_relative_nodemask/20260529-030835
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20260528190337.878027-1-ynorov%40nvidia.com
+patch subject: [PATCH] mm: don't allow empty relative nodemask in mpol_relative_nodemask()
+config: x86_64-buildonly-randconfig-003-20260529 (https://download.01.org/0day-ci/archive/20260529/202605291631.6MATSv6v-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260529/202605291631.6MATSv6v-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202605291631.6MATSv6v-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/mempolicy.c: In function 'mpol_relative_nodemask':
+>> mm/mempolicy.c:377:24: error: 'return' with a value, in function returning void [-Wreturn-mismatch]
+     377 |                 return -EINVAL;
+         |                        ^
+   mm/mempolicy.c:370:13: note: declared here
+     370 | static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
+         |             ^~~~~~~~~~~~~~~~~~~~~~
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for MFD_STMFX
+   Depends on [n]: HAS_IOMEM [=y] && I2C [=y] && OF [=n]
+   Selected by [y]:
+   - PINCTRL_STMFX [=y] && PINCTRL [=y] && I2C [=y] && HAS_IOMEM [=y]
 
 
-Den 2026-05-22 kl. 18:48, skrev Michal Koutný:
-> On Thu, May 14, 2026 at 02:36:08PM -0300, Thadeu Lima de Souza Cascardo <cascardo@igalia.com> wrote:
->> Just like we have memory.peak, introduce a dmem.peak, which uses the
->> page_counter support for that.
->>
->> For now, make it read-only.
->>
->> This allows for memory usage monitoring without polling dmem.current when
->> the information needed is the maximum device memory used. That can be used
->> for capacity planning, such that dmem.max can be properly setup for a given
->> workload. It can also be used for debugging to determine whether a given
->> workload would have caused eviction or system memory use.
->>
->> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
->> ---
->> Changes in v3:
->> - EDITME: describe what is new in this series revision.
->> - EDITME: use bulletpoints and terse descriptions.
->> - Link to v2: https://patch.msgid.link/20260513-dmem_peak-v2-1-dac06999db9e@igalia.com
->>
->> Changes in v2:
->> - Make it read-only for now and adjust documentation accordingly.
->> - Link to v1: https://patch.msgid.link/20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com
->> ---
->>  Documentation/admin-guide/cgroup-v2.rst |  6 ++++++
->>  kernel/cgroup/dmem.c                    | 15 +++++++++++++++
->>  2 files changed, 21 insertions(+)
->>
->> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->> index 6efd0095ed99..d103623b2be4 100644
->> --- a/Documentation/admin-guide/cgroup-v2.rst
->> +++ b/Documentation/admin-guide/cgroup-v2.rst
->> @@ -2808,6 +2808,12 @@ DMEM Interface Files
->>  	The semantics are the same as for the memory cgroup controller, and are
->>  	calculated in the same way.
->>  
->> +  dmem.peak
->> +	A read-only nested-keyed file that exists on non-root cgroups.
-> 
-> s/nested-keyed/flat-keyed/
-> 
-> 
-> With that
-> 
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
-Reviewed-by: Maarten Lankhorst <dev@lankhorst.se>
+vim +/return +377 mm/mempolicy.c
 
-With your r-b it's ok to push it to the dmemcg tree?
+   369	
+   370	static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
+   371					   const nodemask_t *rel)
+   372	{
+   373		unsigned int w = nodes_weight(*rel);
+   374		nodemask_t tmp;
+   375	
+   376		if (w == 0)
+ > 377			return -EINVAL;
+   378	
+   379		nodes_fold(tmp, *orig, w);
+   380		nodes_onto(*ret, tmp, *rel);
+   381	}
+   382	
 
-Kind regards,
-~Maarten Lankhorst
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
