@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-16417-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16418-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aKdRCOVYGWqtvggAu9opvQ
-	(envelope-from <cgroups+bounces-16417-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:14:13 +0200
+	id kEczIlBYGWqtvggAu9opvQ
+	(envelope-from <cgroups+bounces-16418-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:11:44 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75B045FFC0D
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:14:12 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3CBA5FFBBE
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:11:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 36DAF3030136
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:07:57 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 719303037F0B
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E123BAD91;
-	Fri, 29 May 2026 09:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A4B3BAD91;
+	Fri, 29 May 2026 09:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hyHbZm8K"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TD8i6pYS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0552C15A5
-	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 09:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127B02C15A5
+	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 09:07:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780045676; cv=none; b=GcPYrSKmThKY4vUHKmyct5dYtg60oJdVYzk2XSY4mAS6aR1bRY5xjN9/7XkxeY7LaBEQwfllftJdUq/zy6sQH26vfwIbuJYFtA6urKJeF4oBHXt+tUwqSO/V+wbDjAOCpAasvpX16qcyhrZqHWwP20LWiVcVNnE2jfVCYhXRzh0=
+	t=1780045678; cv=none; b=X10Zi2nRr6bArDf1UEkp10hzoLv9Cxo4t6ik374zuY9ztUgFQ2o7TyNAQxeqDe3dmMj0cKyf6EfQzPooiFKTtBZHWma3VJHk2vY4Q/3s75lHN4OIx0uz0h2caWbBEgOCaymJkZQIrHfdVCvU/4ZsPctw5HVOY2KWTvq7n1PHh6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780045676; c=relaxed/simple;
-	bh=axEVZMbsiHTE4KPn7RuiYy/eEjD6fx9Zgyg5C7toK1M=;
+	s=arc-20240116; t=1780045678; c=relaxed/simple;
+	bh=dkCrgpJnlnWf2WN0cTxE1K0BrMULA5W/MwxV9RW3J1E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cHAc+AHD5hTnw8s7Q3vGL6OJjRYoGDRUAFGS85fNL9AWU88tGAwlqDXCf5ONSjZRtECDgxSCWi4OZ43+jkk4bMRWVg3uqH5/LUutRAIVJW+AvxWVTyYtpd+yUPO7tYUj36mYH8/wmURUFUlj23W8luYutiZam78NGopyvYbPCaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hyHbZm8K; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version; b=kXcBNSSyhnBlEZpmBYGQdDcOOM6c4odMaaYGaXgs8lYK026kMD+X6sl2xWH4YnpT/oMGs88N0qmvoKR1/pRcMi8rqdu/Jg0n2W/LxqEu9SsuwjqdnY/nFRxWW3+UdBFxmM0qEyO7paXwJ8MRty4CeUBOH8JrI7CUGO8ZpGo1XiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TD8i6pYS; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780045672;
+	t=1780045675;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WG4KWOecZHcKNPF6MwtBE0vsPSut84cf4upgw7N0hHA=;
-	b=hyHbZm8Kiq201BSDIO7h4yjOAP4nzR0pCdffaEZwKoG2ERRNEngimWZrBObvB6wrV/CDrL
-	fH7joyd9ZA/NyhnlxIh5mtTVQQ/jTt7iXHejM22F/IMjSSdUSB3TsFHkyCCKU9Z8p7YrcY
-	eeVWVYeXsv1V+8DVR69FsPdsdgzSAlU=
+	bh=Z5YyWrf6e+90glcrhkoF012jWRw1XB35M4C2faNsiGM=;
+	b=TD8i6pYSBV6Ho5/RufxnSjAlgNpXeihTZlIZRNw2qBR+wyRKx/9rjPmecIj96jIyZW1/ST
+	9vzyDPHMvwd4z2sROlaXHR2v60RL+/Zvig92jOJje04i7tx+hgpQmIr89JiDmWTmlmDJo+
+	IIG03oEVheQtcA2vcAHNC/lTgED0IX8=
 From: Tao Cui <cui.tao@linux.dev>
 To: tj@kernel.org,
 	hannes@cmpxchg.org,
@@ -54,9 +54,9 @@ To: tj@kernel.org,
 Cc: linux-rdma@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH rdma-next v2 1/3] cgroup/rdma: extend charge/uncharge API with s64 amount parameter
-Date: Fri, 29 May 2026 17:07:31 +0800
-Message-ID: <20260529090733.2242822-2-cui.tao@linux.dev>
+Subject: [PATCH rdma-next v2 2/3] cgroup/rdma: add MR memory size resource tracking
+Date: Fri, 29 May 2026 17:07:32 +0800
+Message-ID: <20260529090733.2242822-3-cui.tao@linux.dev>
 In-Reply-To: <20260529090733.2242822-1-cui.tao@linux.dev>
 References: <20260529090733.2242822-1-cui.tao@linux.dev>
 Precedence: bulk
@@ -72,7 +72,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -81,9 +81,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16417-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16418-lists,cgroups=lfdr.de];
 	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
@@ -93,456 +93,369 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,kylinos.cn:email]
-X-Rspamd-Queue-Id: 75B045FFC0D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,kylinos.cn:email,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: D3CBA5FFBBE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Tao Cui <cuitao@kylinos.cn>
 
-Change struct rdmacg_resource fields (max, usage, peak) and all
-charge/uncharge function signatures from int to s64 to prepare for
-byte-sized resource tracking such as MR memory.
+Add RDMACG_RESOURCE_MR_MEM so that the cumulative memory size of
+registered Memory Regions can be tracked and limited independently
+from the aggregate hca_object counter.
 
-Replace match_int with a match_s64 helper that uses kstrtoll so the
-user-space limit tokens accept 64-bit values.  All existing callers
-pass amount=1 (count-based), so the change is transparent for
-existing count-based resources.
+Unlike count-based resources (hca_handle, hca_object) which are
+charged in the generic IDR allocation path, MR_MEM is byte-based
+and must be charged after the MR length is known.  Charge in the
+uverbs MR registration handlers (ioctl and legacy), and uncharge
+in the generic destroy paths (alloc_abort_idr_uobject,
+destroy_hw_idr_uobject).
 
-The rpool->usage_sum counter continues to track the number of active
-charge operations (not the sum of charged amounts); this is correct
-because it governs rpool lifetime - a pool is releasable only when
-all charges, regardless of amount, have been released.
+Store the charged byte count in uobj->rdmacg_mr_mem_bytes so that
+the destroy path knows how much to uncharge.
+
+Semantic notes
+~~~~~~~~~~~~~~
+
+mr_mem is not page-level ownership tracking - it is object-based
+accounting tied to the MR lifetime:
+
+  - charged at MR registration time
+  - uncharged at MR destruction time
+  - the charge lives with the MR's creating cgroup for the entire
+    lifetime of the MR object
+
+This model intentionally defines accounting semantics around MR
+object lifetime rather than page ownership:
+
+1. fork(): fork() does not duplicate MR objects.  Even though the
+   child inherits the uverbs fd and can access the parent's ucontext,
+   the MR remains a single kernel object.  The charge is tied to the
+   MR object, not to the number of processes that can reach it, so
+   no splitting or re-accounting is needed.
+
+2. Cgroup migration: mr_mem follows the same semantics as the existing
+   hca_object - charge at creation time against the invoking task's
+   cgroup, uncharge at destruction time.  The RDMA cgroup does not
+   implement can_attach/attach callbacks today, so charges do not
+   migrate with the task.  This is a known limitation that applies
+   equally to hca_handle and hca_object.  mr_mem does not introduce
+   any new complication here.
+
+3. Overlap with memory cgroup: mr_mem does not count process memory
+   usage - it represents a per-device DMA registration budget: how
+   much memory can this cgroup register through a given HCA.  This is
+   a different dimension from what memory cgroup tracks.  An
+   administrator might set mr_mem limits differently per device, which
+   memory cgroup cannot express.
+
+   In particular, mr_mem tracks the registered memory range associated
+   with the MR rather than exact dynamically pinned pages (e.g. for
+   ODP MRs).  This is a stable, policy-oriented approximation of
+   registration footprint - not an attempt at precise physical page
+   accounting.
+
+Guard against u64-to-s64 overflow by rejecting MR lengths that
+exceed S64_MAX at each registration site.
+
+Handle MR reregistration (IB_USER_VERBS_CMD_REREG_MR with
+IB_MR_REREG_TRANS) by computing the delta between old and new
+lengths and charging or uncharging the difference.  When the driver
+creates a new HW object (new_mr != NULL), the full new length is
+charged to the new uobj and the old uobj's mr_mem is released
+through the existing rdma_assign_uobject -> destroy_hw_idr_uobject
+-> rdmacg_uncharge_uobj path.
+
+Enable MR memory limits:
+
+  echo "mlx5_0 mr_mem=1073741824" > rdma.max
 
 Signed-off-by: Tao Cui <cuitao@kylinos.cn>
 ---
- drivers/infiniband/core/cgroup.c     | 10 ++--
- drivers/infiniband/core/core_priv.h  | 12 ++--
- drivers/infiniband/core/rdma_core.c  |  8 +--
- drivers/infiniband/core/uverbs_cmd.c |  4 +-
- include/linux/cgroup_rdma.h          |  7 ++-
- kernel/cgroup/rdma.c                 | 87 ++++++++++++++++++----------
- 6 files changed, 83 insertions(+), 45 deletions(-)
+ drivers/infiniband/core/rdma_core.c           | 14 ++++-
+ drivers/infiniband/core/uverbs_cmd.c          | 57 +++++++++++++++++++
+ drivers/infiniband/core/uverbs_std_types_mr.c | 37 ++++++++++++
+ include/linux/cgroup_rdma.h                   |  1 +
+ include/rdma/ib_verbs.h                       |  1 +
+ kernel/cgroup/rdma.c                          | 21 ++++++-
+ 6 files changed, 126 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/core/cgroup.c b/drivers/infiniband/core/cgroup.c
-index 1f037fe01450..81e24de72392 100644
---- a/drivers/infiniband/core/cgroup.c
-+++ b/drivers/infiniband/core/cgroup.c
-@@ -36,18 +36,20 @@ void ib_device_unregister_rdmacg(struct ib_device *device)
- 
- int ib_rdmacg_try_charge(struct ib_rdmacg_object *cg_obj,
- 			 struct ib_device *device,
--			 enum rdmacg_resource_type resource_index)
-+			 enum rdmacg_resource_type resource_index,
-+			 s64 amount)
- {
- 	return rdmacg_try_charge(&cg_obj->cg, &device->cg_device,
--				 resource_index);
-+				 resource_index, amount);
- }
- EXPORT_SYMBOL(ib_rdmacg_try_charge);
- 
- void ib_rdmacg_uncharge(struct ib_rdmacg_object *cg_obj,
- 			struct ib_device *device,
--			enum rdmacg_resource_type resource_index)
-+			enum rdmacg_resource_type resource_index,
-+			s64 amount)
- {
- 	rdmacg_uncharge(cg_obj->cg, &device->cg_device,
--			resource_index);
-+			resource_index, amount);
- }
- EXPORT_SYMBOL(ib_rdmacg_uncharge);
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index a2c36666e6fc..345356d1e504 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -159,11 +159,13 @@ void ib_device_unregister_rdmacg(struct ib_device *device);
- 
- int ib_rdmacg_try_charge(struct ib_rdmacg_object *cg_obj,
- 			 struct ib_device *device,
--			 enum rdmacg_resource_type resource_index);
-+			 enum rdmacg_resource_type resource_index,
-+			 s64 amount);
- 
- void ib_rdmacg_uncharge(struct ib_rdmacg_object *cg_obj,
- 			struct ib_device *device,
--			enum rdmacg_resource_type resource_index);
-+			enum rdmacg_resource_type resource_index,
-+			 s64 amount);
- #else
- static inline void ib_device_register_rdmacg(struct ib_device *device)
- {
-@@ -175,14 +177,16 @@ static inline void ib_device_unregister_rdmacg(struct ib_device *device)
- 
- static inline int ib_rdmacg_try_charge(struct ib_rdmacg_object *cg_obj,
- 				       struct ib_device *device,
--				       enum rdmacg_resource_type resource_index)
-+				       enum rdmacg_resource_type resource_index,
-+			       s64 amount)
- {
- 	return 0;
- }
- 
- static inline void ib_rdmacg_uncharge(struct ib_rdmacg_object *cg_obj,
- 				      struct ib_device *device,
--				      enum rdmacg_resource_type resource_index)
-+				      enum rdmacg_resource_type resource_index,
-+			      s64 amount)
- {
- }
- #endif
 diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
-index 5018ec837056..3268285b5478 100644
+index 3268285b5478..a540cef6bb67 100644
 --- a/drivers/infiniband/core/rdma_core.c
 +++ b/drivers/infiniband/core/rdma_core.c
-@@ -437,7 +437,7 @@ alloc_begin_idr_uobject(const struct uverbs_api_object *obj,
- 		goto uobj_put;
+@@ -523,10 +523,19 @@ struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
+ 	return ret;
+ }
  
- 	ret = ib_rdmacg_try_charge(&uobj->cg_obj, uobj->context->device,
--				   RDMACG_RESOURCE_HCA_OBJECT);
-+				   RDMACG_RESOURCE_HCA_OBJECT, 1);
- 	if (ret)
- 		goto remove;
- 
-@@ -526,7 +526,7 @@ struct ib_uobject *rdma_alloc_begin_uobject(const struct uverbs_api_object *obj,
- static void alloc_abort_idr_uobject(struct ib_uobject *uobj)
+-static void alloc_abort_idr_uobject(struct ib_uobject *uobj)
++static void rdmacg_uncharge_uobj(struct ib_uobject *uobj)
  {
  	ib_rdmacg_uncharge(&uobj->cg_obj, uobj->context->device,
--			   RDMACG_RESOURCE_HCA_OBJECT);
-+			   RDMACG_RESOURCE_HCA_OBJECT, 1);
+ 			   RDMACG_RESOURCE_HCA_OBJECT, 1);
++	if (uobj->rdmacg_mr_mem_bytes)
++		ib_rdmacg_uncharge(&uobj->cg_obj, uobj->context->device,
++				   RDMACG_RESOURCE_MR_MEM,
++				   uobj->rdmacg_mr_mem_bytes);
++}
++
++static void alloc_abort_idr_uobject(struct ib_uobject *uobj)
++{
++	rdmacg_uncharge_uobj(uobj);
  
  	xa_erase(&uobj->ufile->idr, uobj->id);
  }
-@@ -547,7 +547,7 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
+@@ -546,8 +555,7 @@ static int __must_check destroy_hw_idr_uobject(struct ib_uobject *uobj,
+ 	if (why == RDMA_REMOVE_ABORT)
  		return 0;
  
- 	ib_rdmacg_uncharge(&uobj->cg_obj, uobj->context->device,
--			   RDMACG_RESOURCE_HCA_OBJECT);
-+			   RDMACG_RESOURCE_HCA_OBJECT, 1);
+-	ib_rdmacg_uncharge(&uobj->cg_obj, uobj->context->device,
+-			   RDMACG_RESOURCE_HCA_OBJECT, 1);
++	rdmacg_uncharge_uobj(uobj);
  
  	return 0;
  }
-@@ -878,7 +878,7 @@ static void ufile_destroy_ucontext(struct ib_uverbs_file *ufile,
- 	}
- 
- 	ib_rdmacg_uncharge(&ucontext->cg_obj, ib_dev,
--			   RDMACG_RESOURCE_HCA_HANDLE);
-+			   RDMACG_RESOURCE_HCA_HANDLE, 1);
- 
- 	rdma_restrack_del(&ucontext->res);
- 
 diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 91a62d2ade4d..9540ac180711 100644
+index 9540ac180711..901de117c808 100644
 --- a/drivers/infiniband/core/uverbs_cmd.c
 +++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -234,7 +234,7 @@ int ib_init_ucontext(struct uverbs_attr_bundle *attrs)
- 	}
+@@ -752,6 +752,17 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
  
- 	ret = ib_rdmacg_try_charge(&ucontext->cg_obj, ucontext->device,
--				   RDMACG_RESOURCE_HCA_HANDLE);
-+				   RDMACG_RESOURCE_HCA_HANDLE, 1);
- 	if (ret)
- 		goto err;
+ 	uobj->object = mr;
+ 	uobj_put_obj_read(pd);
++
++	if (cmd.length > S64_MAX)
++		goto err_free;
++	if (cmd.length) {
++		ret = ib_rdmacg_try_charge(&uobj->cg_obj, uobj->context->device,
++					   RDMACG_RESOURCE_MR_MEM, cmd.length);
++		if (ret)
++			goto err_dereg;
++		uobj->rdmacg_mr_mem_bytes = cmd.length;
++	}
++
+ 	uobj_finalize_uobj_create(uobj, attrs);
  
-@@ -273,7 +273,7 @@ int ib_init_ucontext(struct uverbs_attr_bundle *attrs)
+ 	resp.lkey = mr->lkey;
+@@ -759,6 +770,8 @@ static int ib_uverbs_reg_mr(struct uverbs_attr_bundle *attrs)
+ 	resp.mr_handle = uobj->id;
+ 	return uverbs_response(attrs, &resp, sizeof(resp));
  
- err_uncharge:
- 	ib_rdmacg_uncharge(&ucontext->cg_obj, ucontext->device,
--			   RDMACG_RESOURCE_HCA_HANDLE);
-+			   RDMACG_RESOURCE_HCA_HANDLE, 1);
- err:
- 	mutex_unlock(&file->ucontext_lock);
- 	up_read(&file->hw_destroy_rwsem);
++err_dereg:
++	ib_dereg_mr_user(mr, &attrs->driver_udata);
+ err_put:
+ 	uobj_put_obj_read(pd);
+ err_free:
+@@ -854,6 +867,20 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ 		rdma_restrack_set_name(&new_mr->res, NULL);
+ 		rdma_restrack_add(&new_mr->res);
+ 
++		if ((cmd.flags & IB_MR_REREG_TRANS) && cmd.length) {
++			if (cmd.length > S64_MAX) {
++				ret = -EINVAL;
++				goto err_rereg_new_mr;
++			}
++			ret = ib_rdmacg_try_charge(&new_uobj->cg_obj,
++						   new_uobj->context->device,
++						   RDMACG_RESOURCE_MR_MEM,
++						   cmd.length);
++			if (ret)
++				goto err_rereg_new_mr;
++			new_uobj->rdmacg_mr_mem_bytes = cmd.length;
++		}
++
+ 		/*
+ 		 * The new uobj for the new HW object is put into the same spot
+ 		 * in the IDR and the old uobj & HW object is deleted.
+@@ -871,6 +898,31 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ 			atomic_inc(&new_pd->usecnt);
+ 		}
+ 		if (cmd.flags & IB_MR_REREG_TRANS) {
++			s64 delta;
++
++			if (cmd.length > S64_MAX) {
++				ret = -EINVAL;
++				goto put_new_uobj;
++			}
++			delta = (s64)cmd.length -
++				(s64)uobj->rdmacg_mr_mem_bytes;
++
++			if (delta > 0) {
++				ret = ib_rdmacg_try_charge(
++					&uobj->cg_obj,
++					uobj->context->device,
++					RDMACG_RESOURCE_MR_MEM,
++					delta);
++				if (ret)
++					goto put_new_uobj;
++			} else if (delta < 0) {
++				ib_rdmacg_uncharge(
++					&uobj->cg_obj,
++					uobj->context->device,
++					RDMACG_RESOURCE_MR_MEM,
++					-delta);
++			}
++			uobj->rdmacg_mr_mem_bytes = cmd.length;
+ 			mr->iova = cmd.hca_va;
+ 			mr->length = cmd.length;
+ 		}
+@@ -887,6 +939,11 @@ static int ib_uverbs_rereg_mr(struct uverbs_attr_bundle *attrs)
+ put_new_uobj:
+ 	if (new_uobj)
+ 		uobj_alloc_abort(new_uobj, attrs);
++err_rereg_new_mr:
++	if (new_uobj) {
++		rdma_alloc_abort_uobject(new_uobj, attrs, true);
++		new_uobj = NULL;
++	}
+ put_uobj_pd:
+ 	if (cmd.flags & IB_MR_REREG_PD)
+ 		uobj_put_obj_read(new_pd);
+diff --git a/drivers/infiniband/core/uverbs_std_types_mr.c b/drivers/infiniband/core/uverbs_std_types_mr.c
+index 570b9656801d..3989ff2d282b 100644
+--- a/drivers/infiniband/core/uverbs_std_types_mr.c
++++ b/drivers/infiniband/core/uverbs_std_types_mr.c
+@@ -32,6 +32,7 @@
+  */
+ 
+ #include "rdma_core.h"
++#include "core_priv.h"
+ #include "uverbs.h"
+ #include <rdma/uverbs_std_types.h>
+ #include "restrack.h"
+@@ -140,6 +141,18 @@ static int UVERBS_HANDLER(UVERBS_METHOD_DM_MR_REG)(
+ 	rdma_restrack_set_name(&mr->res, NULL);
+ 	rdma_restrack_add(&mr->res);
+ 	uobj->object = mr;
++	if (attr.length > S64_MAX)
++		return -EINVAL;
++
++	if (attr.length) {
++		ret = ib_rdmacg_try_charge(&uobj->cg_obj, uobj->context->device,
++					   RDMACG_RESOURCE_MR_MEM, attr.length);
++		if (ret) {
++			ib_dereg_mr_user(mr, &attrs->driver_udata);
++			return ret;
++		}
++		uobj->rdmacg_mr_mem_bytes = attr.length;
++	}
+ 
+ 	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_REG_DM_MR_HANDLE);
+ 
+@@ -254,6 +267,18 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_DMABUF_MR)(
+ 	rdma_restrack_add(&mr->res);
+ 	uobj->object = mr;
+ 
++	if (length > S64_MAX)
++		return -EINVAL;
++	if (length) {
++		ret = ib_rdmacg_try_charge(&uobj->cg_obj, uobj->context->device,
++					   RDMACG_RESOURCE_MR_MEM, length);
++		if (ret) {
++			ib_dereg_mr_user(mr, &attrs->driver_udata);
++			return ret;
++		}
++		uobj->rdmacg_mr_mem_bytes = length;
++	}
++
+ 	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_REG_DMABUF_MR_HANDLE);
+ 
+ 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_DMABUF_MR_RESP_LKEY,
+@@ -383,6 +408,18 @@ static int UVERBS_HANDLER(UVERBS_METHOD_REG_MR)(
+ 	rdma_restrack_add(&mr->res);
+ 	uobj->object = mr;
+ 
++	if (length > S64_MAX)
++		return -EINVAL;
++	if (length) {
++		ret = ib_rdmacg_try_charge(&uobj->cg_obj, uobj->context->device,
++					   RDMACG_RESOURCE_MR_MEM, length);
++		if (ret) {
++			ib_dereg_mr_user(mr, &attrs->driver_udata);
++			return ret;
++		}
++		uobj->rdmacg_mr_mem_bytes = length;
++	}
++
+ 	uverbs_finalize_uobj_create(attrs, UVERBS_ATTR_REG_MR_HANDLE);
+ 
+ 	ret = uverbs_copy_to(attrs, UVERBS_ATTR_REG_MR_RESP_LKEY,
 diff --git a/include/linux/cgroup_rdma.h b/include/linux/cgroup_rdma.h
-index 404e746552ca..7146cefa95a6 100644
+index 7146cefa95a6..2c8fb1ebb1a9 100644
 --- a/include/linux/cgroup_rdma.h
 +++ b/include/linux/cgroup_rdma.h
-@@ -7,6 +7,7 @@
- #define _CGROUP_RDMA_H
- 
- #include <linux/cgroup.h>
-+#include <linux/types.h>
- 
+@@ -12,6 +12,7 @@
  enum rdmacg_resource_type {
  	RDMACG_RESOURCE_HCA_HANDLE,
-@@ -46,9 +47,11 @@ void rdmacg_unregister_device(struct rdmacg_device *device);
- /* APIs for RDMA/IB stack to charge/uncharge pool specific resources */
- int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
- 		      struct rdmacg_device *device,
--		      enum rdmacg_resource_type index);
-+		      enum rdmacg_resource_type index,
-+		      s64 amount);
- void rdmacg_uncharge(struct rdma_cgroup *cg,
- 		     struct rdmacg_device *device,
--		     enum rdmacg_resource_type index);
-+		     enum rdmacg_resource_type index,
-+		     s64 amount);
- #endif	/* CONFIG_CGROUP_RDMA */
- #endif	/* _CGROUP_RDMA_H */
-diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
-index 5e82a03b3270..519f7f537223 100644
---- a/kernel/cgroup/rdma.c
-+++ b/kernel/cgroup/rdma.c
-@@ -59,9 +59,9 @@ static char const *rdmacg_resource_names[] = {
- 
- /* resource tracker for each resource of rdma cgroup */
- struct rdmacg_resource {
--	int max;
--	int usage;
--	int peak;
-+	s64 max;
-+	s64 usage;
-+	s64 peak;
+ 	RDMACG_RESOURCE_HCA_OBJECT,
++	RDMACG_RESOURCE_MR_MEM,
+ 	RDMACG_RESOURCE_MAX,
  };
  
- /*
-@@ -105,13 +105,13 @@ static inline struct rdma_cgroup *get_current_rdmacg(void)
- }
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 9dd76f489a0b..c7dcd5d085fb 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -1569,6 +1569,7 @@ struct ib_uobject {
+ 	void		       *object;		/* containing object */
+ 	struct list_head	list;		/* link to context's list */
+ 	struct ib_rdmacg_object	cg_obj;		/* rdmacg object */
++	s64			rdmacg_mr_mem_bytes; /* charged MR memory size */
+ 	int			id;		/* index into kernel idr */
+ 	struct kref		ref;
+ 	atomic_t		usecnt;		/* protects exclusive access */
+diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
+index 519f7f537223..ebfc5721c098 100644
+--- a/kernel/cgroup/rdma.c
++++ b/kernel/cgroup/rdma.c
+@@ -23,14 +23,18 @@ enum rdmacg_limit_tokens {
+ 	RDMACG_HCA_HANDLE_MAX,
+ 	RDMACG_HCA_OBJECT_VAL,
+ 	RDMACG_HCA_OBJECT_MAX,
++	RDMACG_MR_MEM_VAL,
++	RDMACG_MR_MEM_MAX,
+ 	NR_RDMACG_LIMIT_TOKENS,
+ };
  
- static void set_resource_limit(struct rdmacg_resource_pool *rpool,
--			       int index, int new_max)
-+			       int index, s64 new_max)
- {
--	if (new_max == S32_MAX) {
--		if (rpool->resources[index].max != S32_MAX)
-+	if (new_max == S64_MAX) {
-+		if (rpool->resources[index].max != S64_MAX)
- 			rpool->num_max_cnt++;
- 	} else {
--		if (rpool->resources[index].max == S32_MAX)
-+		if (rpool->resources[index].max == S64_MAX)
- 			rpool->num_max_cnt--;
- 	}
- 	rpool->resources[index].max = new_max;
-@@ -122,7 +122,7 @@ static void set_all_resource_max_limit(struct rdmacg_resource_pool *rpool)
- 	int i;
+ static const match_table_t rdmacg_limit_tokens = {
+-	{ RDMACG_HCA_HANDLE_VAL,	"hca_handle=%d"	},
++	{ RDMACG_HCA_HANDLE_VAL,	"hca_handle=%d"		},
+ 	{ RDMACG_HCA_HANDLE_MAX,	"hca_handle=max"	},
+-	{ RDMACG_HCA_OBJECT_VAL,	"hca_object=%d"	},
++	{ RDMACG_HCA_OBJECT_VAL,	"hca_object=%d"		},
+ 	{ RDMACG_HCA_OBJECT_MAX,	"hca_object=max"	},
++	{ RDMACG_MR_MEM_VAL,		"mr_mem=%d"		},
++	{ RDMACG_MR_MEM_MAX,		"mr_mem=max"		},
+ 	{ NR_RDMACG_LIMIT_TOKENS,	NULL			},
+ };
  
- 	for (i = 0; i < RDMACG_RESOURCE_MAX; i++)
--		set_resource_limit(rpool, i, S32_MAX);
-+		set_resource_limit(rpool, i, S64_MAX);
- }
+@@ -55,6 +59,7 @@ enum rdmacg_file_type {
+ static char const *rdmacg_resource_names[] = {
+ 	[RDMACG_RESOURCE_HCA_HANDLE]	= "hca_handle",
+ 	[RDMACG_RESOURCE_HCA_OBJECT]	= "hca_object",
++	[RDMACG_RESOURCE_MR_MEM]	= "mr_mem",
+ };
  
- static void free_cg_rpool_locked(struct rdmacg_resource_pool *rpool)
-@@ -206,7 +206,8 @@ get_cg_rpool_locked(struct rdma_cgroup *cg, struct rdmacg_device *device)
- static void
- uncharge_cg_locked(struct rdma_cgroup *cg,
- 		   struct rdmacg_device *device,
--		   enum rdmacg_resource_type index)
-+		   enum rdmacg_resource_type index,
-+		   s64 amount)
- {
- 	struct rdmacg_resource_pool *rpool;
- 
-@@ -222,7 +223,7 @@ uncharge_cg_locked(struct rdma_cgroup *cg,
- 		return;
- 	}
- 
--	rpool->resources[index].usage--;
-+	rpool->resources[index].usage -= amount;
- 
- 	/*
- 	 * A negative count (or overflow) is invalid,
-@@ -307,14 +308,15 @@ static void rdmacg_event_locked(struct rdma_cgroup *cg,
- static void rdmacg_uncharge_hierarchy(struct rdma_cgroup *cg,
- 				     struct rdmacg_device *device,
- 				     struct rdma_cgroup *stop_cg,
--				     enum rdmacg_resource_type index)
-+				     enum rdmacg_resource_type index,
-+				     s64 amount)
- {
- 	struct rdma_cgroup *p;
- 
- 	mutex_lock(&rdmacg_mutex);
- 
- 	for (p = cg; p != stop_cg; p = parent_rdmacg(p))
--		uncharge_cg_locked(p, device, index);
-+		uncharge_cg_locked(p, device, index, amount);
- 
- 	mutex_unlock(&rdmacg_mutex);
- 
-@@ -329,12 +331,13 @@ static void rdmacg_uncharge_hierarchy(struct rdma_cgroup *cg,
-  */
- void rdmacg_uncharge(struct rdma_cgroup *cg,
- 		     struct rdmacg_device *device,
--		     enum rdmacg_resource_type index)
-+		     enum rdmacg_resource_type index,
-+		     s64 amount)
- {
- 	if (index >= RDMACG_RESOURCE_MAX)
- 		return;
- 
--	rdmacg_uncharge_hierarchy(cg, device, NULL, index);
-+	rdmacg_uncharge_hierarchy(cg, device, NULL, index, amount);
- }
- EXPORT_SYMBOL(rdmacg_uncharge);
- 
-@@ -343,6 +346,7 @@ EXPORT_SYMBOL(rdmacg_uncharge);
-  * @rdmacg: pointer to rdma cgroup which will own this resource
-  * @device: pointer to rdmacg device
-  * @index: index of the resource to charge in cgroup (resource pool)
-+ * @amount: amount to charge
-  *
-  * This function follows charging resource in hierarchical way.
-  * It will fail if the charge would cause the new value to exceed the
-@@ -361,7 +365,8 @@ EXPORT_SYMBOL(rdmacg_uncharge);
-  */
- int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
- 		      struct rdmacg_device *device,
--		      enum rdmacg_resource_type index)
-+		      enum rdmacg_resource_type index,
-+		      s64 amount)
- {
- 	struct rdma_cgroup *cg, *p;
- 	struct rdmacg_resource_pool *rpool;
-@@ -371,6 +376,9 @@ int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
- 	if (index >= RDMACG_RESOURCE_MAX)
- 		return -EINVAL;
- 
-+	if (amount <= 0)
-+		return -EINVAL;
-+
- 	/*
- 	 * hold on to css, as cgroup can be removed but resource
- 	 * accounting happens on css.
-@@ -384,8 +392,9 @@ int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
- 			ret = PTR_ERR(rpool);
- 			goto err;
- 		} else {
--			new = (s64)rpool->resources[index].usage + 1;
--			if (new > rpool->resources[index].max) {
-+			new = rpool->resources[index].usage + amount;
-+			if (new < rpool->resources[index].usage ||
-+			    new > rpool->resources[index].max) {
- 				ret = -EAGAIN;
- 				goto err;
- 			} else {
-@@ -409,7 +418,7 @@ int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
- 	if (ret == -EAGAIN)
- 		rdmacg_event_locked(cg, p, device, index);
- 	mutex_unlock(&rdmacg_mutex);
--	rdmacg_uncharge_hierarchy(cg, device, p, index);
-+	rdmacg_uncharge_hierarchy(cg, device, p, index, amount);
- 	return ret;
- }
- EXPORT_SYMBOL(rdmacg_try_charge);
-@@ -477,6 +486,25 @@ static struct rdmacg_device *rdmacg_get_device_locked(const char *name)
- 	return NULL;
- }
- 
-+static int match_s64(substring_t *s, s64 *result)
-+{
-+	char *buf;
-+	int ret;
-+	s64 val;
-+
-+	buf = kmemdup_nul(s->from, s->to - s->from, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+	ret = kstrtoll(buf, 0, &val);
-+	kfree(buf);
-+	if (ret)
-+		return ret;
-+	if (val < 0)
-+		return -EINVAL;
-+	*result = val;
-+	return 0;
-+}
-+
- static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
- 				       char *buf, size_t nbytes, loff_t off)
- {
-@@ -486,7 +514,7 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
- 	struct rdmacg_device *device;
- 	char *options = strstrip(buf);
- 	char *p;
--	int *new_limits;
-+	s64 *new_limits;
- 	unsigned long enables = 0;
- 	int i = 0, ret = 0;
- 
-@@ -497,7 +525,7 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
- 		goto err;
- 	}
- 
--	new_limits = kzalloc_objs(int, RDMACG_RESOURCE_MAX);
-+	new_limits = kcalloc(RDMACG_RESOURCE_MAX, sizeof(s64), GFP_KERNEL);
- 	if (!new_limits) {
- 		ret = -ENOMEM;
- 		goto err;
-@@ -506,7 +534,8 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
- 	/* parse resource limit tokens */
- 	while ((p = strsep(&options, " \t\n"))) {
- 		substring_t args[MAX_OPT_ARGS];
--		int tok, intval;
-+		int tok;
-+		s64 intval;
- 
- 		if (!*p)
- 			continue;
-@@ -514,7 +543,7 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
- 		tok = match_token(p, rdmacg_limit_tokens, args);
- 		switch (tok) {
- 		case RDMACG_HCA_HANDLE_VAL:
--			if (match_int(&args[0], &intval) || intval < 0) {
-+			if (match_s64(&args[0], &intval)) {
- 				ret = -EINVAL;
- 				goto parse_err;
- 			}
-@@ -522,11 +551,11 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
- 			enables |= BIT(RDMACG_RESOURCE_HCA_HANDLE);
- 			break;
- 		case RDMACG_HCA_HANDLE_MAX:
--			new_limits[RDMACG_RESOURCE_HCA_HANDLE] = S32_MAX;
-+			new_limits[RDMACG_RESOURCE_HCA_HANDLE] = S64_MAX;
- 			enables |= BIT(RDMACG_RESOURCE_HCA_HANDLE);
- 			break;
- 		case RDMACG_HCA_OBJECT_VAL:
--			if (match_int(&args[0], &intval) || intval < 0) {
-+			if (match_s64(&args[0], &intval)) {
- 				ret = -EINVAL;
- 				goto parse_err;
- 			}
-@@ -534,7 +563,7 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
+ /* resource tracker for each resource of rdma cgroup */
+@@ -566,6 +571,18 @@ static ssize_t rdmacg_resource_set_max(struct kernfs_open_file *of,
+ 			new_limits[RDMACG_RESOURCE_HCA_OBJECT] = S64_MAX;
  			enables |= BIT(RDMACG_RESOURCE_HCA_OBJECT);
  			break;
- 		case RDMACG_HCA_OBJECT_MAX:
--			new_limits[RDMACG_RESOURCE_HCA_OBJECT] = S32_MAX;
-+			new_limits[RDMACG_RESOURCE_HCA_OBJECT] = S64_MAX;
- 			enables |= BIT(RDMACG_RESOURCE_HCA_OBJECT);
- 			break;
++		case RDMACG_MR_MEM_VAL:
++			if (match_s64(&args[0], &intval)) {
++				ret = -EINVAL;
++				goto parse_err;
++			}
++			new_limits[RDMACG_RESOURCE_MR_MEM] = intval;
++			enables |= BIT(RDMACG_RESOURCE_MR_MEM);
++			break;
++		case RDMACG_MR_MEM_MAX:
++			new_limits[RDMACG_RESOURCE_MR_MEM] = S64_MAX;
++			enables |= BIT(RDMACG_RESOURCE_MR_MEM);
++			break;
  		default:
-@@ -588,7 +617,7 @@ static void print_rpool_values(struct seq_file *sf,
- {
- 	enum rdmacg_file_type sf_type;
- 	int i;
--	u32 value;
-+	s64 value;
- 
- 	sf_type = seq_cft(sf)->private;
- 
-@@ -599,7 +628,7 @@ static void print_rpool_values(struct seq_file *sf,
- 			if (rpool)
- 				value = rpool->resources[i].max;
- 			else
--				value = S32_MAX;
-+				value = S64_MAX;
- 		} else if (sf_type == RDMACG_RESOURCE_TYPE_PEAK) {
- 			value = rpool ? rpool->resources[i].peak : 0;
- 		} else {
-@@ -609,10 +638,10 @@ static void print_rpool_values(struct seq_file *sf,
- 				value = 0;
- 		}
- 
--		if (value == S32_MAX)
-+		if (value == S64_MAX)
- 			seq_puts(sf, RDMACG_MAX_STR);
- 		else
--			seq_printf(sf, "%d", value);
-+			seq_printf(sf, "%lld", value);
- 		seq_putc(sf, ' ');
- 	}
- }
+ 			ret = -EINVAL;
+ 			goto parse_err;
 -- 
 2.43.0
 
