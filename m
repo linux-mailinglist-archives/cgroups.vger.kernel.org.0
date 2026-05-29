@@ -1,185 +1,200 @@
-Return-Path: <cgroups+bounces-16419-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16421-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJisG65XGWqCvggAu9opvQ
-	(envelope-from <cgroups+bounces-16419-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:09:02 +0200
+	id GO+FLO1iGWrDvwgAu9opvQ
+	(envelope-from <cgroups+bounces-16421-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:57:01 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEAFF5FFB36
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:09:01 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0A060054C
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:57:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6BE28307FE10
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:08:02 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5718F3065BFC
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8637D3BBA04;
-	Fri, 29 May 2026 09:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A94C3446DE;
+	Fri, 29 May 2026 09:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oS3P7Zvb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jVQAw4GH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA0683BB13F
-	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 09:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC5C3546FB
+	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 09:56:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780045681; cv=none; b=Z1j+gYN1L5YGbGSliUXn/EAWqO3BVBV0EAwye4n+IRYLIhM+EUhF6P6cKEc9sBnNqlPIxbwfT9Y6DCe0pTfVNch1IZAmHVzgYPV5ShTG/8IYKryARJY45p0vko0wOfnH6bGyRc5TOVKswA8KuPxF6srpqonm80Wc0yNtMW16IUk=
+	t=1780048592; cv=none; b=nYgQNlSE6fYzTB8eCTWh74chJcIXnKRUeCwmXJtTB0AizSzm6ofwbQr0cJ1moBRtiMljN7wKx8pS88zIMsbF6tMS0FYVzho+1nnq0Shoxanw7DdDyhCHAV1fl5B4RF/Mfhm1dgByRsCYzRlBxWqTCHUlwyJjQ2QDBEH9HOqed9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780045681; c=relaxed/simple;
-	bh=c/81EIBYKuNviJ2mRN5ZbUg3jgv+/+UIOpbxXJBbgIg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BEOxCfBdrDBo02ca3LbK6kxqnhPCj2SQDOKNW5M7MIjEGqqFyIuEbT0drd+hr+uJfF7ux6IC7RwN3Q1jfnNWxcx2dhrqAUNpus3901XIpyijlDIOR3TkyIas2x+AuHL1X5QlPl6EMaMpPX8ZPIfjQoAgyeZEApNo+G0WKy+7cEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oS3P7Zvb; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780045678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hmJAP4aZOaxiUto1Kunt2nTEBh0r3j2YyJk3QPS9rI0=;
-	b=oS3P7Zvb9AhTICkGjO+yQ/jQqCbP5ACLfglzjLNW7twk0pwEU7+q7l/BPWVJMNm/95Dhk4
-	Sl6DQg1wbvzls6+JKt3ishyE1j03f7HPjHsOD3mY3IIZrXDnU+LQlHvrD44iB6fATUAjJG
-	SdJsf3KEi7rrBz4KwVCR1nRJSjxNiN0=
-From: Tao Cui <cui.tao@linux.dev>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	leon@kernel.org,
-	jgg@ziepe.ca
-Cc: linux-rdma@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Tao Cui <cuitao@kylinos.cn>
-Subject: [PATCH rdma-next v2 3/3] cgroup/rdma: update cgroup resource list for MR_MEM
-Date: Fri, 29 May 2026 17:07:33 +0800
-Message-ID: <20260529090733.2242822-4-cui.tao@linux.dev>
-In-Reply-To: <20260529090733.2242822-1-cui.tao@linux.dev>
-References: <20260529090733.2242822-1-cui.tao@linux.dev>
+	s=arc-20240116; t=1780048592; c=relaxed/simple;
+	bh=b4SlGHyKejpjGEPSSsF9TtxkNCBpxGUf0lpztK/k6FU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bXQEVd15U/C8s4GB7R4MM5qExBkmJ1O6AKFZJbovj4ZCe0MzCVNKlVGZ2vL0N24s73cUfX1E2THGoIa5GcONmM57T3LuSVKz8s01EJZudj3+vXaorZXOx1JaKmG5AbHd7ocy4kiBnzh/0mg92FkoBSImDm5iOscyF3UfhizO8iw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jVQAw4GH; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-45ef1629ff4so357078f8f.0
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2026 02:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780048590; x=1780653390; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QlBVL2w9TAGD5JVBams2MPk6DO1Ps9XKY2pj6ZAb950=;
+        b=jVQAw4GHq19+XzXlvAaw6dL6k9Ehf2rQF0oT2xRU6PzGVvpUeYKgHIARgCND67ZZEK
+         6ln6r9u73kj364EMV3Ljd4ODIc4HM13izpThsm9GpwlkfGsofCVgWUyRW8kh/Jr54gYz
+         hL0o7wkWyl6qDtiHlvmjutstqBRW9CNpW1CnEvw+zJcZGbzf9O9dzzvGqnBE2Zdvvx3b
+         mWQCWRhGkGmbnFumNnYBObFF/baRlOUZyo9dliNPUIqPIzvN9zRoeyZqGpYRM+SiGriu
+         4vvlGMItgXHxbFr1HK8ZuiW+hQ3dTEUrfNrrPdh61Y7qTD6Sp72lt+1Q/fVXtMPgUQu8
+         esLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780048590; x=1780653390;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QlBVL2w9TAGD5JVBams2MPk6DO1Ps9XKY2pj6ZAb950=;
+        b=KkEOdfjxSiQ6ACiCdmGZlMWmAB1ZCScY/aBojUjgDKvPV3T0Oz2AJJzEXtilKu9Yl5
+         Gk9p5t4NDuVz/sMNxzPRgXcvaiyo2Rz5zw3u1sRBA96IG77Zazux8pQDHYarUzNshu/j
+         Qqt3KTBJR3mhg10lTvYJgXbn52RiHcRmW9LTgaJNv3+Bt9XnrKx3XHrQyS0K/FI/NFEZ
+         DZHwYwPQ4WPVUqwusJQkFYvqi+wZZKVsEXjxG0MZpoR5dNGt+sIVaz184fYzh6Rkk7Es
+         TEFf8eTgbbFcy9+f4JidgrWJqSzSTqBVuB5V5owbvuic0dGvH9Roe6N3njGjwTZ8fWc/
+         dYdA==
+X-Forwarded-Encrypted: i=1; AFNElJ9JYrXQfb5FdR2ieBHGuJiJHDidfy+4Jl5hFRPO05bPmNZspDpjictDuzpRhllOX5sU89jnSqqM@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyqvp1mUPMYLtSFR4ckA6zJfC+nckYRnc4NQT5n6UwCp7W4wcK+
+	hYcsSq6ECltoXwYjT4RV6KU9cOJvrJyvNYCioNdM4FQZzsVSFAk0O9De
+X-Gm-Gg: Acq92OH6hsLy9CzCKks9xQKgJrd+0CGBUeCsJtEe7Ag0EWOobGop/eYR26c5XabpRzL
+	aqC+IcZAoA8GRkvyaZHBQO0t2KEaQIzYq8yNNwVqC2i2oVw98sATjaeZvseSyTjt4RnXsnjYsLW
+	tLYA2oFIRNZ6GomEmaOysUCgJvCN5Gbg1+SBg0k3KZK/577uyNzl9d2S2prgk+leWL6HApFP7uO
+	CvGmRmiYEpWMNaus54tez/tGJMM+5dqg43DXHpVAisBv5eXjN/gqc9LuIcH5qf/OdUQ90yzDfSK
+	9CyJDgh0Nf2ja5IOz+vXpLvIEqFb3bhN7Dg+R8n4KjZbji8X+7PIUaAjZL4Yy5n9dkgSk1g/S/v
+	UtQkBeIX9Sy/dGexrLGrdh3zAEQ56MBN06m/FvuhivjlkAVBmb/vWA337NwPKzN7rD7BNFuRQ3v
+	fN3wRn9t3rC76GPYh+uUB9rbfa/Q80mDil
+X-Received: by 2002:a05:600c:c168:b0:490:50eb:b777 with SMTP id 5b1f17b1804b1-4909c07267dmr43425645e9.5.1780048589855;
+        Fri, 29 May 2026 02:56:29 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909c09ab75sm11200965e9.6.2026.05.29.02.56.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 29 May 2026 02:56:29 -0700 (PDT)
+Date: Fri, 29 May 2026 09:56:28 +0000
+From: Wei Yang <richard.weiyang@gmail.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Zi Yan <ziy@nvidia.com>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>, Kairui Song <ryncsn@gmail.com>,
+	Mikhail Zaslonko <zaslonko@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Barry Song <baohua@kernel.org>, Dev Jain <dev.jain@arm.com>,
+	Lance Yang <lance.yang@linux.dev>, Nico Pache <npache@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 5/9] mm: list_lru: deduplicate lock_list_lru()
+Message-ID: <20260529095628.nagjdy3f24z6qjtk@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20260527204757.2544958-1-hannes@cmpxchg.org>
+ <20260527204757.2544958-6-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260527204757.2544958-6-hannes@cmpxchg.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16419-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.dev:email,infradead.org:email,cmpxchg.org:email];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,rdma.events:url]
-X-Rspamd-Queue-Id: DEAFF5FFB36
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_REPLYTO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	TAGGED_FROM(0.00)[bounces-16421-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	HAS_REPLYTO(0.00)[richard.weiyang@gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[richardweiyang@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
+	NEURAL_HAM(-0.00)[-0.994];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: 4E0A060054C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Tao Cui <cuitao@kylinos.cn>
+On Wed, May 27, 2026 at 04:45:12PM -0400, Johannes Weiner wrote:
+>The MEMCG and !MEMCG paths have the same pattern. Share the code.
+>
+>Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
+>Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+>Reviewed-by: Lorenzo Stoakes (Oracle) <ljs@kernel.org>
+>Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+>Reviewed-by: Liam R. Howlett (Oracle) <liam@infradead.org>
+>---
+> mm/list_lru.c | 21 +++++++++------------
+> 1 file changed, 9 insertions(+), 12 deletions(-)
+>
+>diff --git a/mm/list_lru.c b/mm/list_lru.c
+>index 7d0523e44010..fdb3fe2ea64f 100644
+>--- a/mm/list_lru.c
+>+++ b/mm/list_lru.c
+>@@ -15,6 +15,14 @@
+> #include "slab.h"
+> #include "internal.h"
 
-The RDMA cgroup now supports MR memory size tracking via the new
-mr_mem resource.  Update the cgroup-v2 documentation to describe
-the new resource and revise the usage examples accordingly.
+Hi, Johannes
 
-The mr_mem resource tracks the cumulative size of memory registered
-through Memory Regions per device per cgroup, providing a DMA
-registration budget that is orthogonal to the existing hca_object
-counter.
+One very tiny nit below.
 
-Signed-off-by: Tao Cui <cuitao@kylinos.cn>
----
- Documentation/admin-guide/cgroup-v2.rst | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+>+static inline void lock_list_lru(struct list_lru_one *l, bool irq)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 993446ab66d0..08d80e6f79ec 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2766,15 +2766,16 @@ RDMA Interface Files
- 
- 	The following nested keys are defined.
- 
--	  ==========	=============================
-+	  ==========	================================================
- 	  hca_handle	Maximum number of HCA Handles
- 	  hca_object 	Maximum number of HCA Objects
--	  ==========	=============================
-+	  mr_mem	Maximum cumulative MR memory size in bytes
-+	  ==========	================================================
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=2 hca_object=2000
--	  ocrdma1 hca_handle=3 hca_object=max
-+	  mlx4_0 hca_handle=2 hca_object=2000 mr_mem=1073741824
-+	  ocrdma1 hca_handle=3 hca_object=max mr_mem=max
- 
-   rdma.current
- 	A read-only file that describes current resource usage.
-@@ -2782,8 +2783,8 @@ RDMA Interface Files
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=1 hca_object=20
--	  ocrdma1 hca_handle=1 hca_object=23
-+	  mlx4_0 hca_handle=1 hca_object=20 mr_mem=1048576
-+	  ocrdma1 hca_handle=1 hca_object=23 mr_mem=0
- 
-   rdma.peak
- 	A read-only nested-keyed file that exists for all the cgroups
-@@ -2792,8 +2793,8 @@ RDMA Interface Files
- 
- 	An example for mlx4 and ocrdma device follows::
- 
--	  mlx4_0 hca_handle=1 hca_object=20
--	  ocrdma1 hca_handle=0 hca_object=23
-+	  mlx4_0 hca_handle=1 hca_object=20 mr_mem=1048576
-+	  ocrdma1 hca_handle=0 hca_object=23 mr_mem=0
- 
-   rdma.events
- 	A read-only nested-keyed file which exists on non-root
-@@ -2815,7 +2816,7 @@ RDMA Interface Files
- 
- 	An example for mlx4 device follows::
- 
--	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=3 hca_object.max=0 hca_object.alloc_fail=0
-+	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=3 hca_object.max=0 hca_object.alloc_fail=0 mr_mem.max=0 mr_mem.alloc_fail=0
- 
-   rdma.events.local
- 	Similar to rdma.events but the fields in the file are local
-@@ -2836,7 +2837,7 @@ RDMA Interface Files
- 
- 	An example for mlx4 device follows::
- 
--	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=0 hca_object.max=0 hca_object.alloc_fail=0
-+	  mlx4_0 hca_handle.max=5 hca_handle.alloc_fail=0 hca_object.max=0 hca_object.alloc_fail=0 mr_mem.max=0 mr_mem.alloc_fail=0
- 
- DMEM
- ----
+Here we use @irq.
+
+>+{
+>+	if (irq)
+>+		spin_lock_irq(&l->lock);
+>+	else
+>+		spin_lock(&l->lock);
+>+}
+>+
+> static inline void unlock_list_lru(struct list_lru_one *l, bool irq_off)
+
+Here we use @irq_off.
+
+Do you think it would be nicer to unify the parameter name?
+
+Also the name in callsite and the argument annotation. Would it be cleaner
+readers?
+
 -- 
-2.43.0
-
+Wei Yang
+Help you, Help me
 
