@@ -1,178 +1,191 @@
-Return-Path: <cgroups+bounces-16416-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16420-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wGVELFFWGWrTvQgAu9opvQ
-	(envelope-from <cgroups+bounces-16416-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:03:13 +0200
+	id qAwoFK9XGWqCvggAu9opvQ
+	(envelope-from <cgroups+bounces-16420-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:09:03 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C0E5FFAB5
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:03:12 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 091385FFB3D
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 11:09:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 051263063026
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 08:59:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2B04B309D380
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 09:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61E63B776A;
-	Fri, 29 May 2026 08:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C08F53BBA1A;
+	Fri, 29 May 2026 09:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dMyqNsDw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kSr+qF2v"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E083A83BF;
-	Fri, 29 May 2026 08:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307F43BA22E
+	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 09:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780045149; cv=none; b=jNOiPbffvKm2BjTnokOklC8hIw8/A0kykQ+GsI2BiTgLf25jWH6oUNralr93kBoM2c0lCA4deoKmXdrdZmALQBEhbOhwv+2/GA4ThYoU39Rdo5BzE3iWcw3jIVJq2VE50IdoKvF93iFuQBkLpiXodjjkjNr5HXULSkj2UrmXEoo=
+	t=1780045681; cv=none; b=qNJiw89BcmL8XCg3aO43v3a4IeXo5NFXUtokjCv5OHjcpyYEASZb+rRqoM56pb9C83UByG+G31TtumgjcSrBzVuYiL3ntVrnM6eUdnj1bBYDuDBPazpcqldCucZJJGvu/ZaD24rbga/MW+898q4Ex6jR/A/ox6GGpcX7P4dw5ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780045149; c=relaxed/simple;
-	bh=kT17TFaVMuzhehcDGfOX5jz4/y7vwK9PowtC8aVxbbc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mo2+qTpvN0fTdmzlvFmyT9fQLPzoZVFKpZ/9G7D0+iADfQtOKiHOYaiJxWFnpEwdIwDkYoT//bPykIBNFIpGDYdhL8pyeFaZwDJ8RsSeVeHXcaS2XdYu8iltGqnaqLN6vpCWQqwvR2/DCipsIjrUQtSobupzPDN6frWzr9rEanE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dMyqNsDw; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780045147; x=1811581147;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kT17TFaVMuzhehcDGfOX5jz4/y7vwK9PowtC8aVxbbc=;
-  b=dMyqNsDwFEtBCTJon41RJVEe7Sr+2cAk4YR2gi0XUSVIoDXjVOmZnHpu
-   eqmVGW7JZKaLXxCp3AYRqfs2Oa8b8uuTtOMdwT2+y4oF6JP/ye0NuDiYk
-   vY/W6UGTpKR/hsoE7iLlQOJhd90QLMrwOHkLz6wOBNgXBhSYt79VQnZD9
-   jG8BB+SVXPSchRo1Wy9l6QQGVS2pvqMDXO0lRsmm0Je+TNmxsdhsj/t/9
-   xrvL4sElpmJqXnYgwxWnP7p2SGvj2AEwNO5GP5H0K9lXKib5QQx+9k5Qj
-   3FV7wSAvxoLyv44nZ8PHPwel2bk3F5D8Z0szyr4BZrJmHyQWJuX0mds3N
-   A==;
-X-CSE-ConnectionGUID: C11qOYI1SJWFLKkUPWWtQQ==
-X-CSE-MsgGUID: Eesx+9nTTgONgNXPI68RWw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11800"; a="80795026"
-X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
-   d="scan'208";a="80795026"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 May 2026 01:59:06 -0700
-X-CSE-ConnectionGUID: fTjGFbSZTdOevsLtgfQEfA==
-X-CSE-MsgGUID: T68RK7tKSXS5sDa6pImfFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,175,1774335600"; 
-   d="scan'208";a="247740206"
-Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 29 May 2026 01:59:01 -0700
-Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wSt3R-00000000714-14pf;
-	Fri, 29 May 2026 08:58:57 +0000
-Date: Fri, 29 May 2026 16:58:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yury Norov <ynorov@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
-	Byungchul Park <byungchul@sk.com>,
-	Gregory Price <gourry@gourry.net>,
-	Ying Huang <ying.huang@linux.alibaba.com>,
-	Alistair Popple <apopple@nvidia.com>, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Yury Norov <ynorov@nvidia.com>,
-	Farhad Alemi <farhad.alemi@berkeley.edu>,
-	Waiman Long <longman@redhat.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH] mm: don't allow empty relative nodemask in
- mpol_relative_nodemask()
-Message-ID: <202605291609.AR5UEvmT-lkp@intel.com>
-References: <20260528190337.878027-1-ynorov@nvidia.com>
+	s=arc-20240116; t=1780045681; c=relaxed/simple;
+	bh=QFJ3jZPuLzz4cgAvH+lI4rf+q+2dlZJEBGn8x0mV3us=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P33ghf7hTbgdREacNBWS/lx6h+14DBnR3CUBitxJOQJyEM9TXSB+YCOcygCc2drq8jAAYQZx9SScc1mW9Z5JqmiviqTiGg6HO7ZePba+rmbtWGNPfrPlFQy7VOUyYPYnAflndPtfYR4XEH2PTDu9wVA9a/Od/FXz6P9LOY9Db0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kSr+qF2v; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1780045668;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vIvD+tH8GardrAeKrBNHrByBYjz1cKNJeWoucOPY6/8=;
+	b=kSr+qF2vh+aTNnPPbeUEB/WywSiJucZo5qK+L0/Xgjufi7rbPFpXCpbCU9XDw+CZ/ztbck
+	mlZHhz3kX/l3lgA/LcwTk9ckCSOc/E3gEZNeq1uE2P3pXpB4WMuk7Ykrkq98SxeEb7VAum
+	I41p4Md3k4vPk64olozpCvF++XSdcpw=
+From: Tao Cui <cui.tao@linux.dev>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	leon@kernel.org,
+	jgg@ziepe.ca
+Cc: linux-rdma@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Tao Cui <cuitao@kylinos.cn>
+Subject: [PATCH rdma-next v2 0/3] cgroup/rdma: add MR memory size resource tracking
+Date: Fri, 29 May 2026 17:07:30 +0800
+Message-ID: <20260529090733.2242822-1-cui.tao@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260528190337.878027-1-ynorov@nvidia.com>
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16416-lists,cgroups=lfdr.de];
-	FREEMAIL_TO(0.00)[nvidia.com,linux-foundation.org,kernel.org,intel.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16420-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,intel.com:email,intel.com:mid,intel.com:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: A9C0E5FFAB5
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 091385FFB3D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Yury,
+From: Tao Cui <cuitao@kylinos.cn>
 
-kernel test robot noticed the following build warnings:
+Currently the RDMA cgroup only tracks two aggregate counters:
+hca_handle and hca_object.  The real scarce resource in multi-tenant
+deployments is pinned memory: how much physical memory gets registered
+through MRs.  The existing hca_object counter is too coarse to capture
+this.
 
-[auto build test WARNING on akpm-mm/mm-everything]
+This series adds a single new resource type:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yury-Norov/mm-don-t-allow-empty-relative-nodemask-in-mpol_relative_nodemask/20260529-030835
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20260528190337.878027-1-ynorov%40nvidia.com
-patch subject: [PATCH] mm: don't allow empty relative nodemask in mpol_relative_nodemask()
-config: x86_64-kexec (https://download.01.org/0day-ci/archive/20260529/202605291609.AR5UEvmT-lkp@intel.com/config)
-compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260529/202605291609.AR5UEvmT-lkp@intel.com/reproduce)
+  - mr_mem  - Cumulative MR memory size in bytes
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202605291609.AR5UEvmT-lkp@intel.com/
+The per-object-type counters (qp, mr) from RFC v1 have been removed
+per review feedback [1]: modern NICs pool objects from the same memory
+pool so the distinction between QP count and MR count is not
+meaningful for resource limiting.  hca_object remains sufficient for
+coarse object accounting.
 
-All warnings (new ones prefixed by >>):
+After this series, an administrator can set limits like:
 
->> mm/mempolicy.c:377:3: warning: void function 'mpol_relative_nodemask' should not return a value [-Wreturn-mismatch]
-     377 |                 return -EINVAL;
-         |                 ^      ~~~~~~~
-   1 warning generated.
+    echo "mlx5_0 mr_mem=1073741824" > rdma.max
 
+Design
+~~~~~~
 
-vim +/mpol_relative_nodemask +377 mm/mempolicy.c
+mr_mem is not page-level ownership tracking; it is object-based
+accounting tied to the MR lifetime:
 
-   369	
-   370	static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
-   371					   const nodemask_t *rel)
-   372	{
-   373		unsigned int w = nodes_weight(*rel);
-   374		nodemask_t tmp;
-   375	
-   376		if (w == 0)
- > 377			return -EINVAL;
-   378	
-   379		nodes_fold(tmp, *orig, w);
-   380		nodes_onto(*ret, tmp, *rel);
-   381	}
-   382	
+  - charged at MR registration time
+  - uncharged at MR destruction time
+  - the charge is pinned to the cgroup that created the MR for the
+    entire lifetime of the MR object
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+This model intentionally defines accounting semantics around MR
+object lifetime rather than page ownership:
+
+1. fork(): fork() does not duplicate MR objects.  Even though the
+   child inherits the uverbs fd and can access the parent's ucontext,
+   the MR remains a single kernel object.  The charge is tied to the
+   MR object, not to the number of processes that can reach it, so
+   no splitting or re-accounting is needed.
+
+2. Cgroup migration: mr_mem follows the same semantics as the existing
+   hca_object; charge at creation time against the invoking task's
+   cgroup, uncharge at destruction time.  The RDMA cgroup does not
+   implement can_attach/attach callbacks today, so charges do not
+   migrate with the task.  This is a known limitation that applies
+   equally to hca_handle and hca_object.  mr_mem does not introduce
+   any new complication here.
+
+3. Overlap with memory cgroup: mr_mem does not count process memory
+   usage; it represents a per-device DMA registration budget: the
+   amount of memory this cgroup may register through a given HCA.
+   This is a different dimension from what memory cgroup tracks.  An
+   administrator might set mr_mem limits differently per device, which
+   memory cgroup cannot express.
+
+   In particular, mr_mem tracks the registered memory range associated
+   with the MR rather than exact dynamically pinned pages (e.g. for
+   ODP MRs).  This is a stable, policy-oriented approximation of
+   registration footprint, not an attempt at precise physical page
+   accounting.
+
+Tao Cui (3):
+  cgroup/rdma: extend charge/uncharge API with s64 amount parameter
+  cgroup/rdma: add MR memory size resource tracking
+  cgroup/rdma: update cgroup resource list for MR_MEM
+
+ Documentation/admin-guide/cgroup-v2.rst       |  21 ++--
+ drivers/infiniband/core/cgroup.c              |  10 +-
+ drivers/infiniband/core/core_priv.h           |  12 +-
+ drivers/infiniband/core/rdma_core.c           |  20 +++-
+ drivers/infiniband/core/uverbs_cmd.c          |  61 +++++++++-
+ drivers/infiniband/core/uverbs_std_types_mr.c |  37 ++++++
+ include/linux/cgroup_rdma.h                   |   8 +-
+ include/rdma/ib_verbs.h                       |   1 +
+ kernel/cgroup/rdma.c                          | 108 +++++++++++++-----
+ 9 files changed, 219 insertions(+), 59 deletions(-)
+
+---
+Changes from RFC v1:
+
+  - Removed RDMACG_RESOURCE_QP and RDMACG_RESOURCE_MR per-type
+    counters following review feedback from Jason Gunthorpe [1].
+  - Retained only RDMACG_RESOURCE_MR_MEM as the sole new resource.
+  - Added detailed semantic notes to the commit messages addressing
+    fork(), cgroup migration, and overlap with memory cgroup [2].
+  - Renamed patches to reflect the narrower scope.
+
+[1] https://lore.kernel.org/all/20260525134314.GI7702@ziepe.ca/
+[2] https://lore.kernel.org/all/20260528075537.2170697-1-cuitao@kylinos.cn/
+-- 
+2.43.0
+
 
