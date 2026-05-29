@@ -1,161 +1,395 @@
-Return-Path: <cgroups+bounces-16450-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16451-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0BJlHPzVGWpmzQgAu9opvQ
-	(envelope-from <cgroups+bounces-16450-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 20:07:56 +0200
+	id +DJAAzPaGWoAzggAu9opvQ
+	(envelope-from <cgroups+bounces-16451-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 20:25:55 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1917C6070D1
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 20:07:56 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFAA60738D
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 20:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A2C98300E296
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 18:07:22 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 34EB53008D1E
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 18:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60213FE376;
-	Fri, 29 May 2026 18:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C21409104;
+	Fri, 29 May 2026 18:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IW5EOjNU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiAmolIn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFD43FD96E
-	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 18:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780078037; cv=none; b=cdy1tnuxlaVfdIQnTnhCX17BHIsUouNUsOfEJoCz2GB/YW9zJZ89Y5JcFrKoFk2sXFcuh+X2diN7OuwTZuNrOYj1yseVNcH7zqAs0ACJpiIwYbBHu5eJ518Si0d0E3wbIdiW50g0g/TTovuLtXhVExAaFR/mPAdVEjWP6zyDrCs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780078037; c=relaxed/simple;
-	bh=ZORxc4n+KTH/i6FIqCuHy9fzYjBBMWfKZ1IrOukTMow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LbY/6VK7Shz8gCXwGKTj10EtTY2SqIzDRDH/mcqQJtoSOwoujWk/4DQPOXt8S2FjQAkORg4uM7nlreLbt8A3X5wfD6zjlOfVUKi3NOxqUdAX9PLBRsOxR4M4uyHxzuthNn4VSWE/yyYUampTiyToawvucXG4zxjL6C6A/shj95I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IW5EOjNU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1780078035;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6Yp5Z0v+vy9bAYL3uaXwsU8QnQUu67HN+KCDUZVXtOo=;
-	b=IW5EOjNUJWget+CT7Ce+uscBR2y+duBMrPGPC6jYj2cWKGNAHDNzcrysxzDPKYK1pYRZad
-	tcFIkLtzNQqWf/S1+ZsshytBKhWiXuQsO9T04mCV6QMXczdrdBujTZWahih4eb9qsMpBzA
-	62n1HmBPE2GwPpYxdqVgMSE/XBiRuK4=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-283-QpAdufHnMS-hShS-r71XAw-1; Fri,
- 29 May 2026 14:07:09 -0400
-X-MC-Unique: QpAdufHnMS-hShS-r71XAw-1
-X-Mimecast-MFC-AGG-ID: QpAdufHnMS-hShS-r71XAw_1780078027
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5E46A1956059;
-	Fri, 29 May 2026 18:07:07 +0000 (UTC)
-Received: from [10.22.64.54] (unknown [10.22.64.54])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A80651945110;
-	Fri, 29 May 2026 18:07:05 +0000 (UTC)
-Message-ID: <e0db8d51-a795-4157-a390-a868a6587a8a@redhat.com>
-Date: Fri, 29 May 2026 14:07:04 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B1C403E8C
+	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 18:25:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780079149; cv=pass; b=rPuQnpKIsjNbsKKQtKrzks8sTS+h5Osr3UpD5nLeiqGWwHx2DpUUep0NOPHxt7v+Py+nmYKHcw4ESmGCOXoGu73B7zbG1Jed9qStbe+vjdyXH3Lak3MA5kbdEzXQHP8rMTl4ys3DpIHH/qBz3EK9SXVDKqaygbt7ij3HnhA+/o8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780079149; c=relaxed/simple;
+	bh=a8PKYrqaWiptnOMvpltMHLnW4tWyZeuk+G0weqhin4Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Boj+Jqwogvp1yKMBocWkvQsqQPuYuHZG0OjVC9bseyKLCWVkfXUQGCSSsa+qXBeDzFKTcjyeGcdHVnxgo77w1p3YtTOuipbtM+ZZdrznV+JarBgPWyFWSUZ/mzaHTL/iZEr5S7wt6YPSp9uw4esCn5zBOOVX/24fvv/1btB4JbU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hiAmolIn; arc=pass smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4903997fcb5so84742865e9.2
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2026 11:25:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780079146; cv=none;
+        d=google.com; s=arc-20240605;
+        b=DNDDxGIjWX0l9LNNaR8ZMqXNRlqBXQQqgNjLOKdkFGZ1ndBuxUQHFxh030rut0u7d8
+         TU1VSSI2CP6osFGy3xPyWtEFcBJpdUAS92ViddR0uKcuRDwBmDIq3TXxQddxxSBFalht
+         9ErkJPEWfYlPV2K7FhLX+OaQRSL7eic/eWo4Y5aq7XAMWCPtDPE6IDyvQhtB780h7ItX
+         mqn3nWNMWlJA8RbI/9cN7pWcJKdnqAQa+HqYFGd+khJ0z8u60/fTLaJbVjvbO6NMPkUp
+         PVnxk6982Hq6dEsJhNpmNDjN0TqQ6ZAnmh+KXg/9hWUm6oVt8FdWO/TgZ0XSl/JxNRf4
+         qY2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=n/7VoLmlkelTnjhAVM+WgpRo6OCkYvMP+6JN8/8y21k=;
+        fh=mpOXrUb7lMsIRFnceQOrXvPdHwG1oS+EGuC+TKfhjkE=;
+        b=L1f4+RkV4b2I45IhwVdsxFw8HMny/MujrLv8IG+S8FpbvuWSHaSz7nCjGCqpUZuaUh
+         C9w5e0sLJH1YY/mwCtnqFWhCz/zZ/g706WIISWQ3w9D3EhB1xDQreD0oUJp9fj3iTKrb
+         HLow7vUaMjyEbA5eq7jf/VTBVUQVzyFkVmV538joQ/gy1VV7ouItQWtlMOd8UR7PzSn8
+         gW5f3MpHD4+wCwlnrD3I/+ThGkKAEJ7Scmq+Iex9WSElNKasRr2zmIFoqozQXybDgRoB
+         Lp0ayPNt8leLBAkxO3B7zA4P9U7jkTcFGTGHruidFPrxv9CGtwC39ool9epYPrt1KZL5
+         eAew==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780079146; x=1780683946; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n/7VoLmlkelTnjhAVM+WgpRo6OCkYvMP+6JN8/8y21k=;
+        b=hiAmolInz1CfTDIvTboB3KZeE4RiPQX2dnrTIN+kGFEMhmm/GNIG0gptbbkv/+wJNw
+         Cl1fXDbTmEJhiOyURNcvgxCk/4RTGAIgPoBazq0DLM64BlNEYs6b/WguffshRVvfa6wj
+         RVZVfyLe7VXhvOjI2+qjofnVjtuhCf5gubHXv6bd1eO8GoEUckiGBKS2nEsdXjiUR+bS
+         SN1Vkpx27dt9gNlWdXy5ko4ZMTWKA8bmbJR4do7A6GfCZkHCmnERSjJh4jMfNvkxcJol
+         fbHe1dRWNYOtYL4dfPNuLYhK+iQtT5rIzt0m0Y/cOfjuRXuSdjav7IIDq5DB52N/UN1n
+         VCjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780079146; x=1780683946;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=n/7VoLmlkelTnjhAVM+WgpRo6OCkYvMP+6JN8/8y21k=;
+        b=kPUXMDGMkSyWZXCDfXIUJVKR35Vc21F5WYeBtNHdCIUYDzTTZGuHVCAmGVN/CbqFga
+         mpq+fTvZhjBNJm+Dg6HDe57reLm0jEFgbu99oZEDV4UOJQ42YBPYaUyyZN/wB4+aUbgB
+         MQ6OjZ7NzghnfthW7IvsX566geogB1Ghx+1yl/UCtErML6cbtREypgQqahxjjqyMCJSX
+         gSzbCiswLbn6mwIzqf97QgcyEzEccDz+/j+R369D7uC15sKgCJHDEXEoKzBvEQEbCO62
+         kLX5adig7IcUqR8sXT2O7dn+EcMIznYoq5kTHRPkNRuI45mtGN3hrHLXGNy80ANWWUbx
+         k9lA==
+X-Forwarded-Encrypted: i=1; AFNElJ/ihjvAbbwzBHfiJWzFP9776W28EYFH7aobPphLy/mHnBNhi4iMqM1swKvWoHyut/99MWHa9Q8G@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWPBr7DkhqgnYSkl9rPaQ0fRFISlCtOJMhUJKxpa+J9WWvU2BE
+	WHEL24szl7u7b/2o50Toyqf7Fr1QLwFtxIXTkLaS+jo7xda/+rEo81Jc+jWEssRpHwenEJ8SqwY
+	Yt102ltiEBpXlWtnqzf5p07H5HcGUD98=
+X-Gm-Gg: Acq92OFoVJRSpW0n87mqfm4pDXIxciSd9mixXfjj1Wxqvkge7YTv7qqG3F8Jw1UPSeI
+	xgcKaAjA+khUhFjTvU/5+V2JTY4NvYy0uPaBGdyP3B8flGL7OLxLP5fcTU6Es895Rw3clVOVPtO
+	lTjigiyRv/Tq9j2Vf/aH9cG7yCJy03D+N+Mx/GsziYeKB9GDo8g9vIvSQ0SQXzqD5v319yGr4rY
+	5t7ugD7x3RMxyIcC9DFijKx9tbiC/y4s2DxlV6knm9ROABXU5u2TbMvIWZklbfl0LpL8FV1R8Gh
+	MCAcgzDHefqmcVUoypxteQmXmHdrDf0gwsAio8nOO9sX/jKqdA==
+X-Received: by 2002:a05:600c:c092:b0:489:1ba8:5bf0 with SMTP id
+ 5b1f17b1804b1-490a2959113mr10743195e9.21.1780079145975; Fri, 29 May 2026
+ 11:25:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Free sched domains on rebuild guard
- failure
-To: Guopeng Zhang <guopeng.zhang@linux.dev>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, Guopeng Zhang <zhangguopeng@kylinos.cn>
-References: <20260528093742.1792456-1-guopeng.zhang@linux.dev>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20260528093742.1792456-1-guopeng.zhang@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <tencent_98CD9F78E48D08DC005A6471A13CFF28B60A@qq.com> <tencent_7D186EDC2C9AB9009F9915C1E68F3CF44609@qq.com>
+In-Reply-To: <tencent_7D186EDC2C9AB9009F9915C1E68F3CF44609@qq.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 29 May 2026 11:25:34 -0700
+X-Gm-Features: AVHnY4Kp-sEPE-FFUF6bBOJrz20u3PpASZs17QhUX4WKimDdvMA9ZEAzM1igyBk
+Message-ID: <CAKEwX=Or6forBoArv1b=MZuhOuF+MTuLLZWPKgUmkBVaoBoYSQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/9] mm/zswap: support fully zswap-backed large
+ folio loads
+To: fujunjie <fujunjie1@qq.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	Alexandre Ghiti <alexghiti@meta.com>, Kairui Song <kasong@tencent.com>, 
+	Usama Arif <usamaarif642@gmail.com>, Chris Li <chrisl@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosry@kernel.org>, 
+	David Hildenbrand <david@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16451-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16450-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[qq.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kvack.org,meta.com,tencent.com,gmail.com,kernel.org,cmpxchg.org,google.com,linux.dev,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 1917C6070D1
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,qq.com:email,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 0BFAA60738D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/28/26 5:37 AM, Guopeng Zhang wrote:
-> From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+On Fri, May 29, 2026 at 5:19=E2=80=AFAM fujunjie <fujunjie1@qq.com> wrote:
 >
-> generate_sched_domains() returns sched-domain masks and optional
-> attributes that are normally handed to partition_sched_domains(), which
-> takes ownership of them.
+> zswap currently refuses large swapcache folios. That is correct for mixed
+> backend ranges, but it also prevents the common swapin path from loading =
+a
+> range that is still fully backed by zswap.
 >
-> rebuild_sched_domains_locked() has a WARN guard after
-> generate_sched_domains() and before partition_sched_domains() to avoid
-> passing offline CPUs into the scheduler domain rebuild path. If that
-> guard fires, the function currently returns directly without freeing
-> the generated doms and attr.
+> Teach zswap_load() to fill a locked large swapcache folio by decompressin=
+g
+> each base-page entry into the matching folio offset, then flushing the
+> folio once. A missing entry after zswap data has been seen is reported as
+> -EAGAIN so the caller can drop the speculative large folio and retry
+> order-0.
 >
-> Free the generated sched-domain masks and attributes before returning
-> from the guard failure path.
+> The large load keeps the zswap entries in place. It is a clean speculativ=
+e
+> fill: until the swap slots are freed, zswap remains the backing copy if
+> reclaim drops the large folio before PTEs are installed.
 >
-> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+> Signed-off-by: fujunjie <fujunjie1@qq.com>
 > ---
->   kernel/cgroup/cpuset.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+>  mm/zswap.c | 105 ++++++++++++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 87 insertions(+), 18 deletions(-)
 >
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 51327333980a..c5fdebc205d8 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1004,8 +1004,11 @@ void rebuild_sched_domains_locked(void)
->   	* prevent the panic.
->   	*/
->   	for (i = 0; doms && i < ndoms; i++) {
-> -		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
-> +		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask))) {
-> +			free_sched_domains(doms, ndoms);
-> +			kfree(attr);
->   			return;
-> +		}
->   	}
->   
->   	/* Have scheduler rebuild the domains */
-This WARN_ON_ONCE() is mainly used to catch bug during code update. It 
-shouldn't be triggered in normal use. Anyway, it is a nice-to-have fix.
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index da5297f7bd69..94ba112a2982 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -15,6 +15,8 @@
+>
+>  #include <linux/module.h>
+>  #include <linux/cpu.h>
+> +#include <linux/mm.h>
+> +#include <linux/huge_mm.h>
+>  #include <linux/highmem.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> @@ -934,7 +936,8 @@ static bool zswap_compress(struct page *page, struct =
+zswap_entry *entry,
+>         return comp_ret =3D=3D 0 && alloc_ret =3D=3D 0;
+>  }
+>
+> -static bool zswap_decompress(struct zswap_entry *entry, struct folio *fo=
+lio)
+> +static bool zswap_decompress(struct zswap_entry *entry, struct folio *fo=
+lio,
+> +                            unsigned int page_idx, bool flush_dcache)
+>  {
+>         struct zswap_pool *pool =3D entry->pool;
+>         struct scatterlist input[2]; /* zsmalloc returns an SG list 1-2 e=
+ntries */
+> @@ -952,14 +955,15 @@ static bool zswap_decompress(struct zswap_entry *en=
+try, struct folio *folio)
+>
+>                 WARN_ON_ONCE(input->length !=3D PAGE_SIZE);
+>
+> -               dst =3D kmap_local_folio(folio, 0);
+> +               dst =3D kmap_local_folio(folio, page_idx * PAGE_SIZE);
+>                 memcpy_from_sglist(dst, input, 0, PAGE_SIZE);
+>                 dlen =3D PAGE_SIZE;
+>                 kunmap_local(dst);
+> -               flush_dcache_folio(folio);
+> +               if (flush_dcache)
+> +                       flush_dcache_folio(folio);
+>         } else {
+>                 sg_init_table(&output, 1);
+> -               sg_set_folio(&output, folio, PAGE_SIZE, 0);
+> +               sg_set_folio(&output, folio, PAGE_SIZE, page_idx * PAGE_S=
+IZE);
+>                 acomp_request_set_params(acomp_ctx->req, input, &output,
+>                                          entry->length, PAGE_SIZE);
+>                 ret =3D crypto_acomp_decompress(acomp_ctx->req);
+> @@ -1042,7 +1046,7 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>                 goto out;
+>         }
+>
+> -       if (!zswap_decompress(entry, folio)) {
+> +       if (!zswap_decompress(entry, folio, 0, true)) {
+>                 ret =3D -EIO;
+>                 goto out;
+>         }
+> @@ -1615,10 +1619,9 @@ enum zswap_range_state zswap_probe_range(swp_entry=
+_t swp,
+>   *  NOT marked up-to-date, so that an IO error is emitted (e.g. do_swap_=
+page()
+>   *  will SIGBUS).
+>   *
+> - *  -EINVAL: if the swapped out content was in zswap, but the page belon=
+gs
+> - *  to a large folio, which is not supported by zswap. The folio is unlo=
+cked,
+> - *  but NOT marked up-to-date, so that an IO error is emitted (e.g.
+> - *  do_swap_page() will SIGBUS).
+> + *  -EAGAIN: if the swapped out content belongs to a large folio, but th=
+e
+> + *  range is mixed or raced with writeback. The folio remains locked so =
+the
+> + *  caller can drop the large swapcache folio and retry order-0.
+>   *
+>   *  -ENOENT: if the swapped out content was not in zswap. The folio rema=
+ins
+>   *  locked on return.
+> @@ -1626,9 +1629,12 @@ enum zswap_range_state zswap_probe_range(swp_entry=
+_t swp,
+>  int zswap_load(struct folio *folio)
+>  {
+>         swp_entry_t swp =3D folio->swap;
+> +       unsigned int nr_pages =3D folio_nr_pages(folio);
+> +       unsigned int type =3D swp_type(swp);
+>         pgoff_t offset =3D swp_offset(swp);
+> -       struct xarray *tree =3D swap_zswap_tree(swp);
+> +       struct xarray *tree;
+>         struct zswap_entry *entry;
+> +       unsigned int i;
+>
+>         VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>         VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+> @@ -1636,21 +1642,84 @@ int zswap_load(struct folio *folio)
+>         if (zswap_never_enabled())
+>                 return -ENOENT;
+>
+> -       /*
+> -        * Large folios should not be swapped in while zswap is being use=
+d, as
+> -        * they are not properly handled. Zswap does not properly load la=
+rge
+> -        * folios, and a large folio may only be partially in zswap.
+> -        */
+> -       if (WARN_ON_ONCE(folio_test_large(folio))) {
+> +       if (folio_test_large(folio)) {
+> +               struct obj_cgroup *first_objcg =3D NULL;
+> +               bool same_objcg =3D true;
+> +               bool saw_zswap =3D false;
+> +               bool saw_non_zswap =3D false;
+> +
+> +               /*
+> +                * The locked large swapcache folio now covers the range =
+and
+> +                * conflicts with zswap writeback's order-0 swapcache all=
+ocation.
+> +                * If the range is mixed or an entry disappears, retry or=
+der-0.
+> +                */
+> +               for (i =3D 0; i < nr_pages; i++) {
+> +                       tree =3D swap_zswap_tree(swp_entry(type, offset +=
+ i));
+> +                       entry =3D xa_load(tree, offset + i);
+> +                       if (!entry) {
+> +                               if (saw_zswap)
+> +                                       return -EAGAIN;
+> +                               saw_non_zswap =3D true;
+> +                               continue;
+> +                       }
 
-Reviewed-by:  Waiman Long <longman@redhat.com>
+Can we use xas_load API here instead of traversing down the tree again
+and again?
+
+> +                       if (saw_non_zswap)
+> +                               return -EAGAIN;
+> +
+> +                       if (!saw_zswap)
+> +                               first_objcg =3D entry->objcg;
+> +                       else if (entry->objcg !=3D first_objcg)
+> +                               same_objcg =3D false;
+
+Can we get different objcg at this point?
+
+> +                       saw_zswap =3D true;
+> +               }
+> +               if (!saw_zswap)
+> +                       return -ENOENT;
+> +
+> +               for (i =3D 0; i < nr_pages; i++) {
+> +                       tree =3D swap_zswap_tree(swp_entry(type, offset +=
+ i));
+> +                       entry =3D xa_load(tree, offset + i);
+> +                       if (!entry)
+> +                               return -EAGAIN;
+> +
+> +                       if (!zswap_decompress(entry, folio, i, false)) {
+> +                               folio_unlock(folio);
+> +                               return -EIO;
+> +                       }
+> +               }
+> +
+> +               flush_dcache_folio(folio);
+> +               /*
+> +                * Keep zswap entries until swap slots are freed. This is=
+ a clean
+> +                * speculative fill; zswap remains the backing copy if re=
+claim
+> +                * drops the large folio before PTEs are installed.
+> +                */
+> +               folio_mark_uptodate(folio);
+> +               count_vm_events(ZSWPIN, nr_pages);
+> +               count_mthp_stat(folio_order(folio), MTHP_STAT_SWPIN);
+> +
+> +               if (same_objcg) {
+> +                       if (first_objcg)
+> +                               count_objcg_events(first_objcg, ZSWPIN, n=
+r_pages);
+> +               } else {
+> +                       for (i =3D 0; i < nr_pages; i++) {
+> +                               tree =3D swap_zswap_tree(swp_entry(type, =
+offset + i));
+> +                               entry =3D xa_load(tree, offset + i);
+> +                               if (WARN_ON_ONCE(!entry))
+> +                                       continue;
+> +                               if (entry->objcg)
+> +                                       count_objcg_events(entry->objcg, =
+ZSWPIN, 1);
+
+xas_load() here too?
 
 
+> +                       }
+> +               }
+> +
+>                 folio_unlock(folio);
+> -               return -EINVAL;
+> +               return 0;
+>         }
 
+>
+> +       tree =3D swap_zswap_tree(swp);
+>         entry =3D xa_load(tree, offset);
+>         if (!entry)
+>                 return -ENOENT;
+>
+> -       if (!zswap_decompress(entry, folio)) {
+> +       if (!zswap_decompress(entry, folio, 0, true)) {
+>                 folio_unlock(folio);
+>                 return -EIO;
+>         }
 
+I wonder how much of these two paths (order 0 and larger order) can be
+unified...
+
+> --
+> 2.34.1
+>
 
