@@ -1,111 +1,111 @@
-Return-Path: <cgroups+bounces-16461-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16462-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sFasGnbzGWp/0AgAu9opvQ
-	(envelope-from <cgroups+bounces-16461-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 22:13:42 +0200
+	id GDgLO+vyGWp/0AgAu9opvQ
+	(envelope-from <cgroups+bounces-16462-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 22:11:23 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFB1608541
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 22:13:41 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B4FB6084C7
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 22:11:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 47EF530E61C9
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 20:05:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7D59430C7B23
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2026 20:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D6747276C;
-	Fri, 29 May 2026 20:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1CB4266BF;
+	Fri, 29 May 2026 20:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YRo9tY6W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rg33rV7E"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3901846AEE5
-	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 20:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A132D402459
+	for <cgroups@vger.kernel.org>; Fri, 29 May 2026 20:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780084889; cv=pass; b=RNynKMonWxIhT1cevquhfDZgOQKlv4hlH4DWnXQ3nTeqogrPjRQn3pZuU17rPwy8id2Q8TXkCTDEk8BUEim3c/odqhLFCo5SVo9qLfWjxG0a/F9ud6Bf+LnWg0hBz3Ssfg/5VL9XL7+eIyPMfMTOWCj3Kiqih4GpLlrCo1sISl0=
+	t=1780084994; cv=pass; b=UxMqLAjNAWv15Zq5XaUW0uyrUKyOgZeSeEAQUEbr2P5imxwICAKZsmVSVuQdFQRsHnc1gVy/P121N1hVw3YQ30mlVpv9eeYBjayhhHhZq0QZWpW5CRfbLwJPdI//YX6PVpscYf6wvuKx5p8JiiPGKopauLesxR2mxws9I7RDfww=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780084889; c=relaxed/simple;
-	bh=KaqwHfp1L3nqAAOV0CMesoD1cT1icMUGhJtrVbzAUB8=;
+	s=arc-20240116; t=1780084994; c=relaxed/simple;
+	bh=8vV7V3CMoBNjkJhOUfmZqE5k0G0M3MxFKAVMCFWrXI0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ceRVZyCSvnEWVis4SSo98WERBehOXK7eX8j/glY+dQFkIXmx3wiH8Nm9lLzb4tbrF6XAdgteTMLoad/IKhR4q8UTdBqhTKTLL99qVqhEv+Vxkcx9r3LHgurxhburq2tPSgn8y6vWYPJfrBtSOzP0Ro+ZskILCOzaa+uPy2X0lYU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YRo9tY6W; arc=pass smtp.client-ip=209.85.128.42
+	 To:Cc:Content-Type; b=hHIvpKqysL5TK0GV0LkvKrx80Ue2xGZInATVFzN1HExgq7cV97n6wydjHE+0+F3ep99/VuGOD7ZumBVdz34fGtBIY4Kt1IcxKSRnUWKaGnsT19m3frRIV6/gQKWYyJbBtKf65FHFvg/6zH4iRq9ttfiD+P0Nf2y8JeGU1crJj5c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rg33rV7E; arc=pass smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4891b0786beso95485965e9.1
-        for <cgroups@vger.kernel.org>; Fri, 29 May 2026 13:01:28 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780084887; cv=none;
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-45eee266c6cso1284459f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2026 13:03:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780084991; cv=none;
         d=google.com; s=arc-20240605;
-        b=fbKCeS+cflEGHc5Z6IL/NbrSnqRU9lbyzvcPBNBPPape+zijHPru7bBPO1LYw8PZJK
-         VGwpRBSWgR9lw7+ePSITi/aFpl3zyiPYmUcUI28bwDLN1iqFWDqyniiNLw7Qz5UrNTDG
-         /yuDX/+9n4t6gVLvzH/4UEuIdM01ymEs97mTs8OfSUQyVFtqQYXOxNzqXXXhxOtEf5/A
-         5X847pkMfyDbqEq0VPSsiXEo8wvnRabv2/rwbo7UPhTL6F0sBvHlDVqzl2liIfr5FFod
-         kRaODgl03vIIe7GkXvqMpnSSQ/Q1j86jGaO92sPSTMHSXUV7Ig554XLqk32x1n4rJ0GJ
-         vXTA==
+        b=KrYZ3ITolBkdJlxTQFSpTSrZhrUIyuAk0QRjUR5DI9RIFoLM6AXi2uv9pKCEM+oYct
+         TN5XgXSWHEq1KI0DcIwmiqM+PPwSVh1YLyouquNscX7WOdv0j9G7kWsuMI7aktdwfvRX
+         euSBJ3ILnzpjQ3kNeRPPqbpFFvHSCM+mRKtrnM5z2ARN7HXNh97lO5zCzkxcS5hEf6z0
+         bMwsjpgJ/i2CrEjKEI4SpdLJhIz0PAUh5rg++HBKpV32c4o0z+WE+DLEYkZ7d4EvRfSy
+         JwxvxiTBxj7fyJhMpU4amvVL5xwPG7vylQyDvbsNUBFoBaGU9nfKDjryhNr9hlP/831K
+         CZ6A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=W+5IFUGExZ+iwBSpEJguGBn5lCaGGh6fBKDVTB3MkGQ=;
-        fh=J5/8F6iGVYoigxGZL1wJG/qzAr+GFxTjvYXl8rKyqJI=;
-        b=C7zBbz0iQrOLjBom/lPLwrBHXl2veXDYNM0zY7jQq+wRA+OFpH05uEHDCeKoixSwM7
-         vlF/7py0km5MND6MMKX9gotGTRzi0oWju26IM/g0mMDnp5XqZteL+mjiz8COvxiYzzDF
-         QRSCPHfc5IQhxD831HS0NANQCbMwDVVxlWXfpgtpoU+ls5osxbX/a83PI9M9kehreTAf
-         UvtO5MS4EYROxnYUzCOUzJka76xlhlaZRNkJXYFCM7GH/MwcRUPAlw63p05lJStUtKmc
-         6O9Se4LxlGBzKLnCzs/++q7NGM/QR9fqU9VZWDChgvKBIe6m7VqpfbPyTQS8wE6q+aM0
-         4n0Q==;
+        bh=8vV7V3CMoBNjkJhOUfmZqE5k0G0M3MxFKAVMCFWrXI0=;
+        fh=C9/yQD9OdyA+sEJDBwPHY2jYV3b1EROtUFid1KbVKYY=;
+        b=CxU6tj/mYmzJki64360OVTxOo7FTAlnO4F2JznwWfau3U0xwT45Nvnrx+G34kFc7kt
+         fA4riMCqbUbAScaxdPZa8MmbfTOQOFcGZl2G7F26lE5KS5pNUpIdqAwjbjagneiWT04V
+         TYwfGbITksyuuu81tNSz5SB1oAepeeJ1aWyt/tv9dnA3wQlHLvb7FH09GDVasrhPISGu
+         Dp4YjduYJnxAAoWc1S4BweDRHZZixALfVbYYkZd9/RbxhBVK40Cq92WpJv5/yN3KHj6v
+         jVIR6ZawdLT6vvetSNLGbHVoZXO5tmcPsz+FrM5f20H2OalEMUsojqALmBsIfP7DiTTJ
+         BLCg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780084887; x=1780689687; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1780084991; x=1780689791; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W+5IFUGExZ+iwBSpEJguGBn5lCaGGh6fBKDVTB3MkGQ=;
-        b=YRo9tY6WSEjvQ6vAxmBVKowUNPrb5s/xa4bmNhchNw3cRjg8I/Yc0kG7hqHZRVi66P
-         dQ8aWcZJ4Wit3/Y49yYFn3UtaTuJeN3CbS2K5c3Yrt4UCbMOy6cewgBekS03liAVw4rs
-         merzoSfErhFl6uDIxHq7MxX0p5ozUBv6x1Q0n5wqP/SCGcnMLWIKzwCZWa5BChNCoTin
-         jDaj9r01YibIC1++cN+pRxHOtIz2y8VUvlwuxPjTErxH7BNQ4V9LBvrcqLwp28HNUG5h
-         2WiVCnoQPdNyeVm/H9E+G1HyENZVAUZTc10X2xvpei6DpgZ3tYFctEf1GXdNdYNeAQIL
-         NnQw==
+        bh=8vV7V3CMoBNjkJhOUfmZqE5k0G0M3MxFKAVMCFWrXI0=;
+        b=rg33rV7EsQFtyTgiUjK2Ackzr3TNkQBpZHUT8+A87Ac9RXqlFpgBhvSAy5QHW+ScU4
+         q15xl/aqyqG1HfygwNI7bVp3e24jLlhKeUNeugk2MPDZYUvW6tB3QEGtQawgIOnsCorw
+         5aAsSHgnE31TNV1mODMJvNj9UaQY9oHphJNIvqyddy6uRz32lGfxQREy01fkjhESwAVI
+         JtsLrF8BX7Z5Nqws7PKec8z1rAKiXndOg8nC/esldVX224O0ywMCg5dNropwdEQLnuCx
+         F7ayUffPAKSV8gCW4H9mFdreRlL9Sz7UOrut6B269UX6qIr2uwcFkgSM84By3eKs/DTk
+         BiNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780084887; x=1780689687;
+        d=1e100.net; s=20251104; t=1780084991; x=1780689791;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=W+5IFUGExZ+iwBSpEJguGBn5lCaGGh6fBKDVTB3MkGQ=;
-        b=c8ht8vCc3XBTYsHFDEL+1UCBUqaIQQE5/++XRu8rQK39nHf1WY4lJl1zmTfkBPULhn
-         9Zp9xpaK9hnoXsyluOA49a7x0nFIjlxlx8qWwGg7ECoooSufMcfglJko7jFrMQoboXV3
-         ZGv0GU6NYy4gjXyRDMvZt6I6LgPKwWyuxF2TznjHr2OeQXHEVgUfMD+ZONL5d7wo/lUI
-         TKKM0cAoxkbXdcvLHDKnti2svQlm2+TWeUCqufPrIrJEC8z7N+IXQa1Owj5vUeFRcuA8
-         wKC7IV4w3FfzuCIkX2ydVAxQ4ssNUoktlzZNg/BAfszUO2KPXOS7hQenJaD1PWCZF1Jc
-         WjpA==
-X-Forwarded-Encrypted: i=1; AFNElJ9gHTaKvX9y7OaQqc7yk2NtSSl+1jxAf/M0T93M8h02L+/pR51UrLouAqgr7UOLMa6Crh5vCNmC@vger.kernel.org
-X-Gm-Message-State: AOJu0YwB725wZTCOaY1SO395HyeHyRtft1YfXxUo5oDpEyEu3MoXf1tK
-	rILEUaP2hs+UAsPErSSddA7JLbhRfpakWP05MubRTweW4hvYP3sO8VCzf6694qUd21MfSDJa6w0
-	cpJqyTH6Kbh2nH1cdUYdTVNkoCPCU+ic=
-X-Gm-Gg: Acq92OGvA7vPDcXYbliB+T3vr02DWhPN3RENA0J37J/k196jcquWzijONm7RBTFWmdE
-	vaJtyauRAH+DGsG2o6Y9t7bVL9OH1paG0j3bKDP4RbvEztYZ9jRhIIcv/amL6jaIZ4KABpyrsVJ
-	at6S0C92SJq43TA+Dxi8tmSCs42gtl9tPPYq/ljXrowCqry557Xn4+cdpB7rOCOFV/wQHLOo0K2
-	LfZ0JU8eWo0L/e2CMwwsomXc0FqYs7W9fVMLtHLFebHPr0lFAwyhYhr35pXThOc5GMl2wbeLRMf
-	UNPluryaBYgUrT4DW9TU49pW06dkcpdCgEm0jsRWvFBSowkBmA==
-X-Received: by 2002:a05:600c:8582:b0:488:b187:3c with SMTP id
- 5b1f17b1804b1-490a29399fcmr13599005e9.14.1780084886357; Fri, 29 May 2026
- 13:01:26 -0700 (PDT)
+        bh=8vV7V3CMoBNjkJhOUfmZqE5k0G0M3MxFKAVMCFWrXI0=;
+        b=q+NWTcj4c8EoXA5bb/44H/vX1IMBUnhHlhPLXJozk5dZNls4Br36bWU+p5jD67V9dV
+         NtI2Ze/rbEWha27v1M25bIzipZmWN2OHf9bGgtt+dyYZNPx+HLKKTSt5yV0sVPchNwAH
+         zm7ZnZYMRQT0vOEt2Nshi0Js2XbwJN6RjWjqrwtZciv+r98oWtHOldfXEwmrrNQOw4DR
+         /uvlSqBUy28rzc3ybl+VPm/09VTLJaTYHb3PrNjyJnNoT/px6YGCYWrBArEnz/lznoOM
+         Fd0JsjlQdQMJLezl/1G/9qEOshWbO/C+IiY4LTuTFtTyEFBN4C1RMwnoTlA53fRrUpjU
+         kAmA==
+X-Forwarded-Encrypted: i=1; AFNElJ9a5p7rcA4rFYEH/OueTvaz1UFf4QPRN7C05Cpvg4YCdMbtDz5b4hAfXyLfeDS0LC2dddhAK1Jc@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/vdBXJRm4hdORT6Cvi0rQdqsucFl+Qd9FwTfBfbsG3fWXsFKf
+	KMVGjuqdnw0n4orB2MH4PZC3aClTvzVK/EhxO5etUZhO+9bPddje3syFQer9EVKwmu8x5vj79NH
+	ICFRQF0/TymRGq/ZWtY+FkgFLdZToaks=
+X-Gm-Gg: Acq92OHR87C13M0XchF5fQjUJOhEiW4zvb9NSoov4d4Vga4GhDbDgSRTVuIkO7ORWOw
+	+3Sf+fOHO2Xne3uU+C6lb5RL9qsh1z1tuq3/LdpKMIlzDFQdDu7hheuxJp7VuTCBvwNfCd71vD0
+	QwkU65Xh8DhmAFjLCtq7fjHKVGCfoPoJhc4X2/ZrotABQT4mOAntfrPYBOUomM+fXXFFLCM1YmH
+	daji4TeVAFeDaD/zGhotRt7DBQJo62/Oz+ffeZ6igYAInTo2GFoIwUUgz8phVYz4HryJTPPgUcg
+	tyBKUxC1NJPPPt4uKkS0fUlm+14IKr7tYaaSkKXFyVfzHXhPiA==
+X-Received: by 2002:adf:e510:0:b0:45e:ef4a:819a with SMTP id
+ ffacd0b85a97d-45ef6b1fb03mr1966464f8f.17.1780084991071; Fri, 29 May 2026
+ 13:03:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260526114601.67041-1-jiahao.kernel@gmail.com> <20260526114601.67041-4-jiahao.kernel@gmail.com>
-In-Reply-To: <20260526114601.67041-4-jiahao.kernel@gmail.com>
+References: <20260526114601.67041-1-jiahao.kernel@gmail.com> <20260526114601.67041-5-jiahao.kernel@gmail.com>
+In-Reply-To: <20260526114601.67041-5-jiahao.kernel@gmail.com>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Fri, 29 May 2026 13:01:14 -0700
-X-Gm-Features: AVHnY4JBZV7V4Cuv6pthC1wuO8sZSjsWbark17MncjIwi_r03e6A9nAix31rk6E
-Message-ID: <CAKEwX=PcFqmsdFqUnpWxrPkoc1B-1w3CEb0ydK3df0qJGG-mnQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] mm/zswap: Add per-memcg stat for proactive writeback
+Date: Fri, 29 May 2026 13:02:59 -0700
+X-Gm-Features: AVHnY4IOqjjiOdCG6Ozo0C_CJ8lU_HS1P7B7pgVtIcaK6gtGQOhL7OfGo5YfYKU
+Message-ID: <CAKEwX=Mj8hxSma0DN4zvCgRo3HMs7cbB145+s2=LbTjiKUXh1w@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] selftests/cgroup: Add tests for zswap proactive writeback
 To: Hao Jia <jiahao.kernel@gmail.com>
 Cc: akpm@linux-foundation.org, tj@kernel.org, hannes@cmpxchg.org, 
 	shakeel.butt@linux.dev, mhocko@kernel.org, yosry@kernel.org, mkoutny@suse.com, 
@@ -119,11 +119,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16461-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16462-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
@@ -139,11 +139,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,lixiang.com:email]
-X-Rspamd-Queue-Id: BDFB1608541
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,lixiang.com:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 9B4FB6084C7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -152,131 +152,18 @@ rote:
 >
 > From: Hao Jia <jiahao1@lixiang.com>
 >
-> Currently, zswap writeback can be triggered by either the pool limit
-> being hit or by the proactive writeback mechanism. However, the
-> existing 'zswpwb' metric in memory.stat and /proc/vmstat counts all
-> written back pages, making it difficult to distinguish between pages
-> written back due to the pool limit and those written back proactively.
+> Add test_zswap_proactive_writeback() to cover the new memory.reclaim
+> "zswap_writeback_only" key. The test populates a memory cgroup zswap
+> pool, triggers proactive writeback, and verifies the behavior by
+> observing the change in zswpwb_proactive. Invalid input combinations
+> are also covered.
 >
-> Add a new statistic 'zswpwb_proactive' to memory.stat and /proc/vmstat.
-> This counter tracks the number of pages written back due to proactive
-> writeback. This allows users to better monitor and tune the proactive
-> writeback mechanism.
+> Extend test_zswap_writeback_one() to assert that the existing
+> non-proactive writeback path leaves zswpwb_proactive at zero.
 >
 > Signed-off-by: Hao Jia <jiahao1@lixiang.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst |  4 +++
->  include/linux/vm_event_item.h           |  1 +
->  mm/memcontrol.c                         |  1 +
->  mm/vmstat.c                             |  1 +
->  mm/zswap.c                              | 41 ++++++++++++++++++-------
->  5 files changed, 37 insertions(+), 11 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 6564abf0dec5..7d65aef83f7b 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1748,6 +1748,10 @@ The following nested keys are defined.
->           zswpwb
->                 Number of pages written from zswap to swap.
->
-> +         zswpwb_proactive
-> +               Number of pages written from zswap to swap by proactive
-> +               writeback. This is a subset of zswpwb.
-> +
 
-nit: I think this is specifically the zswap_writeback_only mode right?
-
-Technically, normal proactive reclaim (memory.reclaim) can also hit zswap :=
-)
-
-Maybe some clarification here?
-
->           zswap_incomp
->                 Number of incompressible pages currently stored in zswap
->                 without compression. These pages could not be compressed =
-to
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.=
-h
-> index 03fe95f5a020..7a5bee0a20b6 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -138,6 +138,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT=
-,
->                 ZSWPIN,
->                 ZSWPOUT,
->                 ZSWPWB,
-> +               ZSWPWB_PROACTIVE,
->  #endif
->  #ifdef CONFIG_X86
->                 DIRECT_MAP_LEVEL2_SPLIT,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e205e5de193d..7648b3fd940e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -571,6 +571,7 @@ static const unsigned int memcg_vm_event_stat[] =3D {
->         ZSWPIN,
->         ZSWPOUT,
->         ZSWPWB,
-> +       ZSWPWB_PROACTIVE,
->  #endif
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->         THP_FAULT_ALLOC,
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index f534972f517d..66fd06d1bb01 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1452,6 +1452,7 @@ const char * const vmstat_text[] =3D {
->         [I(ZSWPIN)]                             =3D "zswpin",
->         [I(ZSWPOUT)]                            =3D "zswpout",
->         [I(ZSWPWB)]                             =3D "zswpwb",
-> +       [I(ZSWPWB_PROACTIVE)]                   =3D "zswpwb_proactive",
->  #endif
->  #ifdef CONFIG_X86
->         [I(DIRECT_MAP_LEVEL2_SPLIT)]            =3D "direct_map_level2_sp=
-lits",
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 7bcbf788f634..b45d094f532a 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -160,6 +160,11 @@ struct zswap_pool {
->         char tfm_name[CRYPTO_MAX_ALG_NAME];
->  };
->
-> +struct zswap_shrink_walk_arg {
-> +       bool proactive;
-> +       bool encountered_page_in_swapcache;
-> +};
-> +
->  /* Global LRU lists shared by all zswap pools. */
->  static struct list_lru zswap_list_lru;
->
-> @@ -1042,7 +1047,8 @@ static bool zswap_decompress(struct zswap_entry *en=
-try, struct folio *folio)
->   * freed.
->   */
->  static int zswap_writeback_entry(struct zswap_entry *entry,
-> -                                swp_entry_t swpentry)
-> +                                swp_entry_t swpentry,
-> +                                bool proactive)
->  {
->         struct xarray *tree;
->         pgoff_t offset =3D swp_offset(swpentry);
-> @@ -1097,6 +1103,12 @@ static int zswap_writeback_entry(struct zswap_entr=
-y *entry,
->         if (entry->objcg)
->                 count_objcg_events(entry->objcg, ZSWPWB, 1);
->
-> +       if (proactive) {
-> +               count_vm_event(ZSWPWB_PROACTIVE);
-> +               if (entry->objcg)
-> +                       count_objcg_events(entry->objcg, ZSWPWB_PROACTIVE=
-, 1);
-> +       }
-> +
-
-With the above clarification, the rest LGTM.
+LGTM.
 
 Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
