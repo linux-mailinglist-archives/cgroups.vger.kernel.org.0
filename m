@@ -1,150 +1,184 @@
-Return-Path: <cgroups+bounces-16475-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16476-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eOvuLyZAGmrQ2QgAu9opvQ
-	(envelope-from <cgroups+bounces-16475-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 30 May 2026 03:40:54 +0200
+	id GIUIFcxNGmqI2wgAu9opvQ
+	(envelope-from <cgroups+bounces-16476-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 30 May 2026 04:39:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C527760AD1C
-	for <lists+cgroups@lfdr.de>; Sat, 30 May 2026 03:40:53 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A3160AF8B
+	for <lists+cgroups@lfdr.de>; Sat, 30 May 2026 04:39:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D923A300B9C9
-	for <lists+cgroups@lfdr.de>; Sat, 30 May 2026 01:40:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 42112304CFF7
+	for <lists+cgroups@lfdr.de>; Sat, 30 May 2026 02:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4899F2F5A36;
-	Sat, 30 May 2026 01:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DFCE33689F;
+	Sat, 30 May 2026 02:38:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WD3UrKFz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTUaJj2F"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279261F5437;
-	Sat, 30 May 2026 01:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D136E23394B
+	for <cgroups@vger.kernel.org>; Sat, 30 May 2026 02:38:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780105249; cv=none; b=ATb8COvawZ2hHSk5/ORD1siQ/5cXrcL3WgtGM3w8wwT7AleIgtYfoTd5irEprqxXz+r3QiCkv0gbVYYunyTaGpvGJFqzN5wYiZlV+uC2o4a807P1PMTwThItrpcH82+CB644V8gWcBMulBXL+oEPDGYOjHUQ8sNvwjp1RzFbtUs=
+	t=1780108688; cv=none; b=jLA6TFgMIUBqHNbYP1wibcR129uGjz7nI+lI47fRqiI80TtWi3xcNndfKRWjNHBbZVlDrQuiqo7WhJ+9alSkIP0b+HEbGweIGFH8nldvYfSeB+0elLNFlkETDEV/JyMxeV6m88VdNXiK7WbT/NY2K0OcWppcawiVvFAAKNXB1A4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780105249; c=relaxed/simple;
-	bh=LPciAzN9MSJz04fKuygCdUVBQ+FK+UIYKayrYyeJmHw=;
+	s=arc-20240116; t=1780108688; c=relaxed/simple;
+	bh=9J8XXv2zOyekSj0FycOqYPNaykPTCgIvDg8dALt2oas=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cmh2MLmojQZmZ9e74carpc6+NrVHL21QnD0CPzFJSUv/xI59GfzF7PN7dk3upanbZdAQM+L5/E4UoRWVfAHymFAC2h+bpnf3JUhyLgr1tr6A942qS7/fBI/jvURNjW8VuVSD7/2RE7NQfNzM1j+cN4PoUbTHd93PGTBtwsJXEQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WD3UrKFz; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE491F00893;
-	Sat, 30 May 2026 01:40:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780105247;
-	bh=4q+rJpKHgVwRxohmm9Chks+vxiJ7/M2vuB2nm9avkVg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=WD3UrKFzTBhsTvBy8XAR7HT86I2pI5cBYtmza2xJ6PNT7nfBMFJcn8upKnHxLga4E
-	 PuS2QXJy17WZnzxh7CPOqWf2sh4s7gU4MrU5x5wYAcW6JbzMe0u/G+qSSIPEGqUhM3
-	 WeBppVTvCCn011DeFk0MLQl0EXTAWB2B58gIxslun3IJz+YAN1nVCELMRn4q3VS4Rn
-	 3CmKF1oNXAghPXD4mLbJ4tPOwi2HDaSBDBfqb4MHqi779GFCAEjR6HaVzsD5hAv6EI
-	 y4PwvP81wRTJ1dRkOwAXjXabzCrn4kyuHaEpPZr8AAwEWpqR8Dt+9P7ichxSadIyL3
-	 oChSzUoKET/WQ==
-Date: Sat, 30 May 2026 01:40:45 +0000
-From: Yosry Ahmed <yosry@kernel.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Hao Jia <jiahao.kernel@gmail.com>, akpm@linux-foundation.org, 
-	tj@kernel.org, hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@kernel.org, 
-	mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Hao Jia <jiahao1@lixiang.com>
-Subject: Re: [PATCH v3 2/4] mm/zswap: Implement proactive writeback
-Message-ID: <aho_VtLCmIRsNyvO@google.com>
-References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
- <20260526114601.67041-3-jiahao.kernel@gmail.com>
- <CAKEwX=MQe_KFZe2vBXQYh0aa-x+E8AzNwmyjJGJk4tDoS9ML3A@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JsrH1nMEI2BK/p/8dwrpSsaNg21lxSEknVNa1Bq6QwIpty8ccsAbB0zd4VBwITWYwKezjHkd9X80nxtoP4vF67fZ1JkG5KMTBv0qXEoXwRn4zCjhxzjpGWnEFe+rAT+GuK1ZzLrXusoDk0gFz2+2xg34G7PBNBVGGBvwBiFCgqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTUaJj2F; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-bcc9fdc959cso2456399666b.2
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2026 19:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780108685; x=1780713485; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xka95KubKnbbs2owwDRl8KytmLnYPZfdx9pjSujQuJo=;
+        b=QTUaJj2FplmQvEPm+N9h0GaI7yzjeAzVo9QIoSQSIlPjZD94qv3u+ih57JkVUf8fkR
+         9KYToD/LJyLKGpn59YoOCFlMNPifqy+EH3nvvbgmEk6Wh38RnlNXktBokmQOZ8sBLgH4
+         5JLrDus7Y+CgHC9ekPrNuvJN/2YpPag24vjnJMddpGGyVvEOVTRxI1xBzpxSDWsGaEy4
+         SZlgWgknxsBQaHNhhU3d+aa+P+D4JW9lFNk03yiLOD3mqeDqfrChAnUjT+4wemIu5n/j
+         YPdGCFR+pFBUfoXH+LN8muMNptY3dVaKptq0LcRLHOAWjYMFVbVRTQHkkRi+i2CIaa35
+         8XMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780108685; x=1780713485;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xka95KubKnbbs2owwDRl8KytmLnYPZfdx9pjSujQuJo=;
+        b=bTvcSFgLO+ia2/ohHYcYbnvhicC5si3isB95q24gPPjMy+Hgglns3nFdiPzR1nu1RO
+         JsM9L1Jy4f8KEdbutQZKL5BSP4bw55PJKB1QnKQi8sM5uTUlIP9Hfej1RZ+pssWG1RXS
+         KP/3dprGumnZEQ5qK85Sq/rKck1ZlM2y1SBygn/L3lUZ+5St7KxtVrRk6dajzl+m2uJr
+         sQoMBeVqe92oyEyzhjedNHcS78n2A15li2i6Kp3wueZZDZSFomC9uxil00gM1UnW6S/H
+         Xm3Z2NcNsHYWcaWJt086BADcy+LJA/QOu8K4Benv21JSNGZXTbEqy+kyexJVSdcOyUK8
+         u9kg==
+X-Forwarded-Encrypted: i=1; AFNElJ/+q/QZkaloL3F4zcl3e2grWG/6GfXxD7cYwOTWf5jMFuuBuc4xM+60eP95TT/H2d3W47diH2qB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxt6lCRgD5wJ6l4uWVAZS8XADbnS7BulPxrfh1F3/Ap4PB3JFSk
+	8OMFWvGQL5yoY6RNxFmpnEmIgRivrl+3rlv6Y4EKZaCdA37j1FL7NKHv
+X-Gm-Gg: Acq92OGvxBsSh69DR4Ay8DLF1ZTdrQD5N+hjD0K2fE4yFG0ZDdmKrPHxvUeyCO3kW0r
+	LHMJ3gcHaKAVoBABqgg8kf7XUTI5o/krUqUyzPBcqs97m7CZJjBPGVwVjqXbKelM83A3LXmL/zM
+	+7PkBGMxACY+pVnLgrlh3oywRlCtjYloAQwLbY6ah5utP05oawGc9gmI8mjbjKpyT/MJe8x6+Vg
+	6SouAj3mKiGV3jB7GVWLpnyUptevuAb/bem6tCXR3TCrE5tgqO+LFDLDLx6YoCnwBvhtwSBgti8
+	Keui9Y3FiNm2gNXeIJLLqmskPkeLwu94aQIgDPRHccGgyw3vy0vhi6WGsmD3BY3ot+JfcXOLGfl
+	pxkRdBo0V/s7n7H/u9H/UdYRVpaP5y48tjDzmcmKbDzrDyKuXzlaDGYpNdaONypNXhLY/yYubcG
+	P5OgLNa7SzKy86LZbYntdOlb6K0H1JqFxX
+X-Received: by 2002:a17:907:d9e:b0:bd8:1c88:cfef with SMTP id a640c23a62f3a-beab394bc61mr117829566b.5.1780108684896;
+        Fri, 29 May 2026 19:38:04 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-be9d5cd7b15sm118510566b.39.2026.05.29.19.38.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 29 May 2026 19:38:03 -0700 (PDT)
+Date: Sat, 30 May 2026 02:38:02 +0000
+From: Wei Yang <richard.weiyang@gmail.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Zi Yan <ziy@nvidia.com>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>, Kairui Song <ryncsn@gmail.com>,
+	Mikhail Zaslonko <zaslonko@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Barry Song <baohua@kernel.org>, Dev Jain <dev.jain@arm.com>,
+	Lance Yang <lance.yang@linux.dev>, Nico Pache <npache@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/9] mm: list_lru: fix set_shrinker_bit() call during
+ race with cgroup deletion
+Message-ID: <20260530023802.l5f6ywulxl2bpafg@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20260527204757.2544958-1-hannes@cmpxchg.org>
+ <20260527204757.2544958-2-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=MQe_KFZe2vBXQYh0aa-x+E8AzNwmyjJGJk4tDoS9ML3A@mail.gmail.com>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+In-Reply-To: <20260527204757.2544958-2-hannes@cmpxchg.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16475-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,suse.com,vger.kernel.org,kvack.org,lixiang.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,cmpxchg.org:email];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_REPLYTO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	TAGGED_FROM(0.00)[bounces-16476-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	HAS_REPLYTO(0.00)[richard.weiyang@gmail.com];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[richardweiyang@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
+	NEURAL_HAM(-0.00)[-0.994];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lixiang.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: C527760AD1C
+	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	REPLYTO_EQ_FROM(0.00)[]
+X-Rspamd-Queue-Id: B0A3160AF8B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, May 29, 2026 at 12:58:09PM -0700, Nhat Pham wrote:
-> On Tue, May 26, 2026 at 4:46 AM Hao Jia <jiahao.kernel@gmail.com> wrote:
-> >
-> > From: Hao Jia <jiahao1@lixiang.com>
-> >
-> > Zswap currently writes back pages to backing swap reactively, triggered
-> > either by the shrinker or when the pool reaches its size limit. There is
-> > no mechanism to control the amount of writeback for a specific memory
-> > cgroup. However, users may want to proactively write back zswap pages,
-> > e.g., to free up memory for other applications or to prepare for
-> > memory-intensive workloads.
-> >
-> > Introduce a "zswap_writeback_only" key to the memory.reclaim cgroup
-> > interface. When specified, this key bypasses standard memory reclaim
-> > and exclusively performs proactive zswap writeback up to the requested
-> > budget. If omitted, the default reclaim behavior remains unchanged.
-> >
-> > Example usage:
-> >   # Write back 100MB of pages from zswap to the backing swap
-> >   echo "100M zswap_writeback_only" > memory.reclaim
-> 
-> Hmmm, so this 100MB is the pre-compression size? i.e if this 100 MB
-> compresses to 25 MB, then you're only freeing 25 MB?
-> 
-> I'm ok-ish with this, but can you document it?
+On Wed, May 27, 2026 at 04:45:08PM -0400, Johannes Weiner wrote:
+>When list_lru_add() races with cgroup deletion, the shrinker bit is set
+>on the wrong group and lost. This can cause a shrinker run to miss the
+>cgroup that actually has the object.
+>
+>When the passed in memcg is dead, the function finds the first non-dead
+>parent from the passed in memcg and adds the object there; but the
+>shrinker bit is set on the memcg that was passed in.
+>
 
-That's a good point. I think pre-compressed size doesn't make sense to
-be honest. We should care about how much memory we are actually trying
-to save by doing writeback here.
+This means we just miss to reclaim some obj, but won't crash the kernel.
 
-The pre-compressed size is only useful in determining the blast radius,
-how many actual pages are going to have slower page faults now. But
-then, I don't think there's a reasonable way for userspace to decide
-that.
+>This bug is as old as the shrinker bitmap itself.
+>
+>Fix it by returning the "effective" memcg from the locking function, and
+>have the caller use that.
+>
+>Fixes: fae91d6d8be5 ("mm/list_lru.c: set bit in memcg shrinker bitmap on first list_lru item appearance")
+>Reported-by: Usama Arif <usama.arif@linux.dev>
+>Reported-by: Sashiko
+>Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I understand passing in the compressed size is tricky because we need to
-keep track of the size of the compressed pages we end up writing back,
-but it should be doable.
+So we don't want to cc stable, right?
 
-If we really want pre-compressed size here, then yes we need to make it
-very clear, and I vote that we use a separate interface in this case
-because memory.reclaim having different meanings for the amount of
-memory written to it is extremely counter-intuitive.
+The fix looks right, so
 
-> 
-> The rest seems solid to me, FWIW. I'll defer to Johannes and Yosry for
-> opinions on zswap-only proactive reclaim.
+Reviewed-by: Wei Yang <richard.weiyang@gmail.com>
+
+-- 
+Wei Yang
+Help you, Help me
 
