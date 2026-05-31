@@ -1,260 +1,189 @@
-Return-Path: <cgroups+bounces-16494-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16495-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qINXNhI8HGrsLgkAu9opvQ
-	(envelope-from <cgroups+bounces-16494-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 15:48:02 +0200
+	id SMcaHMI/HGp8LwkAu9opvQ
+	(envelope-from <cgroups+bounces-16495-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 16:03:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB02F6166D5
-	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 15:48:01 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C300D616937
+	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 16:03:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4053C3002B31
-	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 13:48:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F41A630071E8
+	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 14:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D5F23392D;
-	Sun, 31 May 2026 13:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4FFE274650;
+	Sun, 31 May 2026 14:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Lh9e10BA"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VTtVJ4N+";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="FsJKvvsE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3659919CC0C;
-	Sun, 31 May 2026 13:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC121F12E0
+	for <cgroups@vger.kernel.org>; Sun, 31 May 2026 14:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780235277; cv=none; b=FnuDEpFyKu3FyKWHjWQY8GRmWZyEo3s4xEaQAzONs2JuvCysPIZfM1Mva+Yl4G99e722fatA5sdyFMg0fhfTCnPM0Z8KY7TfuRHwOM9F6CYUFha9p7QxsjrOl7SNtqr+G/EZRF3UIPdMt+duhYpYHdEAqzCMsqaQIT4D9sTr0Ts=
+	t=1780236085; cv=none; b=Oj/vT4ZmAMUG0EEWazrQ7r+q28woOMLO6sOgB/wTrfH//XseBWm2VQiVPGyjp/Imr+irUIj/glnAa6DJf6lHVJM+iCcIKh9lCA6SQDEAXfqxALxVKcQo1leLpdCySWk0JYr7mVM39kJw7zMTnGc4eAAIriRNRd2362vmuoxl7go=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780235277; c=relaxed/simple;
-	bh=UaBAMYOMgg8GvKYK28GSwVJoW93kRdQvdtQzWBw7QpA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hIKOe0zGRAaPyQSRLiyTIQ+wmQQHRt/61JYcPcSGbwFNh4pwkABoKMLuNF9kgUnn5HOuYIU+REuq91pTzm8qbnWhLr711cqKmf9RL+VPr608iCDCywBsRDPoy3QVfgoVYn0B7sf1eNqtqVSYvrWUcgkqXfFsIRA+u0T6P40t0zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Lh9e10BA; arc=none smtp.client-ip=162.62.57.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1780235269; bh=dMgCALuI33oMq+NTpqWsYWT4BttSOIXYqL2dwKqfEiI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Lh9e10BAJ4VMtZOWUmPCoDX2fSZP9rFQEmqrZnaMMRsw2LK4BEGFiwVYGcbS7dK/p
-	 cyX0Nbd7Qxe/OLXLtkrThD0rImN3hPDxBPWIGoYSVp9cXZPqA29nqORv4+FSX0mKZP
-	 9X7H7PawVbC1bIf2qVXkOacDl9Fq83KNxri1vQmI=
-Received: from [10.24.9.42] ([123.112.11.230])
-	by newxmesmtplogicsvrszb43-0.qq.com (NewEsmtp) with SMTP
-	id BEEADE90; Sun, 31 May 2026 21:47:46 +0800
-X-QQ-mid: xmsmtpt1780235266tvu621kwx
-Message-ID: <tencent_DAA37C24E8A6C1828BABF3B941517B3EC705@qq.com>
-X-QQ-XMAILINFO: OOO9dHjlsLs75FAwwwY44DNcKKFwqpomfDQP8q14PQzqqsJzOVCnt5Tp2JaruF
-	 MbHAtQZDHeT/fcqyFlm287Hzo8h+BPS0NgG+fuJ7SvJHKDl6L1FWRE9TO208w7IIBd/tjy526wk5
-	 LHha8xpiX2poiESu2l2zm0SU9fkkz4++DnNFXvt4UirbGgppKWZe8q/5H0WI2oYkFbrvD87p1YyB
-	 FKbqisQQO0pLpUjn/miviAxR5sXo58e+KhHOlGvFbQTL/gnOpinJPtBu6CT/4TUyhrMbndQNad+D
-	 cux3V9Js/zVy66JxunhjPqDVAeSjhFljMNiRNXlIR3tAVfMtFS7SrXojqVBhTcf/HADXu7nDx51U
-	 vLkY5fpR5kNnh+uEien1vCdIAE3TjHRZP8NxAZZMfO4fSVqgJOINnWlu1lkOxcl4fLB3BlBb9tYB
-	 SMSaVRS1JduawaUVHUh1gIh3YS4riMC3FndEfHI2K6YskBy4I/r9iJxsytouVs59wykewx6skWuo
-	 50/IN4lVWAreR6KXFrHuc1WqgrTwgcBC3pCFwW1qtzhhtG0z96KE1QTZtjctT4AdRdVoO9IyJ5AG
-	 OuxRGkZ9pRzlJVtxEsjTUuD8bU7OzBaQQSQQAcgIVKCm0iZslUvap/GMDDtBk14lMx2yUpzTEm81
-	 b4+LU+msuPDcSbNryY292W9z7Rn8JBvUqh35wdu6gIgsUc/nS/tHVIjaeViWNrLKvoganDMss832
-	 kfVoMJaAzY2YVg+7vbCMsyuxrKzXLv1FuR2R/b22BdAh/ktL1Zkg0PmkWhOkTsDpodTlfhJZXRtt
-	 +MoZl6wjems0prdQAA8wQw9Sc7A5L4WYQ6dN6HJrQCpGZ+huZ9QNqaU++UE6hwqDUSxQz/1rGuPd
-	 NF1dpYVB3eU1oiek39tOwC7uSvUNIPrYULaGqnJKAoTyLbYTwcs0pxhefGg5zE/tKMpYoa2eMU1Z
-	 S5nr/IXzZuVf6bQA215CO+FdafRvo700U51n54Qim8esxQYkD2QCiaQmXNbQ08sFnLhI8DoYF8kW
-	 44g+pOVl2MDkPXmHWqdXVEp/c0D+D6a8qRcgnWcbS/jVHDZwbTQZG22JmDr5WaBbBzAt3BVW9qFH
-	 kkfjB3Df9L9FEWP1AJJyC1dsdIig==
-X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
-X-OQ-MSGID: <daad26e0-50c8-40ec-9142-a6c6fad3378a@qq.com>
-Date: Sun, 31 May 2026 21:47:46 +0800
+	s=arc-20240116; t=1780236085; c=relaxed/simple;
+	bh=cN7DgQyDDMKwlwoQV9Zy6CXTV747HEJD4SXWT7rDzt8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hl8ySCsYykNPwa92/M6HXyIwfS8yb6qH5XaCNOkUsE+SJgFjNiFoMKRPisGLPPrrarnfbvIhQM6xIF2EcnizRdmL/Z40eEa+N1jSrLo04Nkg7FoFL4O7A3bvMv4nX9iiVRa04s+wta/eNziVPBpBo0YWtxEduF6xVqVyxyhPXFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VTtVJ4N+; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=FsJKvvsE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1780236083;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xablB6kB2yR2eWXgiEzwV/mfa3PUIVxolmDXg2loEdE=;
+	b=VTtVJ4N+RQBd6R+Zjgeos0t8T6UTFv2IHFMDlecR2wU+qXniDe1HHi7/a4g7yDUzMKWhJA
+	I/TrlAED5gOKruUREp+91gDITBlwu02IQBcaMO7hMPOiJfg2OprBeZ7m7MjQRySanKaAi9
+	ZiIqsL0xmHs5WT9QAmwwyg+EOVv68Ps=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-FD4Ka51GMM-MgESopr8qEw-1; Sun, 31 May 2026 10:01:21 -0400
+X-MC-Unique: FD4Ka51GMM-MgESopr8qEw-1
+X-Mimecast-MFC-AGG-ID: FD4Ka51GMM-MgESopr8qEw_1780236080
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-49051422d55so82317945e9.2
+        for <cgroups@vger.kernel.org>; Sun, 31 May 2026 07:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1780236080; x=1780840880; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xablB6kB2yR2eWXgiEzwV/mfa3PUIVxolmDXg2loEdE=;
+        b=FsJKvvsE20hE9jNzWKYg5yPw9d2vGcDgvFi9M382q1WkKBuHt1YNX87AIMPngZEm4Q
+         oJw6oREDq0uv4L5Wv94zrh1SehUA1D1b1EWoh5Vlsxp9nH881Pi9dOzbH+DqadAB5l4l
+         BTH6hpcOMjnoYV3wfOQvcZHUP3u8lFfuu6bsdhGu/3zRiQEHwQ3asnfB+hzlw9VRmFQF
+         BiWDMFmhiTpN6F32KqZ96e5pUV8qzi16Zk/zSiOfnA1Vd/c4GsNC82coqJW0JDME2wRz
+         Oy/4HETbjZzwTkeNeO3GqcKr6VifNxjIq9Npzj1xq9HKmV/gIylTl+oee+zK1U3yaquZ
+         ty8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780236080; x=1780840880;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xablB6kB2yR2eWXgiEzwV/mfa3PUIVxolmDXg2loEdE=;
+        b=B+Skehfl0ngCn6orcv5ksGZirzrg1QUwtFuu+utFJhulwfexPem899Rtp0RwJtCJxS
+         56JZbsuZjnGMICbhOVuYszWwHAE+C7OnQzOSkNc2Qf7KCUZSg2u4Dojeow7SicGydBD2
+         hkgEEixv9W+HI6U1mZ4iKtvI1XYVvmeAW/oET+z8U4Ufh+O7CylFnqCB6fELCh+GhnIu
+         CD5a/6O63H2NQgaNuAdn+8PGkq8qR5/am8IV4gMAuwitg9jJwVmEQar0sxM3dmpFcYAv
+         zX8ixvaHaZ54szwWJ2dvDMV99jw0aXYMj3QoNlgErENVTmjqmt5QHslPoObHqTtZZAcC
+         SUhA==
+X-Forwarded-Encrypted: i=1; AFNElJ9c04PzPddC6kLhpt/7OgK8FfW2rlQba6jevjr3I5EnsN9VdV1ldPvW/qtV4cUp8hISy8TTPzF6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxR6nmb8JP8WgYaSUjomoj7TK0tUzGmrNY0NeQTzw8U4zQINP0m
+	s14O5C6ZsU94RvqlepoDkapOway0H2G/DvNe/zkN71dLGPLNhFWFEvconCLXRdFWim0Ks9gpyZt
+	tdQTjpHIn7sZs9spjHds5Acoccpdph6e5QjFS8JVDHfBSTn0a1KU7RloI8/s=
+X-Gm-Gg: Acq92OFo5hjp5I2HKYaK7YTUnTzb59UMGp107OVY//RPg8clgmXeaTyf0G/+EtJVvhG
+	69wx3k2+V3nPqlS8T89/5eXoIwmCIGwmM5i/sZHnyuxt6uWE4tPqjcXqoXq3rAUJ0j5lsDfB/H5
+	gtAWwT8lW9laFIMoR+Ip2ILTbNOBpgq5dn/AspzVlFA6Ap/3d2CFt0qWbVOZcjG0D2vgv6PCj64
+	SacD12u4okN8tCQW0k4xxhhhjzYORBfuOJL7PqSAWbdTJwvPdm7/fCPVJolCDMWG1jm1QZRlvna
+	z4wCH1eisER/TRfSS6tXZjoex0gMkb7V+VrfLBITGR/LNtxACSRmh27pg9u9umkb8NIIRGDGbCy
+	QtrsIeuoFl94yEgbilnUWby5rq5+zuAtQsc1ZYoqAIjLTxQ==
+X-Received: by 2002:a05:600c:c098:b0:489:1c32:210d with SMTP id 5b1f17b1804b1-490a2923cbbmr108126185e9.15.1780236080344;
+        Sun, 31 May 2026 07:01:20 -0700 (PDT)
+X-Received: by 2002:a05:600c:c098:b0:489:1c32:210d with SMTP id 5b1f17b1804b1-490a2923cbbmr108125565e9.15.1780236079839;
+        Sun, 31 May 2026 07:01:19 -0700 (PDT)
+Received: from costa-tp.bos2.lab ([2a00:a041:e223:1b00:fe51:8bb:7986:c897])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4909c12b2dbsm75194055e9.6.2026.05.31.07.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 May 2026 07:01:19 -0700 (PDT)
+From: Costa Shulyupin <costa.shul@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Costa Shulyupin <costa.shul@redhat.com>
+Subject: [PATCH v1] docs: cgroup: Fix stale source file paths
+Date: Sun, 31 May 2026 17:00:45 +0300
+Message-ID: <20260531140045.4114289-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/9] mm/zswap: expose range state for swapin policy
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- Alexandre Ghiti <alexghiti@meta.com>, Kairui Song <kasong@tencent.com>,
- Usama Arif <usamaarif642@gmail.com>, Chris Li <chrisl@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosry@kernel.org>,
- David Hildenbrand <david@kernel.org>, Hugh Dickins <hughd@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org
-References: <tencent_98CD9F78E48D08DC005A6471A13CFF28B60A@qq.com>
- <tencent_C78A02F3C41E15233C371816825C7DCF8708@qq.com>
- <CAKEwX=NUQb5b4T49dbRV0_41QYRRuLkQNUg+FVDpJiobCCCh7g@mail.gmail.com>
-From: Fujunjie <fujunjie1@qq.com>
-In-Reply-To: <CAKEwX=NUQb5b4T49dbRV0_41QYRRuLkQNUg+FVDpJiobCCCh7g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16494-lists,cgroups=lfdr.de];
-	FREEMAIL_FROM(0.00)[qq.com];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_MUA_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kvack.org,meta.com,tencent.com,gmail.com,kernel.org,cmpxchg.org,google.com,linux.dev,vger.kernel.org];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fujunjie1@qq.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16495-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[qq.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:email,qq.com:mid,qq.com:dkim,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: CB02F6166D5
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[costa.shul@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: C300D616937
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Update two references to files that were moved:
+- kernel/cgroup.c -> kernel/cgroup/cgroup.c
+- tools/cgroup/cgroup_event_listener.c ->
+  samples/cgroup/cgroup_event_listener.c
 
+Assisted-by: Claude:claude-opus-4-6
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+---
+ Documentation/admin-guide/cgroup-v1/cgroups.rst    | 2 +-
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On 5/30/2026 2:35 AM, Nhat Pham wrote:
-> On Fri, May 29, 2026 at 5:19 AM fujunjie <fujunjie1@qq.com> wrote:
->>
->> Large folio swapin needs to know whether a candidate swap range is fully
->> backed by zswap before it can choose an order. That decision should stay
->> in common swapin code, not inside zswap.
->>
->> Export two zswap facts for that caller: a lockless range occupancy snapshot
->> and the current zswap reclaim-pressure state. The range state is
->> advisory only. Writeback or invalidation can change the backend after the
->> snapshot, so users must recheck before issuing large-folio IO.
->>
->> Signed-off-by: fujunjie <fujunjie1@qq.com>
->> ---
->>  include/linux/zswap.h | 26 +++++++++++++++++++++++++
->>  mm/zswap.c            | 44 +++++++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 70 insertions(+)
->>
->> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
->> index 30c193a1207e..8f9aee97517c 100644
->> --- a/include/linux/zswap.h
->> +++ b/include/linux/zswap.h
->> @@ -9,6 +9,18 @@ struct lruvec;
->>
->>  extern atomic_long_t zswap_stored_pages;
->>
->> +/*
->> + * Advisory zswap occupancy snapshot for a swap range. This is not a complete
->> + * backend classifier; callers must recheck before depending on ALL_ZSWAP for
->> + * large-folio IO.
->> + */
->> +enum zswap_range_state {
->> +       ZSWAP_RANGE_NEVER_ENABLED,
->> +       ZSWAP_RANGE_NO_ZSWAP,
->> +       ZSWAP_RANGE_ALL_ZSWAP,
->> +       ZSWAP_RANGE_MIXED,
->> +};
->> +
->>  #ifdef CONFIG_ZSWAP
->>
->>  struct zswap_lruvec_state {
->> @@ -27,6 +39,9 @@ struct zswap_lruvec_state {
->>  unsigned long zswap_total_pages(void);
->>  bool zswap_store(struct folio *folio);
->>  int zswap_load(struct folio *folio);
->> +enum zswap_range_state zswap_probe_range(swp_entry_t swp,
->> +                                        unsigned int nr_pages);
->> +bool zswap_pool_reclaim_pressure(void);
->>  void zswap_invalidate(swp_entry_t swp);
->>  int zswap_swapon(int type, unsigned long nr_pages);
->>  void zswap_swapoff(int type);
->> @@ -49,6 +64,17 @@ static inline int zswap_load(struct folio *folio)
->>         return -ENOENT;
->>  }
->>
->> +static inline enum zswap_range_state zswap_probe_range(swp_entry_t swp,
->> +                                                      unsigned int nr_pages)
->> +{
->> +       return ZSWAP_RANGE_NEVER_ENABLED;
->> +}
->> +
->> +static inline bool zswap_pool_reclaim_pressure(void)
->> +{
->> +       return false;
->> +}
->> +
->>  static inline void zswap_invalidate(swp_entry_t swp) {}
->>  static inline int zswap_swapon(int type, unsigned long nr_pages)
->>  {
->> diff --git a/mm/zswap.c b/mm/zswap.c
->> index 761cd699e0a3..da5297f7bd69 100644
->> --- a/mm/zswap.c
->> +++ b/mm/zswap.c
->> @@ -506,6 +506,19 @@ unsigned long zswap_total_pages(void)
->>         return total;
->>  }
->>
->> +/*
->> + * Expose whether zswap reclaim pressure is active. This is a backend fact:
->> + * zswap_check_limits() sets the state once the pool reaches the hard limit and
->> + * keeps it set until the pool falls below the accept threshold.
->> + */
->> +bool zswap_pool_reclaim_pressure(void)
->> +{
->> +       if (zswap_never_enabled())
->> +               return false;
->> +
->> +       return READ_ONCE(zswap_pool_reached_full);
->> +}
->> +
->>  static bool zswap_check_limits(void)
->>  {
->>         unsigned long cur_pages = zswap_total_pages();
->> @@ -1559,6 +1572,37 @@ bool zswap_store(struct folio *folio)
->>         return ret;
->>  }
->>
->> +enum zswap_range_state zswap_probe_range(swp_entry_t swp,
->> +                                        unsigned int nr_pages)
->> +{
->> +       unsigned int type = swp_type(swp);
->> +       pgoff_t offset = swp_offset(swp);
->> +       bool present = false, missing = false;
->> +       unsigned int i;
->> +
->> +       /*
->> +        * This is an advisory, lockless snapshot for common swapin admission.
->> +        * Callers must recheck before depending on an all-zswap range for IO:
->> +        * concurrent writeback or invalidation can change the backend state.
->> +        */
->> +       if (zswap_never_enabled())
->> +               return ZSWAP_RANGE_NEVER_ENABLED;
->> +
->> +       for (i = 0; i < nr_pages; i++) {
->> +               struct xarray *tree = swap_zswap_tree(swp_entry(type, offset + i));
->> +
->> +               if (xa_load(tree, offset + i))
->> +                       present = true;
->> +               else
->> +                       missing = true;
->> +
->> +               if (present && missing)
->> +                       return ZSWAP_RANGE_MIXED;
->> +       }
-> 
-> Can we use xas_load() to make this check more efficient? IIUC,
-> xa_load() walks the tree every time.
-> 
-> (We used to use a bitmap here back in frontswap days. Good times....)
-
-Thanks for your review.
-
-I'll switch this to xas_load() in the v3 version.
+diff --git a/Documentation/admin-guide/cgroup-v1/cgroups.rst b/Documentation/admin-guide/cgroup-v1/cgroups.rst
+index 463f98453323..e501f45ea93f 100644
+--- a/Documentation/admin-guide/cgroup-v1/cgroups.rst
++++ b/Documentation/admin-guide/cgroup-v1/cgroups.rst
+@@ -525,7 +525,7 @@ cgroup. It may also be taken to prevent cgroups from being
+ modified, but more specific locks may be more appropriate in that
+ situation.
+ 
+-See kernel/cgroup.c for more details.
++See kernel/cgroup/cgroup.c for more details.
+ 
+ Subsystems can take/release the cgroup_mutex via the functions
+ cgroup_lock()/cgroup_unlock().
+diff --git a/Documentation/admin-guide/cgroup-v1/memcg_test.rst b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
+index 7c7cd457cf69..ebedbc3c3f9c 100644
+--- a/Documentation/admin-guide/cgroup-v1/memcg_test.rst
++++ b/Documentation/admin-guide/cgroup-v1/memcg_test.rst
+@@ -321,7 +321,7 @@ Under below explanation, we assume CONFIG_SWAP=y.
+ ----------------------
+ 
+ 	Memory controller implements memory thresholds using cgroups notification
+-	API. You can use tools/cgroup/cgroup_event_listener.c to test it.
++	API. You can use samples/cgroup/cgroup_event_listener.c to test it.
+ 
+ 	(Shell-A) Create cgroup and run event listener::
+ 
+-- 
+2.53.0
 
 
