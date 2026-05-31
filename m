@@ -1,524 +1,487 @@
-Return-Path: <cgroups+bounces-16487-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16488-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cPYGH+wEHGohIgkAu9opvQ
-	(envelope-from <cgroups+bounces-16487-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 11:52:44 +0200
+	id uEhLGAooHGr9KAkAu9opvQ
+	(envelope-from <cgroups+bounces-16488-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 14:22:34 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D30676157C0
-	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 11:52:43 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 897D36160DB
+	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 14:22:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 20BED301874E
-	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 09:52:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4A00730104B9
+	for <lists+cgroups@lfdr.de>; Sun, 31 May 2026 12:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4617E2D3A7C;
-	Sun, 31 May 2026 09:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A60378D71;
+	Sun, 31 May 2026 12:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ntJX0h0n"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Nr6CUUbh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f45.google.com (mail-dl1-f45.google.com [74.125.82.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F27072617
-	for <cgroups@vger.kernel.org>; Sun, 31 May 2026 09:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C247481DD;
+	Sun, 31 May 2026 12:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780221158; cv=none; b=OxfhtJW/R72gJYA71Sb70n2T4lXEBtYW7ven5GcXrDSDQcGwwUTxSJcCrj/G8NR/I8U+bl0ZVr194XtxTtlBnlJqas+VYZisYBj89LZjv94sRW+gT8by6VbTW4TJ6zGo9x72Ev5dj/x1c+3gnYlaZVMEEjNy/Q7OYHy1HH/1qTU=
+	t=1780230151; cv=none; b=Ha16pRJ6vKkBi670QK+o9+stvHDpI3jcGwLrO8zj9lhEMAOhMGEh+LUqHgvbsBgZVhXpZxqV2dGGtUN61+LFu1NMHC4BFL8/j9A1DpXkiBDYemBeJ8U2qo3edyfgzyhsimzKgS/BfXKvLbhZGWa+FpJGnHq3XvA5VB/3Flf2jvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780221158; c=relaxed/simple;
-	bh=UlgJMDEs1zaiMCiy7kxASsVB0umGJBmWO4EJt6eZyZQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tLJTrne1wJxgkrOAtxN0lPxbiZFtySVVqv2vJsHvebxllubu43hZal/iM+7AK+/K9FiDu5QBoPQMDCpMEje6TPJg0Nb1EhFkjFNIziiXkFDWbbvFaCjnVavZgxQjY6byCOhRo6gp4Q2JPL53Dcv9Zyh9XqsFDm4uU2ssZQ/hzWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ntJX0h0n; arc=none smtp.client-ip=74.125.82.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f45.google.com with SMTP id a92af1059eb24-1378943cd4aso6236230c88.0
-        for <cgroups@vger.kernel.org>; Sun, 31 May 2026 02:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780221155; x=1780825955; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RQ0etL94ocsCfPAx1v7CdirkPq3WBkk+TD53poHwYjw=;
-        b=ntJX0h0nQ0ONok/laLyW3MxasiI1J9bEmVrbP72fG9/i9D0rKJ/MinOlovIp/JZW2P
-         QBY1p35i+GidE+M3zkhndIZKOMHtPXiyO5IhGSIEtYLJQ2sASrL1QBrQZjO4GDjxakOU
-         03jFaI9edJPZeLAzxVx3X22SJyR6Q3wMGvneTEWODePXlJYEQcYkh59eSYoJbNDwGNgO
-         bYOyYnHxsNS+fDgQPeBw2m1XJPHF2NuY+9HZnzE4JpAn4yqUVwIL0b+p9nGFibqy8AVa
-         GfdH0Jj5vYXDy5X6ONDULmW17Q4fL8CYGPz1B0ioan3OdKUh44q06jw+XF7CTjr5nukF
-         vP5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780221155; x=1780825955;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RQ0etL94ocsCfPAx1v7CdirkPq3WBkk+TD53poHwYjw=;
-        b=g8MojAzNZRUHobCXsAmv7M2mcBv2NITbDE2/2C+bXTI2M1b37gYeC8piDD+4/ud1Kk
-         k0sw5+Mq0M3816BeqkW1wX96s4Dlyya2EQpdEwti67KZ6GrqdM0TvVJ/2oB9oCsr/5Gn
-         4VBIfshtx7JuuOnOF3WOA5/ividKI78NG81HLLHPBchXNxI1lcuxA0/uOPLn/rRBf5TI
-         eab9Hs4413s+Q7F5aONUg380/s1lgs2Yf5144LJn7y4iVJHEpAqQis1Bc6K5XqwCNFuf
-         S3dykOpzirXfgAY8H35J8S0VH7sfonTNZ164pzDW9GG3BOa54FUGVqZZrm8qGjn0qrUF
-         xDzg==
-X-Forwarded-Encrypted: i=1; AFNElJ/7gf3idSUprZ0UbRLGYojZmBRBLfkln7af5o/u3g4/QLxLEkQNOzqFBxYrUTaupbLsybSIWerL@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIB1riCqClgrzPaVZ0s53gLZBOOup4RZmMGbo8WZOUEC7YItpB
-	WQL6vgj+FXokAR+iIfuYMBqLusQpCy0Ln4Cuoq3CmNLmO/7Nc9hK8dIIPAoSjkQ0
-X-Gm-Gg: Acq92OFjqn8Qi8asH8P8C7JYliM6TpFqIX3oNY01YseMnEvTGkq3Nb5fHCEB4bvR0EA
-	WuRkGv49Y3FNE5BXhDH31M82YUqYw9O6DBw2oXk5VmdT0gBBiT2oJb3e1lUg0yxkoi5zhmhyLMS
-	RXiJ/d+i9d1MbuMO3U0M0y46G6FMftMlRmJFgMjw++1hs1ZhJ4vmpo8N0IMXP8gSY7x+wGU/tsL
-	cZ22DNvmmMgoXDtnTmVFRwdEH/A8lgv49gUj3DNqrOS+9R9kdJvibdNkmzv11EDFrjf3/C5YwO9
-	ght4FZ96q3HGyiXMCgB/4hEkEHgpXay9+A7cvSy9nIkBaNKnV8PuP72KexI1yOYFFQ1bSiLQHOf
-	J12LZi/7Xai4oT2hj8/kINBM7tjal+v+OiLY7+3/B4RWqh+VU18+QfSzMVIlT0WLErxWIzZ1n04
-	DA6zNtxWih1FirQelTVeh50aq9fM4UZT6Z87u20npj
-X-Received: by 2002:a05:7022:7a0:b0:136:c565:e862 with SMTP id a92af1059eb24-137d42626f0mr3001062c88.26.1780221155375;
-        Sun, 31 May 2026 02:52:35 -0700 (PDT)
-Received: from wujing.localdomain ([23.254.208.9])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-137b35a6019sm4199611c88.2.2026.05.31.02.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 May 2026 02:52:33 -0700 (PDT)
-From: Qiliang Yuan <realwujing@gmail.com>
-Date: Sun, 31 May 2026 17:52:23 +0800
-Subject: [PATCH v6] cgroup/dmem: implement dmem.high soft limit via
- prioritized eviction
+	s=arc-20240116; t=1780230151; c=relaxed/simple;
+	bh=p97xJiNbkIRuLidnmXon5vY1DsfucvhstG6uFqeA8p0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KS7Pb0LV2TXACDP0o0RR6+0dg7R9FUTd55t0h48QrGALOFTVYyT1smSVQAy5y/3upIhkqccKUfsegT2qgM8rZ2/l0UV6t5ObgTWcYLJMsZcj+JOEivCSqvHUBpZLUTFPhYrXspfW2oPGsJTnXXXhJZDphP6qwJjhX7bdURJYqAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Nr6CUUbh; arc=none smtp.client-ip=203.205.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1780230139; bh=C0U5WRb9wpBn+CSXUdJxa1a1P5zPqfLCisGYgFPCnlM=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Nr6CUUbh3CS61TN3F1LYEg9wIEEAE3WbQlrOYmUrKr4nq5TIaV9u4/777FPp94zDN
+	 1mj1e+/uhOtWzvDY//ZnWn7fS74JZ8Fuw9Y2w64ZmDMQrZ8OHTqJS7v8ie/ZYhDlXC
+	 Zdu4XnPmi6wgMf5T+z8JsiQyrCOK3KdPCC54vD9s=
+Received: from [10.24.9.42] ([123.112.11.230])
+	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
+	id 544834C5; Sun, 31 May 2026 20:21:04 +0800
+X-QQ-mid: xmsmtpt1780230064tpwcseaav
+Message-ID: <tencent_FBB491DE9B018B3FAE9C670AC590F9050F07@qq.com>
+X-QQ-XMAILINFO: OEUhVsHQax4MPQUHt4FdO9CA+DSZ3ixpq4zBcMj9ulacz0ZBFYPTCZlSe1aHG7
+	 +371qSgm3Bzm+1WrhgZ7teEciKXSS7MuQmFLPBpulm1ilAR51bE0ia0xsGZdh+Of+kRswSudNd2g
+	 OVb1EBgyr8xGerRPvU2kJo412nzWNZLpZKCYoYKXqoWh6wvuc/ca5haT0wNClpnDiX838clJcE1X
+	 Y6XqsWGLn6+o4dU7VV5lsB2gOwb5eRGuRsMZzJ71ueViKTJ4RV1IahgPwYHPk6mjJZkPymLgsgb7
+	 J+JrqYM/Sb3rLpeninwzWfAs1Iboi+xQccino6slp1uv5BTL4Obb7fAt5YPmcol4lcS2VR6g0Q+9
+	 BcybfBRT8ds8T5lOc5rZmySfJxWNZ2vTJhSCFrnkZ69bfU6/NV39nMQwM+OjlZT4i6hDM/SeIA0Z
+	 8zRQob2POetYUX8rIj90K70pYasoW3AkOOF5y+akwV25fBDUYdwItEBgg7JACTyX3s8uKb8BRZq9
+	 gzTVLVHz76JqRP1wlIRBLNq7Oohfi5hyhhH0ubZMLahfrRfqJfd4+NQfOPlzViLCEoYagIfupD3s
+	 6fvwzKxuTXSfcQeqowXUVMjmORQvZu8xPdvuEWm0DWDCoA3xV5C9v0Ij8xha7Z876zQ+0voY/xSv
+	 43wjTaX9QR51AqshI/Vj7x4VHefgiHspWhNNh1SP4VXD+VFrw5FYJken6SPM1Z4enmHpAyCK+Axs
+	 ZGKFfn9b2P4+IsS72pKqC13oGN5g6Xa7ASiYte3QvkFYH8fkh7wG/eLxdby5qP59LktmpVhVdRay
+	 ObNLlqtvB13ALdygzxY2p4umol48PK5Hdy5s3g1y1VTpRvuiWYjDAzmLK3KY57hIc4jFNsG5XmlG
+	 1bN1NOscZ14R0wo0mt3IBEojXoxs0ir9NH3qpIb6YB4A6ee0ekqiiJZkBNuMU8nUddLl23Q9a5zJ
+	 xDqXb6bAe/7s4rvyxCR4ypaqV0qZS6ERnH7Y0qi9gESjYg0bvSVHE/rcNFIwuiptqna3UokJVN9D
+	 H3+pzw9V45UaVeX7QbWUL/f8ZKw1EGs6+0UismZjP4FJUN4vTkHvkNL2R05M0=
+X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
+X-OQ-MSGID: <13b1e03e-a5b8-4b91-ab09-74f273fe9fcb@qq.com>
+Date: Sun, 31 May 2026 20:21:04 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260531-feature-dmem-high-v6-1-20563ecd6dc7@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x3MTQqAIBBA4avErBvIfky7SrSInHQWWmhFEN09a
- fkt3nsgUWRKMBQPRLo48RYyZFnA4uZgCdlkQ13VsuqExpXm44yExpNHx9ahkFr3olVmaRTkbo+
- 08v0/x+l9P2CfKadjAAAA
-X-Change-ID: 20260519-feature-dmem-high-16997148dc38
-To: Christian Koenig <christian.koenig@amd.com>, 
- Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>, 
- Matthew Brost <matthew.brost@intel.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Natalie Vock <natalie.vock@gmx.de>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- cgroups@vger.kernel.org, Qiliang Yuan <realwujing@gmail.com>
-X-Mailer: b4 0.14.3
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 4/9] mm: admit large swapin by backend range in
+ swapin_sync()
+To: Kairui Song <ryncsn@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ Alexandre Ghiti <alexghiti@meta.com>, Usama Arif <usamaarif642@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Yosry Ahmed <yosry@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
+ David Hildenbrand <david@kernel.org>, Hugh Dickins <hughd@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org
+References: <tencent_98CD9F78E48D08DC005A6471A13CFF28B60A@qq.com>
+ <tencent_EB78848E34DC7858C873193D67286ECD4B0A@qq.com>
+ <CAMgjq7AA_1esgtA8VyxaBLWBBRM12bCBpxO2Jch5OESBZSg--A@mail.gmail.com>
+From: Fujunjie <fujunjie1@qq.com>
+In-Reply-To: <CAMgjq7AA_1esgtA8VyxaBLWBBRM12bCBpxO2Jch5OESBZSg--A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16487-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[lists.freedesktop.org,vger.kernel.org,gmail.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_TO(0.00)[amd.com,intel.com,linux.intel.com,kernel.org,suse.de,gmail.com,ffwll.ch,cmpxchg.org,suse.com,gmx.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-16488-lists,cgroups=lfdr.de];
+	FREEMAIL_FROM(0.00)[qq.com];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_MUA_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kvack.org,meta.com,gmail.com,kernel.org,cmpxchg.org,google.com,linux.dev,vger.kernel.org];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fujunjie1@qq.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: D30676157C0
+	DKIM_TRACE(0.00)[qq.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,qq.com:email,qq.com:mid,qq.com:dkim]
+X-Rspamd-Queue-Id: 897D36160DB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The dmem cgroup v2 controller currently only provides a hard "max"
-limit, which causes immediate allocation failures when a cgroup's
-device memory usage reaches its quota.  GPU-bound AI workloads need
-smoother over-subscription support: a soft limit that temporarily
-allows excess usage while applying backpressure through reclaim
-rather than outright failure.
 
-Add dmem.high, a soft limit that penalizes over-limit cgroups by
-evicting their buffer objects first when eviction is triggered (e.g.
-due to a "max" limit hit).  Unlike the rejected v1 approach which
-used sleep-on-allocation throttling, this version provides a
-meaningful recovery action through prioritized reclaim.
 
-Expose "high" as a new cgroupfs control file per region via
-set_resource_high() and get_resource_high(), and initialize it to
-PAGE_COUNTER_MAX in reset_all_resource_limits().  Like get_resource_max(),
-get_resource_high() returns PAGE_COUNTER_MAX when the pool is NULL.
+On 5/29/2026 10:43 PM, Kairui Song wrote:
+> On Fri, May 29, 2026 at 8:26 PM fujunjie <fujunjie1@qq.com> wrote:
+>>
+>> A large swapin can only read one folio when the whole range has compatible
+>> backing. Mixed zswap/disk ranges must not reach large-folio IO, and zswap
+>> range probes are only snapshots.
+>>
+>> Filter the orders passed to swap_cache_alloc_folio() in swapin_sync().
+>> Uniform zeromap ranges and all-disk ranges keep the existing large swapin
+>> path. Fully zswap-backed ranges may be tried. Mixed zswap/disk ranges fall
+>> back before allocation.
+>>
+>> After a large swapcache folio is installed, recheck the zswap range and
+>> drop the fresh folio if it became mixed. Also consume -EAGAIN from
+>> swap_read_folio() the same way. Both cases retry order-0, where each slot
+>> can resolve its current backend independently.
+>>
+>> Signed-off-by: fujunjie <fujunjie1@qq.com>
+>> ---
+>>  mm/memcontrol-v1.c |   8 ++-
+>>  mm/memory.c        |  31 ++++++++-
+>>  mm/swap_state.c    | 169 ++++++++++++++++++++++++++++++++++++++++++---
+>>  3 files changed, 194 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+>> index 765069211567..5b11b8055c66 100644
+>> --- a/mm/memcontrol-v1.c
+>> +++ b/mm/memcontrol-v1.c
+>> @@ -682,8 +682,8 @@ void __memcg1_swapout(struct folio *folio, struct swap_cluster_info *ci)
+>>   * memcg1_swapin - uncharge swap slot on swapin
+>>   * @folio: folio being swapped in
+>>   *
+>> - * Call this function after successfully adding the charged
+>> - * folio to swapcache.
+>> + * Call this after the charged folio has been added to swapcache and the caller
+>> + * is no longer going to drop it back to swapped-out state.
+>>   *
+>>   * Context: The folio has to be in swap cache and locked.
+>>   */
+>> @@ -721,7 +721,9 @@ void memcg1_swapin(struct folio *folio)
+>>         id = __swap_cgroup_clear(ci, swp_cluster_offset(folio->swap),
+>>                                  nr_pages);
+>>         swap_cluster_unlock(ci);
+>> -       mem_cgroup_uncharge_swap(id, nr_pages);
+>> +
+>> +       if (id)
+>> +               mem_cgroup_uncharge_swap(id, nr_pages);
+>>  }
+>>  #endif
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 5a365492a9a2..d73a19692dea 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -4538,6 +4538,24 @@ static inline bool should_try_to_free_swap(struct swap_info_struct *si,
+>>                 folio_ref_count(folio) == (extra_refs + folio_nr_pages(folio));
+>>  }
+>>
+>> +static void memcg1_swapin_retry_folio(struct folio *folio,
+>> +                                     struct vm_fault *vmf)
+>> +{
+>> +       if (!folio_test_large(folio) || !folio_test_swapcache(folio))
+>> +               return;
+>> +
+>> +       if (vmf->flags & FAULT_FLAG_RETRY_NOWAIT) {
+>> +               if (!folio_trylock(folio))
+>> +                       return;
+>> +       } else {
+>> +               folio_lock(folio);
+>> +       }
+>> +
+>> +       if (folio_test_large(folio) && folio_test_swapcache(folio))
+>> +               memcg1_swapin(folio);
+>> +       folio_unlock(folio);
+>> +}
+>> +
+>>  static vm_fault_t pte_marker_clear(struct vm_fault *vmf)
+>>  {
+>>         vmf->pte = pte_offset_map_lock(vmf->vma->vm_mm, vmf->pmd,
+>> @@ -4857,8 +4875,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>
+>>         swapcache = folio;
+>>         ret |= folio_lock_or_retry(folio, vmf);
+>> -       if (ret & VM_FAULT_RETRY)
+>> +       if (ret & VM_FAULT_RETRY) {
+>> +               memcg1_swapin_retry_folio(folio, vmf);
+>>                 goto out_release;
+>> +       }
+>>
+>>         page = folio_file_page(folio, swp_offset(entry));
+>>         /*
+>> @@ -5067,6 +5087,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>         if (unlikely(folio != swapcache)) {
+>>                 folio_add_new_anon_rmap(folio, vma, address, RMAP_EXCLUSIVE);
+>>                 folio_add_lru_vma(folio, vma);
+>> +               if (folio_test_large(swapcache))
+>> +                       memcg1_swapin(swapcache);
+>>                 folio_put_swap(swapcache, NULL);
+>>         } else if (!folio_test_anon(folio)) {
+>>                 /*
+>> @@ -5076,6 +5098,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>                 VM_WARN_ON_ONCE_FOLIO(folio_nr_pages(folio) != nr_pages, folio);
+>>                 VM_WARN_ON_ONCE_FOLIO(folio_mapped(folio), folio);
+>>                 folio_add_new_anon_rmap(folio, vma, address, rmap_flags);
+>> +               if (folio_test_large(folio))
+>> +                       memcg1_swapin(folio);
+>>                 folio_put_swap(folio, NULL);
+>>         } else {
+>>                 VM_WARN_ON_ONCE(nr_pages != 1 && nr_pages != folio_nr_pages(folio));
+>> @@ -5132,8 +5156,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>         if (vmf->pte)
+>>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
+>>  out_page:
+>> -       if (folio_test_swapcache(folio))
+>> +       if (folio_test_swapcache(folio)) {
+>> +               if (folio_test_large(folio))
+>> +                       memcg1_swapin(folio);
+>>                 folio_free_swap(folio);
+>> +       }
+>>         folio_unlock(folio);
+>>  out_release:
+>>         folio_put(folio);
+>> diff --git a/mm/swap_state.c b/mm/swap_state.c
+>> index d37097913b30..f03ad4832f16 100644
+>> --- a/mm/swap_state.c
+>> +++ b/mm/swap_state.c
+>> @@ -21,6 +21,7 @@
+>>  #include <linux/migrate.h>
+>>  #include <linux/vmalloc.h>
+>>  #include <linux/huge_mm.h>
+>> +#include <linux/zswap.h>
+>>  #include <linux/shmem_fs.h>
+>>  #include "internal.h"
+>>  #include "swap_table.h"
+>> @@ -403,7 +404,8 @@ void __swap_cache_replace_folio(struct swap_cluster_info *ci,
+>>  static struct folio *__swap_cache_alloc(struct swap_cluster_info *ci,
+>>                                         swp_entry_t targ_entry, gfp_t gfp,
+>>                                         unsigned int order, struct vm_fault *vmf,
+>> -                                       struct mempolicy *mpol, pgoff_t ilx)
+>> +                                       struct mempolicy *mpol, pgoff_t ilx,
+>> +                                       bool defer_memcg1_swapin)
+> 
+> Hi Fujunjie,
+> 
+> Thanks for the update, but this whole defer_memcg1_swapin thing is so
+> ugly I don't think this is the right way at all.
+> 
+> If you really need this, maybe you can always defer the memcg1
+> uncharge, I don't see why we need to treat large folio differently.
+> This charge doesn't effect the memory pressure, the reason we uncharge
+> memcg1's swap counter is to avoid long pinning swap cache holding the
+> swap cache of a cgroup so the cgroup will no longer be able to swap
+> out more folios. Deferring it won't hurt.
 
-Extend dmem_cgroup_state_evict_valuable() with a "try_high"
-parameter.  When set, the function walks the page_counter parent
-chain to check whether any ancestor exceeds its high limit, and
-verifies that the pool is above its effective minimum to respect
-dmem.min protection.  For the limit-hitting cgroup's own BOs, the
-ancestry check is skipped but the high threshold still applies.
-When CONFIG_CGROUP_DMEM is disabled, the stub returns false in
-try_high mode so the first pass has no effect.
+Yes, I think you are right.
 
-Refactor ttm_bo_evict_alloc() into a 3-pass eviction strategy.
-Pass 1 targets only BOs whose cgroup exceeds dmem.high, using a
-blocking lock when a ticket is available or trylock otherwise.
-Pass 2 falls back to the standard above-elow trylock eviction.
-Pass 3+ uses proper locking and repeats while making progress
-with the existing low-watermark fallback.
+I added defer_memcg1_swapin because I was still treating the freshly
+allocated large swapcache folio as something that might be dropped after it
+was installed, so I tried to avoid clearing the cgroup v1 swap owner too
+early.
 
-Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
----
-Introduce a "high" soft limit for the dmem cgroup v2 controller.
-When a "max" limit is hit and eviction is triggered, buffer objects
-belonging to cgroups that exceed their dmem.high limit are targeted
-first, providing a meaningful recovery action through reclaim.
+Nhat Pham also pointed out that this is probably the wrong model. Once the whole
+range is covered by the large swapcache folio, zswap writeback should not be
+able to turn one subslot into disk-backed state, since it has to allocate an
+order-0 swapcache folio first and that should fail.
 
-The dmem cgroup currently only supports hard "max" limits, which
-cause immediate allocation failures for GPU-bound workloads. A soft
-limit enables smoother over-subscription by penalizing over-limit
-cgroups via prioritized eviction rather than outright rejection.
+So the deferred memcg1 handling is likely self-inflicted complexity. I'll
+drop this flag and rework the mixed-backend check so we fail the current
+order before we need this late abort path. If any memcg1 timing issue remains
+after that, I'll try to handle it with a uniform rule rather than a
+large-folio-specific flag.
+> 
+>>  {
+>>         int err;
+>>         swp_entry_t entry;
+>> @@ -466,7 +468,8 @@ static struct folio *__swap_cache_alloc(struct swap_cluster_info *ci,
+>>         }
+>>
+>>         /* memsw uncharges swap when folio is added to swap cache */
+>> -       memcg1_swapin(folio);
+>> +       if (!defer_memcg1_swapin || !order)
+>> +               memcg1_swapin(folio);
+>>         if (shadow)
+>>                 workingset_refault(folio, shadow);
+>>
+>> @@ -495,9 +498,12 @@ static struct folio *__swap_cache_alloc(struct swap_cluster_info *ci,
+>>   * Return: Returns the folio if allocation succeeded and folio is in the swap
+>>   * cache. Returns error code if failed due to race, OOM or invalid arguments.
+>>   */
+>> -struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp,
+>> -                                    unsigned long orders, struct vm_fault *vmf,
+>> -                                    struct mempolicy *mpol, pgoff_t ilx)
+>> +static struct folio *__swap_cache_alloc_folio(swp_entry_t targ_entry,
+>> +                                             gfp_t gfp, unsigned long orders,
+>> +                                             struct vm_fault *vmf,
+>> +                                             struct mempolicy *mpol,
+>> +                                             pgoff_t ilx,
+>> +                                             bool defer_memcg1_swapin)
+>>  {
+>>         int order, err;
+>>         struct folio *ret;
+>> @@ -512,7 +518,8 @@ struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp,
+>>
+>>         do {
+>>                 ret = __swap_cache_alloc(ci, targ_entry, gfp, order,
+>> -                                        vmf, mpol, ilx);
+>> +                                        vmf, mpol, ilx,
+>> +                                        defer_memcg1_swapin);
+>>                 if (!IS_ERR(ret))
+>>                         break;
+>>                 err = PTR_ERR(ret);
+>> @@ -525,6 +532,124 @@ struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp,
+>>         return ret;
+>>  }
+>>
+>> +struct folio *swap_cache_alloc_folio(swp_entry_t targ_entry, gfp_t gfp,
+>> +                                    unsigned long orders, struct vm_fault *vmf,
+>> +                                    struct mempolicy *mpol, pgoff_t ilx)
+>> +{
+>> +       return __swap_cache_alloc_folio(targ_entry, gfp, orders, vmf,
+>> +                                       mpol, ilx, false);
+>> +}
+>> +
+>> +static struct folio *swap_cache_alloc_speculative_folio(swp_entry_t targ_entry,
+>> +                                                       gfp_t gfp,
+>> +                                                       unsigned long orders,
+>> +                                                       struct vm_fault *vmf,
+>> +                                                       struct mempolicy *mpol,
+>> +                                                       pgoff_t ilx)
+>> +{
+>> +       /*
+>> +        * Speculative large swapin may drop this fresh swapcache folio and
+>> +        * retry order-0 after backend or page-table revalidation. Keep the
+>> +        * cgroup v1 memsw swap owner until the caller commits the folio.
+>> +        */
+>> +       return __swap_cache_alloc_folio(targ_entry, gfp, orders, vmf,
+>> +                                       mpol, ilx, true);
+>> +}
+>> +
+>> +static bool swapin_zeromap_same(swp_entry_t entry, unsigned int nr_pages)
+>> +{
+>> +       unsigned int ci_start = swp_cluster_offset(entry);
+>> +       struct swap_cluster_info *ci = __swap_entry_to_cluster(entry);
+>> +       bool is_zero;
+>> +       unsigned int i;
+>> +
+>> +       if (ci_start + nr_pages > SWAPFILE_CLUSTER) {
+>> +               VM_WARN_ON_ONCE(1);
+>> +               return false;
+>> +       }
+>> +
+>> +       rcu_read_lock();
+>> +       if (!rcu_dereference(ci->table)) {
+>> +               rcu_read_unlock();
+>> +               return true;
+>> +       }
+>> +
+>> +       is_zero = __swap_table_test_zero(ci, ci_start);
+>> +       for (i = 1; i < nr_pages; i++) {
+>> +               if (is_zero != __swap_table_test_zero(ci, ci_start + i)) {
+>> +                       rcu_read_unlock();
+>> +                       return false;
+>> +               }
+>> +       }
+>> +       rcu_read_unlock();
+>> +
+>> +       return true;
+>> +}
+>> +
+>> +static unsigned long swapin_admit_orders(swp_entry_t entry,
+>> +                                        unsigned long orders)
+> 
+> And this swapin_admit_orders chunk doesn't look good either...、
 
-The implementation adds a "high" cgroupfs control file per region,
-a try_high parameter to dmem_cgroup_state_evict_valuable() for
-tier-1 eviction, and a 3-pass strategy in ttm_bo_evict_alloc().
----
-V5 -> V6:
-- Guard the try_high dereference of test_pool->cnt with a NULL check
-  to prevent a kernel panic during global memory pressure eviction
-  when a BO has no associated cgroup.
-- Make the disabled-cgroup stub for dmem_cgroup_state_evict_valuable()
-  return false in try_high mode so the stub does not incorrectly
-  enable Pass 1 when CONFIG_CGROUP_DMEM=n.
+Yes, this helper is doing too much.
+I wanted to keep mixed zswap/disk ranges away from large-folio IO, but this
+ended up mixing policy with range feasibility checks.
 
-V4 -> V5:
-- Restore the original control flow in dmem_cgroup_state_evict_valuable():
-  test_pool is no longer dereferenced before the ancestry checks, fixing
-  a NULL pointer dereference on BOs without a cgroup.  The limit_pool
-  NULL-to-root-cgroup resolution is now performed before the try_high
-  block, fixing a panic during global memory pressure eviction.
-- Keep the try_high check for limit_pool == test_pool inside the existing
-  early-return branch to avoid bypassing the hierarchy constraint check
-  that prevents cross-cgroup eviction.
-- Use a blocking lock in Pass 1 only when a ticket is available
-  (trylock otherwise), addressing the deadlock risk of blocking without
-  a valid ww_acquire_ctx.
-- Explicitly reset trylock_only to true before Pass 2 so it does not
-  inherit Pass 1's blocking behavior.
+> 
+>> +{
+>> +       unsigned long candidates = orders & ~BIT(0);
+>> +       unsigned long admitted = orders & BIT(0);
+>> +       int order;
+>> +
+>> +       if (!candidates)
+>> +               return orders;
+>> +
+>> +       while (candidates) {
+>> +               enum zswap_range_state state;
+>> +               unsigned int nr_pages;
+>> +               swp_entry_t range_entry;
+>> +               bool admit = false;
+>> +
+>> +               order = fls_long(candidates) - 1;
+>> +               if (order > MAX_PAGE_ORDER) {
+>> +                       candidates &= ~BIT(order);
+>> +                       continue;
+>> +               }
+>> +
+>> +               nr_pages = 1U << order;
+>> +               range_entry = swp_entry(swp_type(entry),
+>> +                                       round_down(swp_offset(entry), nr_pages));
+>> +               if (!swapin_zeromap_same(range_entry, nr_pages))
+>> +                       goto next;
+> 
+> I think you don't need to test zeromap at all? __swap_cache_alloc
+> handles that already.
 
-V3 -> V4:
-- Use a blocking lock in Pass 1 instead of trylock to ensure
-  over-limit cgroups are penalized even when their BOs are actively
-  in use, as requested by Maarten Lankhorst.
-- Evaluate the try_high condition before the limit_pool == test_pool
-  early-return so that the limit-hitting cgroup's own BOs are also
-  filtered by dmem.high.
-- Remove the high-priority compensation retry at the start of Pass 3,
-  which is no longer needed now that Pass 1 uses a blocking lock.
+I am sorry for missed that this is already covered by __swap_cache_add_check().
+I'll drop the explicit zeromap scan in v3 version.
 
-V2 -> V3:
-- Walk the page_counter parent chain in the try_high pass to prevent
-  child cgroups from evading the penalty when a parent cgroup exceeds
-  its dmem.high limit.
-- Check dmem.min protection in the try_high pass to avoid evicting
-  BOs below the effective minimum.
-- Add a properly-locked high-priority retry at the beginning of Pass 3
-  so that actively-used over-limit BOs (which failed trylock in Pass 1)
-  are not skipped while innocent cgroups are evicted.
-- Fix get_resource_high(NULL) returning 0 instead of PAGE_COUNTER_MAX
-  to match the behavior of get_resource_max().
-
-V1 -> V2:
-- Replace sleep-on-allocation throttling with prioritized eviction.
-  When a "max" limit is hit, BOs from cgroups exceeding dmem.high are
-  evicted first in a dedicated pass. No throttling or sleeping is
-  performed in the charge path.
-- Remove task throttling (schedule_timeout_killable, TIF_NOTIFY_RESUME,
-  resume_user_mode_work() integration) entirely.
-- Add dmem.high cgroupfs control file per region.
-- Extend dmem_cgroup_state_evict_valuable() with try_high parameter
-  to target over-limit cgroups as tier-1 eviction.
-- Refactor ttm_bo_evict_alloc() into a 3-pass eviction strategy:
-  (1) trylock: evict only BOs exceeding dmem.high
-  (2) trylock: above-elow
-  (3) proper-lock: repeat with low fallback.
-- Initialize high to PAGE_COUNTER_MAX in reset_all_resource_limits().
-
-v5: https://lore.kernel.org/r/20260531-feature-dmem-high-v5-1-1c6c532b26a9@gmail.com
-v4: https://lore.kernel.org/r/20260530-feature-dmem-high-v4-1-ee7c6ec1c8da@gmail.com
-v3: https://lore.kernel.org/r/20260528-feature-dmem-high-v3-1-c642b34bcb2f@gmail.com
-v2: https://lore.kernel.org/r/20260522-feature-dmem-high-v2-1-1d7d4a0fa5da@gmail.com
-v1: https://lore.kernel.org/all/20260520-feature-dmem-high-v1-1-97ca0cb7f95a@gmail.com
----
- drivers/gpu/drm/ttm/ttm_bo.c | 33 ++++++++++++++----
- include/linux/cgroup_dmem.h  |  6 ++--
- kernel/cgroup/dmem.c         | 79 +++++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 105 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index bcd76f6bb7f02..21fe34fd43eec 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -505,6 +505,8 @@ struct ttm_bo_evict_walk {
- 
- 	/** @limit_pool: Which pool limit we should test against */
- 	struct dmem_cgroup_pool_state *limit_pool;
-+	/** @try_high: Whether to only evict BO's above the high watermark (first pass) */
-+	bool try_high;
- 	/** @try_low: Whether we should attempt to evict BO's with low watermark threshold */
- 	bool try_low;
- 	/** @hit_low: If we cannot evict a bo when @try_low is false (first pass) */
-@@ -518,7 +520,8 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
- 	s64 lret;
- 
- 	if (!dmem_cgroup_state_evict_valuable(evict_walk->limit_pool, bo->resource->css,
--					      evict_walk->try_low, &evict_walk->hit_low))
-+					      evict_walk->try_high, evict_walk->try_low,
-+					      &evict_walk->hit_low))
- 		return 0;
- 
- 	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk->place))
-@@ -577,31 +580,47 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
- 	};
- 	s64 lret;
- 
--	evict_walk.walk.arg.trylock_only = true;
-+	/*
-+	 * Pass 1 (high-priority): Evict only BOs whose cgroup exceeds its
-+	 * dmem.high soft limit.  A blocking lock is used when a ticket is
-+	 * available to ensure over-limit cgroups are penalized even when
-+	 * their BOs are actively in use; trylock otherwise.
-+	 */
-+	evict_walk.walk.arg.trylock_only = !ticket;
-+	evict_walk.try_high = true;
- 	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
-+	evict_walk.try_high = false;
-+	if (lret)
-+		goto out;
- 
--	/* One more attempt if we hit low limit? */
-+	/*
-+	 * Pass 2 (trylock): Evict BOs above the effective low watermark.
-+	 * Falls back to low-priority eviction if needed.
-+	 */
-+	evict_walk.walk.arg.trylock_only = true;
-+	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
- 	if (!lret && evict_walk.hit_low) {
- 		evict_walk.try_low = true;
- 		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
- 	}
-+
- 	if (lret || !ticket)
- 		goto out;
- 
--	/* Reset low limit */
-+	/*
-+	 * Pass 3+ (properly locked): Evict while making progress.
-+	 * Reset flags and retry with try_low if we hit the low watermark.
-+	 */
- 	evict_walk.try_low = evict_walk.hit_low = false;
--	/* If ticket-locking, repeat while making progress. */
- 	evict_walk.walk.arg.trylock_only = false;
- 
- retry:
- 	do {
--		/* The walk may clear the evict_walk.walk.ticket field */
- 		evict_walk.walk.arg.ticket = ticket;
- 		evict_walk.evicted = 0;
- 		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
- 	} while (!lret && evict_walk.evicted);
- 
--	/* We hit the low limit? Try once more */
- 	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
- 		evict_walk.try_low = true;
- 		goto retry;
-diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
-index dd4869f1d736e..3f7278cb290b3 100644
---- a/include/linux/cgroup_dmem.h
-+++ b/include/linux/cgroup_dmem.h
-@@ -23,7 +23,7 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region *region, u64 size,
- void dmem_cgroup_uncharge(struct dmem_cgroup_pool_state *pool, u64 size);
- bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
- 				      struct dmem_cgroup_pool_state *test_pool,
--				      bool ignore_low, bool *ret_hit_low);
-+				      bool try_high, bool ignore_low, bool *ret_hit_low);
- 
- void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
- #else
-@@ -54,8 +54,10 @@ static inline void dmem_cgroup_uncharge(struct dmem_cgroup_pool_state *pool, u64
- static inline
- bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
- 				      struct dmem_cgroup_pool_state *test_pool,
--				      bool ignore_low, bool *ret_hit_low)
-+				      bool try_high, bool ignore_low, bool *ret_hit_low)
- {
-+	if (try_high)
-+		return false;
- 	return true;
- }
- 
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 4753a67d0f0f2..4267309e6b01d 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -156,6 +156,12 @@ set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val)
- 	page_counter_set_low(&pool->cnt, val);
- }
- 
-+static void
-+set_resource_high(struct dmem_cgroup_pool_state *pool, u64 val)
-+{
-+	page_counter_set_high(&pool->cnt, val);
-+}
-+
- static void
- set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
- {
-@@ -167,6 +173,11 @@ static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
- 	return pool ? READ_ONCE(pool->cnt.low) : 0;
- }
- 
-+static u64 get_resource_high(struct dmem_cgroup_pool_state *pool)
-+{
-+	return pool ? READ_ONCE(pool->cnt.high) : PAGE_COUNTER_MAX;
-+}
-+
- static u64 get_resource_min(struct dmem_cgroup_pool_state *pool)
- {
- 	return pool ? READ_ONCE(pool->cnt.min) : 0;
-@@ -186,6 +197,7 @@ static void reset_all_resource_limits(struct dmem_cgroup_pool_state *rpool)
- {
- 	set_resource_min(rpool, 0);
- 	set_resource_low(rpool, 0);
-+	set_resource_high(rpool, PAGE_COUNTER_MAX);
- 	set_resource_max(rpool, PAGE_COUNTER_MAX);
- }
- 
-@@ -289,10 +301,13 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_pool_state *limit_pool,
-  * dmem_cgroup_state_evict_valuable() - Check if we should evict from test_pool
-  * @limit_pool: The pool for which we hit limits
-  * @test_pool: The pool for which to test
-+ * @try_high: Only evict BOs whose usage exceeds the high limit (first pass)
-  * @ignore_low: Whether we have to respect low watermarks.
-  * @ret_hit_low: Pointer to whether it makes sense to consider low watermark.
-  *
-  * This function returns true if we can evict from @test_pool, false if not.
-+ * When @try_high is set, only pools with usage above their high limit are
-+ * evictable, enabling prioritized eviction of over-limit cgroups.
-  * When returning false and @ignore_low is false, @ret_hit_low may
-  * be set to true to indicate this function can be retried with @ignore_low
-  * set to true.
-@@ -301,15 +316,26 @@ dmem_cgroup_calculate_protection(struct dmem_cgroup_pool_state *limit_pool,
-  */
- bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
- 				      struct dmem_cgroup_pool_state *test_pool,
--				      bool ignore_low, bool *ret_hit_low)
-+				      bool try_high, bool ignore_low, bool *ret_hit_low)
- {
- 	struct dmem_cgroup_pool_state *pool = test_pool;
- 	struct page_counter *ctest;
- 	u64 used, min, low;
- 
--	/* Can always evict from current pool, despite limits */
--	if (limit_pool == test_pool)
-+	/*
-+	 * When the limit-hitting cgroup's own BOs are being considered
-+	 * in try_high mode, only evict them if their pool exceeds its
-+	 * own dmem.high limit.  For non-try_high mode, maintain the
-+	 * existing behavior: always evict from the limit-hitting pool.
-+	 */
-+	if (limit_pool == test_pool) {
-+		if (try_high && test_pool) {
-+			ctest = &test_pool->cnt;
-+			used = page_counter_read(ctest);
-+			return used > READ_ONCE(ctest->high);
-+		}
- 		return true;
-+	}
- 
- 	if (limit_pool) {
- 		if (!parent_dmemcs(limit_pool->cs))
-@@ -330,10 +356,38 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
- 	}
- 
- 	ctest = &test_pool->cnt;
-+	used = page_counter_read(ctest);
-+
-+	if (try_high) {
-+		struct page_counter *c;
-+
-+		/*
-+		 * Walk the page_counter parent chain to check whether any
-+		 * ancestor cgroup exceeds its dmem.high limit.  This prevents
-+		 * child cgroups from evading the penalty when a parent cgroup
-+		 * is over its high limit.
-+		 */
-+		if (used <= READ_ONCE(ctest->high)) {
-+			for (c = ctest->parent; c; c = c->parent) {
-+				if (page_counter_read(c) > READ_ONCE(c->high))
-+					break;
-+			}
-+			if (!c)
-+				return false;
-+		}
-+
-+		/*
-+		 * Respect dmem.min protection: do not evict BOs below the
-+		 * effective minimum even during the high-priority pass.
-+		 */
-+		dmem_cgroup_calculate_protection(limit_pool, test_pool);
-+		min = READ_ONCE(ctest->emin);
-+
-+		return used > min;
-+	}
- 
- 	dmem_cgroup_calculate_protection(limit_pool, test_pool);
- 
--	used = page_counter_read(ctest);
- 	min = READ_ONCE(ctest->emin);
- 
- 	if (used <= min)
-@@ -835,6 +889,17 @@ static ssize_t dmem_cgroup_region_low_write(struct kernfs_open_file *of,
- 	return dmemcg_limit_write(of, buf, nbytes, off, set_resource_low);
- }
- 
-+static int dmem_cgroup_region_high_show(struct seq_file *sf, void *v)
-+{
-+	return dmemcg_limit_show(sf, v, get_resource_high);
-+}
-+
-+static ssize_t dmem_cgroup_region_high_write(struct kernfs_open_file *of,
-+					  char *buf, size_t nbytes, loff_t off)
-+{
-+	return dmemcg_limit_write(of, buf, nbytes, off, set_resource_high);
-+}
-+
- static int dmem_cgroup_region_max_show(struct seq_file *sf, void *v)
- {
- 	return dmemcg_limit_show(sf, v, get_resource_max);
-@@ -868,6 +933,12 @@ static struct cftype files[] = {
- 		.seq_show = dmem_cgroup_region_low_show,
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 	},
-+	{
-+		.name = "high",
-+		.write = dmem_cgroup_region_high_write,
-+		.seq_show = dmem_cgroup_region_high_show,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
- 	{
- 		.name = "max",
- 		.write = dmem_cgroup_region_max_write,
-
----
-base-commit: ab5fce87a778cb780a05984a2ca448f2b41aafbf
-change-id: 20260519-feature-dmem-high-16997148dc38
-
-Best regards,
--- 
-Qiliang Yuan <realwujing@gmail.com>
+> 
+>> +
+>> +               state = zswap_probe_range(range_entry, nr_pages);
+> 
+> If you just move the zswap_probe_range into __swap_cache_alloc and do
+> fallback there (or maybe you can shrink the order faster), then this
+> two new helpers are all redundant.
+> 
+>> +               switch (state) {
+>> +               case ZSWAP_RANGE_MIXED:
+>> +                       break;
+>> +               case ZSWAP_RANGE_ALL_ZSWAP:
+>> +               case ZSWAP_RANGE_NEVER_ENABLED:
+>> +               case ZSWAP_RANGE_NO_ZSWAP:
+>> +                       admit = true;
+>> +                       break;
+>> +               }
+>> +
+>> +next:
+>> +               if (admit)
+>> +                       admitted |= BIT(order);
+>> +               else
+>> +                       count_mthp_stat(order, MTHP_STAT_SWPIN_FALLBACK);
+>> +               candidates &= ~BIT(order);
+>> +       }
+>> +
+>> +       return admitted ? admitted : BIT(0);
+>> +}
+>> +
+>> +static bool zswap_needs_order0_retry(struct folio *folio)
+>> +{
+>> +       if (!folio_test_large(folio))
+>> +               return false;
+>> +
+>> +       /*
+>> +        * Admission sees only an advisory zswap snapshot. Recheck after the
+>> +        * large swapcache folio is installed; if the range became mixed, drop
+>> +        * the fresh folio before IO and let order-0 handle each slot.
+>> +        */
+>> +       return zswap_probe_range(folio->swap, folio_nr_pages(folio)) ==
+>> +              ZSWAP_RANGE_MIXED;
+>> +}
+>> +
+> 
+> Again, I think you can just probe the suitable size in
+> __swap_cache_alloc directly, that way, we avoid the diverge of sync /
+> non-sync device, and avoid the whole chunk making the code much
+> simplier too, just like what we are alreadying doing for zero map in
+> __swap_cache_alloc, or am I over simpliying it?Thanks for your review! I will try it.
 
 
