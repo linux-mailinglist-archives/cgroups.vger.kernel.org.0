@@ -1,98 +1,98 @@
-Return-Path: <cgroups+bounces-16524-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16525-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eNzGAq63HWrKdAkAu9opvQ
-	(envelope-from <cgroups+bounces-16524-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 18:47:42 +0200
+	id 8H84NMK8HWo/dQkAu9opvQ
+	(envelope-from <cgroups+bounces-16525-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 19:09:22 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DFC2622C65
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 18:47:41 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5445E6230D7
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 19:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E3F9530170BC
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 16:47:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 751FA3016D14
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 17:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0183264EF;
-	Mon,  1 Jun 2026 16:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567683DCD8B;
+	Mon,  1 Jun 2026 17:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jypdayeo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k7UGfAhq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA923290C9
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 16:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C517C3803C7
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 17:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.53
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780332456; cv=pass; b=aCu1R/mB6nh0q9pPcw6zwHL4yApJxGGu8BCZ9Pe7aISbIyt8LhjOX2xq0VUq74Oc686usQfLilMLaDnjZCOQsPOP2G4qYOUSFYY8tdAoFUP+8VgNcU3YKCupybpngshxxcns2YjBEbXsReIg++5q7lX98gKw+n5T18WKfOpgkUo=
+	t=1780333715; cv=pass; b=fMV5SI8YcZo2maF52tGXDoHvpTZ2sWazvKL+/EVBLBUZyJwDcLI5mZUcJl1B/basrcmrrl19+qImI5qadnpV4nnT+NWK4VIfiqiuY/+y0i6FRP7L23xs2wy1hGpYlMRPcGOidoVuXAQLO1RvStQquEQJO//8XzdHgZC1Gtv90So=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780332456; c=relaxed/simple;
-	bh=xo6AraTzJMTpgSfCYcj4/S3X8D0rbyuKdNz81jBZtVk=;
+	s=arc-20240116; t=1780333715; c=relaxed/simple;
+	bh=Fwo9lRnl+caU8n+bkKsCokOR7tEa4er/MbruZS778hU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FaGjnG9GoOIMrhuowkj6nmt25YhPOwaGYxpXpDWmVy4s1Ag7Kq/r1DA+rXM8iORaaWKSxe/dzy5decrKl3drAE9FFGt/R7rm4CVItt/970P3jK6LKt5KPcj0lg+AYXEnvjZ3pCDsJOvXjfNc35M4mU6G1o4MoKTCxg4LVufm4iU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jypdayeo; arc=pass smtp.client-ip=209.85.128.53
+	 To:Cc:Content-Type; b=ZBtQh4Ks5/LsG/dldClKXobofHiQw3a+kY6y2ji+L2plboeL2Sn80wZ+1gN7OYxrmINHBw2AyvteD36TD8fJHHda5FAXbVdppfDcli/G1mVsw6r1eRueHWoP+T+6XXYIZ87QbH+rsK1hHtXqz6kLdddxDCEQdZUkBGb160FkSK4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k7UGfAhq; arc=pass smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4904c1ce4c1so115894215e9.3
-        for <cgroups@vger.kernel.org>; Mon, 01 Jun 2026 09:47:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780332454; cv=none;
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-460166910e6so411706f8f.2
+        for <cgroups@vger.kernel.org>; Mon, 01 Jun 2026 10:08:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780333712; cv=none;
         d=google.com; s=arc-20240605;
-        b=NZZwUOUEOamtHsR7q8SQ0FWu60m/yu2zFXnAJGOmzVzqmeUMj+pZJ+vByUGgwfHX0t
-         5Kop2j0HUY2e+aHGx00QHB2wH/vNQypOuTEgFg8/9c2pjTKW50paGNW9RyBtZEaOZZzN
-         2Qq68JegXPzcMyJ2tUYyN/addV9W8sWAtqkaXyDQZ18uVz4RETHq8QmZm0/crV6V39oA
-         NBb7W3oeUmnZTxEu2MnSWwORnL6SaZM4tNDHyVbhZ2XBqs8Q9KsgksqivcChzszR70jG
-         dadb63KCfui5mKZ2fzH8tkvJtv6aX3Yo/vATzpO94EuNfthh31F4guVVcslOs2ujxy0Q
-         vBtA==
+        b=XVFvDn1oH+N3sXLp3ivBnz27bmrbE9fTpbYtwm2eurZyx4aUjtpUO7xLfwnurEVSG3
+         Hh8ljC3N2ruGke4Jkqek+fKxe/DpE7kwUHxCtdvGjTf+sbVn5uWXBDIB2EfaJH86NU1P
+         MvtHqWwHhQ2U7+li8b3lk5/xiUcCxCbVbyH2XL7+QfXuGqSLSRHHQG6wcjR6RDu5a7yc
+         ujta8ikCYDMOT4CwFcCeOzB13HcZE+7FRRCgnCYZnofZq0HA0/ga39nLjtLoIGC+mlZa
+         Um7tyuNunIqQBrgW4quHnJQ+obQgUX6CGfUHS9vnvAa0cV33rDNz4WV2/HrDddnI137d
+         M8xg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=xo6AraTzJMTpgSfCYcj4/S3X8D0rbyuKdNz81jBZtVk=;
-        fh=YOmHZ683Lwd6DTJjJ0HvmSenRYG5X0nH1e1b6MvRugc=;
-        b=ZXFE4GqELaJ1D0yGdaFvbyncIzhpMF7i8P+/nH49IVGdpkeozQm6XGTN2cVGVT+U1M
-         O4DyHyiMRMQOs2sQHDPP6HgBhDNZ1b3q+PQdma7rLNtpBbJXD+NGWaBSwkTV+Z+DmFGX
-         tnU23I0ugSlUOk5kIvNlbU6AgsGMJGP79AzykwmydFs9HqOERqGKl1QrkOiUYDbuutxc
-         lUmSg7ci3k7dcnveXHzDwZVQAu7d0xw+0i1pl1tEyxPRfzpvy6eIge3mjxyRi1ix2nHu
-         UGQJQ1nn5MQ44/0tEgZkfEjzBO2vnRowg13/03YmsKFb8HD+bTxWmmVYtRIqfMJ8F8eX
-         N7Fw==;
+        bh=Fwo9lRnl+caU8n+bkKsCokOR7tEa4er/MbruZS778hU=;
+        fh=2yGxiumZ+wFBLjK84bZoivLmZeRPNiwrlZwQksPcKSY=;
+        b=Z77O5YwO0K1Jy5yqbK6I7dVCu8xya4g8ervDzAlEIDU3p/dUtrop9+NG2zgNWudGal
+         sSvFaRVK2Gq3WsH5iZw/FlG5PSdQVl8OvkmGsDIT7SHKFmk3Zmr/f0WVEdYZU/i0bSDq
+         KxSvsRJacuBSjnDXhD8K/XBZnQWwVvzSWkDaeQc7mE4TX5uoVuhCHGvsdrjU5W13oxaY
+         1iJqW5Gk0Qb3eTBEkCpUFLXHSHBxQEsfk+iEDzgTH/PRsoyo2avYwSCy6wgzAMzs9YNY
+         dqW2tFFkcMdXnUVPN1ID/pwmmO9hHohuo3Htcz8GLNcptDQt0vB60OtUs/O/Imyg8JOH
+         7XIw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780332454; x=1780937254; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1780333712; x=1780938512; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xo6AraTzJMTpgSfCYcj4/S3X8D0rbyuKdNz81jBZtVk=;
-        b=JypdayeoiJWuYFe2nD69Ux6T7SQW2QYHP2p9TNsPlsr9yXMJBiA5+2TUcQy1NsSmc7
-         KhANsa97HrfUKSybVgZUZY7IXf/fM0ohkoC9105+f5V3TZAXd/WczuBJMNTlBBP8FtsV
-         ogBnhdmekAID+/0klZ057opDcbp9fl+jp5+razntat18FA//6aXQPJWb0bM0jSNGid3+
-         cSqVegu6qVzYoqNjrr/kl89UH6adpr3jV7jCpebYWxel0IoZqAYEnWn8IdmXitgBBDzC
-         Xk0cYY4WPpjs1jFZ4J6Qdiy5B6CrO2IXbBeWyJ2lHcqRYjzQR1x0qV4Un0DEPMDOakbd
-         d7cg==
+        bh=Fwo9lRnl+caU8n+bkKsCokOR7tEa4er/MbruZS778hU=;
+        b=k7UGfAhq0iqhq/RKGRfi4ukFlPfV7EWWiODDDeRBrWdGgYbqPyhvBy5Hwj/IfjTTDx
+         l4CTISTX1QHCrCUt0PuH31LrvstZwlAl9/skCPSEIFPaYoOZpY6YBBQ0BSSG4eZy+kSe
+         HIDXCMxyfRFTPXgNPr8+WKg7SzHBkyO15LF1fytdCLlvIhdRbw/R8RPX58ekl3MkNakO
+         0Gsu6meStTt5LSJcm6d13oGHAfTGiU4pELQ6FUgbltf2QXPoeaZiDNqP4fSdSA71hfTB
+         IQ6NeedL/Ghv9yDYP7P96nUOhkALAhvbCC22PWR7wAFQ8zHOsJmu/NVOq8bfcIqiABqy
+         DNmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780332454; x=1780937254;
+        d=1e100.net; s=20251104; t=1780333712; x=1780938512;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=xo6AraTzJMTpgSfCYcj4/S3X8D0rbyuKdNz81jBZtVk=;
-        b=r5glZrgF/vuR62CKb5TrS+PET8oR92IeCqzGU6GuoO8aTGnMEZ4kNRaV3skpdJQdQZ
-         qbWubtoybDJi+3HUsqII7Xu2Z/rA+IBJGgFFe36d3SlcJxd/rq8mCKCJYTFfzoIM+f8Q
-         N9rn8IHlAGOho5hJgfZ0qsg/oUL8+dYCeHqv+ag/Eccml0v057c3P5kQP1CX/zMNSVEo
-         NleigrcbvnaYB4jm+ADo5j/Mj7gDec9rKL1XY3n0l9gPMGcYuiosSkg39ELt2aUDBOmM
-         QAfMsvWzYUSsgyOEWcpC5eSA4DlL4Z2npsm8JHS8wCBvxJerUnhhiBb4YHqlELCMXjI1
-         Z6tw==
-X-Forwarded-Encrypted: i=1; AFNElJ9YsLPj8gayR2agl8KX8DjnD6DCYA2FGtbOAWUv4oYL8oUzKY5HUNSbhY2giiF4zfrsgLjpSZ0M@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUaJdzLGjXrDKoW6WgalbMqQRU9Ly5F4IcDhTtlEueDhZZuqPQ
-	Th1W6SY/ZyTjmS6jUy0UQwAPWeijC2j6xy2W5BObyE3jqysUa7bVRA0322tCCfnR9+jgngtaqKf
-	ACm09SCnHEP4H/S1OKFCscwly0kpZNH0=
-X-Gm-Gg: Acq92OGHlDG0jtPFMs7JM3HN6n4pA/AQYpetr9h/bdnBMpJL/Y7a9ksLn98YkZSBT9K
-	lQ6Co3zQMKu6mfd7pQJEAv2htFnSaRCv/boxICDb6kIbbQZgGTn4IiKo1Ri7vi3hhD6WKOdOTYy
-	LMC7CJRg3wJeRBY9Yrm//xS78Vs+xlcb7yxXzV5h5kV4XfYXkWvEes8lNfe6H3bwwLUwJfIwZ2S
-	NKhz7AHop5Gu+Jbxdn/YCqghVhaWJaiQfapQ5A9mmE6fshEWs09rwIuldXPVM8cvd+ur5+x4cad
-	Ji0KLBVm6yyREDd+9g23va26zWP2XlN5TQMa6+qfUNg0I5zv+6BAp9uSK5yg
-X-Received: by 2002:a05:600c:a214:b0:490:958c:46dc with SMTP id
- 5b1f17b1804b1-490a2953d0fmr139013995e9.17.1780332453810; Mon, 01 Jun 2026
- 09:47:33 -0700 (PDT)
+        bh=Fwo9lRnl+caU8n+bkKsCokOR7tEa4er/MbruZS778hU=;
+        b=KSWF6EE2Et3TKeZFq2+qFOKvRtId7qmwQMVJIDzBigmXewiXhgsYXf2NFnmAhWEorc
+         J9EHOBwX8NdfLIf/619iJUQFYeJJrNNVPWfPkQC2MZ3zcGER6NokkyQteKWwrRZcMwoo
+         rTO44o82VfrzE8se3YGqNAeQBjxS60/vXmBs0z/S5l7Tf9cFnjuKHNNLZkEBVZbxd1VS
+         Dc4LotoUpzWd/b3sQFhu5d5XKkPh1aOGB0JSXz9cFs/bsl6bJ6bac7G4HF0tipuIIAxN
+         m1q5oDx5uoM/mkpy0/LNaRlfzKxjG6OnIn6xp/x13as48mkeRo4XZdd3QRnR8nd1w7Vu
+         6KAw==
+X-Forwarded-Encrypted: i=1; AFNElJ/GUkD40YhKga4jm+EEmj2ETmzctZPQyKYkBb//TzOmigylC0xrxacQCKDdpjQtp+nJuSoxHHkS@vger.kernel.org
+X-Gm-Message-State: AOJu0YxCaBv+7ozaNvgvJYzSzbDp886W4KrfaouYUoTh1q82s/LVpqhq
+	+lRau9hooPzGdJMRuZqfrny8Boi293PJBLKmDqRVvRXddwRaWjJO4dCEO4rH6enXrGG/VT4CbKx
+	8SmctWcZBQ5whTjc3wHHtM3tLMt649/0=
+X-Gm-Gg: Acq92OFfHsIs3sd84W+kf5fAKevMXMt/K7CcQSUqcQVL+vITGNGOMb4de4iqPECLGZD
+	O9vofaE2eyfjUxjrUV9nT/zSKZNMJvFREPuagkMrpjOMOwonp4sTiM4maiIC/YwXypWnIC1dXb3
+	FYEt7CuGjHnyQpPu/3ljTLR4Km+As5QjrGDv8L3Kjf09dIjUhguTtUavXD91LDjOL1EMduIsLsT
+	opgHWoF0Us8nFOIfbeWBt7ZZa2A2yZWj+Z8tvJMQeCUyhbw1i2CMbODarmFuqdGDgCQtRIVo4Fo
+	zK+PUQ+lEBVqYiLh/ncHqheglBqwwdfmNBTQxVF006LAzgduIw==
+X-Received: by 2002:a05:6000:18c6:b0:460:1301:ded1 with SMTP id
+ ffacd0b85a97d-460131122d6mr4841379f8f.6.1780333712087; Mon, 01 Jun 2026
+ 10:08:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -101,12 +101,12 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
  <20260526114601.67041-2-jiahao.kernel@gmail.com> <aho7nepN5jZtKmef@google.com>
- <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com> <CAKEwX=M5KiWc8ZZTEXCXtxeBrQho3Gs-JnKmBB=YNUkp=WXaKA@mail.gmail.com>
-In-Reply-To: <CAKEwX=M5KiWc8ZZTEXCXtxeBrQho3Gs-JnKmBB=YNUkp=WXaKA@mail.gmail.com>
+ <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
+In-Reply-To: <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 1 Jun 2026 09:47:21 -0700
-X-Gm-Features: AVHnY4LNMMUatp6JDueU4CjsI_pQhdw4wgollhGHxH_yjG13hM-7SQCVtIuqd0g
-Message-ID: <CAKEwX=P0aRy6cep1GoEVxRejm03YQNis2VNgY4+F66BzDPPOdQ@mail.gmail.com>
+Date: Mon, 1 Jun 2026 10:08:20 -0700
+X-Gm-Features: AVHnY4IPBYIavrsVjRZcklh2r0yiWvzcpUqLWkliFzeatE9D_yJwDY6lgq1MVZs
+Message-ID: <CAKEwX=NoQNXOMDD0uTSOPWHQX-CMNU1dw=zEuFj=eLcS3fB-ow@mail.gmail.com>
 Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor per-memcg
 To: Hao Jia <jiahao.kernel@gmail.com>
 Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, tj@kernel.org, 
@@ -122,11 +122,11 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16524-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16525-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
@@ -142,27 +142,57 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 9DFC2622C65
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lixiang.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 5445E6230D7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Jun 1, 2026 at 9:44=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote:
+On Mon, Jun 1, 2026 at 4:07=E2=80=AFAM Hao Jia <jiahao.kernel@gmail.com> wr=
+ote:
 >
 >
-> TBH, I think the spinlock is simpler at this point if we need to do
-> all of this explanation to justify correctness of cmpxchg :)
 >
-> That said, if memcg folks feel like an extra spinlock per cgroup is a
-> bit much, we can go with the cmpxchg() approach. Please include a FAT
-> comment explains the compxchg() approach's nuance in the code though.
-> Speaking from experience, I will forget why it is correct 2 months
-> after the patch lands :)
+> On 2026/5/30 09:24, Yosry Ahmed wrote:
+> > On Tue, May 26, 2026 at 07:45:58PM +0800, Hao Jia wrote:
+> >> From: Hao Jia <jiahao1@lixiang.com>
+> >>
+> >> The zswap background writeback worker shrink_worker() uses a global
+> >> cursor zswap_next_shrink, protected by zswap_shrink_lock, to round-rob=
+in
+> >> across the online memcgs under root_mem_cgroup.
+> >>
+> >> Proactive writeback also wants a similar per-memcg cursor that is
+> >> scoped to the specified memcg, so that repeated invocations against
+> >> the same memcg make forward progress across its descendant memcgs
+> >> instead of restarting from the first child memcg each time.
+> >
+> > Is this a problem in practice?
+> >
+> > Is the concern the overhead of scanning memcgs repeatedly, or lack of
+> > fairness? I wonder if we should just do writeback in batches from all
+> > memcgs, similar to how reclaim does it, then evaluate at the end if we
+> > need to start over?
+> >
+>
+> Not using a per-cgroup cursor will cause issues for "repeated
+> small-budget calls" cases. For example, repeatedly triggering a 2MB
+> writeback might result in only writing back pages from the first few
+> child memcgs every time. In the worst-case scenario (where the writeback
+> amount is less than WB_BATCH), it might only ever write back from the
+> first child memcg.
+>
+> Similar to how memory reclaim uses mem_cgroup_iter() (via struct
+> mem_cgroup_reclaim_iter) and the old shrink_worker() used
+> zswap_next_shrink, we need a shared cursor here.
 
-Another alternative is - can we repurpose any lock here? Locks seem to
-be per-lruvec or per-node, unfortunately, and we need something
-per-cgroup hmmmm.
+I think each proactive reclaim invocation just walk the entire subtree
+for page reclaim right (see shrink_node_memcgs())? Would that be
+acceptable for you?
+
+I also wonder if we can at least make this structure dynamically
+allocated... In a system, you only really invoke proactive reclaim
+against a few target cgroups, no?
 
