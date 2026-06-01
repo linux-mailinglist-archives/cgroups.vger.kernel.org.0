@@ -1,148 +1,222 @@
-Return-Path: <cgroups+bounces-16513-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16514-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OCyCAPZjHWpdaAkAu9opvQ
-	(envelope-from <cgroups+bounces-16513-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 12:50:30 +0200
+	id eL3OBYpoHWrqaAkAu9opvQ
+	(envelope-from <cgroups+bounces-16514-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 13:10:02 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3641361DE00
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 12:50:29 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7455F61E1CA
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 13:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4E350304D7DC
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 10:40:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 242D33037BD4
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 11:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A2D312825;
-	Mon,  1 Jun 2026 10:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CFB392823;
+	Mon,  1 Jun 2026 11:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FjACQjOW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="pJU5S+cl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49B839B962
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 10:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AB6352031
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 11:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780310425; cv=none; b=bOq+oKTlDdMngSLH2hgGnxeYhEYN0eQRYjVqwc4uIuHAGz7Sgpqd8qepwt8YHUNwSVSUspGUkHUg9IOTEUrzaGmiTsPnlUX8x8VeitZ2O1LCpVsYDrojqIpYYmeXOiU5FTdAV73oLEVEJHVSaBoja4oR+ALRUWFKUOJKf5PXEmE=
+	t=1780312079; cv=none; b=XCPLFTfyF+JTrQbei2Gkt9pQbf7/bb6eilfrKFbqhULVICLw7y6SE0dhUxFLxgsNfHDELk/eVhdDmn1inMLmhVtFfFs+e2LTGX6OJ3OiYMCglmWXoobDzMCl7NklKpft/dneFG5POPVAQtDQmGSjRzxkW3hm7nOgKtvXfQJztCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780310425; c=relaxed/simple;
-	bh=wAxApDjkjOGBXeuElPBQx/dPHycKhTGW+Gv/8QhEnbw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=un7dFNiwcc0Vv6PAiMlnc0QAtNRmM4C2k4zIWLILhBQfW44YB53l66pYp3Mdhb85k3XrJYM0E47oG9DtYL+G2TLj181pNRxUWHF0iRv998rHpOjChHFuJiCrnS7Fu2GE7aly06BpjuRseVTCheYivsurcqXvjCFk/b51p6tg1aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FjACQjOW; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780310409;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+kxihP4QbZH/SbV81BhxMKE8qdk0EBh4QHfFzGdZZ1g=;
-	b=FjACQjOW1MOQtoUqCCNCGVBX+brPhDYVowfPvlbVuB2B7NGhsRgGhCegZQHJTQHw8+9xR4
-	RSmQ4zKh26ma4ohTxjq+VqQQlcmn+ejFhVGkVvqdkz77SAZgJsdbfmBAJT/cwR8371K8MS
-	iugrU/Lsa7XIbrkFN17aqtQjZ4L9hIU=
-From: Lance Yang <lance.yang@linux.dev>
-To: hannes@cmpxchg.org
-Cc: akpm@linux-foundation.org,
-	david@kernel.org,
-	ljs@kernel.org,
-	shakeel.butt@linux.dev,
-	mhocko@kernel.org,
-	david@fromorbit.com,
-	roman.gushchin@linux.dev,
-	muchun.song@linux.dev,
-	qi.zheng@linux.dev,
-	yosry.ahmed@linux.dev,
-	ziy@nvidia.com,
-	liam@infradead.org,
-	usama.arif@linux.dev,
-	kas@kernel.org,
-	vbabka@kernel.org,
-	ryncsn@gmail.com,
-	zaslonko@linux.ibm.com,
-	gor@linux.ibm.com,
-	baolin.wang@linux.alibaba.com,
-	baohua@kernel.org,
-	dev.jain@arm.com,
-	lance.yang@linux.dev,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 9/9] mm: switch deferred split shrinker to list_lru
-Date: Mon,  1 Jun 2026 18:39:47 +0800
-Message-Id: <20260601103947.63923-1-lance.yang@linux.dev>
-In-Reply-To: <20260527204757.2544958-10-hannes@cmpxchg.org>
-References: <20260527204757.2544958-10-hannes@cmpxchg.org>
+	s=arc-20240116; t=1780312079; c=relaxed/simple;
+	bh=rcUHPa2Utkg2qJhsQAPGPqiFCC8vSAwthtAZw8HMx0k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NqmRtaYOqUDUmKWGSWy4v33BQUeOwZb2sooJxvFJEkuqNQGyrv5k16xaG8Vo2+4wpNEtohPs0Wk+RahmwGeN6u8gvlJO3sR3aMnwhfLW78nybGhEcVenwD0K4CnPbRvtvk5gbl3vvKWI+UmOEeUYXxzHueZM43oB8ZyZITRDFCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pJU5S+cl; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-8421f0e9c5bso828804b3a.3
+        for <cgroups@vger.kernel.org>; Mon, 01 Jun 2026 04:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780312078; x=1780916878; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4tMRr0555UkSJVpwevwwfR/bu9FaT1rWJqjveLdcveY=;
+        b=pJU5S+clkHKm2xT0spxPXWej3z9/XozPb81eCUvJQdPnOZoZmt/8jdVtla3CUYZl39
+         hGszEu9Zlzw4NH8gEfmL4Xs4GYxAO4WM9bldkwDgIXJMBCKkCKROfVlFAcHo0Y/GEOo8
+         KODpkulcdM0kTEyh45wBj26QujY/vLzad6NkOzGKvnPMSGsaUa5GZOWQQ4oK7B1lScC2
+         6dWbBml8ag4wJf6XQdcOBKXi4tNUridWTP7HJiGpYylBgDx0JTNj6l6L2GiWjlLnex+d
+         +sCxJ1x71sGERjmlfEGFjHkrZMo+VoSDl0uV3ERoUWojLHCGvqWL82BRr5180NIuUXdA
+         Luew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780312078; x=1780916878;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4tMRr0555UkSJVpwevwwfR/bu9FaT1rWJqjveLdcveY=;
+        b=bu5+S31gD/Lv6nXVAI2R1UMFb+FAy2K00OrWsskXG4JahLbcsxIbTwtol80J3LbCc1
+         RUUZzLoNanRdvYevaVdfvUhBsY61jAujvm86bd3A1xSqSsqllvwVBig3e1cynVsPwtjY
+         CEeFR1anBrpV1EhVn5ES/+IvY0wV1rMKExoVlobDEcy3k2+ymWmLqf0/d4Y55x39XHCu
+         B7iGiF4DmaLOixKWH1URluEodPOlPDwqgFiylR1y/pPnUBy7GziheA8eeLj8296DWQz6
+         13D5GZgw77MK8rgYarfCghcD696dVgDhJJBQ4il+zWKCnIcfDhqWNWQ2lrgMRSZ8v2UN
+         +4Uw==
+X-Forwarded-Encrypted: i=1; AFNElJ9p6ddsfIeOHEjskVUPQkUl1q13nk5xz+S64DWX/miJYqybPZ2a9EVA/7iA2gP5DE+qWRfj5l8s@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz2dzwz9+ahZnoZunA3Z29heB2vbBFXyCXiYddPhiSWnFtTJka4
+	E6F1gzs6hp1ClKrR05m99JMJlVlycK0ef/m3ukBfIHuA8Fmnb48U+lhC
+X-Gm-Gg: Acq92OHeRZpaxqgyd4OEMkEqX0py/b2LEqdH85Wg9c78MagDj1LSMu6qEwNJ1itnVUe
+	IDPBpIkXXa7DmIJwlV+2evbbEuiOfqvBJzZG6zN4ZmAUELdgphwPQyQlDr6oJehzkfMMvvNXl7V
+	OP+lhUBetUKgZ5q+GI5xjM8Gw2fx0K1yajp2B2RtYxxSCi6C6nEJaj+bB8a8cAcc+MO83IbYu/9
+	IdI8T1SGXp46i0UROJUYjxCCWT36c45zCIw0oBGe7uP48EKGHaCnTy5xbQvVO0RC7KqC9qibnJy
+	KMuaxseTxwJ+MJerh7wBKrCimOCm5w1L1BbkqCvYl2HJtnn/KS4df6SWwHgv33C0uOcEI9z31wp
+	1SajraI6ex9rLjNkyXvsU5ynBOdhiA5eLSEGVj2XR1GSBG8cSeKkVF/QoRmMXmhbrEQxsVRvbjW
+	qXlsv6ZAYEESzUxHYEJJImp2YKNPgRb+T2hQ8q81uHfep9Rl0iHyqcYDF2c/Lw1Nlb
+X-Received: by 2002:a05:6a00:190f:b0:842:4612:55f4 with SMTP id d2e1a72fcca58-84246127062mr5297173b3a.31.1780312077721;
+        Mon, 01 Jun 2026 04:07:57 -0700 (PDT)
+Received: from [10.125.192.75] ([210.184.73.204])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84214ce9cebsm9839131b3a.52.2026.06.01.04.07.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Jun 2026 04:07:56 -0700 (PDT)
+Message-ID: <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
+Date: Mon, 1 Jun 2026 19:07:45 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor
+ per-memcg
+To: Yosry Ahmed <yosry@kernel.org>
+Cc: akpm@linux-foundation.org, tj@kernel.org, hannes@cmpxchg.org,
+ shakeel.butt@linux.dev, mhocko@kernel.org, mkoutny@suse.com,
+ nphamcs@gmail.com, chengming.zhou@linux.dev, muchun.song@linux.dev,
+ roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ Hao Jia <jiahao1@lixiang.com>
+References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
+ <20260526114601.67041-2-jiahao.kernel@gmail.com>
+ <aho7nepN5jZtKmef@google.com>
+From: Hao Jia <jiahao.kernel@gmail.com>
+In-Reply-To: <aho7nepN5jZtKmef@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16513-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,suse.com,gmail.com,vger.kernel.org,kvack.org,lixiang.com];
+	TAGGED_FROM(0.00)[bounces-16514-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lance.yang@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_NEQ_ENVFROM(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 3641361DE00
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,lixiang.com:email]
+X-Rspamd-Queue-Id: 7455F61E1CA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
-On Wed, May 27, 2026 at 04:45:16PM -0400, Johannes Weiner wrote:
-[...]
->diff --git a/mm/memory.c b/mm/memory.c
->index 135f5c0f57bd..f22e61d8c8de 100644
->--- a/mm/memory.c
->+++ b/mm/memory.c
->@@ -5222,6 +5222,10 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-> 			folio_put(folio);
-> 			goto next;
-> 		}
->+		if (order > 1 && folio_memcg_alloc_deferred(folio)) {
->+			folio_put(folio);
 
-Missing a MTHP_STAT_ANON_FAULT_FALLBACK bump here?
+On 2026/5/30 09:24, Yosry Ahmed wrote:
+> On Tue, May 26, 2026 at 07:45:58PM +0800, Hao Jia wrote:
+>> From: Hao Jia <jiahao1@lixiang.com>
+>>
+>> The zswap background writeback worker shrink_worker() uses a global
+>> cursor zswap_next_shrink, protected by zswap_shrink_lock, to round-robin
+>> across the online memcgs under root_mem_cgroup.
+>>
+>> Proactive writeback also wants a similar per-memcg cursor that is
+>> scoped to the specified memcg, so that repeated invocations against
+>> the same memcg make forward progress across its descendant memcgs
+>> instead of restarting from the first child memcg each time.
+> 
+> Is this a problem in practice?
+> 
+> Is the concern the overhead of scanning memcgs repeatedly, or lack of
+> fairness? I wonder if we should just do writeback in batches from all
+> memcgs, similar to how reclaim does it, then evaluate at the end if we
+> need to start over?
+>
 
-Since we jump straight to fallback and end up at order-0 :)
+Not using a per-cgroup cursor will cause issues for "repeated 
+small-budget calls" cases. For example, repeatedly triggering a 2MB 
+writeback might result in only writing back pages from the first few 
+child memcgs every time. In the worst-case scenario (where the writeback 
+amount is less than WB_BATCH), it might only ever write back from the 
+first child memcg.
 
->+			goto fallback;
->+		}
-> 		folio_throttle_swaprate(folio, gfp);
-> 		/*
-> 		 * When a folio is not zeroed during allocation
-[...]
+Similar to how memory reclaim uses mem_cgroup_iter() (via struct 
+mem_cgroup_reclaim_iter) and the old shrink_worker() used 
+zswap_next_shrink, we need a shared cursor here.
 
-Cheers, Lance
+
+>>
+>> Naturally, group the cursor and its protecting spinlock into a
+>> zswap_wb_iter struct, and make it a member of struct mem_cgroup to
+>> realize per-memcg cursor management. Accordingly, shrink_worker() now
+>> uses the lock and cursor in root_mem_cgroup->zswap_wb_iter.
+> 
+> If we really need to have per-memcg cursors (I am not a big fan), I
+> think we can minimize the overhead by making the cursor updates use
+> atomic cmpxchg instead of having a per-memcg lock.
+> 
+
+Because mem_cgroup_iter() always calls css_put(&prev->css), we cannot 
+simply update zswap_wb_iter.pos via cmpxchg() after calling it. Doing so 
+could lead to a double css_put() issue on prev->css.
+
+Therefore, if we switch to the cmpxchg() approach, we wouldn't be able 
+to reuse the existing mem_cgroup_iter() logic. We would have to write a 
+new function similar to cgroup_iter(), and its implementation might end 
+up looking a bit obscure/complex.
+
+Currently, this lock is only used in shrink_memcg(), proactive 
+writeback, and mem_cgroup_css_offline(). Note that shrink_memcg() only 
+acquires the lock of the root cgroup, and mem_cgroup_css_offline() is 
+unlikely to be a hot path.
+
+So, should we keep the spin_lock or go with the cmpxchg() approach?
+Yosry and Nhat, what are your thoughts on this?
+
+
+
+>>
+>> Because the cursor is now per-memcg, the offline cleanup must visit
+>> every ancestor that could be holding a reference to the dying memcg.
+>> Factor out __zswap_memcg_offline_cleanup() and walk from dead_memcg up
+>> to the root.
+> 
+> Another reason why I don't like per-memcg cursors. There is too much
+> complexity and I wonder if it's warranted. If we stick with per-memcg
+> cursors please do the refactoring in separate patches to make the
+> patches easier to review.
+
+
+Sorry about that. I will try to keep each patch as simple as possible in 
+the next version.
+
+
+Thanks,
+Hao
+
+
 
