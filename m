@@ -1,387 +1,228 @@
-Return-Path: <cgroups+bounces-16522-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16523-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YOyZHjy0HWqkdAkAu9opvQ
-	(envelope-from <cgroups+bounces-16522-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 18:33:00 +0200
+	id YKskGwC4HWrKdAkAu9opvQ
+	(envelope-from <cgroups+bounces-16523-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 18:49:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5C966229AD
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 18:32:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0A3D622CA3
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 18:49:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D62530D1325
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 16:23:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 674CA305E898
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 16:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2D63019D6;
-	Mon,  1 Jun 2026 16:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57817324B1E;
+	Mon,  1 Jun 2026 16:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfX+r+JO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zosvu4oc"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C38362EC081
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 16:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48D531F99F
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 16:45:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.51
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780330945; cv=pass; b=RkKWtnRnovOBx9CvDaTd8+b/66l99b24ut0J+Mp36Oif/OoWsTZNDUEphBZ1TtKh49B+U3kbeEY67CtTg+ZBNTda7spOl01Y9PJFeCEhr6ABT9Xl9kCbRSH3owG3559se/zBMFKiFLnZiF4XCWjwlpnFCbCesKc7gOrvq5BFdnY=
+	t=1780332314; cv=pass; b=nmpueea5uLOXUE0YrN6SlDp8MdUGrF6e8SH4nQYwAr08u5pU8IQ0pV38qeU0OjzgZjzHCcsIUkH88eU5OMX8JDe5gFCVcOohKdSi0DnV7LuzkJjEqB4FkuTX0Zur3W1jYhwEs/728vyW95X9YrR1nd69IZdUrR5wnwisbcOoPgI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780330945; c=relaxed/simple;
-	bh=/Fi30s2ufSVmNT3STVyPDyIcEBwKewau9ptWSY5xCfk=;
+	s=arc-20240116; t=1780332314; c=relaxed/simple;
+	bh=SuechEhgIbIp9Ei8g9Ubfks3HTEaKTHpGRK7meqRSP8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sz/rKhxiAvBVu1PPeFA+XKcusrVIVZH2fZyhINf3tJb/fFawMDYTUi4esBO3DejQT+Rl54Zu2w0+k4U+VTyImfM/kdG65E++B9DZ41sZdmRKqmOtYWcrLc6XAcrL9paz5CIPmsZb/rV/tw8FIg9QGLvEfUJwCs1HZsNaXCyiIbM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfX+r+JO; arc=pass smtp.client-ip=209.85.221.43
+	 To:Cc:Content-Type; b=LunFtcAqTfgTH4Qtw5TBL1ZiJkLc4YPI8V1yRP42n5jmacCDLhQHmKOvofpEdw0ki+J7pAXB8ZF9Z30E1sYxCjBzhWZ7mhYTyS6cElBmxEW650X4MxazJ6w0hci6DvPiSZbTTnBYMx+UcYbxJcPF1Srzth7BjSkYZ+8FxW02O8s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zosvu4oc; arc=pass smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-45fe59255beso898636f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 01 Jun 2026 09:22:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780330942; cv=none;
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-4600cbb06deso893365f8f.1
+        for <cgroups@vger.kernel.org>; Mon, 01 Jun 2026 09:45:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780332311; cv=none;
         d=google.com; s=arc-20240605;
-        b=fQumCoYdvYVNoxyCgXU/eM3nBvsbFkjwKRIORDRf0oobbcyUxVHenJd3VNyJg//OPX
-         d4cpQPptf8p9e2e5ZfSiOTqtim3/h6ejUGCZu6qG8RXxR3VeFidUkVNMJzMT5tqC3hTQ
-         PtGGF6YgEtlAwLb4R5Y1gaWaWjlrJVKq2yA1j8qoomZ81+aGZMWV3yprilaz1gzRmJPU
-         c8R2YMh3DTHhV0W0Jo/q5XOa12hIRUwNhEb445iAjt53gHJLNfUxRt1NPiZ0lED0FBki
-         xf0OgNTeyw+2eNUXt0Bh22RKrq+B5KpNCW//4kigiLOBUaXR4XYGjIdpOO3txF7IJpCv
-         Z2Og==
+        b=bQIOGzwvC5AujZ6ZgAwPqEehlw/YvmTy0piBl7z0/M50HsoS+aK6B3P/GHlroLD/AG
+         BWBZGhv7Es+TliApBTjJzRkfhcskWE0XxcZHBUVJMFe9ZJ2mMimJw0QTcyboz4MlfFpA
+         4EdNVh9JXT8fX/9Fr+wIg1G1Xh0e2zD64i0Dc8LiHcbgYfelyp/LLVTHrUpvG++1uil9
+         xZftMUKZsLG6FEtJkxttQE7FNS0Wyk/uwoBhjA0eCCEV+XitQybUcUah8jvPK2Ot/N41
+         U3najfXGAb0nB7z/PI6W3cFyorHCuUsUZeznEciiTe9miNaTj4hYoY8RevIY0zJO4Yol
+         C8og==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=NIJLBXqk7z3zxdRemjxiJJ4oIzR7i1a+F8x00il1qyw=;
-        fh=NYeS+D5pxHlceX3RGGokKJd5hzmKX33FYxfypo1pKXo=;
-        b=F/EcTF6pNL7YwXlx6YjEcZ9DVdEKwu2cm2jpgTTTKdH91KVlIBzDOKO4jebhbk8YN5
-         RZgzfx54rCz2iOTS1zSq9mEeBBZ5HwEnvQhPe9W6EjUzkScpZkJzxwvpvcNEvUmv4Dne
-         0cRmiz5x0pSx+mBFHkK4a2feB8TXMwZbBP51gM3fSaBBKvRt4swwDgSmoj4NCB65V5g/
-         Rh9WD8IKjmDzYaumMvq18r8X7nylovjylYPRd714B6xKrTHq4bBbQUGyBMGfsenoXwHY
-         RXGveA1pxm1RiMag+BI7O11reGzxsyJPqUm9o4gmQVQkLsWPhNJ22hIAICsnfYZz/a7g
-         DtGA==;
+        bh=SuechEhgIbIp9Ei8g9Ubfks3HTEaKTHpGRK7meqRSP8=;
+        fh=FkY0/qgJMZDARLWEXKD9x2PC953crpXcMd7DLkJwKpU=;
+        b=iH00FWd9OfBjNyuKEbiNJxCBdpLAMRoFE4yN0yKAJvMXLGn461m482X4VLlpmsm5RQ
+         GulKeIcHZL5XjaFARZHNOFfqhlL/H68Y/wQTnWhHJ+vJaphE8gf3a+xcNOt8vXsKsc39
+         o5hET10SU6K+/g2oQemZLAUpCqN02IebXGHEk2x0BTOg5zMXBDjJ/+gg6UKkn8JvxHI/
+         8dwrQ6fjja+mTn0pgJVvMEVQivSV2cq+b4AvHDRSr+OI5eW9v0LUlQxCIJVTXqEUNHEC
+         CpFsCscUvhjogSyPJJWAJDj3xat+XAp38oIhXAcpAwSuotH3LQmpELYqbJoTL/c1CZ12
+         8fDA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780330942; x=1780935742; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1780332311; x=1780937111; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NIJLBXqk7z3zxdRemjxiJJ4oIzR7i1a+F8x00il1qyw=;
-        b=OfX+r+JO2GfNsPNbwL5NOSLKoL3br4Ub1ZTmSd79LaGOnRxWtDgwaa6a+Ggzuhl+3n
-         v35D6cuf+OUjdynp4qgS/yc4DUmBJQA56xpUfHTdpMNGgep4/T78hlXhNlkTwhQwW2nE
-         ksqZJE7HV4e6UZjLLrJrxHBGrMhkAmNGydezUqbFT+iWBCyF1SC9KPJWgGoDXFPBy98W
-         5vK0Tpw+rdDqYDYGa3iQT3TgL/V17ZxVkAzia/f8t5rb4fW0OAvb1QF41ufoRiXINaSg
-         ejU6AJcXNUKVbVOnZJsR80/1TXsw0hkC+9pS3VuLRHwqXRSQdUgZPxeT8osYYYL+DGW2
-         JiaQ==
+        bh=SuechEhgIbIp9Ei8g9Ubfks3HTEaKTHpGRK7meqRSP8=;
+        b=Zosvu4ocCarAk+Grhx2z8xURDwVMSlR2hDHmpFhnz996KId3/JA+lJFZeGhVbLPvQ7
+         MR1lOxNTG0hE4+3Qt+MEP+ifpY58Jn1UeWjJDlx7nMz/w4Z/L27ze9EHqJhlKcZVMa+8
+         jemFisSZNXZ/T7Z6qm+Js9vjh0oR4jjq0ElHY1Stjuq8OuavaSdopDH41hl3gh1dxZxJ
+         5KC7UjqMCbaXdVxXjMqk4VrbAmkGe0DQc801XV9KFFQhtz7AyGOLD8CVNcaUJy57vT6f
+         TyUL/vU34x9wMnc8N8vCoro/DqgotZ21thmIctJI761mYZMh12/JwEf0X2VKIjup1dm7
+         YQXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780330942; x=1780935742;
+        d=1e100.net; s=20251104; t=1780332311; x=1780937111;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=NIJLBXqk7z3zxdRemjxiJJ4oIzR7i1a+F8x00il1qyw=;
-        b=Naho9X8Yx7GyhGzta9acdIyQSgszE18nq4PqpwVMkCcfy65tzEn+qVN/An7fMXWhyi
-         tBHhRUKa22TSppjyoASMlZOP6S7ds940H0IrPTATW3sXNMMVNmMR9In8ysk40y3tAMlw
-         4GLX7a8MTCdgbvsDLAJ0Ull6oFxiookVcMnq7OQ3bf5ZgM6F3jHjqEi/16d+axAszSEi
-         68WbsiBPw527z3A2WRLFIXtpAXblUPTWhJfP1GRPmFtYwppZyXOH/NnltBuSU2gUZCMZ
-         TU1nZSEcen92wgIXp0SGNWc02OMvCYxM9XXyvnhsMFXjT4V0b7JbfiQU9DzTnFEOYb0j
-         EZ8Q==
-X-Forwarded-Encrypted: i=1; AFNElJ/2zJKsmJ1bg/EXfB/4iWvU1YsJ6awAwXKpewpG/93wksST+5Er4etTJTSepX0MpX9A2oE/KPTo@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWD6XSZFq3i/QWNspNAMdProFb2UynchIaIXlpP3IMCW26Zdzx
-	dXLK96H7ODXTlxXeaP2tSchJn+mo2GvAmGB4AiG+qLN9MYA6lNU9nta2MAOgq18DYTuxtw+Y+75
-	dDu61DAGKAU3een1b4VWw3EI8RUAxVTZs73O5XSk=
-X-Gm-Gg: Acq92OFpIegO7HO8h5pbc6J9Lj8XcP6v9wrYCSPHlcHUMSWZebUwCB2KMrUrGdcMNO3
-	A6N68sMORIi0fCTgp5Fl0KAzsqR4+bJ1nYZZMgG76JolqvM0xeBCCgYeJ6ucuFQjK6PUQdP3r7K
-	3tSaq+ZJcpy3I/Y06K0C7EEkK7cqdPsJcUa/J8pXON2nHlDgG1BcgvF61NSjlQlk/9wWsSsqv8N
-	UZqmUfCwMdu+hgC5j48ECFLLaFHEA9CpmoNfxFZ4A6wCVsMgr2mT0/oFAwzcBlTaUQRCM9q98AA
-	2vbzAK1YAp0StAxONvkd+l485a9YO4+CbuXk3iB9jkiHLThUhA==
-X-Received: by 2002:a05:6000:4606:b0:45e:da57:be33 with SMTP id
- ffacd0b85a97d-45ef6b7fc88mr21958786f8f.23.1780330941755; Mon, 01 Jun 2026
- 09:22:21 -0700 (PDT)
+        bh=SuechEhgIbIp9Ei8g9Ubfks3HTEaKTHpGRK7meqRSP8=;
+        b=iWub/9c1tBat+dq9FrCOXb+5gbIYkdOyjC5LQqUZdHyZJPC/NrWR5DHwXJhcJwvXpX
+         rCtJj2tBCTXvPamLybxs15n0mq7m9HVOHEM1jq9gTLA39bNrc500IDyqcGYQRK+9sPlC
+         B0Mmd2KKnX1eXwC3s0gMeNS9gxVzRpt4EOxRlnWKdlpg2h0fT8vRpXLYbVreumLKDrIq
+         W5e1yf/7t2/GmSPr9eFwXW6+xNKsXKIxHBSe7H38DuiWGYe8CBMISHjU/HXnt0c8M9eq
+         CouqMsn+tM4yV9WWllUFbZGbBjGwz1ABGGuhkuajwNvibJCkBbpm9oTlG8J8/Te01QNi
+         9oLg==
+X-Forwarded-Encrypted: i=1; AFNElJ839n6x98zwC0HIjS6hen0FzZt0Wuq9vwa3JlL459v+/4U633GIE7aGj/Ip8BsE/o5NtlGFhr9i@vger.kernel.org
+X-Gm-Message-State: AOJu0YwnuLxXa6aeHDSgUIToJDW31JUAReIAE6L/kstpGNdN8oDQ4AqP
+	8DIJL3EavGbnOWaPVjwBVXj2IgEleBafDFWJQWc21TfEs76Oq/rntZd7q/E3yptRaSz/EkOxNR3
+	aFAuKSEiq8z9+a68S8uHHC+pYxGLsskg=
+X-Gm-Gg: Acq92OGXnUlIMLo2HAlAKwfH3UmlmQsLtHRfOTElvTD9F5MlUsUNrKncwXa9nB5Rh1q
+	plNznIuI3jdtF3F/u6q4cjPHHMQIqQiqTqzaHJOSvLmoE82q2TtuuHKk0hUD9J3b0jypw+iMeEF
+	DjtZMw772MaBB0ESdOR/PC5al9MRVmiavU+1p91xK2IxwlO9rxIe6BOXQ3Zl+3+xfUIZx35+d61
+	KlLsf7o77vww47tTQkrDxHh4L7FSOf/YbFH7xSaqF3LQIeOSC1Qvl86bJ9/sjNRGB/VdmXR8vdk
+	QKTSWsdkECEdqqDDoqAdW+Lq9c+/3m5Fg59W1TCfzVCEcdT8Cw==
+X-Received: by 2002:a05:6000:1611:b0:45e:8526:7dcb with SMTP id
+ ffacd0b85a97d-46018cde5c3mr378861f8f.7.1780332311119; Mon, 01 Jun 2026
+ 09:45:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260528212955.1912856-1-nphamcs@gmail.com> <ahz_iYG4lqWL4g-J@KASONG-MC4>
- <CAKEwX=PzMwXXgq=ULAkFD9UqMz+ewLqhKt+xdGxkV7OmA2QG6w@mail.gmail.com>
-In-Reply-To: <CAKEwX=PzMwXXgq=ULAkFD9UqMz+ewLqhKt+xdGxkV7OmA2QG6w@mail.gmail.com>
+References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
+ <20260526114601.67041-2-jiahao.kernel@gmail.com> <aho7nepN5jZtKmef@google.com>
+ <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
+In-Reply-To: <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 1 Jun 2026 09:22:09 -0700
-X-Gm-Features: AVHnY4JTa-fR_5tUyRZOpBI2CAX77bPy73iuDZGeYtyu2utS9mSBpebHo1xGb-U
-Message-ID: <CAKEwX=NNNf0KCZC0ph7VRW0gjnbXd4W5NKEaHM4XzPdN03Ek3A@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/5] mm, swap: Virtual Swap Space (Swap Table Edition)
-To: Kairui Song <ryncsn@gmail.com>
-Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
-	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
-	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
-	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
-	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
-	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
-	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
-	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
-	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
-	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, 
-	ryan.roberts@arm.com, shakeel.butt@linux.dev, shikemeng@huaweicloud.com, 
-	surenb@google.com, tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
-	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
-	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
-	riel@surriel.com, haowenchao22@gmail.com
+Date: Mon, 1 Jun 2026 09:44:58 -0700
+X-Gm-Features: AVHnY4LT_5ehEfmIR9cnGphIbcSEKQX4RD4VzS-3orz-D5X1L6ZBlUnrbx8nVYA
+Message-ID: <CAKEwX=M5KiWc8ZZTEXCXtxeBrQho3Gs-JnKmBB=YNUkp=WXaKA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor per-memcg
+To: Hao Jia <jiahao.kernel@gmail.com>
+Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, tj@kernel.org, 
+	hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@kernel.org, 
+	mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	Hao Jia <jiahao1@lixiang.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16522-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16523-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_GT_50(0.00)[55];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: D5C966229AD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: E0A3D622CA3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Jun 1, 2026 at 8:56=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote:
->
-> On Mon, Jun 1, 2026 at 12:34=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wr=
+On Mon, Jun 1, 2026 at 4:07=E2=80=AFAM Hao Jia <jiahao.kernel@gmail.com> wr=
 ote:
-> >
-> > On Thu, May 28, 2026 at 02:29:24PM +0800, Nhat Pham wrote:
-> > > Based on: mm-unstable @ 444fc9435e57 + swap-table phase IV v5 [2].
-> > >
-> > > I manually adapted Kairui's ghost device implementation (from [4])
-> > > for my vswap device. I've credited him as Co-developed-by on Patch I
-> > > since a substantial portion of the dynamic-cluster infrastructure is
-> > > his (I did propose the idea of using xarray/radix tree for dynamic
-> > > swap clusters allocation and management though :P).
-> > >
-> > > >From here on out, for simplicity, I will refer to swap table phase I=
-V
-> > > as "P4", and the older v6 virtual swap space implementation as "v6".
-> > >
-> >
-> > ...
-> >
-> > >
-> > > This series reimplements the virtual swap space concept (see [1])
-> > > on top of Kairui Song's swap table infrastructure, on top of [2]
-> > > and in accordance with his proposal in [3]. The proposal's idea
-> > > is interesting, so I decided to give it a shot myself. I'm still not
-> > > 100% sure that this is bug-proof, but hey, it compiles, and has
-> > > not crashed in my simple stress testing :)
-> > >
-> > > The prototype here is feature-complete relative to the swap-table P4
-> > > baseline =E2=80=94 swapout, swapin, freeing, swapoff, zswap writeback=
-, zswap
-> > > shrinker, memcg charging, and THP swapin all work for
-> > > both vswap and direct-physical entries =E2=80=94 and satisfies all th=
-ree
-> > > requirements above: no backend coupling (zswap/zero entries hold no
-> > > physical slot), dynamic swap space (clusters allocated on demand via
-> > > xarray, no static provisioning), and efficient backend transfer
-> > > (in-place vtable updates, no PTE/rmap walking).
-> > >
-> > > II. Design
-> > >
-> > > With vswap, pages are assigned virtual swap entries on a ghost device
-> > > with no backing storage. These entries are backed by zswap, zero page=
-s,
-> > > or (lazily) physical swap slots. Physical backing is allocated only
-> > > when needed =E2=80=94 on zswap writeback or reclaim writeout, after t=
-he rmap
-> > > step.
-> > >
-> > > Compared to the standalone v6 implementation [1], which introduces a
-> > > 24-byte per-entry swap descriptor and its own cluster allocator, this
-> > > edition uses swap_table infrastructure, and share a lot of the alloca=
-tor
-> > > logic. Per-slot metadata is stored in a tag-encoded virtual_table
-> > > (atomic_long_t, 8 bytes per slot), and physical clusters store
-> > > Pointer-tagged rmap entries in the swap_table for reverse lookup back=
- to
-> > > the virtual cluster.
-> > >
-> > > Here are some data layout diagrams:
-> > >
-> > >   Case 1: vswap entry (virtualized)
-> > >
-> > >   PTE                  swap_cluster_info_dynamic
-> > >   vswap_entry          +-------------------------+
-> > >   (swp_entry_t) ------>| swap_cluster_info (ci)  |
-> > >                        | +--------------------+  |
-> > >                        | | swap_table         |  |
-> > >                        | |   PFN / Shadow     |  |
-> > >                        | | memcg_table        |  |
-> > >                        | | count,flags,order  |  |
-> > >                        | | lock, list         |  |
-> > >                        | +--------------------+  |
-> > >                        |                         |
-> > >                        | virtual_table           |
-> > >                        | +--------------------+  |
-> > >                        | | NONE               |  |
-> > >                        | | PHYS               |  |
-> > >                        | | ZERO               |  |
-> > >                        | | ZSWAP(entry*)      |  |
-> > >                        | | FOLIO(folio*)      |  |
-> > >                        | +--------------------+  |
-> > >                        +-------------------------+
-> > >                               |
-> > >                               | PHYS resolves to
-> > >                               v
-> > >                        PHYSICAL CLUSTER (swap_cluster_info)
-> > >                        +--------------------------+
-> > >                        | swap_table per-slot:     |
-> > >                        |   NULL   - free          |
-> > >                        |   PFN    - cached folio  |
-> > >                        |   Shadow - swapped out   |
-> > >                        |   Pointer- vswap rmap    |
-> > >                        |   Bad    - unusable      |
-> > >                        |                          |
-> > >                        | Vswap-backing slot:      |
-> > >                        |   Pointer(C|swp_entry_t) |
-> > >                        |     rmap back to vswap   |
-> > >                        +--------------------------+
-> > >
-> > >   Case 2: direct-mapped physical entry (no vswap)
-> > >
-> > >   PTE                  PHYSICAL CLUSTER (swap_cluster_info)
-> > >   phys_entry           +--------------------------+
-> > >   (swp_entry_t) ------>| swap_table per-slot:     |
-> > >                        |   NULL   - free          |
-> > >                        |   PFN    - cached folio  |
-> > >                        |   Shadow - swapped out   |
-> > >                        |   Bad    - unusable      |
-> > >                        +--------------------------+
-> > >
-> > > struct swap_cluster_info_dynamic {
-> > >     struct swap_cluster_info ci;       /* swap_table, lock, etc. */
-> > >     unsigned int index;                /* position in xarray */
-> > >     struct rcu_head rcu;               /* kfree_rcu deferred free */
-> > >     atomic_long_t *virtual_table;      /* backend info, 8 B/slot */
-> > > };
-> > >
-> > > Each vswap cluster (swap_cluster_info_dynamic) extends the classic
-> > > swap_cluster_info struct with a virtual_table array that stores the
-> > > backend information for each virtual swap entry in the cluster. Each
-> > > entry is tag-encoded in the low 3 bits to indicate backend types:
-> > >
-> > >   NONE:   |----- 0000 ------|000|  free / unbacked
-> > >   PHYS:   |-- (type:5,off:N)|001|  on a physical swapfile (shifted)
-> > >   ZERO:   |----- 0000 ------|010|  zero-filled page
-> > >   ZSWAP:  |--- zswap_entry* |011|  compressed in zswap
-> > >   FOLIO:  |--- folio* ------|100|  in-memory folio
-> >
-> > Thanks for trying this approach!
 >
-> Thanks for the suggestions. I hope going forward we have sth concrete
-> to tinker with, rather than abstractions :P
 >
-> >
-> > For the format part, PHYS don't need that much bits I think,
-> > so by slightly adjust the format vswap device could be share
-> > mostly the same format with ordinary device.
-> >
-> > For example typical modern system don't have a address space larger
-> > than 52 bit. (Even with full 64 bits used for addressing, shift it
-> > by 12 we get 52). Plus 5 for type, you get 57, so you can have a
-> > marker that should work as long as it shorter than 1000000 for PHYS,
-> > and shared for all table format since it's not in conflict with
-> > anything. You have also use a few extra bits so a single swap space
-> > can be 8 times larger than RAM space, and since we can help
-> > multiple swap type I think that should be far than enough?
-> >
-> > Then you have Shadow back at 001, and zero bit in shadow. The only
-> > special one is Zswap, which will be 100 now, and that's exactly the
-> > reserved pointer format in current swap table format, on seeing
-> > si->flags & VSWAP && is_pointer(swp_tb) you know that's zswap :)
 >
-> Are you suggesting we merge the virtual table with main swap table?
->
-> Man, I'd love to do this. There is a problem though - we have a case
-> where we occupy both backing physical swap AND swap cache. Do you
-> think we can fit both the physical swap slot handle and the swap cache
-> PFN into the same slot in virtual table? Maybe with some expanding...?
->
-> Another option is we can be a bit smart about it - if a virtual swap
-> entry is in swap cache AND occupies physical swap slot, then put the
-> folio at the physical swap's table, use folio->swap as the rmap.
->
-> (I think you recommend this approach somewhere but for the life of me
-> I can't find the reference - apologies if I'm putting words into your
-> mouth :))
->
-> But this is a bit more complicated - extra care is needed for rmap
-> handling at the physical swap layer, and swap cache handling at the
-> virtual swap layer. Maybe a follow-up? :)
->
+> On 2026/5/30 09:24, Yosry Ahmed wrote:
+> > On Tue, May 26, 2026 at 07:45:58PM +0800, Hao Jia wrote:
+> >> From: Hao Jia <jiahao1@lixiang.com>
+> >>
+> >> The zswap background writeback worker shrink_worker() uses a global
+> >> cursor zswap_next_shrink, protected by zswap_shrink_lock, to round-rob=
+in
+> >> across the online memcgs under root_mem_cgroup.
+> >>
+> >> Proactive writeback also wants a similar per-memcg cursor that is
+> >> scoped to the specified memcg, so that repeated invocations against
+> >> the same memcg make forward progress across its descendant memcgs
+> >> instead of restarting from the first child memcg each time.
 > >
-> > Folio / PFN can still be 010 as in the current swap table format.
+> > Is this a problem in practice?
 > >
-> > Then everything seems clean and aligned, no more special handling
-> > for vswap needed, there are detailed to sort out, but it should work.
+> > Is the concern the overhead of scanning memcgs repeatedly, or lack of
+> > fairness? I wonder if we should just do writeback in batches from all
+> > memcgs, similar to how reclaim does it, then evaluate at the end if we
+> > need to start over?
 > >
-> > > - Pointer-tagged swap_table on physical clusters for rmap (physical
-> > >   -> virtual) lookup.
-> >
-> > Or reuse the PHYS format (rename it maybe) since point back to vswap
-> > is also pointing to a si.
 >
-> Noted. I'm just doing the simplest thing right now - working
-> prototype. I mean, we have enough bits :)
+> Not using a per-cgroup cursor will cause issues for "repeated
+> small-budget calls" cases. For example, repeatedly triggering a 2MB
+> writeback might result in only writing back pages from the first few
+> child memcgs every time. In the worst-case scenario (where the writeback
+> amount is less than WB_BATCH), it might only ever write back from the
+> first child memcg.
 >
+> Similar to how memory reclaim uses mem_cgroup_iter() (via struct
+> mem_cgroup_reclaim_iter) and the old shrink_worker() used
+> zswap_next_shrink, we need a shared cursor here.
+>
+>
+> >>
+> >> Naturally, group the cursor and its protecting spinlock into a
+> >> zswap_wb_iter struct, and make it a member of struct mem_cgroup to
+> >> realize per-memcg cursor management. Accordingly, shrink_worker() now
+> >> uses the lock and cursor in root_mem_cgroup->zswap_wb_iter.
 > >
-> > > III. Follow-ups:
-> > >
-> > > In no particular order (and most of which can be done as follow-up
-> > > patch series rather than shoving everything in the initial landing):
-> > >
-> > > - More thorough stress testing is very much needed.
-> > >
-> > > - Performance benchmarks to make sure I don't accidentally regress
-> > >   the vswap-less case, and that the vswap's case performance is
-> > >   good. I suspect I will have to port a lot of the
-> > >   optimizations I implemented in v6 over here - some of the
-> > >   inefficiencies are inherent in any swap virtualization, and
-> > >   would require the same fix (for e.g the MRU cluster caching
-> > >   for faster cluster lookup - see [8] and [9]).
+> > If we really need to have per-memcg cursors (I am not a big fan), I
+> > think we can minimize the overhead by making the cursor updates use
+> > atomic cmpxchg instead of having a per-memcg lock.
 > >
-> > This could be imporved by per-si percpu cluster. Both YoungJun's
-> > tiering and Baoquan's previous swap ops mentioned this is needed,
-> > and now vswap also need that. If the vswap is also a si, then it will
-> > make use of this too.
+>
+> Because mem_cgroup_iter() always calls css_put(&prev->css), we cannot
+> simply update zswap_wb_iter.pos via cmpxchg() after calling it. Doing so
+> could lead to a double css_put() issue on prev->css.
+>
+> Therefore, if we switch to the cmpxchg() approach, we wouldn't be able
+> to reuse the existing mem_cgroup_iter() logic. We would have to write a
+> new function similar to cgroup_iter(), and its implementation might end
+> up looking a bit obscure/complex.
+>
+> Currently, this lock is only used in shrink_memcg(), proactive
+> writeback, and mem_cgroup_css_offline(). Note that shrink_memcg() only
+> acquires the lock of the root cgroup, and mem_cgroup_css_offline() is
+> unlikely to be a hot path.
+>
+> So, should we keep the spin_lock or go with the cmpxchg() approach?
+> Yosry and Nhat, what are your thoughts on this?
 
-Oh and the MRU cluster caching I mentioned here is not the allocation
-caching. It's the lookup caching, basically to avoid doing the
-xa_load() to look up clusters for consecutive swap operations on the
-same vswap cluster (which is the common case with vswap). For v6, it
-massively reduces this indirection lookup overhead. Performance-wise
-it's an absolute winner, just more complexity (because I need to
-handle reference counting carefully).
+TBH, I think the spinlock is simpler at this point if we need to do
+all of this explanation to justify correctness of cmpxchg :)
 
-I also just realized we'll induce the indirection overhead on
-allocation here too, even if the cached cluster still have slots for
-allocation, because we look up the cluster (which is basically free
-for static swap device, but not free for vswap devices). Might need to
-take care of that to maintain vswap performance (but it will then
-diverge from your existing code...).
+That said, if memcg folks feel like an extra spinlock per cgroup is a
+bit much, we can go with the cmpxchg() approach. Please include a FAT
+comment explains the compxchg() approach's nuance in the code though.
+Speaking from experience, I will forget why it is correct 2 months
+after the patch lands :)
 
