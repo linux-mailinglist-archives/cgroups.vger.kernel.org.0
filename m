@@ -1,336 +1,171 @@
-Return-Path: <cgroups+bounces-16506-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16507-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KDsZEPgnHWq6VwkAu9opvQ
-	(envelope-from <cgroups+bounces-16506-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:34:32 +0200
+	id uE7TFnsoHWq6VwkAu9opvQ
+	(envelope-from <cgroups+bounces-16507-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:36:43 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C11A61A3AC
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 897B761A3EA
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:36:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D4FFC300679A
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 06:31:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D2725303D12F
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 06:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79BD834E75D;
-	Mon,  1 Jun 2026 06:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03138367292;
+	Mon,  1 Jun 2026 06:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PqFJMg32"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ngy8hvkP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98CA34B1AD
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 06:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789FE35F602
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 06:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780295481; cv=none; b=Nt943oo0soHz4TyJ7lDPzhCcbj0BCZ/zlQZ5ArHiTWUEbAqs8UUfY8J2bR0sp8YKrMRqANGvn3/yMRjI0BUYN4fE0QUw3XheyxbV6S1qmWRoa90fzibPiv66niTVAzSdxiPmZrL/F7ltrC9c8ws2dMrdzs315NkIvtvJQDziU1Y=
+	t=1780295683; cv=none; b=l3AU0xtWARkIQ+FtFdZ+PgH1T/B/x/RdA9xg2GMWqfOTsMJF5qpH6p70/3S3BuDznmci9fSQAwTaQxUlUQ1NWLUBiK88jltrVFYE4hRA2MZCzw8fR540pt5LoS4lpJwtcvn9RrI/XaKxuFxdbd9mPnylZPYj5IiJ5m4E13T2L2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780295481; c=relaxed/simple;
-	bh=ljhmrDE7z4Wo37kY8t11lksOOadUPbZbvOHjjIm6i4w=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cPCaURVt2So1wLxbW34HKb0KP46IGKIeYGyPV72Puf4dMe4i4TgvFDmlSi3k83m4sE3Y5JKYNQiSahtRUX2e74GKe6LFpIVvyPxkYeDtFbmH0s03+arLH/lujd7WjJe7lQGzSxSUBA4J4WdmiUtH9HzZzOtOx+2ScDb6u2ym5dE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PqFJMg32; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1780295480; x=1811831480;
-  h=date:from:to:cc:subject:message-id;
-  bh=ljhmrDE7z4Wo37kY8t11lksOOadUPbZbvOHjjIm6i4w=;
-  b=PqFJMg320RHFQ6P59+nngXV06LlpU5ARWP0gjtN+JJYgcAffh1mHhTfG
-   AAwQK3w8Vu9nPpi7USR28iq7nKUKuzbExaK6DDgaLJOYzHCP7YgenXzPB
-   QoSsxm4Jvn2dDqWRbn/SWTXvzooq/wzRcdQHIiPe5xpWozEVLl8z4Fosj
-   FfLOSVN1L1Q+iHqUFX2L8CSlUamtAGUOloc+6y+OIxQM+4fMRmkIzZ3AB
-   5DcpapGnGd8a7l5pG3Rh8tg6CXlnbWz9V7qIT6v00pbNoOG79MDQ6yO7D
-   BSD4jJtOBiBWf1ugIQBYqyZn61TUPsL5cklByKLIby16Crb255LFdzlz6
-   Q==;
-X-CSE-ConnectionGUID: JZip376+QM2OeHR3yIu55A==
-X-CSE-MsgGUID: 3WGEwBQ1SryajbBRDPvAPg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11803"; a="84905651"
-X-IronPort-AV: E=Sophos;i="6.24,180,1774335600"; 
-   d="scan'208";a="84905651"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2026 23:31:19 -0700
-X-CSE-ConnectionGUID: dQjfui++RxudyFSnDyDwAA==
-X-CSE-MsgGUID: UrXA7iMSQCKNBkt2s8kQNg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,180,1774335600"; 
-   d="scan'208";a="248399872"
-Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 31 May 2026 23:31:18 -0700
-Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1wTwB9-00000000AGM-14t5;
-	Mon, 01 Jun 2026 06:31:15 +0000
-Date: Mon, 01 Jun 2026 14:30:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-7.2] BUILD SUCCESS
- 6935f0496c2eb74dd3f57228a799d2db1a8a9ac8
-Message-ID: <202606011418.QSbJaVXD-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1780295683; c=relaxed/simple;
+	bh=qqBWByypUKq2FsizaIPyo4COr5T8Ke5xWvws1jGf5p8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nRe49ZzVlG+ydhR9gE92OrRu3VU3jsYmQt7ju9u/mC0vzAeTsidg3XI6Lgk1QRKgU5Fn3BT0KCZHK3BabAjaz2z0e1HyV0uUBe1ySVJirK30alW+c0TmAK+6Rjfj/E1E5JOIh0HUzQSv8oVnNtvB6CmIm0LKWavhrL3Wk8lJbAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ngy8hvkP; arc=none smtp.client-ip=95.215.58.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1780295679;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=QiRzdMswPgawDFLq5HRk8E4c2GK+uK4ZKIh/iRxMht8=;
+	b=Ngy8hvkPHXVBJz6JxI/RWTNHm8G9rzOSN+P+SvwhC3BCDsRo0S8N97K8OJN2VBDNdnG52P
+	/uv1anMx9+ccsvLgSQT869Dzi8ZbFTKpTdkaSyZlnHISVsVlstrE44d3lKJse6MCqw6d0l
+	9VKmneou8Ozl4GvRBqHN3Pug+JGxW6M=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Qi Zheng <qi.zheng@linux.dev>,
+	Kairui Song <kasong@tencent.com>,
+	Meta kernel team <kernel-team@meta.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chris Mason <clm@fb.com>
+Subject: [PATCH] mm/list_lru: drain before clearing xarray entry on reparent
+Date: Sun, 31 May 2026 23:34:08 -0700
+Message-ID: <20260601063408.2879011-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16507-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16506-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[3];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.995];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 8C11A61A3AC
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 897B761A3EA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-7.2
-branch HEAD: 6935f0496c2eb74dd3f57228a799d2db1a8a9ac8  docs: cgroup: Fix stale source file paths
+memcg_reparent_list_lrus() clears the dying memcg's xarray entry with
+xas_store(&xas, NULL) before reparenting its per-node lists into the
+parent. This opens a window where a concurrent list_lru_del() arriving
+for the dying memcg sees xa_load() == NULL, walks to the parent in
+lock_list_lru_of_memcg(), takes the parent's per-node lock, and calls
+list_del_init() on an item still physically linked on the dying
+memcg's list.
 
-elapsed time: 732m
+If another in-flight thread holds the dying memcg's per-node lock at
+the same moment (another list_lru_del, or a list_lru_walk_one running
+an isolate callback), both threads modify ->next/->prev pointers on the
+same physical list under different locks. Adjacent items can corrupt
+each other's links.
 
-configs tested: 211
-configs skipped: 6
+Fix it by reversing the order: reparent each per-node list and mark the
+child's list lru dead and then clear the xarray entry. Any concurrent
+list_lru op that finds the still-set xarray entry either takes the dying
+memcg's per-node lock (synchronizing with the drain) or sees LONG_MIN
+and walks to the parent, where the items now live.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Fixes: fb56fdf8b9a2 ("mm/list_lru: split the lock to per-cgroup scope")
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Reported-by: Chris Mason <clm@fb.com>
+---
+ mm/list_lru.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-tested configs:
-alpha                             allnoconfig    gcc-15.2.0
-alpha                            allyesconfig    gcc-15.2.0
-alpha                               defconfig    gcc-15.2.0
-arc                              allmodconfig    clang-16
-arc                              allmodconfig    gcc-15.2.0
-arc                               allnoconfig    gcc-15.2.0
-arc                              allyesconfig    clang-23
-arc                      axs103_smp_defconfig    gcc-15.2.0
-arc                                 defconfig    gcc-15.2.0
-arc                   randconfig-001-20260601    clang-23
-arc                   randconfig-002-20260601    clang-23
-arc                    vdk_hs38_smp_defconfig    gcc-15.2.0
-arm                               allnoconfig    gcc-15.2.0
-arm                              allyesconfig    clang-16
-arm                              allyesconfig    gcc-15.2.0
-arm                                 defconfig    gcc-15.2.0
-arm                   randconfig-001-20260601    clang-23
-arm                   randconfig-002-20260601    clang-23
-arm                   randconfig-003-20260601    clang-23
-arm                   randconfig-004-20260601    clang-23
-arm64                            allmodconfig    clang-23
-arm64                             allnoconfig    gcc-15.2.0
-arm64                               defconfig    gcc-15.2.0
-arm64                          randconfig-001    clang-23
-arm64                 randconfig-001-20260601    gcc-8.5.0
-arm64                          randconfig-002    clang-23
-arm64                 randconfig-002-20260601    gcc-8.5.0
-arm64                          randconfig-003    clang-23
-arm64                 randconfig-003-20260601    gcc-8.5.0
-arm64                          randconfig-004    clang-23
-arm64                 randconfig-004-20260601    gcc-8.5.0
-csky                             allmodconfig    gcc-15.2.0
-csky                              allnoconfig    gcc-15.2.0
-csky                                defconfig    gcc-15.2.0
-csky                           randconfig-001    clang-23
-csky                  randconfig-001-20260601    gcc-8.5.0
-csky                           randconfig-002    clang-23
-csky                  randconfig-002-20260601    gcc-8.5.0
-hexagon                          allmodconfig    gcc-15.2.0
-hexagon                           allnoconfig    gcc-15.2.0
-hexagon                             defconfig    gcc-15.2.0
-hexagon               randconfig-001-20260601    gcc-8.5.0
-hexagon               randconfig-002-20260601    gcc-8.5.0
-i386                             allmodconfig    clang-20
-i386                              allnoconfig    gcc-15.2.0
-i386                             allyesconfig    clang-20
-i386                 buildonly-randconfig-001    gcc-12
-i386        buildonly-randconfig-001-20260601    gcc-12
-i386                 buildonly-randconfig-002    gcc-12
-i386        buildonly-randconfig-002-20260601    gcc-12
-i386                 buildonly-randconfig-003    gcc-12
-i386        buildonly-randconfig-003-20260601    gcc-12
-i386                 buildonly-randconfig-004    gcc-12
-i386        buildonly-randconfig-004-20260601    gcc-12
-i386                 buildonly-randconfig-005    gcc-12
-i386        buildonly-randconfig-005-20260601    gcc-12
-i386                 buildonly-randconfig-006    gcc-12
-i386        buildonly-randconfig-006-20260601    gcc-12
-i386                                defconfig    gcc-15.2.0
-i386                  randconfig-001-20260601    gcc-14
-i386                  randconfig-002-20260601    gcc-14
-i386                  randconfig-003-20260601    gcc-14
-i386                  randconfig-004-20260601    gcc-14
-i386                  randconfig-005-20260601    gcc-14
-i386                  randconfig-006-20260601    gcc-14
-i386                  randconfig-007-20260601    gcc-14
-loongarch                        allmodconfig    clang-23
-loongarch                         allnoconfig    gcc-15.2.0
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20260601    gcc-8.5.0
-loongarch             randconfig-002-20260601    gcc-8.5.0
-m68k                             allmodconfig    gcc-15.2.0
-m68k                              allnoconfig    gcc-15.2.0
-m68k                             allyesconfig    clang-16
-m68k                             allyesconfig    gcc-15.2.0
-m68k                                defconfig    clang-19
-microblaze                        allnoconfig    gcc-15.2.0
-microblaze                       allyesconfig    gcc-15.2.0
-microblaze                          defconfig    clang-19
-mips                             allmodconfig    gcc-15.2.0
-mips                              allnoconfig    gcc-15.2.0
-mips                             allyesconfig    gcc-15.2.0
-mips                  cavium_octeon_defconfig    gcc-15.2.0
-mips                      malta_kvm_defconfig    gcc-15.2.0
-nios2                            allmodconfig    clang-23
-nios2                             allnoconfig    clang-23
-nios2                               defconfig    clang-19
-nios2                 randconfig-001-20260601    gcc-8.5.0
-nios2                 randconfig-002-20260601    gcc-8.5.0
-openrisc                         allmodconfig    clang-23
-openrisc                          allnoconfig    clang-23
-openrisc                            defconfig    gcc-15.2.0
-parisc                           allmodconfig    gcc-15.2.0
-parisc                            allnoconfig    clang-23
-parisc                           allyesconfig    clang-19
-parisc                              defconfig    gcc-15.2.0
-parisc                         randconfig-001    gcc-10.5.0
-parisc                randconfig-001-20260601    gcc-10.5.0
-parisc                         randconfig-002    gcc-10.5.0
-parisc                randconfig-002-20260601    gcc-10.5.0
-parisc64                         alldefconfig    gcc-15.2.0
-parisc64                            defconfig    clang-19
-powerpc                          allmodconfig    gcc-15.2.0
-powerpc                           allnoconfig    clang-23
-powerpc                       ppc64_defconfig    clang-23
-powerpc                        randconfig-001    gcc-10.5.0
-powerpc               randconfig-001-20260601    gcc-10.5.0
-powerpc                        randconfig-002    gcc-10.5.0
-powerpc               randconfig-002-20260601    gcc-10.5.0
-powerpc64                      randconfig-001    gcc-10.5.0
-powerpc64             randconfig-001-20260601    gcc-10.5.0
-powerpc64                      randconfig-002    gcc-10.5.0
-powerpc64             randconfig-002-20260601    gcc-10.5.0
-riscv                            allmodconfig    clang-23
-riscv                             allnoconfig    clang-23
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    gcc-15.2.0
-riscv                          randconfig-001    clang-23
-riscv                 randconfig-001-20260601    clang-23
-riscv                          randconfig-002    clang-23
-riscv                 randconfig-002-20260601    clang-23
-s390                             allmodconfig    clang-19
-s390                              allnoconfig    clang-23
-s390                             allyesconfig    gcc-15.2.0
-s390                                defconfig    gcc-15.2.0
-s390                           randconfig-001    clang-23
-s390                  randconfig-001-20260601    clang-23
-s390                           randconfig-002    clang-23
-s390                  randconfig-002-20260601    clang-23
-sh                               allmodconfig    gcc-15.2.0
-sh                                allnoconfig    clang-23
-sh                               allyesconfig    clang-19
-sh                                  defconfig    gcc-14
-sh                        dreamcast_defconfig    gcc-15.2.0
-sh                             randconfig-001    clang-23
-sh                    randconfig-001-20260601    clang-23
-sh                             randconfig-002    clang-23
-sh                    randconfig-002-20260601    clang-23
-sh                           se7722_defconfig    gcc-15.2.0
-sparc                             allnoconfig    clang-23
-sparc                               defconfig    gcc-15.2.0
-sparc                          randconfig-001    gcc-8.5.0
-sparc                 randconfig-001-20260601    gcc-15.2.0
-sparc                 randconfig-001-20260601    gcc-8.5.0
-sparc                          randconfig-002    gcc-8.5.0
-sparc                 randconfig-002-20260601    gcc-15.2.0
-sparc                 randconfig-002-20260601    gcc-8.5.0
-sparc64                          allmodconfig    clang-23
-sparc64                             defconfig    gcc-14
-sparc64                        randconfig-001    gcc-8.5.0
-sparc64               randconfig-001-20260601    gcc-15.2.0
-sparc64               randconfig-001-20260601    gcc-8.5.0
-sparc64                        randconfig-002    gcc-8.5.0
-sparc64               randconfig-002-20260601    gcc-15.2.0
-sparc64               randconfig-002-20260601    gcc-8.5.0
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-23
-um                               allyesconfig    gcc-15.2.0
-um                                  defconfig    gcc-14
-um                             i386_defconfig    gcc-14
-um                             randconfig-001    gcc-8.5.0
-um                    randconfig-001-20260601    gcc-15.2.0
-um                    randconfig-001-20260601    gcc-8.5.0
-um                             randconfig-002    gcc-8.5.0
-um                    randconfig-002-20260601    gcc-15.2.0
-um                    randconfig-002-20260601    gcc-8.5.0
-um                           x86_64_defconfig    gcc-14
-x86_64                           allmodconfig    clang-20
-x86_64                            allnoconfig    clang-23
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20260601    clang-20
-x86_64      buildonly-randconfig-002-20260601    clang-20
-x86_64      buildonly-randconfig-003-20260601    clang-20
-x86_64      buildonly-randconfig-004-20260601    clang-20
-x86_64      buildonly-randconfig-005-20260601    clang-20
-x86_64      buildonly-randconfig-006-20260601    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                                  kexec    clang-20
-x86_64                randconfig-001-20260601    clang-20
-x86_64                randconfig-002-20260601    clang-20
-x86_64                randconfig-003-20260601    clang-20
-x86_64                randconfig-004-20260601    clang-20
-x86_64                randconfig-005-20260601    clang-20
-x86_64                randconfig-006-20260601    clang-20
-x86_64                randconfig-011-20260601    clang-20
-x86_64                randconfig-012-20260601    clang-20
-x86_64                randconfig-013-20260601    clang-20
-x86_64                randconfig-014-20260601    clang-20
-x86_64                randconfig-015-20260601    clang-20
-x86_64                randconfig-016-20260601    clang-20
-x86_64                randconfig-071-20260601    gcc-14
-x86_64                randconfig-072-20260601    gcc-14
-x86_64                randconfig-073-20260601    gcc-14
-x86_64                randconfig-074-20260601    gcc-14
-x86_64                randconfig-075-20260601    gcc-14
-x86_64                randconfig-076-20260601    gcc-14
-x86_64                               rhel-9.4    clang-20
-x86_64                           rhel-9.4-bpf    gcc-14
-x86_64                          rhel-9.4-func    clang-20
-x86_64                    rhel-9.4-kselftests    clang-20
-x86_64                         rhel-9.4-kunit    gcc-14
-x86_64                           rhel-9.4-ltp    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    clang-23
-xtensa                           allyesconfig    clang-23
-xtensa                         randconfig-001    gcc-8.5.0
-xtensa                randconfig-001-20260601    gcc-15.2.0
-xtensa                randconfig-001-20260601    gcc-8.5.0
-xtensa                         randconfig-002    gcc-8.5.0
-xtensa                randconfig-002-20260601    gcc-15.2.0
-xtensa                randconfig-002-20260601    gcc-8.5.0
+diff --git a/mm/list_lru.c b/mm/list_lru.c
+index dd29bcf8eb5f..ae55a52307db 100644
+--- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -473,26 +473,24 @@ void memcg_reparent_list_lrus(struct mem_cgroup *memcg, struct mem_cgroup *paren
+ 	mutex_lock(&list_lrus_mutex);
+ 	list_for_each_entry(lru, &memcg_list_lrus, list) {
+ 		struct list_lru_memcg *mlru;
+-		XA_STATE(xas, &lru->xa, memcg->kmemcg_id);
+ 
+-		/*
+-		 * Lock the Xarray to ensure no on going list_lru_memcg
+-		 * allocation and further allocation will see css_is_dying().
+-		 */
+-		xas_lock_irq(&xas);
+-		mlru = xas_store(&xas, NULL);
+-		xas_unlock_irq(&xas);
++		mlru = xa_load(&lru->xa, memcg->kmemcg_id);
+ 		if (!mlru)
+ 			continue;
+ 
+ 		/*
+-		 * With Xarray value set to NULL, holding the lru lock below
+-		 * prevents list_lru_{add,del,isolate} from touching the lru,
+-		 * safe to reparent.
++		 * Reparent each per-node list and mark the child dead
++		 * (LONG_MIN) before clearing xarray entry otherwisw a
++		 * concurrent list_lru_del() may corrupt the list if it arrives
++		 * after xarray clear but before reparenting as
++		 * lock_list_lru_of_memcg will acquire parent's lock while the
++		 * item is still on child's list.
+ 		 */
+ 		for_each_node(i)
+ 			memcg_reparent_list_lru_one(lru, i, &mlru->node[i], parent);
+ 
++		xa_erase(&lru->xa, memcg->kmemcg_id);
++
+ 		/*
+ 		 * Here all list_lrus corresponding to the cgroup are guaranteed
+ 		 * to remain empty, we can safely free this lru, any further
+-- 
+2.52.0
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
