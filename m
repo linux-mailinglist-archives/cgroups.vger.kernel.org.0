@@ -1,210 +1,148 @@
-Return-Path: <cgroups+bounces-16512-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16513-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YFxAHPpeHWojZwkAu9opvQ
-	(envelope-from <cgroups+bounces-16512-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 12:29:14 +0200
+	id OCyCAPZjHWpdaAkAu9opvQ
+	(envelope-from <cgroups+bounces-16513-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 12:50:30 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFB361D666
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 12:29:13 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3641361DE00
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 12:50:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A3EB33103689
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 10:03:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4E350304D7DC
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 10:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C113A7852;
-	Mon,  1 Jun 2026 09:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A2D312825;
+	Mon,  1 Jun 2026 10:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="opmdGdka"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FjACQjOW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF1A3939AF
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 09:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49B839B962
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 10:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780307696; cv=none; b=HwkrP7NhFlHA1PxmHbig7+BwQWK44bwP3emYVDwgquBR2QIrHPsSNdE50BQRj25V35OM+rRURAAg8usGK99h2UoDbmRKvfUbc3o7FAJVjYtXPbOEGrt1XQJpRNyr6UJqN4g8URQ8UvO05oSpLt9QHuwO7juzDRtNCSk48CMPpos=
+	t=1780310425; cv=none; b=bOq+oKTlDdMngSLH2hgGnxeYhEYN0eQRYjVqwc4uIuHAGz7Sgpqd8qepwt8YHUNwSVSUspGUkHUg9IOTEUrzaGmiTsPnlUX8x8VeitZ2O1LCpVsYDrojqIpYYmeXOiU5FTdAV73oLEVEJHVSaBoja4oR+ALRUWFKUOJKf5PXEmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780307696; c=relaxed/simple;
-	bh=OGdFqrL9E3SKu1yTP8DKxMPkgRzCtP1c/TucLQDywyg=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=dIF1yCtQSuhWI2sOsYkf1qgtAua+U36FkHOG5ARZarkS/fl4Zu+iXDgRUjeYpeYPzgyAUPZxG/ZZ6Musk96MPFCm1aeqmy7D87isPFLSYunxSPDT2VkMDqbbOiUwl23e4HIPQzLVjDePc0a1W8a7BcgrfScNFSkQgbR92OVOr9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=opmdGdka; arc=none smtp.client-ip=91.218.175.183
+	s=arc-20240116; t=1780310425; c=relaxed/simple;
+	bh=wAxApDjkjOGBXeuElPBQx/dPHycKhTGW+Gv/8QhEnbw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=un7dFNiwcc0Vv6PAiMlnc0QAtNRmM4C2k4zIWLILhBQfW44YB53l66pYp3Mdhb85k3XrJYM0E47oG9DtYL+G2TLj181pNRxUWHF0iRv998rHpOjChHFuJiCrnS7Fu2GE7aly06BpjuRseVTCheYivsurcqXvjCFk/b51p6tg1aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FjACQjOW; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780307681;
+	t=1780310409;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=okiM+ywmJfzOTYWBfyohEkr7uDVGfpbqCX1aCcdo0W4=;
-	b=opmdGdka5O+wo3q8pHowq2rDoNiWwEqRQLMSPNt8JoZqoBfPy5UsmGuYotw3P6ts7Wip1b
-	lKohENeRj+wfynbsP7USECZcFWlmg6AnJHdv+oVcW2IjMFsOBxZ653TnfS10iDnqBJUG1z
-	JXEtE9wYw2lk5TIdUmvN1NnEaJ80wfo=
+	bh=+kxihP4QbZH/SbV81BhxMKE8qdk0EBh4QHfFzGdZZ1g=;
+	b=FjACQjOW1MOQtoUqCCNCGVBX+brPhDYVowfPvlbVuB2B7NGhsRgGhCegZQHJTQHw8+9xR4
+	RSmQ4zKh26ma4ohTxjq+VqQQlcmn+ejFhVGkVvqdkz77SAZgJsdbfmBAJT/cwR8371K8MS
+	iugrU/Lsa7XIbrkFN17aqtQjZ4L9hIU=
+From: Lance Yang <lance.yang@linux.dev>
+To: hannes@cmpxchg.org
+Cc: akpm@linux-foundation.org,
+	david@kernel.org,
+	ljs@kernel.org,
+	shakeel.butt@linux.dev,
+	mhocko@kernel.org,
+	david@fromorbit.com,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	qi.zheng@linux.dev,
+	yosry.ahmed@linux.dev,
+	ziy@nvidia.com,
+	liam@infradead.org,
+	usama.arif@linux.dev,
+	kas@kernel.org,
+	vbabka@kernel.org,
+	ryncsn@gmail.com,
+	zaslonko@linux.ibm.com,
+	gor@linux.ibm.com,
+	baolin.wang@linux.alibaba.com,
+	baohua@kernel.org,
+	dev.jain@arm.com,
+	lance.yang@linux.dev,
+	npache@redhat.com,
+	ryan.roberts@arm.com,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 9/9] mm: switch deferred split shrinker to list_lru
+Date: Mon,  1 Jun 2026 18:39:47 +0800
+Message-Id: <20260601103947.63923-1-lance.yang@linux.dev>
+In-Reply-To: <20260527204757.2544958-10-hannes@cmpxchg.org>
+References: <20260527204757.2544958-10-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
-Subject: Re: [PATCH] mm/list_lru: drain before clearing xarray entry on
- reparent
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20260601063408.2879011-1-shakeel.butt@linux.dev>
-Date: Mon, 1 Jun 2026 17:54:01 +0800
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Dave Chinner <david@fromorbit.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Qi Zheng <qi.zheng@linux.dev>,
- Kairui Song <kasong@tencent.com>,
- Meta kernel team <kernel-team@meta.com>,
- linux-mm@kvack.org,
- cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Chris Mason <clm@fb.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <79CD986A-2130-4FB8-804F-A543AF22342B@linux.dev>
-References: <20260601063408.2879011-1-shakeel.butt@linux.dev>
-To: Shakeel Butt <shakeel.butt@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16512-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16513-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lance.yang@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,fb.com:email,linux.dev:email,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: DBFB361D666
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 3641361DE00
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
+On Wed, May 27, 2026 at 04:45:16PM -0400, Johannes Weiner wrote:
+[...]
+>diff --git a/mm/memory.c b/mm/memory.c
+>index 135f5c0f57bd..f22e61d8c8de 100644
+>--- a/mm/memory.c
+>+++ b/mm/memory.c
+>@@ -5222,6 +5222,10 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+> 			folio_put(folio);
+> 			goto next;
+> 		}
+>+		if (order > 1 && folio_memcg_alloc_deferred(folio)) {
+>+			folio_put(folio);
 
-> On Jun 1, 2026, at 14:34, Shakeel Butt <shakeel.butt@linux.dev> wrote:
->=20
-> memcg_reparent_list_lrus() clears the dying memcg's xarray entry with
-> xas_store(&xas, NULL) before reparenting its per-node lists into the
-> parent. This opens a window where a concurrent list_lru_del() arriving
-> for the dying memcg sees xa_load() =3D=3D NULL, walks to the parent in
-> lock_list_lru_of_memcg(), takes the parent's per-node lock, and calls
-> list_del_init() on an item still physically linked on the dying
-> memcg's list.
->=20
-> If another in-flight thread holds the dying memcg's per-node lock at
-> the same moment (another list_lru_del, or a list_lru_walk_one running
-> an isolate callback), both threads modify ->next/->prev pointers on =
-the
-> same physical list under different locks. Adjacent items can corrupt
-> each other's links.
->=20
-> Fix it by reversing the order: reparent each per-node list and mark =
-the
-> child's list lru dead and then clear the xarray entry. Any concurrent
-> list_lru op that finds the still-set xarray entry either takes the =
-dying
-> memcg's per-node lock (synchronizing with the drain) or sees LONG_MIN
-> and walks to the parent, where the items now live.
->=20
-> Fixes: fb56fdf8b9a2 ("mm/list_lru: split the lock to per-cgroup =
-scope")
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Reported-by: Chris Mason <clm@fb.com>
-> ---
-> mm/list_lru.c | 20 +++++++++-----------
-> 1 file changed, 9 insertions(+), 11 deletions(-)
->=20
-> diff --git a/mm/list_lru.c b/mm/list_lru.c
-> index dd29bcf8eb5f..ae55a52307db 100644
-> --- a/mm/list_lru.c
-> +++ b/mm/list_lru.c
-> @@ -473,26 +473,24 @@ void memcg_reparent_list_lrus(struct mem_cgroup =
-*memcg, struct mem_cgroup *paren
-> 	mutex_lock(&list_lrus_mutex);
-> 	list_for_each_entry(lru, &memcg_list_lrus, list) {
-> 		struct list_lru_memcg *mlru;
-> - 		XA_STATE(xas, &lru->xa, memcg->kmemcg_id);
->=20
-> - 		/*
-> -		 * Lock the Xarray to ensure no on going list_lru_memcg
-> -		 * allocation and further allocation will see =
-css_is_dying().
-> -		 */
-> - 		xas_lock_irq(&xas);
-> - 		mlru =3D xas_store(&xas, NULL);
-> - 		xas_unlock_irq(&xas);
-> + 		mlru =3D xa_load(&lru->xa, memcg->kmemcg_id);
-> 		if (!mlru)
-> 			continue;
+Missing a MTHP_STAT_ANON_FAULT_FALLBACK bump here?
 
-Is it possible that concurrent threads running memcg_list_lru_alloc() =
-could
-allocate a new mlru after this check passes? This could happen because =
-the
-threads haven't noticed css_is_dying() yet. We would consequently miss =
-the
-reparent operation for this list. So xas_lock_irq is necessary to =
-serialize
-CSS_DYING setting here. Right?
+Since we jump straight to fallback and end up at order-0 :)
 
-Thanks.
-Muchun
-
->=20
+>+			goto fallback;
+>+		}
+> 		folio_throttle_swaprate(folio, gfp);
 > 		/*
-> -		 * With Xarray value set to NULL, holding the lru lock =
-below
-> -		 * prevents list_lru_{add,del,isolate} from touching the =
-lru,
-> -		 * safe to reparent.
-> +		 * Reparent each per-node list and mark the child dead
-> +		 * (LONG_MIN) before clearing xarray entry otherwisw a
-> +		 * concurrent list_lru_del() may corrupt the list if it =
-arrives
-> +		 * after xarray clear but before reparenting as
-> +		 * lock_list_lru_of_memcg will acquire parent's lock =
-while the
-> +		 * item is still on child's list.
-> 		 */
-> 		for_each_node(i)
-> 			memcg_reparent_list_lru_one(lru, i, =
-&mlru->node[i], parent);
->=20
-> + 		xa_erase(&lru->xa, memcg->kmemcg_id);
-> +
-> 		/*
-> 		 * Here all list_lrus corresponding to the cgroup are =
-guaranteed
-> 		 * to remain empty, we can safely free this lru, any =
-further
-> --=20
-> 2.52.0
->=20
+> 		 * When a folio is not zeroed during allocation
+[...]
 
+Cheers, Lance
 
