@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-16500-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16501-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QIgVBMf/HGqOUwkAu9opvQ
-	(envelope-from <cgroups+bounces-16500-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 05:43:03 +0200
+	id mMnvK6EBHWq9UwkAu9opvQ
+	(envelope-from <cgroups+bounces-16501-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 05:50:57 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EDEC619485
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 05:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00F476194F8
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 05:50:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 20614301A92B
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 03:42:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CFF973028344
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 03:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BC32E0B5C;
-	Mon,  1 Jun 2026 03:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE7D3064B5;
+	Mon,  1 Jun 2026 03:50:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB62626980F
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 03:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498C0B640
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 03:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780285363; cv=none; b=gTSUcPzUp3HdNObpqR1sKUHTL9M5Jzucfh/sAYoa0XuswHzhtff6m2Fzx1Rpy/7Q5cooWrUBZg9TxOgwskpSVYHEX/wMXKDyBORh8fvMW/RYgMu2wFHDu5zGMWgVKsqyme8EJdX1pAwYJ3idrU5fhOBcuhk2SCfIzBpDimQ8+/4=
+	t=1780285825; cv=none; b=gcNzokUXTLAsoLno27rPzLkTPGPq2lYlTk35OhbU7Gotab0in9+S6X3X4FoX8hlt7FW4xEzeo+sy7Wpg7Qk6OE7jo2sdWpgYzvNDF2ZsVkwFpdbc23A647jYuUK8vHYEwPaAjIR7TQQhOvoUsWuNu7EMCfTZvBMBVT006nhl6Vw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780285363; c=relaxed/simple;
-	bh=YBCR2RQomPE4IN891SgSOPjZ0P8M5tBxihEkdGWPOBs=;
+	s=arc-20240116; t=1780285825; c=relaxed/simple;
+	bh=XQ6hhmtg/cGGAvDtwL2UHOvRcakPJlj+X1VT9QS6kV0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y4gDfwb0wgtk0rUeyuMXfSCY6tlyy8lHW3f7Rkx7fWiDec88Cm1SAyVMyaVhafuj192B7ZSdsbypBuN2TNHt2+xuutrinuP+jP6tcnd03HWoUeFjzCWFlGFJUh2MemQEoc+Z+8rsHD5tUA669HujEObRPa4ohT23neyLdgHVgmM=
+	 Content-Type:Content-Disposition:In-Reply-To; b=O0NQ2IsGiW0sKwbY8+Lf1U2c/qjrCmB8cas1p2rn29Ro+pQ5PsGsbaoruEv/m2y4I4x1+fNw30wE6sdSyxwpjORKqsmK5ybMIcFVqR9gxTzCNsFyGRHk5RwrWDYOHDop1imFFo3GSp+oOx8ErV/OsBgPBuZYRTzRU1vpamwEOKc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 1 Jun 2026 12:42:32 +0900
+	by 156.147.51.103 with ESMTP; 1 Jun 2026 12:50:21 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
-Date: Mon, 1 Jun 2026 12:42:31 +0900
+Date: Mon, 1 Jun 2026 12:50:21 +0900
 From: YoungJun Park <youngjun.park@lge.com>
 To: Nhat Pham <nphamcs@gmail.com>
 Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
@@ -47,10 +47,13 @@ Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
 	baoquan.he@linux.dev, baohua@kernel.org, gunho.lee@lge.com,
 	taejoon.song@lge.com, hyungjun.cho@lge.com, mkoutny@suse.com,
 	baver.bae@lge.com, matia.kim@lge.com
-Subject: Re: [PATCH v7 0/4] mm: swap: introduce swap tier infrastructure
-Message-ID: <ahz/p7oE6vDvKnPx@yjaykim-PowerEdge-T330>
+Subject: Re: [PATCH v7 4/4] mm: swap: filter swap allocation by memcg tier
+ mask
+Message-ID: <ah0BfRFv285gWph8@yjaykim-PowerEdge-T330>
 References: <20260527062247.3440692-1-youngjun.park@lge.com>
- <CAKEwX=PkiWdgNtoHberaXafQDoDngw5kycfaXeU22MnrXBoAXQ@mail.gmail.com>
+ <20260527062247.3440692-5-youngjun.park@lge.com>
+ <CAKEwX=O-_OZ8x0UC96a_k+0eZfAE+mWMWDdn68uy1LHRq=JC0w@mail.gmail.com>
+ <CAKEwX=N2XcMHN1jatppOk6wnmz-Shab5XMtTtzgYOzRvU_6YFw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,7 +63,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=PkiWdgNtoHberaXafQDoDngw5kycfaXeU22MnrXBoAXQ@mail.gmail.com>
+In-Reply-To: <CAKEwX=N2XcMHN1jatppOk6wnmz-Shab5XMtTtzgYOzRvU_6YFw@mail.gmail.com>
 X-Spamd-Result: default: False [-0.86 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
@@ -76,185 +79,56 @@ X-Spamd-Result: default: False [-0.86 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16500-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16501-lists,cgroups=lfdr.de];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 5EDEC619485
+X-Rspamd-Queue-Id: 00F476194F8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, May 30, 2026 at 11:02:03AM -0700, Nhat Pham wrote:
-> On Tue, May 26, 2026 at 11:23 PM Youngjun Park <youngjun.park@lge.com> wrote:
+On Sat, May 30, 2026 at 11:21:12AM -0700, Nhat Pham wrote:
+> On Sat, May 30, 2026 at 10:51 AM Nhat Pham <nphamcs@gmail.com> wrote:
 > >
-> > This is v7 of the swap tier series addressing review feedback.
-> > The cover letter has been simplified.
 > >
-> > I revisited the design (see Design Rationale). Since our use case
-> > fits best with a memcg-based model, the implementation remains
-> > within memcg and preserves its resource accounting semantics.
-> >
-> > Alternatives considered:
-> >
-> > 1. A separate sysfs interface under swap. (Workable. But, it would still
-> >    need to reference memcg paths, and fully decoupling it would add
-> >    swap-layer logic to manage memcgs, making it secondary option.)
-> >
-> > 2. Making the feature non-default.
-> >
-> > Other interfaces were also reviewed. Aside from sysfs and BPF,
-> > the options involve trade-offs and are largely design choices.
-> > BPF was excluded due to possible disablement on our embedded
-> > platform, though future extension remains possible.
-> >
-> > Overview
-> > ========
-> >
-> > Swap Tiers group swap devices into performance classes (e.g. NVMe,
-> > HDD, Network) and allow per-memcg selection of which tiers to use.
-> > This mechanism was suggested by Chris Li.
-> >
-> > Design Rationale
-> > ================
-> >
-> > Swap tier selection is attached to memcg. A child cgroup may select a
-> > subset of the parent's allowed tiers.
-> >
-> > This
-> > - Preserves cgroup inheritance semantics (boundary at parent,
-> >   refinement at child).
-> > - Reuses memcg, which already groups processes and enforces
-> >   hierarchical memory limits.
-> > - Aligns with existing memcg swap controls (e.g. swap.max, zswap.writeback)
-> > - Avoids introducing a parallel swap control hierarchy.
-> >
-> > Placing tier control outside memcg (e.g., via BPF, syscalls, or
-> > madvise) would allow swap preference to diverge from the memcg
-> > hierarchy. Integrating it into memcg keeps the swap policy
-> > consistent with existing memory ownership semantics. There are
-> > also real use cases built around memcg.
-> >
-> > In the future, this can be extended to other interfaces to cover
-> > additional use cases.
-> >
-> > I believe a memcg-based swap control is a good starting point
-> > before such extensions.
-> >
-> > Use Cases
-> > =========
-> >
-> > #1: Latency separation (our primary deployment scenario)
-> >   [ / ]
-> >      |
-> >      +-- latency-sensitive workload  (fast tier)
-> >      +-- background workload         (slow tier)
-> >
-> > The parent defines the memory boundary.
-> > Each workload selects a swap tier via memory.swap.tiers according to
-> > latency requirements.
-> >
-> > This prevents latency-sensitive workloads from being swapped to
-> > slow devices used by background workloads.
-> >
-> > #2: Per-VM swap selection (Chris Li's deployment scenario)
-> >   [ / ]
-> >      |
-> >      +-- [ Job on VM ]              (tiers: zswap, SSD)
-> >             |
-> >             +-- [ VMM guest memory ]  (tiers: SSD)
-> >
-> > The parent (job) has access to both zswap and SSD tiers.
-> > The child (VMM guest memory) selects SSD as its swap tier via
-> > memory.swap.tiers. In this deployment, swap device selection
-> > happens at the child level from the parent's available set.
-> >
-> > #3: Tier isolation for reduced contention (hypothetical)
-> >   [ / ]                    (tiers: A, B)
-> >      |
-> >      +-- workload X        (tiers: A)
-> >      +-- workload Y        (tiers: B)
-> >
-> > Each child uses a different tier. Since swap paths are separated
-> > per tier, synchronization overhead between the two workloads is
-> > reduced.
-> >
-> > Future extension
-> > ================
-> >
-> > #1: Intra-tier distribution policy:
-> >   Currently, swap devices with the same priority are allocated in a
-> >   round-robin fashion. Per-tier policy files under
-> >   /sys/kernel/mm/swap/tiers/ can control how devices within a tier
-> >   are selected (e.g. round-robin, weighted).
-> >
-> > #2: Inter-tier promotion and demotion:
-> >   Promotion and demotion apply between tiers, not within a single
-> >   tier. The current interface defines only tier assignment; it does
-> >   not yet define when or how pages move between tiers. Two triggering
-> >   models are possible:
-> >
-> >   (a) User-triggered: userspace explicitly initiates migration between
-> >       tiers (e.g. via a new interface or existing move_pages semantics).
-> >   (b) Kernel-triggered: the kernel moves pages between tiers at
-> >       appropriate points such as reclaim or refault.
-> >
-> > #3: Per-VMA, per-process swap and BPF:
-> >   Not just for memcg based swap, possible to extend Per-VMA or per-process swap.
-> >   Or we can use it as BPF program.
-> >
-> > Experimentation
-> > ===============
-> >
-> > Tested on our internal platform using NBD as a separate swap tier.
-> > Our first production's simple usecase.
-> >
-> > Without tiers:
-> > - No selective control over flash wear
-> > - Cannot selectively assign NBD to specific applications
-> >
-> > Cold launch improvement (preloaded vs. baseline):
-> > - App A: 13.17s -> 4.18s (68%)
-> > - App B: 5.60s -> 1.12s (80%)
-> > - App C: 10.25s -> 2.00s (80%)
-> >
-> > Performance impact with no tiers configured:
-> > <1% regression in kernel build and vm-scalability benchmarks
+> > How expensive is it to add per-cpu caching for each device :(
+> 
+> to clarify - a percpu_swap_cluster per si for every si.
+> 
 > >
 > 
-> Bit late to the party - working on my review backlog right now :)
+> ... or for each tier (assuming devices in each tier share the same
+> performance characteristics, and could be used interchangeably?).
 > 
-> I see some parallels with this and memory tiering work being done. One
-> future line of work could be considering how to ensure fairness when
-> multiple cgroups share same tiers:
+> Basically:
 > 
-> https://lwn.net/Articles/1073400/
+> struct percpu_swap_cluster {
+>     struct swap_info_struct *si[MAX_SWAPTIER][SWAP_NR_ORDERS];
+>     unsigned long offset[MAX_SWAPTIER][SWAP_NR_ORDERS];
+>     local_lock_t lock;
+> };
+> 
+> Seems like 4 is the default number of tier right? So the extra
+> overhead is just (nr cpu) * 10 * 3 * (sizeof(unsigned long) +
+> sizeof(*ptr)) or wev?
 
-Hi Nhat,
+I agree. I actually considered the idea of a tier-centric cache as well.
 
-Thanks for bringing this up. I took a quick look at the link, and I agree
-with your point. We could probably use a similar proposed mechanism (e.g., setting
-min/max limits per tier) to handle promotion and demotion in the future.
+You might remember that in the previous "per cgroup swap priority"
+patchset, I implemented per-cpu caches per priority, which is essentially
+the same as having them per tier.
 
-This also suggests that keeping the swap tier limits inside the memcg
-interface is a reasonable approach. It aligns well with such future work.
-If it were implemented in other layers (e.g., prctl, sysfs, or BPF), we
-would likely have to revisit its integration with memcg someday anyway.
+However, as you agreed in another thread, including this optimization
+right now might be a bit premature. If the core swap tier idea gets
+merged, I plan to explore this optimization further as follow-up work.
 
-> and occupy all the space in the faster tier(s), pushing the other
-> colocated tenants to the slower tier(s). We might need to figure out a
-> way to ensure fairness here (while letting cgroups occupy fast swap
-> backends opportunistically if there is no resources scarcity).
-
-Agreed. Ensuring fairness will be essential when we eventually expand
-the promotion and demotion mechanisms across swap tiers.
-
-Thanks,
-Youngjun
+Thanks
+Youngjun Park
 
