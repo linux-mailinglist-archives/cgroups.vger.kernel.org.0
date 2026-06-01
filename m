@@ -1,57 +1,57 @@
-Return-Path: <cgroups+bounces-16532-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16533-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cH9lD7jZHWpsfQkAu9opvQ
-	(envelope-from <cgroups+bounces-16532-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 21:12:56 +0200
+	id QD2fOKjiHWoPfwkAu9opvQ
+	(envelope-from <cgroups+bounces-16533-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 21:51:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9272E6247A8
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 21:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E9F9624C90
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 21:51:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 121B0302BB91
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 19:07:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 150143012276
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 19:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5B73672A1;
-	Mon,  1 Jun 2026 19:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C023812F2;
+	Mon,  1 Jun 2026 19:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="T+UOAqH9"
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="b+2bAmOL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.web.de (mout.web.de [217.72.192.78])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C007360EE1;
-	Mon,  1 Jun 2026 19:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A172236E0;
+	Mon,  1 Jun 2026 19:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780340854; cv=none; b=XR/nGWuLxROlnC5hYYguTcNu6WfIJdxhuz0195fgQfJnvUtkptqVz0RG/YEgPDOLh1V4s1hw9Qiv9MoWGNrv18vFPium1mxnbVI2eNfRsds1DV/63QIMQzgBSjRpTFLPNusK71t1BumqG1geSPC1c8N641gt+cPrbBAHU1IazJo=
+	t=1780343452; cv=none; b=imhWIJGYekrk0/Dq/TrQRUoO7P46vb14leN9zlRkKMNvlizd/AV3pOH6xW24taodyml+RDAUUmN70xZU41BaqsrGoPwP1TilKhJ0+Xn5sRBWPCNHtsSFjnnj0HI8H2fJxoi1QJmqUG4PKaF/oNZD/Pwz9wu9Imm+Uz3lDnemOfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780340854; c=relaxed/simple;
-	bh=FV6OsTzPhCWB+PkUCcu4Co6NJShUK9rxMxE+0ZQj1w0=;
+	s=arc-20240116; t=1780343452; c=relaxed/simple;
+	bh=YCZUBDgLKbXvdGJKXGqAH2YjatTTYaPhjWooGwyti0U=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gYlCgpjOIIhQrdA02a42kpGgm7C/j94N5wIB82eYuZ65D4VVLnnIodJo+X1tisNc8cDRfUZtuHCnkhf4eWMGSKl3Mn6RSlby9tdA+3Lj6ZXpCYGtxs13ZXDNZpRqQxCX+QPVpD7ipE97rCyKqLy7A2opIqFQLwEikdgIOrbRirU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=T+UOAqH9; arc=none smtp.client-ip=217.72.192.78
+	 Content-Type:MIME-Version; b=u2AiGhLVt3ToK2pWIaOnOSlcCsIzy38ObZgIS9UvaGvDJ1G8WrUwn9gXLVQtjOBmSZPL0ydlWNSQtLWFa+waEkp6IsDqM09u90aSIlAi01W2VOcWqFjCj8nrEzPtCurluYD3groV1l0tcsmO1gGAj/ry2hsI2znSkRiHRPIKkkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=b+2bAmOL; arc=none smtp.client-ip=212.227.15.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1780340841; x=1780945641; i=spasswolf@web.de;
-	bh=nXup5w7JPKReLo5qYob0BVyDwmCUAq2ZIruxsV1oLIY=;
+	s=s29768273; t=1780343412; x=1780948212; i=spasswolf@web.de;
+	bh=gvDdvUgWHcvBAQb46Ha5FY2/dd4fQqbw3DL/6s/kMq8=;
 	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
 	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
 	 content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=T+UOAqH9ZFMIjSTU7P+pQL7pmi0SMnjreTNlzkybPt2Hrg94vj5hB4Dl99GnQoQI
-	 chfy/Oy7dyDuZ98z2JY2PJ0CUIps8z3Zqqmmx+8xDdQiS/55C4NeftNojHDiK6nv4
-	 FuLCJZ+P8ID4AvRW2q+FQVxbcIXilP7mh6n0rtMhe7jycORqp6K0o9o7yr4YI6+Js
-	 jn3A9DFUoL7036g4FE4AyneRlAPrQUMFqvSdVys3HPAs6DFbzbkHPrvqil+qLSM0m
-	 88HHklqmH6TEShjfjQGlqD6AGw/ejX/nAmbX2K9oeLwhIZAtItmCCA7IWGjWXtI/8
-	 i6nr4J2GKoXgsEQH9Q==
+	b=b+2bAmOLvcSjkuakdGJbdfqxPFNYgwUqUuPyHSoiNf94qAstQeYMJmLe68gX3uam
+	 KYsM208HYKceipFTz1F6PvOHJdpYwsV97mltLTaPgCgOn9p9N4i7ZDeocNJ8fuRG2
+	 yvgXbiAJDtKuIYU4+8lE9Dhtq16ud3hfM7Ar3IkxPXgR2HANigzBMCjEpHClzM1Ma
+	 yMT1pzncmKHU9GObXPDx25NZQFBIsMUH3X1x2DBmWqrXqSVakmje32l/Q2Q51dOUD
+	 /Cl7NBiksm5p8dFndEu2wqPBTH+xT2mIjQMj53WB4pnYHMZWLgF4JlTT5UJgA9M08
+	 BQQ92BjUuU45oSKJpw==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from client.hidden.invalid by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MFayq-1wVnCZ0TNu-00AKVS; Mon, 01
- Jun 2026 21:07:21 +0200
-Message-ID: <a2602616eec07521be1f76508dfc2632c8c571de.camel@web.de>
+Received: from client.hidden.invalid by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MTOlk-1wr98i1NXQ-00PcU4; Mon, 01
+ Jun 2026 21:50:12 +0200
+Message-ID: <056b51878b4b720087e86f50e4ad46f6f31e205b.camel@web.de>
 Subject: Re: [PATCH] cgroup: Migrate tasks to the root css when a controller
  is rebound
 From: Bert Karwatzki <spasswolf@web.de>
@@ -62,10 +62,11 @@ Cc: Mark Brown <broonie@kernel.org>, spasswolf@web.de, Johannes Weiner
  Sebastian Andrzej Siewior	 <bigeasy@linutronix.de>, Petr Malat
  <oss@malat.biz>, kernel test robot	 <oliver.sang@intel.com>, Martin Pitt
  <martin@piware.de>, Aishwarya.TCV@arm.com
-Date: Mon, 01 Jun 2026 21:07:19 +0200
-In-Reply-To: <20260601190256.1815778-1-tj@kernel.org>
+Date: Mon, 01 Jun 2026 21:50:10 +0200
+In-Reply-To: <a2602616eec07521be1f76508dfc2632c8c571de.camel@web.de>
 References: <a9f6c0bcd262e764453b95eb7397871825e11559.camel@web.de>
-	 <20260601190256.1815778-1-tj@kernel.org>
+		 <20260601190256.1815778-1-tj@kernel.org>
+	 <a2602616eec07521be1f76508dfc2632c8c571de.camel@web.de>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.56.2-9 
 Precedence: bulk
@@ -75,90 +76,90 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+UzFA1omgt9qZ+uyc+VGhjExyvYGYJ8Ceezuh4GneiYtEJotyFp
- p5WdFbNY/EWHAs0hKQtvKWLYYrTFK+sJvf1zUE5iM09cRDRC3+8ottGtXGsXfF8dP+h9HBr
- MbR0V1yIwZe+KTchdDopOFbSNPI9ajUt+wJlgYroeZ4/IsPCHvRCqkOV8cZEA/lhwTPV1Md
- Wj6eh6H9d2S+WKkfhEvhw==
+X-Provags-ID: V03:K1:xbFwrr3NPR+qzd7pjqcrMh2/n7dRAXViQYC328Aa8+wYWUlW5HN
+ UG0/bCUWnhpaRjHJ3kunnU4NJj+bMRPCMahIHj83KE2z8BekbwRrsFzHriyM7tTDjGSkD5E
+ OJfcruWYsMWkK5T+8hvlrhTg7nRxyaIlhWsoe7zaHEpkCuEJUJU4gWkidEKzwNClymcBeKY
+ 0fhfWTj/MpW2fYwdwAFKA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TgPhYpR/QBk=;6APh9Pq0Vu0jPuZ3ExNUqE8vYZJ
- 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
+UI-OutboundReport: notjunk:1;M01:P0:ZsUoNbZzZpM=;h+sXaOOxZMduDE09KVTrSTAKSOp
+ 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
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[web.de,quarantine];
@@ -168,7 +169,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16532-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16533-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[kernel.org,web.de,cmpxchg.org,suse.com,linutronix.de,malat.biz,intel.com,piware.de,arm.com];
@@ -186,139 +187,144 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	FREEMAIL_FROM(0.00)[web.de];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 9272E6247A8
+X-Rspamd-Queue-Id: 3E9F9624C90
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Am Montag, dem 01.06.2026 um 09:02 -1000 schrieb Tejun Heo:
-> cgroup_apply_control_disable() defers kill_css_finish() while a css is
-> still populated, relying on css_update_populated() to fire the deferred
-> kill once the populated count reaches zero.
->=20
-> This deadlocks when a controller is rebound out of a hierarchy. Mounting
-> an implicit_on_dfl controller such as perf_event as a v1 hierarchy steal=
-s
-> it off the default hierarchy, and rebind_subsystems() kills its
-> per-cgroup csses while they are still populated. The migration run in th=
-e
-> same step keeps the old css for a controller no longer in the hierarchy'=
-s
-> mask, so no task is migrated off the dying csses. Their populated count
-> never reaches zero, the deferred kill_css_finish() never fires, and the
-> next cgroup_lock_and_drain_offline() hangs forever under cgroup_mutex.
->=20
-> That migration is already a no-op pass over the rebound subtree. Add
-> cgroup_rebind_ss_mask so find_existing_css_set() resolves the leaving
-> controllers to the root css. Their tasks are migrated there, the
-> per-cgroup csses depopulate, and cgroup_apply_control_disable() kills
-> them synchronously. The deferral stays correct for the rmdir and
-> controller-disable paths it was meant for.
->=20
-> Fixes: 1dffd95575eb ("cgroup: Defer kill_css_finish() in cgroup_apply_co=
-ntrol_disable()")
-> Reported-by: Mark Brown <broonie@kernel.org>
-> Closes: https://lore.kernel.org/all/41cd159c-54e5-45e0-81df-eaf36a6c028e=
-@sirena.org.uk/
-> Reported-by: Bert Karwatzki <spasswolf@web.de>
-> Closes: https://lore.kernel.org/all/4e986b4ed7e16547805d54b6e67d09120bc4=
-d2f2.camel@web.de/
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> ---
-> Hello, and thanks a lot for all the reproduction information. It made th=
-is
-> much easier to track down.
->=20
-> Bert, Mark, would you mind giving this a try on your setups?
->=20
->  kernel/cgroup/cgroup.c | 35 +++++++++++++++++++++++++++++++----
->  1 file changed, 31 insertions(+), 4 deletions(-)
->=20
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index bdc8deedb4f7..7f4861109e48 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -197,6 +197,14 @@ static u32 cgrp_dfl_implicit_ss_mask;
->  /* some controllers can be threaded on the default hierarchy */
->  static u32 cgrp_dfl_threaded_ss_mask;
-> =20
-> +/*
-> + * Set across rebind_subsystems() to the controllers leaving a hierarch=
-y.
-> + * Guarded by cgroup_mutex. Makes find_existing_css_set() resolve them =
-to the
-> + * root css so the affected tasks are migrated there before
-> + * cgroup_apply_control_disable() kills the per-cgroup csses.
-> + */
-> +static u32 cgroup_rebind_ss_mask;
-> +
->  /* The list of hierarchy roots */
->  LIST_HEAD(cgroup_roots);
->  static int cgroup_root_count;
-> @@ -1083,7 +1091,15 @@ static struct css_set *find_existing_css_set(stru=
-ct css_set *old_cset,
->  	 * won't change, so no need for locking.
->  	 */
->  	for_each_subsys(ss, i) {
-> -		if (root->subsys_mask & (1UL << i)) {
-> +		if (unlikely(cgroup_rebind_ss_mask & (1UL << i))) {
-> +			/*
-> +			 * @ss is leaving this hierarchy and its per-cgroup
-> +			 * csses are about to be killed. Resolve to the
-> +			 * surviving root css so the tasks are migrated there.
-> +			 */
-> +			template[i] =3D cgroup_css(&root->cgrp, ss);
-> +			WARN_ON_ONCE(!template[i]);
-> +		} else if (root->subsys_mask & (1UL << i)) {
->  			/*
->  			 * @ss is in this hierarchy, so we want the
->  			 * effective css from @cgrp.
-> @@ -1853,11 +1869,17 @@ int rebind_subsystems(struct cgroup_root *dst_ro=
-ot, u32 ss_mask)
->  		struct cgroup *scgrp =3D &cgrp_dfl_root.cgrp;
-> =20
->  		/*
-> -		 * Controllers from default hierarchy that need to be rebound
-> -		 * are all disabled together in one go.
-> +		 * Controllers leaving the default hierarchy are disabled
-> +		 * together. cgroup_rebind_ss_mask makes cgroup_apply_control()
-> +		 * migrate their tasks to the root css, so the per-cgroup csses
-> +		 * are unpopulated when cgroup_finalize_control() kills them.
-> +		 * Clear it before cgroup_finalize_control(), which does no
-> +		 * css_set lookup.
->  		 */
->  		cgrp_dfl_root.subsys_mask &=3D ~dfl_disable_ss_mask;
-> +		cgroup_rebind_ss_mask =3D dfl_disable_ss_mask;
->  		WARN_ON(cgroup_apply_control(scgrp));
-> +		cgroup_rebind_ss_mask =3D 0;
->  		cgroup_finalize_control(scgrp, 0);
->  	}
-> =20
-> @@ -1871,9 +1893,14 @@ int rebind_subsystems(struct cgroup_root *dst_roo=
-t, u32 ss_mask)
->  		WARN_ON(!css || cgroup_css(dcgrp, ss));
-> =20
->  		if (src_root !=3D &cgrp_dfl_root) {
-> -			/* disable from the source */
-> +			/*
-> +			 * Disable from the source, migrating its tasks to the
-> +			 * root css first (see cgroup_rebind_ss_mask).
-> +			 */
->  			src_root->subsys_mask &=3D ~(1 << ssid);
-> +			cgroup_rebind_ss_mask =3D 1 << ssid;
->  			WARN_ON(cgroup_apply_control(scgrp));
-> +			cgroup_rebind_ss_mask =3D 0;
->  			cgroup_finalize_control(scgrp, 0);
->  		}
-> =20
-
-I'll try this right away, but I found out another thing. My real problem s=
-eems
-to be the perf_event test, the test after perf_events hangs, no matter wha=
+Am Montag, dem 01.06.2026 um 21:07 +0200 schrieb Bert Karwatzki:
+> Am Montag, dem 01.06.2026 um 09:02 -1000 schrieb Tejun Heo:
+> > cgroup_apply_control_disable() defers kill_css_finish() while a css is
+> > still populated, relying on css_update_populated() to fire the deferre=
+d
+> > kill once the populated count reaches zero.
+> >=20
+> > This deadlocks when a controller is rebound out of a hierarchy. Mounti=
+ng
+> > an implicit_on_dfl controller such as perf_event as a v1 hierarchy ste=
+als
+> > it off the default hierarchy, and rebind_subsystems() kills its
+> > per-cgroup csses while they are still populated. The migration run in =
+the
+> > same step keeps the old css for a controller no longer in the hierarch=
+y's
+> > mask, so no task is migrated off the dying csses. Their populated coun=
 t
-test I run:
+> > never reaches zero, the deferred kill_css_finish() never fires, and th=
+e
+> > next cgroup_lock_and_drain_offline() hangs forever under cgroup_mutex.
+> >=20
+> > That migration is already a no-op pass over the rebound subtree. Add
+> > cgroup_rebind_ss_mask so find_existing_css_set() resolves the leaving
+> > controllers to the root css. Their tasks are migrated there, the
+> > per-cgroup csses depopulate, and cgroup_apply_control_disable() kills
+> > them synchronously. The deferral stays correct for the rmdir and
+> > controller-disable paths it was meant for.
+> >=20
+> > Fixes: 1dffd95575eb ("cgroup: Defer kill_css_finish() in cgroup_apply_=
+control_disable()")
+> > Reported-by: Mark Brown <broonie@kernel.org>
+> > Closes: https://lore.kernel.org/all/41cd159c-54e5-45e0-81df-eaf36a6c02=
+8e@sirena.org.uk/
+> > Reported-by: Bert Karwatzki <spasswolf@web.de>
+> > Closes: https://lore.kernel.org/all/4e986b4ed7e16547805d54b6e67d09120b=
+c4d2f2.camel@web.de/
+> > Signed-off-by: Tejun Heo <tj@kernel.org>
+> > ---
+> > Hello, and thanks a lot for all the reproduction information. It made =
+this
+> > much easier to track down.
+> >=20
+> > Bert, Mark, would you mind giving this a try on your setups?
+> >=20
+> >  kernel/cgroup/cgroup.c | 35 +++++++++++++++++++++++++++++++----
+> >  1 file changed, 31 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> > index bdc8deedb4f7..7f4861109e48 100644
+> > --- a/kernel/cgroup/cgroup.c
+> > +++ b/kernel/cgroup/cgroup.c
+> > @@ -197,6 +197,14 @@ static u32 cgrp_dfl_implicit_ss_mask;
+> >  /* some controllers can be threaded on the default hierarchy */
+> >  static u32 cgrp_dfl_threaded_ss_mask;
+> > =20
+> > +/*
+> > + * Set across rebind_subsystems() to the controllers leaving a hierar=
+chy.
+> > + * Guarded by cgroup_mutex. Makes find_existing_css_set() resolve the=
+m to the
+> > + * root css so the affected tasks are migrated there before
+> > + * cgroup_apply_control_disable() kills the per-cgroup csses.
+> > + */
+> > +static u32 cgroup_rebind_ss_mask;
+> > +
+> >  /* The list of hierarchy roots */
+> >  LIST_HEAD(cgroup_roots);
+> >  static int cgroup_root_count;
+> > @@ -1083,7 +1091,15 @@ static struct css_set *find_existing_css_set(st=
+ruct css_set *old_cset,
+> >  	 * won't change, so no need for locking.
+> >  	 */
+> >  	for_each_subsys(ss, i) {
+> > -		if (root->subsys_mask & (1UL << i)) {
+> > +		if (unlikely(cgroup_rebind_ss_mask & (1UL << i))) {
+> > +			/*
+> > +			 * @ss is leaving this hierarchy and its per-cgroup
+> > +			 * csses are about to be killed. Resolve to the
+> > +			 * surviving root css so the tasks are migrated there.
+> > +			 */
+> > +			template[i] =3D cgroup_css(&root->cgrp, ss);
+> > +			WARN_ON_ONCE(!template[i]);
+> > +		} else if (root->subsys_mask & (1UL << i)) {
+> >  			/*
+> >  			 * @ss is in this hierarchy, so we want the
+> >  			 * effective css from @cgrp.
+> > @@ -1853,11 +1869,17 @@ int rebind_subsystems(struct cgroup_root *dst_=
+root, u32 ss_mask)
+> >  		struct cgroup *scgrp =3D &cgrp_dfl_root.cgrp;
+> > =20
+> >  		/*
+> > -		 * Controllers from default hierarchy that need to be rebound
+> > -		 * are all disabled together in one go.
+> > +		 * Controllers leaving the default hierarchy are disabled
+> > +		 * together. cgroup_rebind_ss_mask makes cgroup_apply_control()
+> > +		 * migrate their tasks to the root css, so the per-cgroup csses
+> > +		 * are unpopulated when cgroup_finalize_control() kills them.
+> > +		 * Clear it before cgroup_finalize_control(), which does no
+> > +		 * css_set lookup.
+> >  		 */
+> >  		cgrp_dfl_root.subsys_mask &=3D ~dfl_disable_ss_mask;
+> > +		cgroup_rebind_ss_mask =3D dfl_disable_ss_mask;
+> >  		WARN_ON(cgroup_apply_control(scgrp));
+> > +		cgroup_rebind_ss_mask =3D 0;
+> >  		cgroup_finalize_control(scgrp, 0);
+> >  	}
+> > =20
+> > @@ -1871,9 +1893,14 @@ int rebind_subsystems(struct cgroup_root *dst_r=
+oot, u32 ss_mask)
+> >  		WARN_ON(!css || cgroup_css(dcgrp, ss));
+> > =20
+> >  		if (src_root !=3D &cgrp_dfl_root) {
+> > -			/* disable from the source */
+> > +			/*
+> > +			 * Disable from the source, migrating its tasks to the
+> > +			 * root css first (see cgroup_rebind_ss_mask).
+> > +			 */
+> >  			src_root->subsys_mask &=3D ~(1 << ssid);
+> > +			cgroup_rebind_ss_mask =3D 1 << ssid;
+> >  			WARN_ON(cgroup_apply_control(scgrp));
+> > +			cgroup_rebind_ss_mask =3D 0;
+> >  			cgroup_finalize_control(scgrp, 0);
+> >  		}
+> > =20
+>=20
+>=20
+> Bert Karwatzki
 
-cgroup_fj_function_perf_event: pass  (0.206s)
-cgroup_core01: HANG=20
+Your fix works for me. No more hangs after cgroup_fj_function_perf_event i=
+s run.
+Let's hope this solves Mark's problems, too.
+
+Tested-By: Bert Karwatzki <spasswolf@web.de>
 
 Bert Karwatzki
 
