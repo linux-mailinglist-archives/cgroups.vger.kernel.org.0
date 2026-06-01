@@ -1,161 +1,330 @@
-Return-Path: <cgroups+bounces-16504-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16505-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sAm7K0YiHWq6VwkAu9opvQ
-	(envelope-from <cgroups+bounces-16504-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:10:14 +0200
+	id UDRQCIwmHWq6VwkAu9opvQ
+	(envelope-from <cgroups+bounces-16505-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:28:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74DA619FB5
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88BF661A29F
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 08:28:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BFF45300159F
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 06:10:10 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 950993001CC5
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 06:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860CB33F8B1;
-	Mon,  1 Jun 2026 06:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87AAE3451A7;
+	Mon,  1 Jun 2026 06:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Dy5jaWEb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mLq+rDgX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C431A680A
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 06:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C05733E351
+	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 06:28:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780294209; cv=none; b=ng2leO0FfCyBPOxUCrjPegmTVCjyNcyBhNi/BkaJbvsG6No1mszuKXIAS5jt8TawzYG+javcP01WYG4ovDMRIdUSUKeeFt3ytRZhdjwh1c8XrVEAc++uw50hCMV7SSdWYPK4RhmDfWbd6S0mosvoX7LpHk3ot05mIQK+LIRYbmc=
+	t=1780295302; cv=none; b=BD7PMrhhu+PmOUhmZMOCXgtSrJXPf5P/CtK/1IL0IpYqhRFQW5NkgB0+EXPJTM5enXyRDiAWE0ZoSiefombNdU/VArVawXYdLKG2ga4JbuA8jPmleueCuxhGKsZTXgWkwpJCRc17LmaE9DHtUhsUq5RfaHF/07hqWTJRspKDTAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780294209; c=relaxed/simple;
-	bh=ls4fdxStwJYUDK2GXci/6E3bhKJd6OP6CbBunayZYUQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=T/T0uyxJxjU4bS7F4CIn6qlPdtL7Hu1uRyOUzbQBrJSYFOAwDzC8RbO0+r5dH7l3LsTHxBe4r+KFq0YWvMteMY1NXUrvpUfk7dM5PwDuLRz5eW+4ckF7VVBLTzsZ/Y/QZodKqS9DI4Wuoz9d/5iAJMpKeVcNvnkz0EpQbzZPMQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Dy5jaWEb; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <64a61f18-5ed2-47e6-b161-d55f5398d494@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780294195;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fXxnQM+FllcCZGVch5XWEuwCWhNF+HHX9PtM0I/F8zk=;
-	b=Dy5jaWEbuB/KL+/W/t7yXppqUvSdhS55z8IBM4wzGKj6xRxfYgbmeXuoN+ECDSh8pUAvVN
-	qteJ7ir2HJe/yu4gS5E2X7gI+0Rk9DSwYNS65PRh4Oq1p72o3nJegWSdocRhnlWg9gCcJa
-	tsmcgWQUT1H+pAENVHcRkcnJ+A0m3iQ=
-Date: Mon, 1 Jun 2026 14:08:53 +0800
+	s=arc-20240116; t=1780295302; c=relaxed/simple;
+	bh=rS61eaI1kOto74JmEaD4SzgA2pw0VdZSkI70qCusga4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=l97DtoDTDvUdp2+CoD6+G1XCA6GjS4Y7f2UKaPvbrydhxmBGrRkPPwQgSmA55gkfDdcwNKNmItKLw8KZPr8sPm93tTtxUK4RdGNGomX5s+AgFasb2DQtHRvlKcvGLh5OoieOnQJH1K8L0mAG+WEbn0oVU8NHUSolAJCgokixfac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mLq+rDgX; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1780295298; x=1811831298;
+  h=date:from:to:cc:subject:message-id;
+  bh=rS61eaI1kOto74JmEaD4SzgA2pw0VdZSkI70qCusga4=;
+  b=mLq+rDgXNwNyNrL4JSxGnThfTGl5MNiu0eNTBqMe8Sy7HIaUVERjYlRA
+   qPagCowQGj0fcK+e48YVqVtjzyZKdUVzyT62ttW7oIH84MxWRHoOcwmPH
+   AldfUwsJamfV4mTs7uIIHSfuSuDfazkawPZPB8aNzqG55APV/ooHye/qM
+   1R579bKuNWIAEar5F2LaPREIQOYBJz07LEWCJo7pMGeC6Xs2T/942/FO9
+   MCyesaeFCgApmJmMLhQSY6dBc2ZQzRxS8GIymPxIfqShb7HVeEBa3kS+p
+   9UE0OsP5maDeKhOv6zVSZgYfHJES7irTW2nFbuj982C7/AVitfd4MOiQS
+   A==;
+X-CSE-ConnectionGUID: ytJtI4m9SfGrneCBk9MZyQ==
+X-CSE-MsgGUID: TTy16eK7SCCjG48GroNdkQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11803"; a="80184949"
+X-IronPort-AV: E=Sophos;i="6.24,180,1774335600"; 
+   d="scan'208";a="80184949"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2026 23:28:17 -0700
+X-CSE-ConnectionGUID: +Tj6RsdnSvWrB5Oa2QU2Yg==
+X-CSE-MsgGUID: XE0XuRH9TdGrsFvcWMZ9jA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,180,1774335600"; 
+   d="scan'208";a="243600987"
+Received: from lkp-server01.sh.intel.com (HELO f0d55cb201f0) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 31 May 2026 23:28:17 -0700
+Received: from kbuild by f0d55cb201f0 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wTw8E-00000000AFm-2y94;
+	Mon, 01 Jun 2026 06:28:14 +0000
+Date: Mon, 01 Jun 2026 14:28:14 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 9e27aaab61c2c36a13008f16ca56db8e7fe20bf0
+Message-ID: <202606011403.C8EYPeWp-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Cc: cui.tao@linux.dev, linux-rdma@vger.kernel.org, cgroups@vger.kernel.org,
- Tao Cui <cuitao@kylinos.cn>
-Subject: Re: [PATCH rdma-next v2 0/3] cgroup/rdma: add MR memory size resource
- tracking
-To: "yanjun.zhu" <yanjun.zhu@linux.dev>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com, leon@kernel.org, jgg@ziepe.ca
-References: <20260529090733.2242822-1-cui.tao@linux.dev>
- <ea3c6ed3-5d15-436e-9fa7-2e2d8ce26147@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Cui <cui.tao@linux.dev>
-In-Reply-To: <ea3c6ed3-5d15-436e-9fa7-2e2d8ce26147@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16504-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16505-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
 	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.995];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: B74DA619FB5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,intel.com:mid,intel.com:dkim]
+X-Rspamd-Queue-Id: 88BF661A29F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Yanjun,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 9e27aaab61c2c36a13008f16ca56db8e7fe20bf0  Merge branch 'for-7.2' into for-next
 
-Thanks for the thoughtful questions.  FRWR is indeed a widely used
-pattern, and the interaction with mr_mem deserves clarification.
+elapsed time: 730m
 
-> 1. Accounting Granularity: Does mr_mem charge the maximum capacity of
->    the FRWR object at its allocation time (ib_alloc_mr), or does it
->    dynamically track the actual mapped bytes during the fast-reg data
->    path?
+configs tested: 205
+configs skipped: 6
 
-In the current proposal, mr_mem is only charged for userspace MR
-registrations that go through the uverbs layer (REG_MR, DM_MR,
-DMABUF_MR, and the legacy ioctl path).  These are the paths where a
-concrete byte length is known at registration time.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-FRWR MRs allocated via ib_alloc_mr() are not charged for mr_mem.  The
-actual registration footprint associated with an FRWR MR is not known
-at allocation time: ib_alloc_mr() only specifies the maximum
-scatter-gather capacity of the MR, while the mapped byte range may
-change dynamically across successive ib_map_mr_sg() operations.
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    clang-16
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    clang-23
+arc                      axs103_smp_defconfig    gcc-15.2.0
+arc                                 defconfig    gcc-15.2.0
+arc                   randconfig-001-20260601    clang-23
+arc                   randconfig-002-20260601    clang-23
+arc                    vdk_hs38_smp_defconfig    gcc-15.2.0
+arm                               allnoconfig    gcc-15.2.0
+arm                              allyesconfig    clang-16
+arm                              allyesconfig    gcc-15.2.0
+arm                                 defconfig    gcc-15.2.0
+arm                   randconfig-001-20260601    clang-23
+arm                   randconfig-002-20260601    clang-23
+arm                   randconfig-003-20260601    clang-23
+arm                   randconfig-004-20260601    clang-23
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-15.2.0
+arm64                               defconfig    gcc-15.2.0
+arm64                          randconfig-001    clang-23
+arm64                 randconfig-001-20260601    gcc-8.5.0
+arm64                          randconfig-002    clang-23
+arm64                 randconfig-002-20260601    gcc-8.5.0
+arm64                          randconfig-003    clang-23
+arm64                 randconfig-003-20260601    gcc-8.5.0
+arm64                          randconfig-004    clang-23
+arm64                 randconfig-004-20260601    gcc-8.5.0
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                           randconfig-001    clang-23
+csky                  randconfig-001-20260601    gcc-8.5.0
+csky                           randconfig-002    clang-23
+csky                  randconfig-002-20260601    gcc-8.5.0
+hexagon                          allmodconfig    gcc-15.2.0
+hexagon                           allnoconfig    gcc-15.2.0
+hexagon                             defconfig    gcc-15.2.0
+hexagon               randconfig-001-20260601    gcc-8.5.0
+hexagon               randconfig-002-20260601    gcc-8.5.0
+i386                             allmodconfig    clang-20
+i386                              allnoconfig    gcc-15.2.0
+i386                             allyesconfig    clang-20
+i386                 buildonly-randconfig-001    gcc-12
+i386        buildonly-randconfig-001-20260601    gcc-12
+i386                 buildonly-randconfig-002    gcc-12
+i386        buildonly-randconfig-002-20260601    gcc-12
+i386                 buildonly-randconfig-003    gcc-12
+i386        buildonly-randconfig-003-20260601    gcc-12
+i386                 buildonly-randconfig-004    gcc-12
+i386        buildonly-randconfig-004-20260601    gcc-12
+i386                 buildonly-randconfig-005    gcc-12
+i386        buildonly-randconfig-005-20260601    gcc-12
+i386                 buildonly-randconfig-006    gcc-12
+i386        buildonly-randconfig-006-20260601    gcc-12
+i386                                defconfig    gcc-15.2.0
+i386                  randconfig-001-20260601    gcc-14
+i386                  randconfig-002-20260601    gcc-14
+i386                  randconfig-003-20260601    gcc-14
+i386                  randconfig-004-20260601    gcc-14
+i386                  randconfig-005-20260601    gcc-14
+i386                  randconfig-006-20260601    gcc-14
+i386                  randconfig-007-20260601    gcc-14
+loongarch                        allmodconfig    clang-23
+loongarch                         allnoconfig    gcc-15.2.0
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260601    gcc-8.5.0
+loongarch             randconfig-002-20260601    gcc-8.5.0
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    clang-16
+m68k                             allyesconfig    gcc-15.2.0
+m68k                                defconfig    clang-19
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    clang-19
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+mips                  cavium_octeon_defconfig    gcc-15.2.0
+mips                      malta_kvm_defconfig    gcc-15.2.0
+nios2                            allmodconfig    clang-23
+nios2                             allnoconfig    clang-23
+nios2                               defconfig    clang-19
+nios2                 randconfig-001-20260601    gcc-8.5.0
+nios2                 randconfig-002-20260601    gcc-8.5.0
+openrisc                         allmodconfig    clang-23
+openrisc                          allnoconfig    clang-23
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    clang-23
+parisc                           allyesconfig    clang-19
+parisc                              defconfig    gcc-15.2.0
+parisc                randconfig-001-20260601    gcc-10.5.0
+parisc                randconfig-002-20260601    gcc-10.5.0
+parisc64                         alldefconfig    gcc-15.2.0
+parisc64                            defconfig    clang-19
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    clang-23
+powerpc                       ppc64_defconfig    clang-23
+powerpc               randconfig-001-20260601    gcc-10.5.0
+powerpc               randconfig-002-20260601    gcc-10.5.0
+powerpc64             randconfig-001-20260601    gcc-10.5.0
+powerpc64             randconfig-002-20260601    gcc-10.5.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    clang-23
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    gcc-15.2.0
+riscv                          randconfig-001    clang-23
+riscv                 randconfig-001-20260601    clang-23
+riscv                          randconfig-002    clang-23
+riscv                 randconfig-002-20260601    clang-23
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    gcc-15.2.0
+s390                           randconfig-001    clang-23
+s390                  randconfig-001-20260601    clang-23
+s390                           randconfig-002    clang-23
+s390                  randconfig-002-20260601    clang-23
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    clang-23
+sh                               allyesconfig    clang-19
+sh                                  defconfig    gcc-14
+sh                        dreamcast_defconfig    gcc-15.2.0
+sh                             randconfig-001    clang-23
+sh                    randconfig-001-20260601    clang-23
+sh                             randconfig-002    clang-23
+sh                    randconfig-002-20260601    clang-23
+sh                           se7722_defconfig    gcc-15.2.0
+sparc                             allnoconfig    clang-23
+sparc                               defconfig    gcc-15.2.0
+sparc                          randconfig-001    gcc-8.5.0
+sparc                 randconfig-001-20260601    gcc-15.2.0
+sparc                 randconfig-001-20260601    gcc-8.5.0
+sparc                          randconfig-002    gcc-8.5.0
+sparc                 randconfig-002-20260601    gcc-15.2.0
+sparc                 randconfig-002-20260601    gcc-8.5.0
+sparc64                          allmodconfig    clang-23
+sparc64                             defconfig    gcc-14
+sparc64                        randconfig-001    gcc-8.5.0
+sparc64               randconfig-001-20260601    gcc-15.2.0
+sparc64               randconfig-001-20260601    gcc-8.5.0
+sparc64                        randconfig-002    gcc-8.5.0
+sparc64               randconfig-002-20260601    gcc-15.2.0
+sparc64               randconfig-002-20260601    gcc-8.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-15.2.0
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                             randconfig-001    gcc-8.5.0
+um                    randconfig-001-20260601    gcc-15.2.0
+um                    randconfig-001-20260601    gcc-8.5.0
+um                             randconfig-002    gcc-8.5.0
+um                    randconfig-002-20260601    gcc-15.2.0
+um                    randconfig-002-20260601    gcc-8.5.0
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-23
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260601    clang-20
+x86_64      buildonly-randconfig-002-20260601    clang-20
+x86_64      buildonly-randconfig-003-20260601    clang-20
+x86_64      buildonly-randconfig-004-20260601    clang-20
+x86_64      buildonly-randconfig-005-20260601    clang-20
+x86_64      buildonly-randconfig-006-20260601    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20260601    clang-20
+x86_64                randconfig-002-20260601    clang-20
+x86_64                randconfig-003-20260601    clang-20
+x86_64                randconfig-004-20260601    clang-20
+x86_64                randconfig-005-20260601    clang-20
+x86_64                randconfig-006-20260601    clang-20
+x86_64                randconfig-011-20260601    clang-20
+x86_64                randconfig-012-20260601    clang-20
+x86_64                randconfig-013-20260601    clang-20
+x86_64                randconfig-014-20260601    clang-20
+x86_64                randconfig-015-20260601    clang-20
+x86_64                randconfig-016-20260601    clang-20
+x86_64                randconfig-071-20260601    gcc-14
+x86_64                randconfig-072-20260601    gcc-14
+x86_64                randconfig-073-20260601    gcc-14
+x86_64                randconfig-074-20260601    gcc-14
+x86_64                randconfig-075-20260601    gcc-14
+x86_64                randconfig-076-20260601    gcc-14
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    clang-23
+xtensa                           allyesconfig    clang-23
+xtensa                         randconfig-001    gcc-8.5.0
+xtensa                randconfig-001-20260601    gcc-15.2.0
+xtensa                randconfig-001-20260601    gcc-8.5.0
+xtensa                         randconfig-002    gcc-8.5.0
+xtensa                randconfig-002-20260601    gcc-15.2.0
+xtensa                randconfig-002-20260601    gcc-8.5.0
 
-Supporting FRWR accounting would therefore require a separate
-accounting model, since the registration footprint is established
-dynamically rather than by a fixed length parameter supplied at MR
-creation.  This is outside the scope of the current proposal.
-
-> 2. Kernel-space vs Userspace: FRWR pools are frequently allocated by
->    kernel-space drivers (like NVMe-oF target/host). If these kernel
->    threads are not bound to a specific user cgroup, will their FRWR
->    allocations end up in the root cgroup, potentially bypassing the
->    per-tenant limits?
-
-The RDMA cgroup's resource control is primarily designed for userspace
-consumers.  Kernel-space consumers (NVMe-oF target, SRP initiator,
-rtrs, iSER, etc.) allocate resources through kernel APIs
-(ib_alloc_mr, ib_create_qp, etc.).  These resources do not currently
-participate in RDMA cgroup accounting and therefore are not subject to
-per-cgroup limits.
-
-Kernel-space FRWR pools are typically managed by the administrator
-rather than subject to per-tenant limits.
-
-This behavior is consistent with the current RDMA cgroup model, which
-tracks resources associated with userspace RDMA objects.  If accounting
-were extended to kernel-allocated FRWR MRs, ownership semantics would
-become an open question: simply charging against the current task or
-the root cgroup may not accurately represent the tenant that ultimately
-benefits from the resource.
-
-> Don't you think it would be beneficial to explicitly document or
-> consider the FRWR pattern in the design section, given its prevalence
-> in real-world storage and networking workloads?
-
-Agreed.  I will add a note to the cover letter and commit messages
-clarifying that mr_mem currently covers only userspace MR registrations
-with a known length, and that kernel-space FRWR pools are out of scope
-for this initial proposal.  The semantic distinction between
-userspace registration-length accounting and kernel-space FRWR
-resource management is worth documenting explicitly.
-
-Thanks,
-Tao
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
