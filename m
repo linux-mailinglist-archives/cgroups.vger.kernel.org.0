@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-16517-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16518-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +J6NCLmTHWqScQkAu9opvQ
-	(envelope-from <cgroups+bounces-16517-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 16:14:17 +0200
+	id IAjOLOWZHWpYcgkAu9opvQ
+	(envelope-from <cgroups+bounces-16518-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 16:40:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7933F6209C7
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 16:14:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DC39621096
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 16:40:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D2AF8309D42E
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 14:06:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B57D3302F771
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 14:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213F53ADB91;
-	Mon,  1 Jun 2026 14:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 805723BAD93;
+	Mon,  1 Jun 2026 14:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LePpvk5w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lduKX4WA"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1EF194C95;
-	Mon,  1 Jun 2026 14:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0D31A683E;
+	Mon,  1 Jun 2026 14:32:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780322810; cv=none; b=TDSBAVkx9jOGf98UYgRFMonoUL/8WnFIlOou/ZFCzx1hF1xxwinFo6n2scmuULntF1m7YtA25LkuKsi997pud7uOCQLZl0wGBAhiWMLAWJq1yNRQw9KqWygLJZZ182SEESgMTnBsFdNK7uYrxSMs5CTzG0lNCJl63G9GNPlM4CE=
+	t=1780324351; cv=none; b=H0X0zw0RxWD/kIQQUN/o8ekT2J646D7L+UEfeFr1+JatvbcX5b+VRx9O5u1nnIrcJpdsW8wkXzJfrf0MpG99KCysq9cbxHfOkJkV7HlTNHEUS7I424wjKCOQPc0nLZwIfQ7ANJBYXNbrv+QGiRUYA2nA9NaFkm2zDt/uVfwABLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780322810; c=relaxed/simple;
-	bh=MPRYpcUBYev5+hoY36lnpL2A4fafKN0AK2ze4JdKhow=;
+	s=arc-20240116; t=1780324351; c=relaxed/simple;
+	bh=GJzfFVWDI/CqRtKwaoLte4IA2SBBd2lOqe7Tgz/TyRk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dQrqX1AQn5p7w4jp6xGaJ/G9j4Or3fs4IXpWIZOKm8W9KOKabD1j+Jy5q4hnl+feXHVcLqajbPutXhmH2+i/1j0HI/ueQ4TWO5prS56XI5eXhew+WHlFEW7ItudXZ9/k0pjPTGAvvHCmmhlQIg4TgOUaiHYQ2flOp14T5t2lI2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LePpvk5w; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646F81F00893;
-	Mon,  1 Jun 2026 14:06:46 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=BAfofJ4Ll/uP3aDRUh9MkbzJTW94TbA/un9lFQGbjWABbn6kvg1XRu4xhpNSMbQhUqKS7vRptp8IgRpbgfD6D4P/CC7RVjZEscW2qSCd1+HNccHSz5TeOz0biSbP/bZFcBu3yZsfF6rsE4wn6tvmwNEb4iA7S1Qiq2BqVz3ACEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lduKX4WA; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF67D1F00893;
+	Mon,  1 Jun 2026 14:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780322809;
-	bh=gJwJn86rCEPxRH3q2y/J9E5EpPT8fgMUG0uqqux+hwI=;
+	s=k20260515; t=1780324350;
+	bh=wnW+JwsPZoEW9jymcriAzbpY9+T3DxT+086bhiowDn8=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=LePpvk5wT0QV9RwdgdWdarE8lsKdKmlldXHY/vsYTbBQpRh7qaCWdBD26tSDBjlCL
-	 k1xstAWFE7L52SVefYDU3xN8rQmVYQIXXS6MlawqBrIldZj2/xXqP1mNrn27Aa4fYx
-	 J1ymX9QNxU4tt9id+IWx417HXF0LubTVOzQxUfLAIGpM3F5OzJ8GuLZAhq1xZ53QkO
-	 iAlV95Ump/O8pJV8ZsNm5yWpQIjYaPobrOtrlgR8edEJzf8W+f679aLlKURkaTDpeS
-	 gflYU/ULXlWwLSoTk875nQbT3/T/p+sie6qshKhPVqKG+BIFjNUnfAzFxyaUAgte8u
-	 FQAUjrn85hO4w==
-Message-ID: <a891fe99-0059-4247-8ebb-0363b4055d2a@kernel.org>
-Date: Mon, 1 Jun 2026 16:06:44 +0200
+	b=lduKX4WAFNqKtYvsGlo8Hyd5PJtGmk5207kJFlmngI1CuhMk8jRs8HLFI0NKytYAY
+	 57IXIs7qFEcl91nOAAeZdXSFBMbmpLP8rOwB5+k7r/pwSSa9/6GMy/PAvg7gxCm8vW
+	 olFHNy0OUOHmcNzXEj3INi9xi+o2i197MnQnnuR1DDkEn53yzGKptZJLmgJDNkyt4Z
+	 cE30+1YtADBLYgBFikTWYODFwQMykd+i9KGjDWdgwei34amsraFp1CgnY9bcLSSvuR
+	 C/41bNxoN231Di3cc8//1sV62OgZ7Pvy+FxSAYCall8Sjrf/AiOYrPenoi8rJVsi2n
+	 zLA+YBuQEQofQ==
+Message-ID: <fe33c767-ea11-43e2-8732-f752c9c1205c@kernel.org>
+Date: Mon, 1 Jun 2026 16:32:25 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,18 +55,17 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] mm: don't allow empty relative nodemask in
  mpol_relative_nodemask()
-To: Yury Norov <ynorov@nvidia.com>, Andrew Morton
- <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Joshua Hahn <joshua.hahnjy@gmail.com>, Rakie Kim <rakie.kim@sk.com>,
+To: Yury Norov <ynorov@nvidia.com>, Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+ Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>,
  Byungchul Park <byungchul@sk.com>, Gregory Price <gourry@gourry.net>,
  Ying Huang <ying.huang@linux.alibaba.com>,
  Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: Farhad Alemi <farhad.alemi@berkeley.edu>, Waiman Long
- <longman@redhat.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- cgroups@vger.kernel.org
-References: <20260528190337.878027-1-ynorov@nvidia.com>
+ linux-kernel@vger.kernel.org, Farhad Alemi <farhad.alemi@berkeley.edu>,
+ Waiman Long <longman@redhat.com>, Rasmus Villemoes
+ <linux@rasmusvillemoes.dk>, cgroups@vger.kernel.org
+References: <20260528124133.c88c27b11a8ea0ef05e494f7@linux-foundation.org>
+ <20260529152616.2308736-1-joshua.hahnjy@gmail.com> <ahnRIDBk4bQ3xX2q@yury>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -113,7 +112,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <20260528190337.878027-1-ynorov@nvidia.com>
+In-Reply-To: <ahnRIDBk4bQ3xX2q@yury>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -121,13 +120,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16517-lists,cgroups=lfdr.de];
-	FREEMAIL_TO(0.00)[nvidia.com,linux-foundation.org,intel.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,kvack.org,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16518-lists,cgroups=lfdr.de];
+	FREEMAIL_TO(0.00)[nvidia.com,gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[16];
@@ -142,42 +141,55 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,nvidia.com:email]
-X-Rspamd-Queue-Id: 7933F6209C7
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 2DC39621096
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 5/28/26 21:03, Yury Norov wrote:
-> Reassigning nodes relative an empty user-provided nodemask is useless,
-> and triggers divide-by-zero in the function.
+>>
+>> Thank you for taking a shot at fixing the bug report, please let me know what
+>> you think! Have a great day : -)
 > 
-> Reported-by: Farhad Alemi <farhad.alemi@berkeley.edu>
-> Link: https://lore.kernel.org/all/CA+0ovCgxbZkXa+OU8w3s84R3KNPNxxRfmsNR-udh+afQBbGNmw@mail.gmail.com/
-
-Likely this should be a
-
-	Closes:
-
-And be accompanied by a Fixes: and Cc stable.
-
-> Signed-off-by: Yury Norov <ynorov@nvidia.com>
-> ---
->  mm/mempolicy.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+> Hi Joshua.
 > 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 4e4421b22b59..cd961fa1eb33 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -370,8 +370,13 @@ static inline int mpol_store_user_nodemask(const struct mempolicy *pol)
->  static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
->  				   const nodemask_t *rel)
->  {
+> Indeed, quick and dirty shot.
+> 
+> The problem is that nodes_fold() can't work with the sz == 0. In
+> other words, folding to a 0-bit bitmap is an error. We don't check
+> that on bitmaps level because it's an internal helper, and it's a
+> caller's responsibility to validate the parameters.
+> 
+> nodes_onto(), or more specifically bitmap_onto(), is a different
+> story. In case of empty relmap, the function actually clears all the
+> bits in dst and returns.
 
+It's very weird that mpol_new_nodemask() (->create() callback) disallows empty
+nodemasks, but mpol_rebind_nodemask() (->rebind() callback) would allow empty
+nodemasks.
 
-Continuing the discussion of the context in the other thread :)
+I guess mpol_set_nodemask() could trigger it after doing the
 
+	nodes_and(nsc->mask1, cpuset_current_mems_allowed,
+		  node_states[N_MEMORY]);
+
+And ending with an empty &nsc->mask1.
+
+The later "mpol_ops[pol->mode].create(pol, &nsc->mask2);" would reject it, but
+the division by zero could still happen.
+
+> 
+> I see 2 options to move this forward.
+> 
+> 1. Simply disallow empty relmap in mpol_relative_nodemask(). There's
+> no valid cases for it, AFAIK, so the nodes_fold() limitation looks
+> reasonable. We can consider it as a new policy.
+> 
+> We've got 2 users for mpol_relative_nodemask(). In mpol_set_nodemask()
+> we can simply propagate the error; and in mpol_rebind_nodemask() we
+> can throw a warning and do nothing.
+
+Throwing a warning is really bad. We'd still end up with an empty nodemask?
 
 -- 
 Cheers,
