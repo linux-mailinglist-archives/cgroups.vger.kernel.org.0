@@ -1,274 +1,261 @@
-Return-Path: <cgroups+bounces-16509-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16510-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ICZaAIhFHWrdYAkAu9opvQ
-	(envelope-from <cgroups+bounces-16509-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 10:40:40 +0200
+	id iNIoNpxQHWpYYwkAu9opvQ
+	(envelope-from <cgroups+bounces-16510-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 11:27:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85F5461B9E0
-	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 10:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5551461C6A1
+	for <lists+cgroups@lfdr.de>; Mon, 01 Jun 2026 11:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CCD86305FB28
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 08:37:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5F06C3028C56
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2026 09:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89AD6348C74;
-	Mon,  1 Jun 2026 08:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B20A38F65C;
+	Mon,  1 Jun 2026 09:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mJvCT03g"
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="dXJ858XE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from mout.web.de (mout.web.de [212.227.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E9263403F3
-	for <cgroups@vger.kernel.org>; Mon,  1 Jun 2026 08:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BE883321AA;
+	Mon,  1 Jun 2026 09:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780303028; cv=none; b=MY8tI8JjJ4CCzpo1yqzRcn8BvqDv88MwFq7tBiOL0oubENZ9Tp+jEjqGXBELoYucO4UVB9n+waZyULxWYf+NbU7UHV7xqhbjSN38LTzZ53qSEMfliCRVdtubD5aR+xiTjYdV3uJcKBaox1XuPZQGeo2Si0OYTZmyHoIHwtE6r7w=
+	t=1780305801; cv=none; b=FgUPPW1sUGfNsqmJhrvwJMU3Jd1mbuTmS7xlTPg6XW+iGVlLAK5jswbN7r1si2n3O2ry8CYP9gu+nmzEdLsgkbGZCQkLAXeehbSU/ovBLCVLICWkmXdXo4LBpuau8G3McldryK9lCq2WDOyb71WYlSSTnc8aRIXKJyp0dKUrQCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780303028; c=relaxed/simple;
-	bh=6bMwlshmv+PoBohdQWd+c60QMtm1VS1nbOSHY4vA/Es=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kHgG/2StXcFpjnCSnrGIAQe3NLZ500jY0CqQnmS9rJJbhRXnSsNesVHXj+K19WFfolAqDyVlg2OqOAJDEYOxHR6uc5GqBVLZZuNBEf3Xd9u/1627Ypuq7nsSk8BJjdp8WYl6SfHOVHdS7zK/s6vdqRfVTARTVOR7RKm4kUSFkeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mJvCT03g; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780303024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=w1cAnVe0vgR161tCTvMa190G3YVoUsIA3Fi5oEWLr4Q=;
-	b=mJvCT03gZw/QyQXXfMaQSG0rfbdxV7lvTw8dOCiC8I2+Vc8xHutXhZ6lgQj40Am+N2vkpu
-	d5p0utl7Wis48n4hwB0IfxxY0StkNOEwRg7hExKJh99TXsKpRhh3IcyeYGYWkZq58QedRG
-	VlqnyqZSrPMfb0daeTXDM4LvlMqyxeE=
-From: Lance Yang <lance.yang@linux.dev>
-To: hannes@cmpxchg.org
-Cc: akpm@linux-foundation.org,
-	david@kernel.org,
-	ljs@kernel.org,
-	shakeel.butt@linux.dev,
-	mhocko@kernel.org,
-	david@fromorbit.com,
-	roman.gushchin@linux.dev,
-	muchun.song@linux.dev,
-	qi.zheng@linux.dev,
-	yosry.ahmed@linux.dev,
-	ziy@nvidia.com,
-	liam@infradead.org,
-	usama.arif@linux.dev,
-	kas@kernel.org,
-	vbabka@kernel.org,
-	ryncsn@gmail.com,
-	zaslonko@linux.ibm.com,
-	gor@linux.ibm.com,
-	baolin.wang@linux.alibaba.com,
-	baohua@kernel.org,
-	dev.jain@arm.com,
-	lance.yang@linux.dev,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/9] mm: switch THP shrinker to list_lru
-Date: Mon,  1 Jun 2026 16:36:52 +0800
-Message-Id: <20260601083652.59539-1-lance.yang@linux.dev>
-In-Reply-To: <20260527204757.2544958-1-hannes@cmpxchg.org>
-References: <20260527204757.2544958-1-hannes@cmpxchg.org>
+	s=arc-20240116; t=1780305801; c=relaxed/simple;
+	bh=YbPsHFvtCrHAUxR6ZRaO1QQgiaoDy05b2zspPXNSJtY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XBu9CSzmDJhtlKMsvMmrJqURNhaIcHHgehOUit73PbS+m8PPkNc1lV6MZ5rgnQWFitdoD+dfd7thxCeJQqmX9kvx4MLh957D/CKS+J4ud+EJ9BDcIXXpTu1JCc+0GVBO6FRXdf5Bf31lARjhcwOzb7F+c1HTz7pDzAfF8Fq9QoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=dXJ858XE; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1780305763; x=1780910563; i=spasswolf@web.de;
+	bh=0q44TTAxTxTQ/7BRgtDpiKiB80nV6Su7vCyImqSl4wU=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=dXJ858XEp0megDh9hqn78VRVPw9U4BR4K5L77ybc2YyKils5zyT0Fv/1jZM/d4W3
+	 Zoo3FWtBsRRjKCtOhUJnaKFj59PMIgaSaHLhNiz9SiJLbYhygfDysFj/NLcOqTLvF
+	 GDj2LopG1HnJOQqMvon/ASQZYYgh83Y1d4CFj69cM7QFc0nPjrAajwRsV7Dh/TtrD
+	 T6ix7u3DT06U/pecZNewePDTu1DhEzY1vG4rIU1c9l+oo/LJZxgJkCUaF1V14fK5c
+	 E35B9YzvK/woOf3I8dqAoAksW9RdebUTfyfXpDXOOEoThJbfsjVfu8GeYNvLs5Y4G
+	 DPEjzj5hkOAEu0ZfrQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from client.hidden.invalid by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1M8TBS-1wPb8s3ogq-003EES; Mon, 01
+ Jun 2026 11:22:43 +0200
+Message-ID: <a9f6c0bcd262e764453b95eb7397871825e11559.camel@web.de>
+Subject: Re: [PATCH 5/5] cgroup: Defer kill_css_finish() in
+ cgroup_apply_control_disable()
+From: Bert Karwatzki <spasswolf@web.de>
+To: Mark Brown <broonie@kernel.org>, Tejun Heo <tj@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, spasswolf@web.de, Michal
+ =?ISO-8859-1?Q?Koutn=FD?=	 <mkoutny@suse.com>, Sebastian Andrzej Siewior
+ <bigeasy@linutronix.de>, Petr Malat <oss@malat.biz>, kernel test robot
+ <oliver.sang@intel.com>, Martin Pitt <martin@piware.de>, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Aishwarya.TCV@arm.com
+Date: Mon, 01 Jun 2026 11:22:38 +0200
+In-Reply-To: <4e986b4ed7e16547805d54b6e67d09120bc4d2f2.camel@web.de>
+References: <20260505005121.1230198-1-tj@kernel.org>
+					 <20260505005121.1230198-6-tj@kernel.org>
+					 <41cd159c-54e5-45e0-81df-eaf36a6c028e@sirena.org.uk>
+					 <ahnMCQuw2K6zA3Hs@slm.duckdns.org>
+					 <fd72aa26-4fed-4fcb-b4b1-d7ce9d891fe4@sirena.org.uk>
+			 <8b15e2465901b48ee63f4827c69a67ff6d0e6098.camel@web.de>
+		 <4e986b4ed7e16547805d54b6e67d09120bc4d2f2.camel@web.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.56.2-9 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:hEPf9S4Iex+sm2MzWocpeXNcaWHk3+h5nFYxLBKYwOU19ko/i6y
+ dafnxHAVIQ1bmn1eF/vtRRZfSwEjsHIM8nh3ZvnneaVMz6e9fqEAsYHvmvpqo8pga9Hsq38
+ dzl1fV+gG3CxHbGARg2x+ISgV/LhLMC/dlMYQ7iriVtNQbSREyRWB/3tkLQjM/LgArHldUZ
+ BNmLSYP4EMUb0ANrtSCoQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:eT8RdpKPOFI=;PwQMLAVolgPNj1BzrSeHVIegw9t
+ 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
+ Y6meLzH1bVOOTDwql8=
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	DMARC_POLICY_ALLOW(-0.50)[web.de,quarantine];
+	R_DKIM_ALLOW(-0.20)[web.de:s=s29768273];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16509-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-16510-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[cmpxchg.org,web.de,suse.com,linutronix.de,malat.biz,intel.com,piware.de,vger.kernel.org,arm.com];
+	FREEMAIL_FROM(0.00)[web.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lance.yang@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[spasswolf@web.de,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[web.de:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: 85F5461B9E0
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 5551461C6A1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Johannes,
+Am Sonntag, dem 31.05.2026 um 20:45 +0200 schrieb Bert Karwatzki:
+>=20
+> The test that hang when running
+> # LTPROOT=3D/home/bert/ltp-install/ ./kirk --run-suite controllers
+> is always  cgroup_fj_function_net_prio.
+> Also when bisecting this I disabled (i.e. commented out) the
+> memcg_stress test in ~/ltp-install/runtest/controllers as it takes a lot=
+ of
+> time (30min) and succeeds even in the version where hangs occur.
+>=20
+> Bert Karwatzki
 
-On Wed, May 27, 2026 at 04:45:07PM -0400, Johannes Weiner wrote:
->This is version 5 of switching the THP shrinker to list_lru.
->
->Core of the new version is the list_lru/set_shrinker_bit fix up front,
->which minimally affects later patches; and a rebase onto the latest
->mm-unstable - replaced alloc_swap_folio() with __swap_cache_alloc().
->
->The changes seemed small enough that *I chose to keep the review tags
->from v4*. Please shout if you object to this!
->
->Changes in v5:
->- patch 1 is a new fix for a very old, pre-existing set_shrinker_bit()
->  problem in list_lru, where the bit can be set on a dying child memcg
->  instead of the ancestor that actually received the item. Pointed out
->  by Usama Arif and Sashiko; fix it first to make it minimally
->  backportable and so the conversion is safe.
->- patches 6 and 9 adapt to that fix's new memcg-by-reference
->  lock_list_lru_of_memcg() signature
->- collapse_huge_page(): propagate folio_memcg_alloc_deferred() failure
->  as SCAN_ALLOC_HUGE_PAGE_FAIL instead of leaking SCAN_SUCCEED and
->  falsely reporting a successful MADV_COLLAPSE (Usama Arif, Sashiko)
->- deferred_split_isolate(): fix a UAF by reading folio state before
->  list_lru_isolate(); once removed, a racing folio_put() frees the
->  folio via the lockless list_empty() check while we still touch its
->  flags and stats (Sashiko)
->- rebased to mm-unstable of 2026-05-27, which simplifies the flatten
->  prep patch (now anon-only, as alloc_swap_folio() was folded into the
->  new __swap_cache_alloc()) and moves the swap-side
->  folio_memcg_alloc_deferred() hook into __swap_cache_alloc(). Kairui,
->  I would appreciate an eyeball on that.
->
->Changes in v4:
->- guard folio_memcg_alloc_deferred() with mem_cgroup_disabled() to fix
->  NULL deref in __memcg_list_lru_alloc() when booting with
->  cgroup_disable=memory (e.g., kdump capture kernel) -- reported and
->  tested by Mikhail Zaslonko on s390 and x86
->- flatten if (folio) branches in alloc_swap_folio() and alloc_anon_folio()
->  in a prep patch so the list_lru allocation additions are a clean minimal
->  diff (Lorenzo)
->- folio_memcg_alloc_deferred() moved out of alloc_charge_folio() into the
->  anon-only collapse_huge_page() path; collapse_file() shares that helper
->  but its pages don't go on the THP shrinker queue (David)
->- guard folio_memcg_alloc_deferred() with order > 1; mTHPs below order-2
->  can't be queued on the deferred split list (David)
->- make deferred_split_lru static, hide behind folio_memcg_alloc_deferred()
->  wrapper with GFP_KERNEL (Lorenzo)
->- rename l -> lru throughout huge_memory.c (Lorenzo)
->- kdoc for folio_memcg_list_lru_alloc() (Lorenzo)
->- list_lru_lock_irq()/unlock_irq()/add_irq() irq-disabling variants;
->  use list_lru_add_irq() in deferred_split_scan() (Lorenzo)
->- reorder shrinker_free() before list_lru_destroy() (Lorenzo)
->
->Changes in v3:
->- dedicated lockdep_key for irqsafe deferred_split_lru.lock (syzbot)
->- conditional list_lru ops in __folio_freeze_and_split_unmapped() (syzbot)
->- annotate runs of inscrutable false, NULL, false function arguments (David)
->- rename to folio_memcg_list_lru_alloc() (David)
->
->Changes in v2:
->- explicit rcu_read_lock() in __folio_freeze_and_split_unmapped() (Usama)
->- split out list_lru prep bits (Dave)
->
->The open-coded deferred split queue has issues. It's not NUMA-aware
->(when cgroup is enabled), and it's more complicated in the callsites
->interacting with it. Switching to list_lru fixes the NUMA problem and
->streamlines things. It also simplifies planned shrinker work.
->
->Patch 1 fixes a pre-existing list_lru bug where the shrinker bit is
->set on the caller's memcg rather than the ancestor whose sublist the
->item actually lands on after a walk-up. Standalone, backportable; the
->rest of the series depends on it.
->
->Patches 2-5 are cleanups and small refactors in list_lru code. They're
->basically independent, but make the THP shrinker conversion easier.
->
->Patch 6 extends the list_lru API to allow the caller to control the
->locking scope. The THP shrinker has private state it needs to keep
->synchronized with the LRU state.
->
->Patch 7 extends the list_lru API with a convenience helper to do
->list_lru head allocation (memcg_list_lru_alloc) when coming from a
->folio. Anon THPs are instantiated in several places, and with the
->folio reparenting patches pending, folio_memcg() access is now a more
->delicate dance. This avoids having to replicate that dance everywhere.
->
->Patch 8 flattens the alloc_anon_folio() retry loop so the next patch's
->list_lru hook lands as a clean addition rather than nested deep inside
->an if (folio) block.
->
->Patch 9 finally switches the deferred_split_queue to list_lru.
+I've done more testing and found that running the
+cgroup_fj_function_net_prio test alone gives no hang, the hang
+only occurs when other tests are run before it:
 
-As the changelog above says, the old queue is per-memcg only, rather
-than per-memcg-per-node. So reclaim on one node can still walk the whole
-memcg queue and split underused THPs from other nodes in the same memcg.
+Suite: controllers
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80
+cgroup_core01: pass  (0.026s)
+cgroup_core02: pass  (0.004s)
+cgroup_core03: pass  (0.005s)
+cgroup: fail  (2m 41s)
+memcg_regression: skip  (3.558s)
+memcg_test_3: pass  (0.112s)
+memcg_failcnt: skip  (0.027s)
+memcg_force_empty: skip  (0.016s)
+memcg_limit_in_bytes: skip  (0.015s)
+memcg_stat_rss: skip  (0.015s)
+memcg_subgroup_charge: skip  (0.015s)
+memcg_max_usage_in_bytes: skip  (0.014s)
+memcg_move_charge_at_immigrate: skip  (0.015s)
+memcg_memsw_limit_in_bytes: skip  (0.015s)
+memcg_stat: skip  (0.014s)
+memcg_use_hierarchy: skip  (0.015s)
+memcg_usage_in_bytes: skip  (0.014s)
+memcg_control: pass  (6.046s)
+memcontrol01: pass  (0.004s)
+memcontrol02: pass  (0.628s)
+memcontrol03: pass  (16.009s)
+memcontrol04: pass  (0.926s)
+cgroup_fj_function_debug: skip  (0.012s)
+cgroup_fj_function_cpuset: skip  (0.037s)
+cgroup_fj_function_cpu: skip  (0.055s)
+cgroup_fj_function_cpuacct: pass  (0.046s)
+cgroup_fj_function_memory: skip  (0.035s)
+cgroup_fj_function_freezer: pass  (0.044s)
+cgroup_fj_function_devices: pass  (0.067s)
+cgroup_fj_function_blkio: skip  (0.010s)
+cgroup_fj_function_net_cls: pass  (0.055s)
+cgroup_fj_function_perf_event: pass  (0.063s)
+cgroup_fj_function_net_prio: HANG=20
 
-But I think the new one can lose reclaim in the cgroup.memory=nokmem
-case ...
+I tried to narrow down this list and found that a hang occurs
+int the net_prio test only if the perf_event test is run before it:
 
-With nokmem, the deferred shrinker can still run from memcg reclaim,
-because it is SHRINKER_NONSLAB. But the list_lru is no longer per-memcg:
+cgroup_fj_function_perf_event: pass  (0.063s)
+cgroup_fj_function_net_prio: HANG
 
-__list_lru_init() clears memcg_aware,
 
-	if (mem_cgroup_kmem_disabled())
-		memcg_aware = false;
-
-so list_lru_from_memcg_idx() falls back to the shared node list:
-
-static inline struct list_lru_one *
-list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
-{
-	if (list_lru_memcg_aware(lru) && idx >= 0) {
-[...]
-	}
-	return &lru->node[nid].lru;
-}
-
-That makes the shrinker bit unreliable. __list_lru_add() still sets the
-bit on the memcg passed in, but only when the list goes from empty to
-non-empty:
-
-bool __list_lru_add(struct list_lru *lru, struct list_lru_one *l,
-		    struct list_head *item, int nid,
-		    struct mem_cgroup *memcg)
-{
-	if (list_empty(item)) {
-[...]
-		if (!l->nr_items++)
-			set_shrinker_bit(memcg, nid, lru_shrinker_id(lru));
-[...]
-		return true;
-	}
-	return false;
-}
-
-If memcg A adds the first folio, A gets the bit. If memcg B later adds a
-folio to the same shared list, B does not get a bit, because the list
-was already non-empty.
-
-So in the A-first/B-later case, reclaim from B may not call the deferred
-shrinker at all. The shared list is scanned from memcg reclaim only if
-reclaim runs from the memcg that has the bit, such as A here, or from
-global reclaim :)
-
-Anyway, only after the shared list is emptied does the next memcg to add
-a folio get to be the one with the bit, IIUC :)
-
-Hopefully I didn't miss somthing important ...
-
-Cheers, Lance
+Bert Karwatzki
 
