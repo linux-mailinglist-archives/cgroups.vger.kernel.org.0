@@ -1,241 +1,150 @@
-Return-Path: <cgroups+bounces-16534-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16535-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gJdqGXokHmoohgkAu9opvQ
-	(envelope-from <cgroups+bounces-16534-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 02:31:54 +0200
+	id uIsSMb0qHmqHhgkAu9opvQ
+	(envelope-from <cgroups+bounces-16535-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 02:58:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF269626902
-	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 02:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7E6626C0E
+	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 02:58:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CD6053029AD0
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2026 00:31:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5ED9330107DF
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2026 00:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE362DCF41;
-	Tue,  2 Jun 2026 00:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7BF31F997;
+	Tue,  2 Jun 2026 00:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G1O5VgG7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X5mnDEdT"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26B4286D7D;
-	Tue,  2 Jun 2026 00:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210A62459EA;
+	Tue,  2 Jun 2026 00:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780360306; cv=none; b=NpztX+Wlnc8/4CRtWXeg1lg9P1oXi4C1+JO/ZZPUdJXk8GxzaPdctAhVbl8gNJafUPO6HN0Jh2VwwMTZY1UUf7Fhlvl49LnUmeNxACzPsh+SELqFK0HfVFq4lvcrfeA8NN6J0DdKwlPec2KpOAyFx+soZruQkqtyKsCP1UaaWs4=
+	t=1780361823; cv=none; b=oQN3fVj++vX6oc3+cyWa5tYhETesgH6kibo2O/cEyyOLSg8teeFzLmTxJDT9tZQWbKokrS/GZ/2rlprFDYMHY5Z5+IW1cC6eAqdAtij/oL9qwK07WgEmistbGV3sbmtw5MuIwtoT1OVc3yk2ozel2W9KbgKyQ/s3OF/gca8vSVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780360306; c=relaxed/simple;
-	bh=+8sQrUqGSN1oOA5tT/s+QkoUQ8LxHayYh2tkLGm+6aA=;
+	s=arc-20240116; t=1780361823; c=relaxed/simple;
+	bh=i65H/O9UUlO2s7Dspabff4qR2XkhHYoSHFW1aY5tj/c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fRy3lFGGMULVqHBxATllNxsaB1Fs5p7C7ow+q7zos7rOLFdaGNaHyWdCLrxhaYYzgXJPKqZ3vK/+slYyJ+zx1CJDd1qif/yMd12VRTvSQqp1bgwb3Zy55CGu4dT3BYHgHsQk1D2uE5A41UrcHu49DPKP1y1XNWPD/r6nGEhnxXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G1O5VgG7; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0391F00893;
-	Tue,  2 Jun 2026 00:31:43 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=h4AzAdUgpYk/CMGDcDnXIDpucImyBY7xY6fsZfqvEXGQBFPayocoHF6+nJPAiyjVnwL67CQDx/iqI+vMt42FbGCHAYW7Z1pxVADtrpFMeN4ymKYAOvOJuDPWJm/Ra3IeGVknjaqcRKhmQHgA5X5fq9iv2L6YflQSYOniuzpoGw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X5mnDEdT; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9912B1F00893;
+	Tue,  2 Jun 2026 00:56:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780360304;
-	bh=dvpsrQF436x2L0cWUtnjT+RXsKFfyVf7IVhk+awr3Ns=;
+	s=k20260515; t=1780361820;
+	bh=T7bQHGZhX9+sHJpAAQcCgYO66iY6em+ApCTpukgWa3I=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=G1O5VgG7fthYL5WKXAy3t/bCYnCqhKDmIUjEsm+ZGqi+ffXciopqgn1893NvG6rUo
-	 PXyr5CNlmK0mjIB18aA5+8RD1D2IBm2SonVoAbGBtTdSDuXofu/Nhr9Qc12RD5QfFi
-	 UmPwy7FucbWywRVVYGfBV7HJezhTMxaDpmhH+yP44zkO5Z/9z0zOh6rwNCSxdHM9ef
-	 5ic6sxSiFHOkYFzrZmUyD0uFU72zisqaoyuoazfFbDgXuXeOFzGXz9v+mgeBo3sSNq
-	 cshKdE57GJRSp5CmcTSFHCz/NC+2tfW7kW859Uhr1xAGX7GFsFy59m3DE39N+1qzid
-	 wFBEPHOsVNq4w==
-Date: Tue, 2 Jun 2026 00:31:42 +0000
+	b=X5mnDEdTO9Je4v7S3JjNNPmfdm02Dpi0LuieTixZSV4wN86PdhIOr3YP08mWc3tke
+	 gKSVsPVhO8HO7tn9+hIKGqBVOAJJikTKoKNDZqf16CSCIIGYm9PRunFT+YZl5gt4+G
+	 9tBUr5GTXeG+FTMYbyWYxBtuV4qo59oNuVm50OyNNNf9SGYg6tVwtJ/Uc3pwrU0OWM
+	 gotfjaTy6wChz5IKDTFA1kWatUy0HEU16usAuswSyn0gyVWjOda6f5c2+JH2pk2EzN
+	 UEVvXzZBOej+B4ZkzbzXcwOJgvgTfsIfPOJO1WZFITnQmSdCsBpaWg8K6K6mWUnC6O
+	 93RnkBVsJ98tQ==
+Date: Tue, 2 Jun 2026 00:56:57 +0000
 From: Yosry Ahmed <yosry@kernel.org>
-To: Hao Jia <jiahao.kernel@gmail.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, hannes@cmpxchg.org, 
-	shakeel.butt@linux.dev, mhocko@kernel.org, mkoutny@suse.com, nphamcs@gmail.com, 
-	chengming.zhou@linux.dev, muchun.song@linux.dev, roman.gushchin@linux.dev, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, Hao Jia <jiahao1@lixiang.com>
-Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor
- per-memcg
-Message-ID: <ah4ZZGl7GYJf54Wz@google.com>
-References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
- <20260526114601.67041-2-jiahao.kernel@gmail.com>
- <aho7nepN5jZtKmef@google.com>
- <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, cgroups@vger.kernel.org, 
+	chengming.zhou@linux.dev, chrisl@kernel.org, corbet@lwn.net, david@kernel.org, 
+	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org, hughd@google.com, 
+	jannh@google.com, joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
+	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
+	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
+	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
+	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, tglx@kernel.org, 
+	vbabka@suse.cz, weixugc@google.com, ying.huang@linux.alibaba.com, 
+	yosry.ahmed@linux.dev, yuanchu@google.com, zhengqi.arch@bytedance.com, ziy@nvidia.com, 
+	kernel-team@meta.com, riel@surriel.com, haowenchao22@gmail.com
+Subject: Re: [PATCH v6 01/22] mm/swap: decouple swap cache from physical swap
+ infrastructure
+Message-ID: <ah4qS4uE2CBMOWd1@google.com>
+References: <20260505153854.1612033-1-nphamcs@gmail.com>
+ <20260505153854.1612033-2-nphamcs@gmail.com>
+ <agJcCZuLqWwU_sSR@google.com>
+ <CAKEwX=PZnKqfriUsPV2whZyqxfCRNy67z7gyrHObEvztDF0_zg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKEwX=PZnKqfriUsPV2whZyqxfCRNy67z7gyrHObEvztDF0_zg@mail.gmail.com>
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16534-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-16535-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,suse.com,gmail.com,vger.kernel.org,kvack.org,lixiang.com];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_GT_50(0.00)[55];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: EF269626902
+X-Rspamd-Queue-Id: 2D7E6626C0E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Jun 01, 2026 at 07:07:45PM +0800, Hao Jia wrote:
+On Thu, May 28, 2026 at 02:42:19PM -0700, Nhat Pham wrote:
+> On Mon, May 11, 2026 at 3:46 PM Yosry Ahmed <yosry@kernel.org> wrote:
+> >
+> > On Tue, May 05, 2026 at 08:38:30AM -0700, Nhat Pham wrote:
+> > > When we virtualize the swap space, we will manage swap cache at the
+> > > virtual swap layer. To prepare for this, decouple swap cache from
+> > > physical swap infrastructure.
+> > >
+> > > We will also remove all the swap cache related helpers of swap table. We
+> > > will keep the rest of the swap table infrastructure, which will be
+> > > repurposed to serve as the rmap (physical -> virtual swap mapping)
+> > > later.
+> >
+> > I didn't look through the entire series, but let me ask the same
+> > high-level question I asked before. Instead of moving things out of the
+> > swap table, why not reuse the swap table as the representation of the
+> > virtual swap space? Seems like most/all metadata is already moved there
+> > in a nice concise format.
 > 
+> The honest answer is I wasn't sure it would work, so I was hacking
+> quietly a prototype on my own time :)
 > 
-> On 2026/5/30 09:24, Yosry Ahmed wrote:
-> > On Tue, May 26, 2026 at 07:45:58PM +0800, Hao Jia wrote:
-> > > From: Hao Jia <jiahao1@lixiang.com>
-> > > 
-> > > The zswap background writeback worker shrink_worker() uses a global
-> > > cursor zswap_next_shrink, protected by zswap_shrink_lock, to round-robin
-> > > across the online memcgs under root_mem_cgroup.
-> > > 
-> > > Proactive writeback also wants a similar per-memcg cursor that is
-> > > scoped to the specified memcg, so that repeated invocations against
-> > > the same memcg make forward progress across its descendant memcgs
-> > > instead of restarting from the first child memcg each time.
-> > 
-> > Is this a problem in practice?
-> > 
-> > Is the concern the overhead of scanning memcgs repeatedly, or lack of
-> > fairness? I wonder if we should just do writeback in batches from all
-> > memcgs, similar to how reclaim does it, then evaluate at the end if we
-> > need to start over?
-> > 
+> I finally got something that survives stress-ng and constant
+> memory.reclaim thrown at it though. I figured I should send it out to
+> get feedback before digging myself deeper into that hole:
 > 
-> Not using a per-cgroup cursor will cause issues for "repeated small-budget
-> calls" cases. For example, repeatedly triggering a 2MB writeback might
-> result in only writing back pages from the first few child memcgs every
-> time. In the worst-case scenario (where the writeback amount is less than
-> WB_BATCH), it might only ever write back from the first child memcg.
+> https://lore.kernel.org/all/20260528212955.1912856-1-nphamcs@gmail.com/
+> 
+> There is still a small problem left (the metadata duplication issue
+> that Johannes brought up). It is potentially fixable, but I haven't
+> actually tried it out yet, so I don't want to overstate here. But take
+> a look at it and let me know how you feel about this alternative
+> approach!
 
-Right, so a fairness concern?
-
-I wonder if we should just reclaim a batch from each memcg, then check
-if we reached the goal, otherwise start over. If the batch size is small
-enough that should work?
-
-> 
-> Similar to how memory reclaim uses mem_cgroup_iter() (via struct
-> mem_cgroup_reclaim_iter) and the old shrink_worker() used zswap_next_shrink,
-> we need a shared cursor here.
-
-Right, I understand that in theory we need a cursor. I am just wondering
-if the complexity is justified in practice. Reclaim is a much larger
-beast than zswap writeback. I wonder if we can just get away with
-scanning a batch from each child memcg -- for per-memcg reclaim, not
-global.
-
-We can always improve it later with a cursor if there's an actual need.
-
-> 
-> 
-> > > 
-> > > Naturally, group the cursor and its protecting spinlock into a
-> > > zswap_wb_iter struct, and make it a member of struct mem_cgroup to
-> > > realize per-memcg cursor management. Accordingly, shrink_worker() now
-> > > uses the lock and cursor in root_mem_cgroup->zswap_wb_iter.
-> > 
-> > If we really need to have per-memcg cursors (I am not a big fan), I
-> > think we can minimize the overhead by making the cursor updates use
-> > atomic cmpxchg instead of having a per-memcg lock.
-> > 
-> 
-> Because mem_cgroup_iter() always calls css_put(&prev->css), we cannot simply
-> update zswap_wb_iter.pos via cmpxchg() after calling it. Doing so could lead
-> to a double css_put() issue on prev->css.
-> 
-> Therefore, if we switch to the cmpxchg() approach, we wouldn't be able to
-> reuse the existing mem_cgroup_iter() logic. We would have to write a new
-> function similar to cgroup_iter(), and its implementation might end up
-> looking a bit obscure/complex.
-
-What if we do something like this (for the global cursor):
-
-	do {
-		memcg = xchg(zswap_next_shrink, NULL);
-		memcg = mem_cgroup_iter(NULL, memcg, NULL);
-		/* If the cursor was advanced from under us, try again */
-		if (!try_cmpxchg(zswap_next_shrink, NULL, memcg))
-			continue;
-	} while (..);
-			
-
-There is a window where a racing shrinker will see the cursor as NULL
-and start over, but that should be fine. We can generalize this for the
-per-memcg cursor.
-
-That being said..
-
-> 
-> Currently, this lock is only used in shrink_memcg(), proactive writeback,
-> and mem_cgroup_css_offline(). Note that shrink_memcg() only acquires the
-> lock of the root cgroup, and mem_cgroup_css_offline() is unlikely to be a
-> hot path.
-
-..this made me realize it's probably fine to just use a global lock for
-now?
-
-IIUC the only additional contention to the existing lock will be from
-userspace proactive writeback, and that shouldn't be a big deal
-especially with the critical section being short?
-
-> 
-> So, should we keep the spin_lock or go with the cmpxchg() approach?
-> Yosry and Nhat, what are your thoughts on this?
-
-I think we should experiment with the global lock first. See if you
-observe any regressions with workloads that put a lot of pressure on the
-lock (a lot of threads in reclaim doing writeback + a few userspace
-threads doing proactive writeback). See if the userspace threads
-actually cause a meaningful regression.
-
-> 
-> 
-> 
-> > > 
-> > > Because the cursor is now per-memcg, the offline cleanup must visit
-> > > every ancestor that could be holding a reference to the dying memcg.
-> > > Factor out __zswap_memcg_offline_cleanup() and walk from dead_memcg up
-> > > to the root.
-> > 
-> > Another reason why I don't like per-memcg cursors. There is too much
-> > complexity and I wonder if it's warranted. If we stick with per-memcg
-> > cursors please do the refactoring in separate patches to make the
-> > patches easier to review.
-> 
-> 
-> Sorry about that. I will try to keep each patch as simple as possible in the
-> next version.
-
-No worries, thanks!
-
-> 
-> 
-> Thanks,
-> Hao
-> 
-> 
+Thank you! I will take a look!
 
