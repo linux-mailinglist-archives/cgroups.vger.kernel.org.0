@@ -1,53 +1,67 @@
-Return-Path: <cgroups+bounces-16577-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16578-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id CWkhDiYUH2q1fAAAu9opvQ
-	(envelope-from <cgroups+bounces-16577-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 19:34:30 +0200
+	id z9qfOb4fH2oXhAAAu9opvQ
+	(envelope-from <cgroups+bounces-16578-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 20:23:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE5B630C02
-	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 19:34:29 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D0F56310A3
+	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 20:23:58 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=a0eGlr8c;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16577-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16577-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=drGqSvyX;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16578-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16578-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8D62E301FD67
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2026 17:33:41 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6A7E43029D33
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2026 18:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E09953BFE3F;
-	Tue,  2 Jun 2026 17:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1440392C56;
+	Tue,  2 Jun 2026 18:23:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8AA42DF128;
-	Tue,  2 Jun 2026 17:33:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FB3390C8C
+	for <cgroups@vger.kernel.org>; Tue,  2 Jun 2026 18:23:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780421617; cv=none; b=cQL54jeXTKMQ9HwNdAxQACIUptO0OfPQMxRGd8H5zu9wMwbAJjKwxVnSKQTxh0hc7flOTjST2ADnb83SWACm5RhYjoil7NLaW+bnX6rSpxkTXwQIue8dhuomfS8QkQRpPI5qgGMFAIH4AeAO3qKu5wOA0uk2qNGXZ4d9tDjrlVs=
+	t=1780424631; cv=none; b=kbmZBv71S575869MkkFMrV4r8qv4LbYBoUAh2f9Yysa+kHwGUQ6OwiSLh3EgPiI7Jj5wrRjJjhVFzKitlwdcpyR5vlrw4Q3gAbVfzQquu6hspUBNQAeDMGvyLJ3ZGPfW2T+4Jr1iykukQBKAIZp+BMIM+iCdpNCSMk29AkGGuPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780421617; c=relaxed/simple;
-	bh=UzZDW0C+Xie61rTyRkfKLrlsLlC51bTjswEfoyaJRhQ=;
+	s=arc-20240116; t=1780424631; c=relaxed/simple;
+	bh=IcYwhzPzbsUeyZglAu/w1ud2pRgPoOzH6/AX5g6ZjWs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LnsSPM+R9FgDOC7UVbBETe16A1pJHlS9/077nGOBFNgIkcfQm2RCKW5cDTBwRytrV6LHT4a5jJXcLKXDOqkiSoL46LoMMSMmFUmlAEbegftaO/W2SePxf5zHE8uSWhCzHyry96weNclGuFnv2jCtl07QsVWQxdRGShtLexiq6uE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0eGlr8c; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 420AC1F00898;
-	Tue,  2 Jun 2026 17:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780421616;
-	bh=o5KkLRZDKHzqzgauZa36DRNu943jxeoDnNjfgu5c58g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=a0eGlr8cNqe5fWtVVRIkjgBEI8yknJFz5yl76rkX84Jt7Tzwx3d/Y2U8C43dPL0CS
-	 1Y8HN2p36jLfxyiOxKF3kVZl9kM96B2bWRfwDb9y3OeetGo13hNso5NA2FVQBbadm7
-	 VkhxzruT9bWIuKBbaV0AaFOqTnhdKh2t7Oyy6f4VC6tYFoSAP3hvUP45dm6i6KU10c
-	 ZTEt90pVa7twql29hgu3gqBLoFyoII+8UJWWPik+/hajQp+ouvJSwudD+ZcniEpZQQ
-	 mVkS8wf7NHJv8Kii8vWaKnWOZiCbeHRmo1yKOmuC6DPXOy9Fe+GmlFsZcuibmebhyG
-	 5r624HcOZmBkA==
-Message-ID: <2f30e6da-0b1c-41e6-a74f-893d4ba67f65@kernel.org>
-Date: Tue, 2 Jun 2026 19:33:28 +0200
+	 In-Reply-To:Content-Type; b=nuwA/WSuu9nxXpcLoJqSbS2ZKjE+4L0sCYcPorlIRCoHSKs/8A08yEz4v3V906gVLiP67B60byNOM7TYFaag4VfSLZaBZwM+U0oSoSXumvPcZ3GfdQ/6R0zuQvuD5Uy5UARjOkScPZlMWoYW9LpOWYrg1xxov5xl2jhm1Es2khM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=drGqSvyX; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1780424629;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FFZWMhYzHFyJkn8qZO08AqGOocCfWTny7zZCB6ieDhI=;
+	b=drGqSvyXpZvWk6szyBZWXsHI7gmMxuH+wobReXOg7C1zHHkhZqUfTp10Rgza5nnSwoR6uF
+	28MVfF2lqSeJ039ZU1dBscWvowFE/qtPnHvzpFeKaYbsvJAsM/+zn51VcM+ZR6zi7MxWyL
+	Qiz5zEoRiVfb/Kh0bQcqXSjlJXxv2hw=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-303-8OSVFpxPNlysnleIazZVFg-1; Tue,
+ 02 Jun 2026 14:23:44 -0400
+X-MC-Unique: 8OSVFpxPNlysnleIazZVFg-1
+X-Mimecast-MFC-AGG-ID: 8OSVFpxPNlysnleIazZVFg_1780424623
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 13F79180057C;
+	Tue,  2 Jun 2026 18:23:43 +0000 (UTC)
+Received: from [10.22.80.32] (unknown [10.22.80.32])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 75ED3180058A;
+	Tue,  2 Jun 2026 18:23:41 +0000 (UTC)
+Message-ID: <0c68fc55-0eed-4aac-99bd-18c93fe6fece@redhat.com>
+Date: Tue, 2 Jun 2026 14:23:40 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,144 +69,77 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm/thp: clear deferred split shrinker bits when
- queues drain
-To: Lance Yang <lance.yang@linux.dev>, akpm@linux-foundation.org,
- hannes@cmpxchg.org
-Cc: ljs@kernel.org, shakeel.butt@linux.dev, mhocko@kernel.org,
- david@fromorbit.com, roman.gushchin@linux.dev, muchun.song@linux.dev,
- qi.zheng@linux.dev, yosry.ahmed@linux.dev, ziy@nvidia.com,
- liam@infradead.org, usama.arif@linux.dev, kas@kernel.org, vbabka@kernel.org,
- ryncsn@gmail.com, zaslonko@linux.ibm.com, gor@linux.ibm.com,
- wangkefeng.wang@huawei.com, baolin.wang@linux.alibaba.com,
- baohua@kernel.org, dev.jain@arm.com, npache@redhat.com,
- ryan.roberts@arm.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20260602043453.67597-1-lance.yang@linux.dev>
- <1dce1561-b42a-4322-a99f-89eba1e7c227@linux.dev>
- <716c7351-2641-4317-8675-e07a16a1efe2@kernel.org>
- <63797977-1c18-4885-8099-f5c21c80da39@linux.dev>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
+Subject: Re: [PATCH] cgroup/cpuset: change ridong's email
+To: Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hanes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260602091038.26901-1-ridong.chen@linux.dev>
 Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <63797977-1c18-4885-8099-f5c21c80da39@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20260602091038.26901-1-ridong.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+X-Spamd-Result: default: False [3.34 / 15.00];
+	SEM_URIBL(3.50)[huaweicloud.com:email];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16577-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:lance.yang@linux.dev,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:ljs@kernel.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:david@fromorbit.com,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:qi.zheng@linux.dev,m:yosry.ahmed@linux.dev,m:ziy@nvidia.com,m:liam@infradead.org,m:usama.arif@linux.dev,m:kas@kernel.org,m:vbabka@kernel.org,m:ryncsn@gmail.com,m:zaslonko@linux.ibm.com,m:gor@linux.ibm.com,m:wangkefeng.wang@huawei.com,m:baolin.wang@linux.alibaba.com,m:baohua@kernel.org,m:dev.jain@arm.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,huawei.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-16578-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[redhat.com,quarantine];
+	RCVD_TLS_LAST(0.00)[];
+	R_DKIM_ALLOW(0.00)[redhat.com:s=mimecast20190719];
+	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hanes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[6];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c09:e001:a7::/64:c];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,huaweicloud.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: BBE5B630C02
+X-Rspamd-Queue-Id: 7D0F56310A3
 
-On 6/2/26 14:47, Lance Yang wrote:
-> 
-> 
-> On 2026/6/2 20:11, David Hildenbrand (Arm) wrote:
->> On 6/2/26 06:38, Lance Yang wrote:
->>> Sorry, I missed Johannes in Cc ...
->>>
->>
->> What's the effect of that? Would we consider it a fix that we'd want to backport?
-> 
-> Just a stale memcg shrinker bit :) I'd treat this patch as a small
-> cleanup.
-> 
-> Once the queue is empty, count_objects() returns 0. That skips the scan,
-> but shrink_slab_memcg() only clears the bit on SHRINK_EMPTY, not 0.
-> 
-> So memcg reclaim can keep calling the shrinker even though there is
-> nothing on that queue.
-> 
->>>
->>
->> This is against Johannes' work, right?
-> 
-> Yep, I noticed it there, but the behavior is older.
-> 
->> If this is a fix, likely it would be fixing 87eaceb3faa5 ("mm: thp: make
->> deferred split shrinker memcg aware"), right?
-> 
-> No missed reclaim, just some extra reclaim work :)
 
-Thanks for clarifying! :)
+On 6/2/26 5:10 AM, Ridong Chen wrote:
+> The chenridong@huaweicloud.com is no longer a valid email,
+> replace it with the personal email ridong.chen@linux.dev
+>
+> Signed-off-by: Ridong Chen <ridong.chen@linux.dev>
+> ---
+>   MAINTAINERS | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 9ec290e38b44..e035a3be797c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6535,7 +6535,7 @@ F:	include/linux/blk-cgroup.h
+>   
+>   CONTROL GROUP - CPUSET
+>   M:	Waiman Long <longman@redhat.com>
+> -R:	Chen Ridong <chenridong@huaweicloud.com>
+> +R:	Ridong Chen <ridong.chen@linux.dev>
+>   L:	cgroups@vger.kernel.org
+>   S:	Maintained
+>   T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
+Acked-by: Waiman Long <longman@redhat.com>
 
-Reviewed-by: David Hildenbrand (Arm) <david@kernel.org>
-
--- 
-Cheers,
-
-David
 
