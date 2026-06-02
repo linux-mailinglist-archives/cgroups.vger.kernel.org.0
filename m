@@ -1,148 +1,135 @@
-Return-Path: <cgroups+bounces-16554-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16555-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +A1IG7GSHmqblAkAu9opvQ
-	(envelope-from <cgroups+bounces-16554-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 10:22:09 +0200
+	id KOFuGSyTHmqdlAkAu9opvQ
+	(envelope-from <cgroups+bounces-16555-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 10:24:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E34A862A724
-	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 10:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D92BE62A796
+	for <lists+cgroups@lfdr.de>; Tue, 02 Jun 2026 10:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0153E3097910
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2026 08:14:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B9B443031CA3
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2026 08:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 780123C65E0;
-	Tue,  2 Jun 2026 08:14:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC70A388879;
+	Tue,  2 Jun 2026 08:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VGBZShPj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hpz+v1DU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E6383C4562;
-	Tue,  2 Jun 2026 08:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368FD38737A
+	for <cgroups@vger.kernel.org>; Tue,  2 Jun 2026 08:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780388043; cv=none; b=eI/HX7DTrD39hdiJxpcRg4i5ifaVF+3utHVVAgh2sSqv1yuLQBS+twVw6E1qah5RUvYappg72pD9HKhm6jRXqhrotOCIrnJ0EbSkm7JRZ81vqyGXsm3roSlB46CVzDhYURmebl2jT4jm0sEnmA97kzB00MFRImOSR+TzLRV4ZNQ=
+	t=1780388389; cv=none; b=dcFrHQ7smHdunxQ4fZ15z4ZrsrZIM/oQrwRDXv1V0Scnl4wYiOw/2V29OStB3P4YTUhKNy1vPSOKGraBgyVZ8/v1+WwKqkpWKneAUqFQcw9IHumBjUikNPwpGhOZayDtgTWG5r1zQBmIiohesyfQRrC0uC++KZJXnGTty0Nac2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780388043; c=relaxed/simple;
-	bh=SQpcs0Q84C1o+7c9PpEn9q02bsqOrBkRPLLDOSUuAbM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J/YrsTR+NNven0S9meswqKY9O+eHSqAHppAw02WQsMJ89yy17NALSalHeq/ppUJOuKA2gL/HCUYqFGyfiXJuuiwXcXFpz86PpfkTzS5ae6eQxw4odqxdsomM33VrCqfGRnln9PXD9go7m3fI+ZSIoltOjzYbZDkUL59v06RwOi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VGBZShPj; arc=none smtp.client-ip=95.215.58.170
+	s=arc-20240116; t=1780388389; c=relaxed/simple;
+	bh=d4uyziz9BCE8n1/QwSyz4DMAfmTUBkyZhaAzDsbbxhg=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=rE8tM/4icWTKemx8mqprqn/Cudvyhd3M4LR5zIRNXq0c5PpVSDAo+WFriGecBV8lSCesKgG4um5lX1SFhCbs0muekhqt7lZxmfeHS1v1EIeSrUTewOa4I8PiPS+8Sg7HpegnkJLQ85+jTXYMVc+Secq7s+UPmFDkCXoFz8YYVzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hpz+v1DU; arc=none smtp.client-ip=95.215.58.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <69b82f73-e89a-4271-a494-3c4d5684b7ac@linux.dev>
+Message-ID: <4ce16a92-9b23-400d-bb32-b79a10807412@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780388039;
+	t=1780388376;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a60V33IIRXAacvUxlNYow4aNXv6LcX5H2j7rbYg219M=;
-	b=VGBZShPjb5j6l9sY0VJtmo5N5VRFpNTjZ6F1N3UJNb6q3LgY/yOo9XuFkK1ulBnGsvVb4u
-	uMMKPmNiUWcl5GG2Vsk0zir3faZ6xan5ow4qVa4DOO83RPOxL2hHsxX2bc9p/8VpuIZ9bd
-	QgSMF1/wxC617Elh9xRkYhTcwAZaVxc=
-Date: Tue, 2 Jun 2026 16:13:43 +0800
+	bh=NjDmMYOSfD3R0tgoLgQADu8SWNpyCv43yiDku36kijg=;
+	b=hpz+v1DUS7cGfQV6UbWNPeAH/+RFW/D95prOy74xTkTHVNc1MPUEy0B2VbZ4JZ56Xq2/Md
+	LjxthbGhs7myjVsXGU1F/hKA8kVhjaa7/7uP2Fm71J0plLL8cD282MxiaKHSPwBi9nMj3B
+	Dnny0zBNQGx0hMpca+gtjvS1FHH5gfo=
+Date: Tue, 2 Jun 2026 16:19:21 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] cgroup/cpuset: Remove Chen Ridong as a cpust reviewer for
- now
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260602024422.249458-1-longman@redhat.com>
- <ah6LAfpMsdPLun2_@localhost.localdomain>
-Content-Language: en-US
+Cc: cui.tao@linux.dev, longman@redhat.com, chenridong@huaweicloud.com,
+ tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Tao Cui <cuitao@kylinos.cn>
+Subject: Re: [PATCH v2] cgroup/cpuset: Fix update_prstate() always returning 0
+ on partition errors
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+References: <20260602045521.2381230-1-cui.tao@linux.dev>
+ <ah6JpNvdO7vaBmjS@localhost.localdomain>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ridong Chen <ridong.chen@linux.dev>
-In-Reply-To: <ah6LAfpMsdPLun2_@localhost.localdomain>
+From: Tao Cui <cui.tao@linux.dev>
+In-Reply-To: <ah6JpNvdO7vaBmjS@localhost.localdomain>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [3.34 / 15.00];
-	SEM_URIBL(3.50)[huaweicloud.com:email];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16555-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16554-lists,cgroups=lfdr.de];
-	R_DKIM_ALLOW(0.00)[linux.dev:s=key1];
 	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[linux.dev,none];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_SPAM(0.00)[0.198];
-	RCPT_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(0.00)[+ip4:172.105.105.114:c];
-	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,huaweicloud.com:email]
-X-Rspamd-Queue-Id: E34A862A724
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:mid,linux.dev:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: D92BE62A796
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Hi Michal,
 
+You are absolutely right. Looking at this again, this patch is total
+suckage.
 
-On 2026/6/2 15:51, Michal Koutný wrote:
-> +Cc: ridong.chen@linux.dev
+Returning 0 here is the correct declarative UAPI behavior. The invalid
+state records intent and can recover later when resources become
+available. Returning -EINVAL would only make things worse since the
+state has already been mutated.
+
+Sorry for the noise. I'll drop this patch.
+
+--
+Tao
+
+在 2026/6/2 15:46, Michal Koutný 写道:
+> Hi.
 > 
-> (This looks like their new address.)
+> On Tue, Jun 02, 2026 at 12:55:21PM +0800, Tao Cui <cui.tao@linux.dev> wrote:
+>> update_prstate() stores the error code in cs->prs_err and transitions
+>> the partition to an invalid state, but always returns 0. The caller
+>> cpuset_partition_write() uses "return retval ?: nbytes", so the write
+>> syscall always appears to succeed from userspace even when the partition
+>> became invalid.
+>> Return -EINVAL when err is set so userspace can detect
+>> the failure immediately.
+> 
+> This is quite a visible UAPI change (a write can succeed to invalidate a
+> partition) and users are meant to watch for cpuset.cpus.partition state
+> anyway for asynchronous changes.
+> 
+> I'd not change this gratuitously.
+> 
+> Michal
 > 
 
-Hi all,
-
-Thank you, Michal.
-
-Apologies for the email issue. I'm currently changing my company, The
-ridong.chen@linux.dev email is valid.
-
-
-> On Mon, Jun 01, 2026 at 10:44:22PM -0400, Waiman Long <longman@redhat.com> wrote:
->> Chen Ridong has contributed quite a lot of fixes and cleanups to the
->> cpuset code. Unfortunately, his email address is now no longer valid. So
->> remove him as a cpuset reviewer until he shows up again or someone else
->> volunteers to take his place.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>  MAINTAINERS | 1 -
->>  1 file changed, 1 deletion(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 74c86cf9bc65..c7a7126ea406 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -6526,7 +6526,6 @@ F:	include/linux/blk-cgroup.h
->>  
->>  CONTROL GROUP - CPUSET
->>  M:	Waiman Long <longman@redhat.com>
->> -R:	Chen Ridong <chenridong@huaweicloud.com>
->>  L:	cgroups@vger.kernel.org
->>  S:	Maintained
->>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
->> -- 
->> 2.54.0
->>
-
--- 
-Best regards,
-Ridong
 
