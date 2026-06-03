@@ -1,382 +1,214 @@
-Return-Path: <cgroups+bounces-16594-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16595-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id m1v0Jg/UH2onqgAAu9opvQ
-	(envelope-from <cgroups+bounces-16594-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 09:13:19 +0200
+	id yHZHN/bhH2r4rgAAu9opvQ
+	(envelope-from <cgroups+bounces-16595-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 10:12:38 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 090076350AF
-	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 09:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E945635900
+	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 10:12:38 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gourry.net header.s=google header.b=Mw5NUwP+;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16594-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16594-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=VKj6Rfrg;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16595-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16595-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D301932044A8
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2026 07:04:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CD9383042584
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2026 08:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA3D3911BC;
-	Wed,  3 Jun 2026 07:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEFE407CF2;
+	Wed,  3 Jun 2026 08:03:09 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02CD3396D1B
-	for <cgroups@vger.kernel.org>; Wed,  3 Jun 2026 07:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A74E407CE2;
+	Wed,  3 Jun 2026 08:03:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780470136; cv=none; b=eEmctbBI5CnYMoWgv2msS5zMtJOzGDlEFz0AVEinlff38vdftOM7f959oQ8xkgZUNeYHzrBrM5rLpqh7+Jd/GC2ApdD8gjkmUHsrl+cf6LsKc9s/AKythlu9B8AZcph8qUlcRKHa0/jxQRbYXiiMMqFMBSvCZJExo2AJ/7GQEiY=
+	t=1780473789; cv=none; b=HeFP9Bb2pO61/uUY2KUao7ZWadofoTXsL1yi+4wiP/9ufBgxvxi53go0BPKB5VENQrjRrEO2RbqhkJLBuni58TYOlM4yGK9WRUrbPcrBIIUfESmYXL+W3aihSFgTcCJ8ntfYgAKci/THGxZ1UrZrce0RpB6KQZYYc9EwUqN7OTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780470136; c=relaxed/simple;
-	bh=//hE9Fq13BG8LMkg9LZutEH9KkPSkAh3baK/10eKZNs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mfiQrsfVByJ1ydWYNPc6OZqGVod5Bgq3MM47jMAQW+NtA+8tRh8N9dU1K/A/fiVKSkmrav9I+zdUDf6GIQ/YuKCyinpmspHdYcwKC56cVgnvV/z+FvoDtTd5hSYkr45l9UAaIsPr7XsdEk3ekDA9zTNZ5BO/+9r8sD/2yEuPKkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Mw5NUwP+; arc=none smtp.client-ip=209.85.128.53
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4903997fcb5so124103685e9.2
-        for <cgroups@vger.kernel.org>; Wed, 03 Jun 2026 00:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1780470133; x=1781074933; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=as8GUoU4kWbY2J9d2zC/fdPvz19fGbLVGasT3ISIBEc=;
-        b=Mw5NUwP+6K0ahyfzMvZj7v96CD4tTTcjO7pnqqR8ocBbheHQ4rGZFqIezhtI3mlEf5
-         XaCHBuCNW7DEhnLSqnRjJsO6JoAPN/0v29kfbN1ucygxqz0/PAZUiWeWaGTRLH1dypkW
-         dZxelOO3HnZoxGCxfVdeplXIzzKwNq2QCzBjFl9Qmc0qWYwzFO6DBbXpTw305AnwVWTg
-         QsxnXhtKWgR0FweGMR2NIvCvjQC/2LYNdJXHP+Ym434YrFKf0LTOrmBnJ5869h/U1nF0
-         CAoXfx0ExvgNLTac0YFJ842Pb65CfZx+9icd5x/s74T6SIv9HmG0jG69x5Jr6pejiWOp
-         5XQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780470133; x=1781074933;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=as8GUoU4kWbY2J9d2zC/fdPvz19fGbLVGasT3ISIBEc=;
-        b=sIw7CGiRlZSI56zuWVYsQQ/KTMZKzO9SWoR4JbPeNMEnDO2wBsJVOViILiGzuzwCWO
-         d31tzkYAahLKEGcxNJaN9TpD814hYqJOKIol6LtK7QkyacVkxLzMYmarmSXDcbADaxsc
-         PhArNAnVPZiJAW0dVkH17gw1TRStzK1HxFKwdsb7wXV+wOaAcnwvTUC2/5GMsoduxn0Q
-         IbEPkKDKSgzmFa7ETr3W6VQ4aNdW9F2ulTPCXo2JvQIceNlBUzOixTuDD+jwuJMZLTFX
-         EDHQGPRxHLXpMR/h/Tg1ljyaa6pEIwx6mqWaGYdTpYVyb2L70x7jSSGqui6BpUR7SBja
-         y73Q==
-X-Forwarded-Encrypted: i=1; AFNElJ80mgLNIxsqH2SzX5YeJHfz5ThBwhG4v48KuMWjld47XK8Krthq94vWG88RKsz5zW0J7aNmmz9Q@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxgc8uXhH40FxB1UjUIgE+Uv0nPsyWOQQMQdVMTzEHG/ROAquXA
-	VnxBjI6/BDuCj7to7a1bpMuXv3NZOjhrcjLbNgn6BBXdOnbYNbWpcIg8hg1KrfHS/xQ=
-X-Gm-Gg: Acq92OE1j5ZjXssDs5KKg1W7WZPEJMl98s+9O54ZtHnID0hBCFx4DZuDyNACydakcJk
-	EHJrPlqosm+JwcNEVUHVSErBEvy6KoYZaHe/YeUAF4Bch2vGyUm/KCJbvgfTHhoqLEx4DYQmLcs
-	tkp/3tthSUfT879/h7kEqfg7EhQH+9CuGvGYjuKsNazyDGhckCBq34EgcC0kROLSmr//T4RdVZn
-	cFd5VjWYtrqKZAv+OeQaH8kMwGASfqhsI6wTb2Omc4FBjhe7tsj6OxJAswG7ipgMvZ6G7F/3b3A
-	96BTggHWThnboVao/oD5xEWbUGQZziFnRbWKqkLFiOwIdKQVxhjdsLz5G9iebk4xgwH52NvSr3f
-	o99lco6CjVvnefuoEjxGsswzhm8CKQadv3u6YET3UAM40EsC/aEnW15sz4bBr1Ggh0MplGOvjLT
-	D2GYTKsVkReacS4OuSlhrVqTsyeDA7vFkd0bAqaa1tvirxAw==
-X-Received: by 2002:a05:600c:83c8:b0:490:47e0:e13f with SMTP id 5b1f17b1804b1-490b5d1cf3emr36644555e9.3.1780470132845;
-        Wed, 03 Jun 2026 00:02:12 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F ([149.107.71.118])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490b7c6b966sm16631885e9.2.2026.06.03.00.02.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jun 2026 00:02:12 -0700 (PDT)
-Date: Wed, 3 Jun 2026 08:02:09 +0100
-From: Gregory Price <gourry@gourry.net>
-To: Balbir Singh <balbirs@nvidia.com>
-Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	damon@lists.linux.dev, kernel-team@meta.com,
-	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
-	dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, david@kernel.org,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
-	ying.huang@linux.alibaba.com, apopple@nvidia.com,
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
-	yury.norov@gmail.com, linux@rasmusvillemoes.dk, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
-	baolin.wang@linux.alibaba.com, npache@redhat.com,
-	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
-	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
-	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
-	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
-	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
-Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
- Compressed RAM)
-Message-ID: <ah_RcTU8SpQG7hab@gourry-fedora-PF4VCD3F>
-References: <20260222084842.1824063-1-gourry@gourry.net>
- <ag6XyvxR-NU5rGn-@parvat>
- <ahOqzpzAua96HVkn@gourry-fedora-PF4VCD3F>
- <ah47NNhuiClgGCdn@parvat>
- <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F>
- <ah-0CyZurn5D1ezY@parvat>
+	s=arc-20240116; t=1780473789; c=relaxed/simple;
+	bh=qWPpCg+e8pAoFNl3Pxs8PtfzF1KTT18RGKSwmrXhurc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sRbZ1bPIpVqLGnMbd7jXilepG3IgcqQWQw9UrYay+mublDljnX1rikHm6MXQa7V4Tgt289qadqSCUQtKyye51Qo9oihu+ME/t3R4eDVJZRjYHWp5FXP5g6M/98Wbqjdy5mSUxAiLtnSpXm5U2Cx9TQBioE8X03yE5yZEXka+ESY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VKj6Rfrg; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A9441F00898;
+	Wed,  3 Jun 2026 08:03:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780473788;
+	bh=LTJYCksleeQZKtt5TSmRNFAkMP5Na0YE2idGvPI9oDk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=VKj6Rfrgsp6QP0eG7Y3A+lrDbhLZF4gwVt/aPAAjjvBEnqcEM/PpY+m+gEIyDlqMc
+	 jzbk4H6ZNQAcIQ9wSYXBuputJZPcep4pMsKflExIXshMbs5gHH1CVyE/ZJpowNn7U3
+	 JW3rHZPfNAa+Tqz/3Ac8PcTcMhIp+oaY9NhAK3nANzSpUb9j3jI6ieisZ5hUy+CD33
+	 5713rY047/9h+3YZqKvJgH5yDr96rT8xGCu71YVr1v3jisS1W+iYaRVYz5EPWRjv84
+	 8jKogWkE8hAHlvTmgW4S65PWk55R43ihnb8vOQIxo6/FEM6p1OqLvjdh9pDGLxuVrx
+	 BgINdphckN48A==
+Message-ID: <de8878c6-1cb6-476b-814c-907dec842073@kernel.org>
+Date: Wed, 3 Jun 2026 10:02:59 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ah-0CyZurn5D1ezY@parvat>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] mm/thp: clear deferred split shrinker bits when
+ queues drain
+To: Lance Yang <lance.yang@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: ljs@kernel.org, shakeel.butt@linux.dev, mhocko@kernel.org,
+ david@fromorbit.com, roman.gushchin@linux.dev, muchun.song@linux.dev,
+ qi.zheng@linux.dev, yosry.ahmed@linux.dev, ziy@nvidia.com,
+ liam@infradead.org, usama.arif@linux.dev, kas@kernel.org, vbabka@kernel.org,
+ ryncsn@gmail.com, zaslonko@linux.ibm.com, gor@linux.ibm.com,
+ wangkefeng.wang@huawei.com, baolin.wang@linux.alibaba.com,
+ baohua@kernel.org, dev.jain@arm.com, npache@redhat.com,
+ ryan.roberts@arm.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+References: <20260602043453.67597-1-lance.yang@linux.dev>
+ <20260602133706.d737a82858d1cf89870521b1@linux-foundation.org>
+ <f5061a2f-c52a-47c4-855c-82f3967833d6@linux.dev>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <f5061a2f-c52a-47c4-855c-82f3967833d6@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16594-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16595-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:david@kernel.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:yury.norov@gmail.com,m:linux@rasmus
- villemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:lance.yang@linux.dev,m:akpm@linux-foundation.org,m:ljs@kernel.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:david@fromorbit.com,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:qi.zheng@linux.dev,m:yosry.ahmed@linux.dev,m:ziy@nvidia.com,m:liam@infradead.org,m:usama.arif@linux.dev,m:kas@kernel.org,m:vbabka@kernel.org,m:ryncsn@gmail.com,m:zaslonko@linux.ibm.com,m:gor@linux.ibm.com,m:wangkefeng.wang@huawei.com,m:baolin.wang@linux.alibaba.com,m:baohua@kernel.org,m:dev.jain@arm.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:hannes@cmpxchg.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,huawei.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org,cmpxchg.org];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[gourry.net];
-	FORGED_SENDER(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	MISSING_XM_UA(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[74];
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gourry.net:from_mime,gourry.net:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 090076350AF
+X-Rspamd-Queue-Id: 2E945635900
 
-On Wed, Jun 03, 2026 at 03:00:01PM +1000, Balbir Singh wrote:
-> On Tue, Jun 02, 2026 at 09:57:48AM +0100, Gregory Price wrote:
-> > On Tue, Jun 02, 2026 at 12:16:50PM +1000, Balbir Singh wrote:
-> > > 
-> > > I was think we wouldn't need explicit flags and that allocations would
-> > > happen from user space using __GFP_THISNODE to the node or via a nodemask
-> > > based on nodes of interest. Is there a reason to add this flag, a system
-> > > might have more than one source of N_MEMORY_PRIVATE?
-> > > 
-> > 
-> > There's a few things to unpack here.  I discussed this many times on
-> > list and at LSF, but to reiterate.
-> > 
-> > 1) __GFP_THISNODE is insufficient to enforce isolation and otherwise
-> >    not particularly useful.  Additionally, from userland, it's not
-> >    something you can actually set.
+On 6/3/26 04:00, Lance Yang wrote:
 > 
-> I was thinking mbind()/mempolicy() is how we get to it. It already
-> accepts a nodemask.
->
-
-First let me say:  I want to enable mbind access to these nodes.
-
-But let me caveat:  I think that needs more time to develop, and
-in the meantime, we can enable the /dev/xxx pattern somewhat trivially.
-
-First let me address a few things about mbind/mempolicy and how it
-interacts with page_alloc.c, I gave this overview at LSF but I don't
-remember if I posted it in any of my follow ups.
-
-
-1) Fallback lists are filtered by nodemask, the nodemask does not replace
-   the fallback list.
-
-Here is how the page allocator fallback lists and nodemasks interact:
-
-   Fallbacks A:  A B 
-   Fallbacks B:  B A
-   Fallbacks C:  C A B   (Private)
-   Fallbacks D:  D B A   (Private)
-
-Lets say you pass:
-
-   alloc_pages_node(C, ..., nodemask(A,C,D))
-
-So we get
-
-  Fallback(C,A,B) & nodemask(A,C,D) -> iterate(C,A)
-
-If we wanted to change this behavior, realistically we'd be looking for
-a way to add specific nodes to certain fallback lists - rather than
-modify the nodemask interaction in some way.
-
-I think this is out of scope for the first iteration - so supporting
-anything other than mbind() from the start is just pointless.
-
-The only feasible mempolicy you can apply is single-node bind, so
-realistically you can only support mbind.
-
-
-2) full mempolicy support doesn't really make sense
-
-   task mempolicy PROBABLY should never really touch private nodes,
-   while VMA policy certainly can.  Assuming we're able to support
-   multi-private-node masks, none of the non-bind mempolicies even
-   make sense for most private nodes (interleave? weighted interleave?)
-
-   I haven't worked through all the implications of a task policy having
-   a private node attached, but the longer I think about it, the less it
-   makes sense to just support this outright.
-
-
-3) Introducing mbind support is not just a simple nodemask on a VMA,
-   It also implies migration, cgroup/cpuset, and UAPI interactions.
-
-   a) migration:
-      
-      mbind/mempolicy can and will engage migration when it is called
-      with certain flags.  Migration has subtle LRU interactions, but
-      the patch set I have at least allows this to work.
-
-   b) cgroup/cpuset:
-   
-      cpuset.mems rebinding will cause private nodes to be quietly
-      rebound to non-private nodes within a nodemask.
-
-   c) between A and B - we really want MPOL_F_STATIC to be required
-      for mbind to be applied to private node so that it is never
-      forcefully remapped.
-
-      That's a UAPI semantic change specific for private nodes we
-      should really take time to consider.
-
-
-4) File VMA interactions don't entirely make sense with mbind
-
-   In theory you might want:
-
-   fd = open("somefile", ...);
-   mem = mmap(fd, ...);
-   mbind(mem, ..., private_node);
-   for page in mem:
-      mem[page_off] /* fault file into private memory */
-
-   In reality: This does not work the way you want.
-
-   I went digging and we need a few mild extensions to allow
-   migration on mbind to work for pagecache pages, and the fault
-   path does not necessarily respect the vma mempolicy always.
-
-   You also start getting into the question of "what happens when
-   the node is out of memory and you don't have reclaim support?".
-   The OOM implications jump out at you pretty aggressively.
-
-   Moreover other tasks can force the page cache pages to be moved
-   as well.  So the programming model here just kind of sucks.
-
-   Works great for anon memory though :]
-
-For all these reasons, I think the be mbind/mempolicy support with
-private nodes needs to be brought in with follow up work - not
-introduced as part of the baseline set.
-
-> > 
-> >    for node in possible_nodes:
-> >        alloc_pages_node(private_node, __GFP_THISNODE)
-> > 
-> >    In fact it's the opposite semantic of what we want.
-> >    THISNODE says: "Do not fallback back to OTHER nodes".
-> > 
 > 
-> That's why we need to control the fallback nodes carefully for
-> N_MEMORY_PRIVATE
->
-
-My point is that __GFP_THISNODE is not actually useful.
-
-If we go by nodemask, submitting a single-node nodemask is the
-equivalent of an empty fallback list.
-
-If we gate access to a private node by __GFP_THISNODE... this is the
-same as just providing a single-node nodelist (putting aside the OOM
-implications for a moment).
-
-And it doesn't even buy you any new filtering ability against existing
-nodemask iterators that may already utilize __GFP_THISNODE.  i.e.
-
-   for node in online_nodes:
-       alloc_pages_node(node, __GFP_THISNODE, ...)
-       /* Alloc per-node resources */
-
-   This pattern is undesirable, but completely valid.
-
-So overloading/requiring __GFP_THISNODE is just not useful.
-
-I will follow up soon with a new version that limits the private node
-interface to just nodemask and fallback list controls.
-
-I need to test a few more things related to removing normal nodes from
-private node fallbacks before I feel comfortable shipping without
-__GFP_PRIVATE.
-
-> >    The semantic we want is "Do not allow allocations from private
-> >    nodes UNLESS we specifically request" (__GFP_PRIVATE).
-> > 
-> >    __GFP_THISNODE does not actually buy you anything here, AND it's
-> >    worse, in the scenario where a private node makes its way into the
-> >    preferred slot (via possible_nodes or some other nodemask), the
-> >    allocator cannot fall back to a node it can access.
-> > 
-> >    __GFP_THISNODE cannot be overloaded to do anything useful here.
+> On 2026/6/3 04:37, Andrew Morton wrote:
+>> On Tue,  2 Jun 2026 12:34:53 +0800 Lance Yang <lance.yang@linux.dev> wrote:
+>>
+>>> From: Lance Yang <lance.yang@linux.dev>
+>>>
+>>> deferred_split_count() returns the raw list_lru count. When the per-memcg,
+>>> per-node list is empty, that count is 0.
+>>>
+>>> That skips scanning, but it does not tell memcg reclaim that the shrinker
+>>> is empty. shrink_slab_memcg() only clears the memcg shrinker bit when the
+>>> count callback reports SHRINK_EMPTY.
+>>>
+>>> Return SHRINK_EMPTY for an empty deferred split list, so the bit can be
+>>> cleared once the queue has drained.
+>>>
+>>> Signed-off-by: Lance Yang <lance.yang@linux.dev>
+>>> ---
+>>>   mm/huge_memory.c | 5 ++++-
+>>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index 72f6caf0fec6..62d598290c3b 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -4397,7 +4397,10 @@ void deferred_split_folio(struct folio *folio, bool
+>>> partially_mapped)
+>>>   static unsigned long deferred_split_count(struct shrinker *shrink,
+>>>           struct shrink_control *sc)
+>>>   {
+>>> -    return list_lru_shrink_count(&deferred_split_lru, sc);
+>>> +    unsigned long count;
+>>> +
+>>> +    count = list_lru_shrink_count(&deferred_split_lru, sc);
+>>> +    return count ?: SHRINK_EMPTY;
+>>>   }
+>>>     static bool thp_underused(struct folio *folio)
+>>
+>> Should this be handled as a fix against hannes's "mm: switch deferred
+>> split shrinker to list_lru"?
 > 
-> Let me clarify, I meant to say, let's use a nodemask for allocation
-> and __GFP_THISNODE gets us to the node we desire, if that is the only
-> node. My earlier comment might not have been clear.
->
-
-My point was that __GFP_THISNODE is pointless and reduces to providing a
-single node nodemask anyway.
-
-The contention over __GFP_PRIVATE is a bit ideological - do we want:
-
-  1) A hard guarantee that allocations to a private node are controlled
-     (__GFP_PRIVATE implies the caller knows what it's doing)
-
-  or
-
-  2) A soft guarantee (fallback list isolation only), and needing to
-     deal with undesired behavior that's "not technically a bug"
-     associated with existing users of global nodemasks (possible,
-     online, etc).
-
-I am arguing for #1 - the community has argued for #2 and "fixing
-existing nodemask users".  I think we can ship #2 and pivot to #1 if we
-find fixing existing users is infeasible or too much of a maintenance
-burden.
-
+> Hmm ... I noticed this while looking at Johannes' work, but the
+> behavior is older than that ...
 > 
-> Why not use mbind() API's? Do we want to gate allocation/privileges
-> via a /dev?
->
+> We also discussed the Fixes tag earlier[1] and decided to leave it
+> out. There is no missed reclaim, only some extra reclaim work :)
 
-We want to eventually enable it, but we really need to treat these
-extensions as a separate step from the base so that the UAPI
-implications are given proper scrutiny.
+Right, I conclude that this can be a separate patch on top.
 
-In the short term, /dev/xxx and driver-local/service-local control
-of a node is still very useful.
+-- 
+Cheers,
 
-For example, for my compressed memory work, I have found that if
-implemented as a swap backend - the kernel can manage the node without
-any UAPI implications at all :].
-
-A driver managing memory on a private node could do the same.
-
-~Gregory
+David
 
