@@ -1,41 +1,41 @@
-Return-Path: <cgroups+bounces-16606-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16607-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id wxsLByswIGpmyQAAu9opvQ
-	(envelope-from <cgroups+bounces-16606-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 15:46:19 +0200
+	id R6EtEzMwIGpoyQAAu9opvQ
+	(envelope-from <cgroups+bounces-16607-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 15:46:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11749638371
-	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 15:46:18 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43603638376
+	for <lists+cgroups@lfdr.de>; Wed, 03 Jun 2026 15:46:26 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16606-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16606-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16607-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-16607-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=fygo.io (policy=quarantine);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 12D6D305ECB5
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2026 13:28:09 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 026E9310CD4D
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2026 13:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4AD2C3255;
-	Wed,  3 Jun 2026 13:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC2E543C077;
+	Wed,  3 Jun 2026 13:28:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58124314D35;
-	Wed,  3 Jun 2026 13:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96615314D35;
+	Wed,  3 Jun 2026 13:28:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780493278; cv=none; b=tzOFBP2mVvIPM4H5hGVV1TSlt2ivafQUn0rRGWlY6j6DOXz+0n5nn2SDGNNk2VIR+OViJ/seZJ0t0psi4/uUTvEpRP647gcwRqoLl1k/ifRpfUxaFy3nRRSOckYP8CsEezPXDTeizhOn6NAsOrugbIWFHCwqtUK4xDfRFD+vHsg=
+	t=1780493281; cv=none; b=OgrUgtejjJ++MiRmnNIAa7avareA/INDEuRfqucRzGQDI23zLbr0/JNHUE3dKf7QY155iZfV7JwWCo5Oy2hD38+A+m5ig91IEhytexVWvqkgTJe+zrClBauXjM4abc5hCi0Uh2JcYyDQrnQxEdcM+TM07qWFTaiYeFUDZWOsUeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780493278; c=relaxed/simple;
-	bh=peDdqXYx5KZT1Fn7SH5gTZ3zbKz0fSIE/13BLxdI1qs=;
+	s=arc-20240116; t=1780493281; c=relaxed/simple;
+	bh=+bW8TuG9nbXBGA9Q8CVmvFkxaNdWjWVVyjvtj/3M5oo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=We7r7WjWIVgmG18QARtS1gkaAcyxBub8leXaq/BKU/TlkthKfVPt8CC+zJkEe+XqrI4O95GWfVXUD3UjfBvCU0eVyNjYFTpFLKnfV01BF7GKL3fzMpIMr9Cv0mwyBVbStchYHqDIj8AcU5DYOQGLJwzDPqL1cKsZRoAw0Zm9AT0=
+	 MIME-Version; b=CL5XtN4qNrmp+MlV7ph4e9wseR3Hmf/zNTHocziKds9YaKse416k5o4goS5YQqM8j30inP5iicz7NwuE6d+KIrDy/HYxFXJUWilwSHM/DSg3/KC+VtEoCBHGIhEU0dQyECmO8VrvttlyFAf2iN0VKeUL4NxVG0XnyhSDJ33repI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 245C01F00898;
-	Wed,  3 Jun 2026 13:27:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AABF01F00899;
+	Wed,  3 Jun 2026 13:27:57 +0000 (UTC)
 From: Yu Kuai <yukuai@fygo.io>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Tejun Heo <tj@kernel.org>,
@@ -46,9 +46,9 @@ Cc: Tejun Heo <tj@kernel.org>,
 	linux-block@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] blk-cgroup: protect q->blkg_list iteration in blkg_destroy_all() with blkcg_mutex
-Date: Wed,  3 Jun 2026 21:27:41 +0800
-Message-ID: <70b7126772552b910a2dccbe1e913eaec8eb6a8b.1780492756.git.yukuai@fygo.io>
+Subject: [PATCH 2/5] bfq: protect q->blkg_list iteration in bfq_end_wr_async() with blkcg_mutex
+Date: Wed,  3 Jun 2026 21:27:42 +0800
+Message-ID: <89f9448c5d703e6123e1be6c8e0550c803e9c057.1780492756.git.yukuai@fygo.io>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <cover.1780492756.git.yukuai@fygo.io>
 References: <cover.1780492756.git.yukuai@fygo.io>
@@ -66,11 +66,11 @@ X-Spamd-Result: default: False [3.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16606-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16607-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[kernel.org,toxicpanda.com,gmail.com,linux.ibm.com,acm.org,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -80,7 +80,7 @@ X-Spamd-Result: default: False [3.04 / 15.00];
 	FORGED_SENDER(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -94,60 +94,71 @@ X-Spamd-Result: default: False [3.04 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,fygo.io:mid,fygo.io:from_mime,fygo.io:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 11749638371
+X-Rspamd-Queue-Id: 43603638376
 
-blkg_destroy_all() iterates q->blkg_list without holding blkcg_mutex,
-which can race with blkg_free_workfn() that removes blkgs from the list
-while holding blkcg_mutex.
+bfq_end_wr_async() iterates q->blkg_list while only holding bfqd->lock,
+but not blkcg_mutex. This can race with blkg_free_workfn() that removes
+blkgs from the list while holding blkcg_mutex.
 
-Add blkcg_mutex protection around the q->blkg_list iteration to prevent
-potential list corruption or use-after-free issues.
+Add blkcg_mutex protection in bfq_end_wr() before taking bfqd->lock to
+ensure proper synchronization when iterating q->blkg_list.
 
 Signed-off-by: Yu Kuai <yukuai@fygo.io>
 ---
- block/blk-cgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ block/bfq-cgroup.c  | 3 ++-
+ block/bfq-iosched.c | 6 ++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 554c87bb4a86..a98a22e06fd1 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -573,10 +573,11 @@ static void blkg_destroy_all(struct gendisk *disk)
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 37ab70930c8d..f765e767d36a 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -939,11 +939,12 @@ void bfq_end_wr_async(struct bfq_data *bfqd)
  	struct blkcg_gq *blkg;
- 	int count = BLKG_DESTROY_BATCH_SIZE;
- 	int i;
  
- restart:
-+	mutex_lock(&q->blkcg_mutex);
- 	spin_lock_irq(&q->queue_lock);
- 	list_for_each_entry(blkg, &q->blkg_list, q_node) {
- 		struct blkcg *blkcg = blkg->blkcg;
+ 	list_for_each_entry(blkg, &bfqd->queue->blkg_list, q_node) {
+ 		struct bfq_group *bfqg = blkg_to_bfqg(blkg);
  
- 		if (hlist_unhashed(&blkg->blkcg_node))
-@@ -591,10 +592,11 @@ static void blkg_destroy_all(struct gendisk *disk)
- 		 * it when a batch of blkgs are destroyed.
- 		 */
- 		if (!(--count)) {
- 			count = BLKG_DESTROY_BATCH_SIZE;
- 			spin_unlock_irq(&q->queue_lock);
-+			mutex_unlock(&q->blkcg_mutex);
- 			cond_resched();
- 			goto restart;
- 		}
+-		bfq_end_wr_async_queues(bfqd, bfqg);
++		if (bfqg)
++			bfq_end_wr_async_queues(bfqd, bfqg);
  	}
- 
-@@ -610,10 +612,11 @@ static void blkg_destroy_all(struct gendisk *disk)
- 			__clear_bit(pol->plid, q->blkcg_pols);
- 	}
- 
- 	q->root_blkg = NULL;
- 	spin_unlock_irq(&q->queue_lock);
-+	mutex_unlock(&q->blkcg_mutex);
- 
- 	wake_up_var(&q->root_blkg);
+ 	bfq_end_wr_async_queues(bfqd, bfqd->root_group);
  }
  
- static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
+ static int bfq_io_show_weight_legacy(struct seq_file *sf, void *v)
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 141c602d5e85..42ccfd0c6140 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -2643,10 +2643,13 @@ void bfq_end_wr_async_queues(struct bfq_data *bfqd,
+ static void bfq_end_wr(struct bfq_data *bfqd)
+ {
+ 	struct bfq_queue *bfqq;
+ 	int i;
+ 
++#ifdef CONFIG_BFQ_GROUP_IOSCHED
++	mutex_lock(&bfqd->queue->blkcg_mutex);
++#endif
+ 	spin_lock_irq(&bfqd->lock);
+ 
+ 	for (i = 0; i < bfqd->num_actuators; i++) {
+ 		list_for_each_entry(bfqq, &bfqd->active_list[i], bfqq_list)
+ 			bfq_bfqq_end_wr(bfqq);
+@@ -2654,10 +2657,13 @@ static void bfq_end_wr(struct bfq_data *bfqd)
+ 	list_for_each_entry(bfqq, &bfqd->idle_list, bfqq_list)
+ 		bfq_bfqq_end_wr(bfqq);
+ 	bfq_end_wr_async(bfqd);
+ 
+ 	spin_unlock_irq(&bfqd->lock);
++#ifdef CONFIG_BFQ_GROUP_IOSCHED
++	mutex_unlock(&bfqd->queue->blkcg_mutex);
++#endif
+ }
+ 
+ static sector_t bfq_io_struct_pos(void *io_struct, bool request)
+ {
+ 	if (request)
 -- 
 2.51.0
 
