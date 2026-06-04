@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-16643-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16644-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cIV+L9qWIWrtJQEAu9opvQ
-	(envelope-from <cgroups+bounces-16643-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 17:16:42 +0200
+	id +L6VOP6WIWr8JQEAu9opvQ
+	(envelope-from <cgroups+bounces-16644-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 17:17:18 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89C27641538
-	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 17:16:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3415D641558
+	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 17:17:18 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b="B3/jlzKj";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16643-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16643-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=jJCN68q9;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16644-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16644-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 77447309A0B7
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2026 15:03:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BBE93319735E
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2026 15:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A66C3368A2;
-	Thu,  4 Jun 2026 15:03:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9EA33BBA2;
+	Thu,  4 Jun 2026 15:03:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1B931618B
-	for <cgroups@vger.kernel.org>; Thu,  4 Jun 2026 15:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14D430C15C
+	for <cgroups@vger.kernel.org>; Thu,  4 Jun 2026 15:03:10 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780585386; cv=none; b=bsyBaLijhAoCYlTDMoi06yqZeNSH/RmbeuWmTa9BjQt/XY5T+GP0Rhne3aF2LpJBspJU6SeqNI4z+Xy6hGJ4Zk5qx1MMyBmD6TEaEVsY2rc5ri6rmFjnV+EMgEjPIlUU3oO7c8QnIKFbDZnck0BpT2MHzuWZ+W1dU1quK8UwunU=
+	t=1780585392; cv=none; b=K9gdA2dw7P/wBCMRUajWS2AgQU2BP3XNtLMMr5vsjUV7co5FQQmAjDm/ddgzcjjWTbm8IPjzj0eXJp9+GM1o3cm1fUijmax/clBTkxjAZ0EthAh6rKnqYbXX9L4OdzPzBk86AeZD0uK5YXvpH2qkJG0G561Jvf2dym4Cr9OcOCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780585386; c=relaxed/simple;
-	bh=WnNIN/RzbpUh0IyL4vvpzNYRJlHk9UDe83Q/ncPXD4Y=;
+	s=arc-20240116; t=1780585392; c=relaxed/simple;
+	bh=kCXjFiV3OaQmRHtJRYcDNtFee0sVIlUqFWC2gVb5Nao=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iCuejMooZujvNb22mSwIS0kKAsodLj/5ikHf7Vs7yAb36Jk2+HzWaqFXngOCQHIlv6izqPJGXkpW7bEoYpjjLFRRghZvCaCBPMQHYqdY0+vAYozxgrAwQSTuPhrFWZc+bb35Mw9z+W1bXwvITldBcYAbFuhNLfC3WvW6AppH6cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B3/jlzKj; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=Lpm0k2e+wpDQjsT0LFH4FUDktmpQVCTeDOnTUqZlcoFoMzVVff9Eutijar1VU/Dum6nZGyQv7a9wV8PGGI3djl4QU0677nbpsT6e1GAuZFFsTDcYDdUJd6/t6YYAYJY+nyyHg0sHozUvuunobsNPiaI1OXpLhFBeYm6/dvkrukk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jJCN68q9; arc=none smtp.client-ip=170.10.129.124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1780585384;
+	s=mimecast20190719; t=1780585389;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0FrkYdUDwBoR5o4p88v8K3yiyF02buGsjkf+7iTywpA=;
-	b=B3/jlzKjaefe1BuMIlAqYJZ1+4sInu72fJeFnWJHfRV/yL/yJrSzalAaaVucMAaZs/C5pb
-	84BXG0Y6wtloT86FLCgXzdhHV74daHJhJJg57ZT1+D9DfD+y9gYWbiRdkmqPbhfcZo2N+d
-	sPi/GfCX6G6myUkH+ASI/JGfXGc6xgc=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+	bh=wze3ha0fD0FeJfke0hywdP2ew+PgvCUHHXwDCurAWsk=;
+	b=jJCN68q9GxJQZeJG1/ld5+s5O15ARzAU9Fq2SiVyb7+ZflZQU9eCvuseKY/aozcFadlWXq
+	VZIat+bdRvejYNLV6Vki7tDn2RAswAk2zIofw66YZBFkyDPCNehRzxUifKSuCuTDODxieU
+	Os/PgvjC2kFu43ppBoGoieVPai4D3HM=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-573-nSIbrvXjOPyVVQ6Bzwg5JA-1; Thu,
- 04 Jun 2026 11:02:59 -0400
-X-MC-Unique: nSIbrvXjOPyVVQ6Bzwg5JA-1
-X-Mimecast-MFC-AGG-ID: nSIbrvXjOPyVVQ6Bzwg5JA_1780585378
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-247--s-UT8zEOAiqcwfmnDh62A-1; Thu,
+ 04 Jun 2026 11:03:02 -0400
+X-MC-Unique: -s-UT8zEOAiqcwfmnDh62A-1
+X-Mimecast-MFC-AGG-ID: -s-UT8zEOAiqcwfmnDh62A_1780585380
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E003F19560AD;
-	Thu,  4 Jun 2026 15:02:57 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 08F9A1944D2B;
+	Thu,  4 Jun 2026 15:03:00 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.88.175])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 09B08195608E;
-	Thu,  4 Jun 2026 15:02:55 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 21D4B1954193;
+	Thu,  4 Jun 2026 15:02:58 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Ridong Chen <ridong.chen@linux.dev>,
 	Tejun Heo <tj@kernel.org>,
@@ -71,9 +71,9 @@ Cc: cgroups@vger.kernel.org,
 	Aaron Tomlin <atomlin@atomlin.com>,
 	Guopeng Zhang <guopeng.zhang@linux.dev>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH-next v6 1/6] cgroup/cpuset: Fix node inconsistencies between cpuset_update_tasks_nodemask() and cpuset_attach()
-Date: Thu,  4 Jun 2026 11:02:24 -0400
-Message-ID: <20260604150229.414135-2-longman@redhat.com>
+Subject: [PATCH-next v6 2/6] cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
+Date: Thu,  4 Jun 2026 11:02:25 -0400
+Message-ID: <20260604150229.414135-3-longman@redhat.com>
 In-Reply-To: <20260604150229.414135-1-longman@redhat.com>
 References: <20260604150229.414135-1-longman@redhat.com>
 Precedence: bulk
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -99,12 +99,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-16643-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16644-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:peterz@infradead.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:longman@redhat.com,s:lists@lfdr.de];
 	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -116,171 +116,102 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 89C27641538
+X-Rspamd-Queue-Id: 3415D641558
 
-Whenever memory node mask is changed, there are 4 places where the node
-mask has to be updated or used.
- 1) task's node mask via cpuset_change_task_nodemask()
- 2) memory policy binding via mpol_rebind_mm()
- 3) if memory migration is enabled, migrate from old_mems_allowed to
-    the new node mask via cpuset_migrate_mm().
- 4) setting old_mems_allowed
+Extract the DL bandwidth allocation code in cpuset_attach() to a new
+cpuset_reserve_dl_bw() helper to simplify code.
 
-These memory actions are done in cpuset_update_tasks_nodemask() and
-cpuset_attach(). However there are inconsistencies in what node masks
-are being used in these 2 functions.
+No functional change is expected.
 
-In cpuset_update_tasks_nodemask(),
- - cpuset_change_task_nodemask(): guarantee_online_mems()
- - mpol_rebind_mm(): mems_allowed
- - cpuset_migrate_mm(): guarantee_online_mems()
- - old_mems_allowed: guarantee_online_mems()
-
-In cpuset_attach(),
- - cpuset_change_task_nodemask(): guarantee_online_mems()
- - mpol_rebind_mm(): effective_mems
- - cpuset_migrate_mm(): effective_mems
- - old_mems_allowed: effective_mems
-
-These inconsistencies dates back to quite a long time ago and it is
-hard to say what should be the correct values.
-
-The guarantee_online_mems() function returns a node mask from current or
-an ancestor cpuset that is a subset of node_states[N_MEMORY]. Nodes in
-node_states[N_MEMORY] are all online, i.e. in node_states[N_ONLINE].
-However, node in node_states[N_ONLINE] may not have memory. So
-node_states[N_MEMORY] should be a subset of node_states[N_ONLINE].
-
-The guarantee_online_mems() function should only be useful for v1 where
-mems_allowed is the same as effective_mems. With v2, the memory nodes
-in effective_mems should always be a subset of node_states[N_MEMORY].
-The only time that may not be true is when a memory hot-unplug operation
-is in progress and a memory node is removed from node_states[N_MEMORY]
-but not yet reflected in effective_mems as cpuset_handle_hotplug()
-has not yet been called from cpuset_track_online_nodes(). When
-cpuset_handle_hotplug() is called later, the memory node setting
-of the relevant cpusets and tasks will be updated. So replacing the
-guarantee_online_mems() call by just using cs->effective_mems should
-be fine.
-
-Let use the following setup for both of them and make them consistent.
- - cpuset_change_task_nodemask(): guarantee_online_mems()
- - mpol_rebind_mm(): effective_mems
- - cpuset_migrate_mm(): guarantee_online_mems()
- - old_mems_allowed: guarantee_online_mems()
-
-So for v2, it is effectively all effective_mems. For v1, mpol_rebind_mm()
-uses mems_allowed which may differ from what guarantee_online_mems()
-returns.
-
+Reviewed-by: Ridong Chen <ridong.chen@linux.dev>
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset.c | 37 +++++++++++++++++++++++++------------
- 1 file changed, 25 insertions(+), 12 deletions(-)
+ kernel/cgroup/cpuset.c | 53 ++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 23 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 6bdb68689c24..8305b5830c3c 100644
+index 8305b5830c3c..7c23d26a04fc 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -489,7 +489,10 @@ static void guarantee_active_cpus(struct task_struct *tsk,
-  * Return in *pmask the portion of a cpusets's mems_allowed that
-  * are online, with memory.  If none are online with memory, walk
-  * up the cpuset hierarchy until we find one that does have some
-- * online mems.  The top cpuset always has some mems online.
-+ * online mems.  The top cpuset always has some mems online. With v2,
-+ * effective_mems should always contain online memory nodes except
-+ * during the transition period where a memory node hotunplug operation
-+ * is in progress.
-  *
-  * One way or another, we guarantee to return some non-empty subset
-  * of node_states[N_MEMORY].
-@@ -498,6 +501,10 @@ static void guarantee_active_cpus(struct task_struct *tsk,
-  */
- static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
- {
-+	if (cpuset_v2()) {
-+		*pmask = cs->effective_mems;
-+		return;
-+	}
- 	while (!nodes_and(*pmask, cs->effective_mems, node_states[N_MEMORY]))
- 		cs = parent_cs(cs);
+@@ -2994,6 +2994,25 @@ static int cpuset_can_attach_check(struct cpuset *cs)
+ 	return 0;
  }
-@@ -2616,6 +2623,13 @@ static void *cpuset_being_rebound;
-  * Iterate through each task of @cs updating its mems_allowed to the
-  * effective cpuset's.  As this function is called with cpuset_mutex held,
-  * cpuset membership stays stable.
-+ *
-+ * - cpuset_change_task_nodemask(): guarantee_online_mems()
-+ * - mpol_rebind_mm(): effective_mems
-+ * - cpuset_migrate_mm(): guarantee_online_mems()
-+ * - old_mems_allowed: guarantee_online_mems()
-+ *
-+ * For v2, guarantee_online_mems() should just return effective_mems.
-  */
- void cpuset_update_tasks_nodemask(struct cpuset *cs)
+ 
++static int cpuset_reserve_dl_bw(struct cpuset *cs)
++{
++	int cpu, ret;
++
++	if (!cs->sum_migrate_dl_bw)
++		return 0;
++
++	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
++	if (unlikely(cpu >= nr_cpu_ids))
++		return -EINVAL;
++
++	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
++	if (ret)
++		return ret;
++
++	cs->dl_bw_cpu = cpu;
++	return 0;
++}
++
+ static void reset_migrate_dl_data(struct cpuset *cs)
  {
-@@ -2624,7 +2638,6 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
+ 	cs->nr_migrate_dl_tasks = 0;
+@@ -3008,7 +3027,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	struct cpuset *cs, *oldcs;
  	struct task_struct *task;
+ 	bool setsched_check;
+-	int cpu, ret;
++	int ret;
  
- 	cpuset_being_rebound = cs;		/* causes mpol_dup() rebind */
--
- 	guarantee_online_mems(cs, &newmems);
- 
- 	/*
-@@ -2650,7 +2663,7 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
- 
- 		migrate = is_memory_migrate(cs);
- 
--		mpol_rebind_mm(mm, &cs->mems_allowed);
-+		mpol_rebind_mm(mm, &cs->effective_mems);
- 		if (migrate)
- 			cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
- 		else
-@@ -3148,17 +3161,18 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 
- 	/*
- 	 * In the default hierarchy, enabling cpuset in the child cgroups
--	 * will trigger a number of cpuset_attach() calls with no change
--	 * in effective cpus and mems. In that case, we can optimize out
--	 * by skipping the task iteration and update.
-+	 * will trigger a cpuset_attach() call with no change in effective cpus
-+	 * and mems. In that case, we can optimize out by skipping the task
-+	 * iteration and update.
- 	 */
--	if (cpuset_v2() && !cpus_updated && !mems_updated) {
-+	if (cpuset_v2()) {
- 		cpuset_attach_nodemask_to = cs->effective_mems;
--		goto out;
-+		if (!cpus_updated && !mems_updated)
-+			goto out;
-+	} else {
-+		guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
+ 	/* used later by cpuset_attach() */
+ 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
+@@ -3064,31 +3083,19 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 		}
  	}
  
--	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
+-	if (!cs->sum_migrate_dl_bw)
+-		goto out_success;
 -
- 	cgroup_taskset_for_each(task, css, tset)
- 		cpuset_attach_task(cs, task);
+-	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
+-	if (unlikely(cpu >= nr_cpu_ids)) {
+-		ret = -EINVAL;
+-		goto out_unlock;
+-	}
+-
+-	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
+-	if (ret)
+-		goto out_unlock;
+-
+-	cs->dl_bw_cpu = cpu;
+-
+-out_success:
+-	/*
+-	 * Mark attach is in progress.  This makes validate_change() fail
+-	 * changes which zero cpus/mems_allowed.
+-	 */
+-	cs->attach_in_progress++;
++	ret = cpuset_reserve_dl_bw(cs);
  
-@@ -3168,7 +3182,6 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 	 * if there is no change in effective_mems and CS_MEMORY_MIGRATE is
- 	 * not set.
- 	 */
--	cpuset_attach_nodemask_to = cs->effective_mems;
- 	if (!is_memory_migrate(cs) && !mems_updated)
- 		goto out;
- 
-@@ -3176,7 +3189,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 		struct mm_struct *mm = get_task_mm(leader);
- 
- 		if (mm) {
--			mpol_rebind_mm(mm, &cpuset_attach_nodemask_to);
-+			mpol_rebind_mm(mm, &cs->effective_mems);
- 
- 			/*
- 			 * old_mems_allowed is the same with mems_allowed
+ out_unlock:
+-	if (ret)
++	if (ret) {
+ 		reset_migrate_dl_data(cs);
++	} else {
++		/*
++		 * Mark attach is in progress.  This makes validate_change() fail
++		 * changes which zero cpus/mems_allowed.
++		 */
++		cs->attach_in_progress++;
++	}
++
+ 	mutex_unlock(&cpuset_mutex);
+ 	return ret;
+ }
 -- 
 2.54.0
 
