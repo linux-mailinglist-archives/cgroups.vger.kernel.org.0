@@ -1,222 +1,233 @@
-Return-Path: <cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16651-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id kWyVIeu3IWqaMQEAu9opvQ
-	(envelope-from <cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 19:37:47 +0200
+	id pUE7Nze7IWoJMwEAu9opvQ
+	(envelope-from <cgroups+bounces-16651-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 19:51:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD1B642571
-	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 19:37:46 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AA3B6426CE
+	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 19:51:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=K8xCd26f;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=ibm.com header.s=pp1 header.b=IvaX1YOc;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16651-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16651-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=ibm.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 298FD30295BE
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2026 17:24:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 494CD302573A
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2026 17:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01714C6F1C;
-	Thu,  4 Jun 2026 17:23:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B05304C9543;
+	Thu,  4 Jun 2026 17:31:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8B34C6F1B
-	for <cgroups@vger.kernel.org>; Thu,  4 Jun 2026 17:23:49 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780593831; cv=pass; b=uTtXE5FVHzjfxr7b/VwyuEjIiSJy/iIHjZqOw2Vlq1Pvf2AYb11oaF+f1ANeNSboIF3bKULuz15MglcPKxorHTqlOk67t78hzlA7CKYv+VO5cY63apyAPJPZ6Gu409urQY2ybpbY+95i59PM6eXk/z/Z+sCp4yNZrkF4IHL6pQM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780593831; c=relaxed/simple;
-	bh=WgIKM3EBxa7eVRr1Qp+EPGWEolxCAu6y4pk0+g25Gr4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ma650Fpj6ivsqFcgEQNNCt7CGgIwrcycj9zHcQyEA1VZ/oChoDMBEpfhJqAZZnrA9/8OXXAwTR/uL5RYtRZTfNW13Gcscf176aY8qc4ss1EEWksPkbRgXcY7wotYbPHDpI77w3tz7bCncpFpBmQ//0Mm84iGxWXuL2ndrFh4/os=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K8xCd26f; arc=pass smtp.client-ip=209.85.221.42
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-45ef56d9b67so801380f8f.2
-        for <cgroups@vger.kernel.org>; Thu, 04 Jun 2026 10:23:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780593828; cv=none;
-        d=google.com; s=arc-20240605;
-        b=QfHnUz6UWYeS0nS6+CoAQRutneOp3OqNbPgpqwS7wdzJ2wm0kwO0mDnlESRKaqqF7c
-         T1IR+LuqTz6KAEj8eaOaLlP2RDadbB3dGW7G4Rd3X9aqCiYxoZE44YfX8fyNK6DZ2Zfr
-         0cOv9HzEhVSG3b/9Qw4HWVqbFQJE3oxeFAtdJSiedGfLGbI6scS5z2BlhpGZG9Wy3J9r
-         Gse/AbDqIit2SnKIhnZkppjN1Vvypbj/hgj7LKhoTBSxxUKm39tKSAGPY49Lubxe1B3e
-         SeoO/+MST9RzfCRGrWs1xrjhpjiuJwh1EjUAcqMr2OHVhiJrHo/gWuxElEeq9SW8PuhE
-         I3/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=/rB/IXV+OMc2A+R0X4txGzVE+20Yu2JeN9gbqIkZf1A=;
-        fh=e0ebJTuuVjyfnIgw2QbfWkVUWogYQvvw1kXpbDt30fU=;
-        b=eRmCtmPLRTNF9dLf6pnnVsUw64DYXGJJFp32e0LVa1rE0bzst453/6H2tEr/57FPbY
-         RDxqmlX4E2CF4dEn8j7DYelfq8wLjrLMP8DnPeoJjvhlLH6N/Z+w7Zk491Y1SsPXPEaf
-         sq56yTiiVs/Gst+yHemDBDw24GHGsZVLOCN9r3x9J9Sl8USjz6kFqFpK/0iXk3ZBnazk
-         AQ0N5GulDV3cCtZ1ExCNEfvHwxwQkOGXrkw/yoGEyBB8Fyr1YK1tSC0a277eU4r1PiUY
-         0ymaufrR41dzmgwTmcAFWOSw1sXwWpURHpzqXNLInD3/uENQY7X6OzakEu+QOozxZJLx
-         +PaA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780593828; x=1781198628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/rB/IXV+OMc2A+R0X4txGzVE+20Yu2JeN9gbqIkZf1A=;
-        b=K8xCd26f2jR2srH2WJ5ijXhlT8cgZ6PqnPdioj0r+nI/S0Qr48jEUxIOGJIjpbV+0X
-         K47vwwIgo00nOo8RbqyBIdnLUG0MZv+UIRtELeJnHtrdmvVk6FnWR71PRGfzobV+GBGN
-         1X+YCQuRNbEi6RUDSZIpOun2lkHfac6THvsUgEZW74pS60qnqikFM1fvZcEoDnn9MPlZ
-         +gMGdfS4jhtzb9JzaWkATdTwLJeV9FncYCWX2kZMRtGxuV3uemghesicJMane/whLYRw
-         R7C7lQwZNRaxLHwgQ2PyjuMyJc38nfO0zT81SZSmeuxw+XCPwHUZ9d3OA58eNQM1aT4Z
-         g+Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780593828; x=1781198628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/rB/IXV+OMc2A+R0X4txGzVE+20Yu2JeN9gbqIkZf1A=;
-        b=V0KR53gQzcObax5jFXIyZuJUrzFZ7ueH91BIU7EdZ43sCHwpQ1kC7SAy9DdPP7TOWs
-         qMlzEeMGVr/P99biQfvOge48/lVdZPeKtJProKYOrJdZdbJjOxJcw3rTZWfso1rVDpGf
-         2nW0p2R0N/OGJ7yc1fFWrpOIacZ9OA7sx1NbAJ4AFQG66rGfN5Ur8rdb0IB3RDDHTm9I
-         UiGiJop7VS6mw7TIgWMbT4xYC501MHOA6Uabw63uo/LqZGbAM8pgm3f/VoAEn33eArU8
-         DMepR8b2GQleWT8kBS2mnhQAxmwYtZx4pMqhTQ47lk0xruRLrI8O6JePC3xkH4bjvVqm
-         v2bA==
-X-Forwarded-Encrypted: i=1; AFNElJ+s/Eejt3pTJGGU1+9H9pT8Jpghw/Ni1IhwRGcRInE4hU1CX67BT67EUSdHtySS/a8fPRm1/vtN@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7ZR6CFJ0M1Zi5VbJzF/YVUDfzMcfILuqic/VFuWTlB/XFF65I
-	CE3RL+axw32ZicSXOpUnLzO8DPmSyuFPqjjXDtydMMwl0tq9aCfLOnGJVCazHH5UYZ1aut2xkRx
-	tsQfs+rXDW97VCiLwo/OjFkgTpp8mujA=
-X-Gm-Gg: Acq92OH1q8L8xFGW3oiAPY+wRWeMOckSUkgq2LMEm71CLL6GT7V+nVxRNYpl4GQb6wc
-	mH3P7Axz/H/X3lKEfMJ774aZPvV1RS3WNJhoa4/M7yKCz5i7TLl4r6Jtik2UrPc/NhFCNVSIXSd
-	xJhS73jydU3MZpgyrDVcrIVvIPLQZ/gOQ19aEVsH8EllkFH7BNFhMgoqF8OIqOuB3xERrDNw9Vh
-	ofILBQjq5b7lqeZ9xQVsT0dsYXmYxN3iAyjWDCnqW7KQuvVjEoEhrFTADyawOZG9nisqFG+It5D
-	7Snq2QtwGeotkHKbVZKAq7rLlZ21Ub+aEFcl7zkmRJ6a5E0ZDQ==
-X-Received: by 2002:a5d:604b:0:b0:43d:69ff:6898 with SMTP id
- ffacd0b85a97d-460302e6f06mr103580f8f.9.1780593827921; Thu, 04 Jun 2026
- 10:23:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F98D30E83F;
+	Thu,  4 Jun 2026 17:31:35 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780594296; cv=none; b=omMYJUugLOs7u3bIGMIzKBNBxN+BlAGB60TrDLsx1Ts84Qcfse4ZLLE0USn8y9YVFDjz2hFQhc0N8ZX5q7QkS/zy6xuqeTaiFsK3J6t+WnJr6thhl37iYiW9D9zL9y+E7j4lsrWBYZzb5KIX6//qRPxVCDCXILj8bOVqJYv/qTM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780594296; c=relaxed/simple;
+	bh=d9u1PCQR+M85R31RCveXCge0/Ovp24iqbZ380wHETNI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LfdiZ2Rs9OjPPbsmgO/XodrN3gTJvx9Ni61YXSCOf5XwH21ZEItPV+VmjNy4mLlH+K9nsm88zw7fEUhXTVf1vOfsanNWdDwUTJie5liGK1F1bHrVXoeWp6u+vGT7oFEoPlAKfTTw6eZDUtgSNivJtfi4/qPbDaJ7TOX6AbaQROM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IvaX1YOc; arc=none smtp.client-ip=148.163.156.1
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 654CF9KZ2350781;
+	Thu, 4 Jun 2026 17:31:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=Sqtrv1
+	HLncVpqCeh0gffwOsf7Xjy7CA1MvVl6+RM994=; b=IvaX1YOc+Yn0NTUbNW5y1+
+	1OTeDM5+rli0qcqokMZ5sK/dIqtu4FFgONqSqYtXZtcN8BinBVk9hpE5g9ENRbqY
+	6W/hLHXCtFqlzmcsFN8kyW8FmsOCpthYmpKZclYLfDZ9faIi/Jo2XNM2AOMLtYe2
+	vfiQCB/rLjnoCkTX+CEMeAf/ga4kJwP0isii+UDXIvXiK+/z7dFGdD53Npxa3ULm
+	socNUJrKWX6XYFGfs52TWSF2RH5kkP1ZMibwdNzZTXq+kf8gl5BmjoyhPnxblb1n
+	lZJUkXPGMCskTqascyYMQIm1nf6nqAz/i0TWyECajfnir+UJwUeQCVrh61COGtlQ
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4efqjqgyfu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jun 2026 17:31:21 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 654H982v032112;
+	Thu, 4 Jun 2026 17:31:20 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4egbqhp1mc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Jun 2026 17:31:20 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 654HUnko27656794
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 4 Jun 2026 17:30:49 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F317B5805F;
+	Thu,  4 Jun 2026 17:31:19 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 927DC58054;
+	Thu,  4 Jun 2026 17:31:16 +0000 (GMT)
+Received: from [9.43.126.215] (unknown [9.43.126.215])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  4 Jun 2026 17:31:16 +0000 (GMT)
+Message-ID: <a532857a-16d5-4bef-bbd1-3bc080363182@linux.ibm.com>
+Date: Thu, 4 Jun 2026 23:01:14 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
- <20260526114601.67041-2-jiahao.kernel@gmail.com> <aho7nepN5jZtKmef@google.com>
- <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com> <ah4ZZGl7GYJf54Wz@google.com>
- <ff344c9f-51da-8b3a-e7a9-c4a7f4702ef8@gmail.com> <ah9i3uhh3PFiS0Uk@google.com>
- <c7870fe2-3588-79db-cbfb-bd6a2b78f594@gmail.com> <aiBpibRNi0BcM1Zu@google.com>
- <9898f83d-fae9-e284-6b85-c7f4089840a0@gmail.com> <CAO9r8zPBH6-0SQ6-_ZOhTQeyu=rz4F=ugikCrU-JR_skm6fEWA@mail.gmail.com>
- <a60eedb6-f3fd-4092-b726-04a17a695ace@gmail.com>
-In-Reply-To: <a60eedb6-f3fd-4092-b726-04a17a695ace@gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 4 Jun 2026 10:23:36 -0700
-X-Gm-Features: AVVi8Cflh7M61FcoQfkq5TRPiQaxI_Tappj1TjJNCo92lEJSIG0y-zr5pc0cdEk
-Message-ID: <CAKEwX=MQ3xXBAY-2H8vA+XSX5GHNBubJ2GCYAXGD+Hra++ZM7A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor per-memcg
-To: Hao Jia <jiahao.kernel@gmail.com>
-Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, tj@kernel.org, 
-	hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@kernel.org, 
-	mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Hao Jia <jiahao1@lixiang.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] bfq: protect q->blkg_list iteration in
+ bfq_end_wr_async() with blkcg_mutex
+To: Yu Kuai <yukuai@fygo.io>, Jens Axboe <axboe@kernel.dk>
+Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+        Ming Lei <tom.leiming@gmail.com>, Bart Van Assche <bvanassche@acm.org>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1780492756.git.yukuai@fygo.io>
+ <89f9448c5d703e6123e1be6c8e0550c803e9c057.1780492756.git.yukuai@fygo.io>
+Content-Language: en-US
+From: Nilay Shroff <nilay@linux.ibm.com>
+In-Reply-To: <89f9448c5d703e6123e1be6c8e0550c803e9c057.1780492756.git.yukuai@fygo.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-ORIG-GUID: hiKst0lvAOY567uN215Kf3pFY4SLlMWO
+X-Proofpoint-GUID: VHo71Z2V2jTWbbPMRkA3Mj1XWenmAV1O
+X-Authority-Analysis: v=2.4 cv=bcVbluPB c=1 sm=1 tr=0 ts=6a21b669 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=FelO9ux0wxsA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=s_VrgGc-5Bb3jsANsSIA:9
+ a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjA0MDE2NyBTYWx0ZWRfXyijdz3S37lfI
+ 01+mfbUgHiiMcrStRQyChzwlHt5702iNRGY3kkT3QaK+2oUZBvULNNDx8Re/KP5wtDlUhM0HRgz
+ rt/VTIFUGx/VSFFUVLyfptAJFiR7414uc4BsebQet2Q/fE2gWXMvW1rZRX1CczY2KuIxK2QLTPF
+ OD2yK7HscLYrVEyA5TilzB2E93xYxozCITATc4enLPaw6QsWgdNoyXBY79C0t3c3fcyDNKneAD3
+ 8TfErAp7AUPslt54d9jHJiSO9zuA40LubescXv3geTs7z5h0hgr9zoWGs88YNWmNhHT7Ioi4wA+
+ Z98FlVCAd1q+DPScEFoFKhmDZeNvYFC/PtqDer9fVVtjcczF2ClV5bmDMrXzaXJFDOfGMM5pFbt
+ G4PZYGhHMrnts1f4hWpYKwBe2LKugLhQxJAoZjXdstdRL/CoDGeyqYBfQJ2XzcRml6NhJeF+MRG
+ ixKAWowK7xJeWwKNbmA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.125,FMLib:17.12.100.49
+ definitions=2026-06-04_05,2026-05-28_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 clxscore=1011 adultscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605210000 definitions=main-2606040167
+X-Rspamd-Action: add header
+X-Spamd-Result: default: False [8.84 / 15.00];
+	URIBL_BLACK(7.50)[fygo.io:email];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
+	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jiahao.kernel@gmail.com,m:yosry@kernel.org,m:akpm@linux-foundation.org,m:tj@kernel.org,m:hannes@cmpxchg.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:mkoutny@suse.com,m:chengming.zhou@linux.dev,m:muchun.song@linux.dev,m:roman.gushchin@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jiahao1@lixiang.com,m:jiahaokernel@gmail.com,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:yukuai@fygo.io,m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:tomleiming@gmail.com,s:lists@lfdr.de];
+	R_DKIM_ALLOW(0.00)[ibm.com:s=pp1];
+	TAGGED_FROM(0.00)[bounces-16651-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.ibm.com:from_mime,linux.ibm.com:mid,vger.kernel.org:from_smtp,fygo.io:email];
+	GREYLIST(0.00)[pass,body];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16650-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FREEMAIL_CC(0.00)[kernel.org,toxicpanda.com,gmail.com,acm.org,vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[nilay@linux.ibm.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[ibm.com,none];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[nilay@linux.ibm.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	RCVD_COUNT_SEVEN(0.00)[11]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CFD1B642571
+X-Rspamd-Queue-Id: 3AA3B6426CE
+X-Spam: Yes
 
-On Thu, Jun 4, 2026 at 6:06=E2=80=AFAM Hao Jia <jiahao.kernel@gmail.com> wr=
-ote:
->
->
->
-> On 2026/6/4 13:34, Yosry Ahmed wrote:
-> >>>> For instance, suppose a parent memcg has two children, memcg1 and me=
-mcg2,
-> >>>> each with 200MB of zswap (100MB inactive). Triggering proactive writ=
-eback on
-> >>>> the parent memcg will exhaust memcg1's inactive zswap pages. After t=
-hat,
-> >>>> even though memcg2 still has plenty of inactive zswap pages, it will
-> >>>> continue to write back memcg1's active zswap pages. Writing back act=
-ive
-> >>>> zswap pages causes the user-space agent to prematurely abort the wri=
-teback
-> >>>> because it detects that certain memcg metrics have exceeded predefin=
-ed
-> >>>> thresholds.
-> >>>
-> >>> This will only happen if the reclaim size is smaller than the batch
-> >>> size, right? Otherwise the kernel should reclaim more or less equally
-> >>> from both memcgs?
-> >>>
-> >>
-> >> I gave it some thought. Not using a cursor could lead to unfairness
-> >> issues with certain writeback sizes:
-> >>
-> >>    - If the writeback size is an odd multiple of WB_BATCH (e.g.,
-> >> triggering a writeback of 3 * WB_BATCH), with 2 child cgroups, the
-> >> writeback ratio might end up being 2:1.
-> >>    - If a memcg has 5 child cgroups and a writeback of 2 * WB_BATCH is
-> >> triggered, it might repeatedly write back from only the first 2 child
-> >> cgroups.
-> >>
-> >> Although setting a smaller WB_BATCH might mitigate this unfairness, it
-> >> could hurt writeback efficiency. Let's just use per-memcg cursors to
-> >> completely fix these corner cases.
-> >
-> > Exactly, the batch size should be small enough that any unfairness is
-> > not a problem. I would honestly just do batching without a per-memcg
-> > cursor, unless we have numbers to prove that the efficiency is
-> > affected when we use a small batch size. Let's only introduce
-> > complexity when needed please.
+On 6/3/26 6:57 PM, Yu Kuai wrote:
+> bfq_end_wr_async() iterates q->blkg_list while only holding bfqd->lock,
+> but not blkcg_mutex. This can race with blkg_free_workfn() that removes
+> blkgs from the list while holding blkcg_mutex.
+> 
+> Add blkcg_mutex protection in bfq_end_wr() before taking bfqd->lock to
+> ensure proper synchronization when iterating q->blkg_list.
+> 
+> Signed-off-by: Yu Kuai <yukuai@fygo.io>
+> ---
+>   block/bfq-cgroup.c  | 3 ++-
+>   block/bfq-iosched.c | 6 ++++++
+>   2 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+> index 37ab70930c8d..f765e767d36a 100644
+> --- a/block/bfq-cgroup.c
+> +++ b/block/bfq-cgroup.c
+> @@ -939,11 +939,12 @@ void bfq_end_wr_async(struct bfq_data *bfqd)
+>   	struct blkcg_gq *blkg;
+>   
+>   	list_for_each_entry(blkg, &bfqd->queue->blkg_list, q_node) {
+>   		struct bfq_group *bfqg = blkg_to_bfqg(blkg);
+>   
+> -		bfq_end_wr_async_queues(bfqd, bfqg);
+> +		if (bfqg)
+> +			bfq_end_wr_async_queues(bfqd, bfqg);
+>   	}
+>   	bfq_end_wr_async_queues(bfqd, bfqd->root_group);
+>   }
+>   
+>   static int bfq_io_show_weight_legacy(struct seq_file *sf, void *v)
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index 141c602d5e85..42ccfd0c6140 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -2643,10 +2643,13 @@ void bfq_end_wr_async_queues(struct bfq_data *bfqd,
+>   static void bfq_end_wr(struct bfq_data *bfqd)
+>   {
+>   	struct bfq_queue *bfqq;
+>   	int i;
+>   
+> +#ifdef CONFIG_BFQ_GROUP_IOSCHED
+> +	mutex_lock(&bfqd->queue->blkcg_mutex);
+> +#endif
+>   	spin_lock_irq(&bfqd->lock);
+>   
+>   	for (i = 0; i < bfqd->num_actuators; i++) {
+>   		list_for_each_entry(bfqq, &bfqd->active_list[i], bfqq_list)
+>   			bfq_bfqq_end_wr(bfqq);
+> @@ -2654,10 +2657,13 @@ static void bfq_end_wr(struct bfq_data *bfqd)
+>   	list_for_each_entry(bfqq, &bfqd->idle_list, bfqq_list)
+>   		bfq_bfqq_end_wr(bfqq);
+>   	bfq_end_wr_async(bfqd);
+>   
+>   	spin_unlock_irq(&bfqd->lock);
+> +#ifdef CONFIG_BFQ_GROUP_IOSCHED
+> +	mutex_unlock(&bfqd->queue->blkcg_mutex);
+> +#endif
+>   }
 
-I'm impartial towards the complexity of per-memcg cursor. I don't
-think it's that big of a deal, but only if it's warranted.
+The above change protects the q->blkg_list iteration in bfq_end_wr_async()
+against list removal in blkg_free_workfn(). However the blkg insertion in
+blkg_create() still doesn't use q->blkcg_mutex and so list traversal in
+bfq_end_wr_async() may still race with blkg_create().
 
-Hao, if you're convinced that doing small batch is not efficient,
-could you run some experiments to show the improvement bigger batchign
-and fairness? Maybe implement a small batch, no-memcg cursor first.
-Then implement a patch on top of it to add per-memcg cursor, and show
-how much performance win we can get from that patch on top of the
-patch series?
+So I think we may also need to protect blkg insert in blkg_create() using
+q->blkcg_mutex.
 
-FWIW, zswap writeback right now is not that batch-efficient :) There
-is no IO batching, or batched lock operations (we drop the lock
-whenever we attempt to writeback a page), etc. Might be a good avenue
-to optimize.
+Thanks,
+--Nilay
 
