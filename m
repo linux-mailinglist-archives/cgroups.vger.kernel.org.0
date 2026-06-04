@@ -1,60 +1,98 @@
-Return-Path: <cgroups+bounces-16649-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +PEUHZylIWpTKgEAu9opvQ
-	(envelope-from <cgroups+bounces-16649-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 18:19:40 +0200
+	id kWyVIeu3IWqaMQEAu9opvQ
+	(envelope-from <cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 19:37:47 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31860641C74
-	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 18:19:40 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFD1B642571
+	for <lists+cgroups@lfdr.de>; Thu, 04 Jun 2026 19:37:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=MEq5dlFI;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16649-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16649-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=K8xCd26f;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16650-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 608EF30C7F35
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2026 16:10:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 298FD30295BE
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2026 17:24:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE483EDACB;
-	Thu,  4 Jun 2026 16:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01714C6F1C;
+	Thu,  4 Jun 2026 17:23:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B923CAA2F
-	for <cgroups@vger.kernel.org>; Thu,  4 Jun 2026 16:10:15 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780589417; cv=none; b=m1SomFB09tPLG8EyWDNfTUtx0AkrLDcDK/zHjIHNNdCReml65zupE7WKXgGWGkB2u/oZL1MHyzbO3v6mhZrhzkq7OuGlgdxzrR8kYVa3W6aKdAWjm20GvSXyBlFBSSnbRSslBP3a9HaKOV8ra/lAPeBRfWe8B3Ui4/NHdrFHdwI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780589417; c=relaxed/simple;
-	bh=dkqfCMrLmXYKCpzoo4wiIUki7SDk/LrZwiKaXXZvcDw=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8B34C6F1B
+	for <cgroups@vger.kernel.org>; Thu,  4 Jun 2026 17:23:49 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780593831; cv=pass; b=uTtXE5FVHzjfxr7b/VwyuEjIiSJy/iIHjZqOw2Vlq1Pvf2AYb11oaF+f1ANeNSboIF3bKULuz15MglcPKxorHTqlOk67t78hzlA7CKYv+VO5cY63apyAPJPZ6Gu409urQY2ybpbY+95i59PM6eXk/z/Z+sCp4yNZrkF4IHL6pQM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780593831; c=relaxed/simple;
+	bh=WgIKM3EBxa7eVRr1Qp+EPGWEolxCAu6y4pk0+g25Gr4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k9qdPGWnIsehaZqdTcmYFOiUHmi4JfoahwsGD9EEBroP1zqAwIQs0fJ9bcfMaRGz+1KhIcFGd3S3LKEs7CcTrQIP5x8Zh6oEAs/+UU3Dc6SIoFuJoiVHIaAfaAqQkvTx+3YGC9zEJsEsUtLr+a0GigjKpqMbYR/l/vuq1eVV4w4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MEq5dlFI; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C08031F0089F
-	for <cgroups@vger.kernel.org>; Thu,  4 Jun 2026 16:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780589415;
-	bh=YW7V6VQa29YjcMSrmd42lxjY3Q5BWm+8nU4PiEtSpss=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=MEq5dlFIJfV2cj25Gy5Iphar+8EB3Q+M++ma3ddkZ79VItR+ZvWCy5GquLxnOwLVT
-	 J0TvzAcGjl7Z1/O41TXXKHBFelMg54n3BTGq2Q9EZgUNoAihogBT0qG+6UYmqVnx2H
-	 Mu7raqFZSeIZhtTt2+xGRdXmofZV6p0dcICRAwft3WVZmbtnX+2V2U5eRc3gWEeD0u
-	 Lg5SEKkRDUZMSEKAkIxpE3/03WJK7VloDAFzWaehmiYDKu9IZw5eqQFmuC9/jPXudl
-	 Pqvz5HUrco5yx9+lUkOI41JCLlWsJ1Flg08a2vxZpM9oXrMH5s7EcHnoJFSDpt2rW1
-	 X/t1zmDjUd3fg==
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-9159951f05aso109425485a.0
-        for <cgroups@vger.kernel.org>; Thu, 04 Jun 2026 09:10:15 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ9COYaNUX3QZZFqv9ZCeGXwJEGMnHcS1By0p6Q5m0N5JxciTjVgmTNLdyvNTGuKPTXy1BOa9kXp@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbLpmI6wRsp1R958IZDzaVBM9DUxHqy7boThymekmP1+1H+FsR
-	DyCfgJWjs8Y5HQhGAskASa31eJluLu1iHQlHQikL/xfa8iFvY/Wq+z1UDVppqllbUCI+YojrnIC
-	oGKa2WRhjyLZ4mWFaP9231JmjHS868f0=
-X-Received: by 2002:a05:620a:a181:10b0:914:ca75:e8cb with SMTP id
- af79cd13be357-9158a7a7d31mr980372885a.39.1780589414974; Thu, 04 Jun 2026
- 09:10:14 -0700 (PDT)
+	 To:Cc:Content-Type; b=Ma650Fpj6ivsqFcgEQNNCt7CGgIwrcycj9zHcQyEA1VZ/oChoDMBEpfhJqAZZnrA9/8OXXAwTR/uL5RYtRZTfNW13Gcscf176aY8qc4ss1EEWksPkbRgXcY7wotYbPHDpI77w3tz7bCncpFpBmQ//0Mm84iGxWXuL2ndrFh4/os=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K8xCd26f; arc=pass smtp.client-ip=209.85.221.42
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-45ef56d9b67so801380f8f.2
+        for <cgroups@vger.kernel.org>; Thu, 04 Jun 2026 10:23:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780593828; cv=none;
+        d=google.com; s=arc-20240605;
+        b=QfHnUz6UWYeS0nS6+CoAQRutneOp3OqNbPgpqwS7wdzJ2wm0kwO0mDnlESRKaqqF7c
+         T1IR+LuqTz6KAEj8eaOaLlP2RDadbB3dGW7G4Rd3X9aqCiYxoZE44YfX8fyNK6DZ2Zfr
+         0cOv9HzEhVSG3b/9Qw4HWVqbFQJE3oxeFAtdJSiedGfLGbI6scS5z2BlhpGZG9Wy3J9r
+         Gse/AbDqIit2SnKIhnZkppjN1Vvypbj/hgj7LKhoTBSxxUKm39tKSAGPY49Lubxe1B3e
+         SeoO/+MST9RzfCRGrWs1xrjhpjiuJwh1EjUAcqMr2OHVhiJrHo/gWuxElEeq9SW8PuhE
+         I3/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=/rB/IXV+OMc2A+R0X4txGzVE+20Yu2JeN9gbqIkZf1A=;
+        fh=e0ebJTuuVjyfnIgw2QbfWkVUWogYQvvw1kXpbDt30fU=;
+        b=eRmCtmPLRTNF9dLf6pnnVsUw64DYXGJJFp32e0LVa1rE0bzst453/6H2tEr/57FPbY
+         RDxqmlX4E2CF4dEn8j7DYelfq8wLjrLMP8DnPeoJjvhlLH6N/Z+w7Zk491Y1SsPXPEaf
+         sq56yTiiVs/Gst+yHemDBDw24GHGsZVLOCN9r3x9J9Sl8USjz6kFqFpK/0iXk3ZBnazk
+         AQ0N5GulDV3cCtZ1ExCNEfvHwxwQkOGXrkw/yoGEyBB8Fyr1YK1tSC0a277eU4r1PiUY
+         0ymaufrR41dzmgwTmcAFWOSw1sXwWpURHpzqXNLInD3/uENQY7X6OzakEu+QOozxZJLx
+         +PaA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780593828; x=1781198628; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/rB/IXV+OMc2A+R0X4txGzVE+20Yu2JeN9gbqIkZf1A=;
+        b=K8xCd26f2jR2srH2WJ5ijXhlT8cgZ6PqnPdioj0r+nI/S0Qr48jEUxIOGJIjpbV+0X
+         K47vwwIgo00nOo8RbqyBIdnLUG0MZv+UIRtELeJnHtrdmvVk6FnWR71PRGfzobV+GBGN
+         1X+YCQuRNbEi6RUDSZIpOun2lkHfac6THvsUgEZW74pS60qnqikFM1fvZcEoDnn9MPlZ
+         +gMGdfS4jhtzb9JzaWkATdTwLJeV9FncYCWX2kZMRtGxuV3uemghesicJMane/whLYRw
+         R7C7lQwZNRaxLHwgQ2PyjuMyJc38nfO0zT81SZSmeuxw+XCPwHUZ9d3OA58eNQM1aT4Z
+         g+Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780593828; x=1781198628;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=/rB/IXV+OMc2A+R0X4txGzVE+20Yu2JeN9gbqIkZf1A=;
+        b=V0KR53gQzcObax5jFXIyZuJUrzFZ7ueH91BIU7EdZ43sCHwpQ1kC7SAy9DdPP7TOWs
+         qMlzEeMGVr/P99biQfvOge48/lVdZPeKtJProKYOrJdZdbJjOxJcw3rTZWfso1rVDpGf
+         2nW0p2R0N/OGJ7yc1fFWrpOIacZ9OA7sx1NbAJ4AFQG66rGfN5Ur8rdb0IB3RDDHTm9I
+         UiGiJop7VS6mw7TIgWMbT4xYC501MHOA6Uabw63uo/LqZGbAM8pgm3f/VoAEn33eArU8
+         DMepR8b2GQleWT8kBS2mnhQAxmwYtZx4pMqhTQ47lk0xruRLrI8O6JePC3xkH4bjvVqm
+         v2bA==
+X-Forwarded-Encrypted: i=1; AFNElJ+s/Eejt3pTJGGU1+9H9pT8Jpghw/Ni1IhwRGcRInE4hU1CX67BT67EUSdHtySS/a8fPRm1/vtN@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7ZR6CFJ0M1Zi5VbJzF/YVUDfzMcfILuqic/VFuWTlB/XFF65I
+	CE3RL+axw32ZicSXOpUnLzO8DPmSyuFPqjjXDtydMMwl0tq9aCfLOnGJVCazHH5UYZ1aut2xkRx
+	tsQfs+rXDW97VCiLwo/OjFkgTpp8mujA=
+X-Gm-Gg: Acq92OH1q8L8xFGW3oiAPY+wRWeMOckSUkgq2LMEm71CLL6GT7V+nVxRNYpl4GQb6wc
+	mH3P7Axz/H/X3lKEfMJ774aZPvV1RS3WNJhoa4/M7yKCz5i7TLl4r6Jtik2UrPc/NhFCNVSIXSd
+	xJhS73jydU3MZpgyrDVcrIVvIPLQZ/gOQ19aEVsH8EllkFH7BNFhMgoqF8OIqOuB3xERrDNw9Vh
+	ofILBQjq5b7lqeZ9xQVsT0dsYXmYxN3iAyjWDCnqW7KQuvVjEoEhrFTADyawOZG9nisqFG+It5D
+	7Snq2QtwGeotkHKbVZKAq7rLlZ21Ub+aEFcl7zkmRJ6a5E0ZDQ==
+X-Received: by 2002:a5d:604b:0:b0:43d:69ff:6898 with SMTP id
+ ffacd0b85a97d-460302e6f06mr103580f8f.9.1780593827921; Thu, 04 Jun 2026
+ 10:23:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -69,16 +107,15 @@ References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
  <9898f83d-fae9-e284-6b85-c7f4089840a0@gmail.com> <CAO9r8zPBH6-0SQ6-_ZOhTQeyu=rz4F=ugikCrU-JR_skm6fEWA@mail.gmail.com>
  <a60eedb6-f3fd-4092-b726-04a17a695ace@gmail.com>
 In-Reply-To: <a60eedb6-f3fd-4092-b726-04a17a695ace@gmail.com>
-From: Yosry Ahmed <yosry@kernel.org>
-Date: Thu, 4 Jun 2026 09:10:01 -0700
-X-Gmail-Original-Message-ID: <CAO9r8zMydJfQ+28OQkPYyH1yHngxYCNByo-4hu=D2eoJBtTX-Q@mail.gmail.com>
-X-Gm-Features: AVHnY4JkU6wiALPrkeGY5YeF8-NFodHMhfIp-dzt841kR4__pG_M4xsJghd5PrI
-Message-ID: <CAO9r8zMydJfQ+28OQkPYyH1yHngxYCNByo-4hu=D2eoJBtTX-Q@mail.gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 4 Jun 2026 10:23:36 -0700
+X-Gm-Features: AVVi8Cflh7M61FcoQfkq5TRPiQaxI_Tappj1TjJNCo92lEJSIG0y-zr5pc0cdEk
+Message-ID: <CAKEwX=MQ3xXBAY-2H8vA+XSX5GHNBubJ2GCYAXGD+Hra++ZM7A@mail.gmail.com>
 Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor per-memcg
 To: Hao Jia <jiahao.kernel@gmail.com>
-Cc: akpm@linux-foundation.org, tj@kernel.org, hannes@cmpxchg.org, 
-	shakeel.butt@linux.dev, mhocko@kernel.org, mkoutny@suse.com, 
-	nphamcs@gmail.com, chengming.zhou@linux.dev, muchun.song@linux.dev, 
+Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, tj@kernel.org, 
+	hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@kernel.org, 
+	mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev, 
 	roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
 	Hao Jia <jiahao1@lixiang.com>
@@ -87,40 +124,40 @@ Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16649-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:jiahao.kernel@gmail.com,m:akpm@linux-foundation.org,m:tj@kernel.org,m:hannes@cmpxchg.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:mkoutny@suse.com,m:nphamcs@gmail.com,m:chengming.zhou@linux.dev,m:muchun.song@linux.dev,m:roman.gushchin@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jiahao1@lixiang.com,m:jiahaokernel@gmail.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,linux.dev,suse.com,gmail.com,vger.kernel.org,kvack.org,lixiang.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:jiahao.kernel@gmail.com,m:yosry@kernel.org,m:akpm@linux-foundation.org,m:tj@kernel.org,m:hannes@cmpxchg.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:mkoutny@suse.com,m:chengming.zhou@linux.dev,m:muchun.song@linux.dev,m:roman.gushchin@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jiahao1@lixiang.com,m:jiahaokernel@gmail.com,s:lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-16650-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 31860641C74
+X-Rspamd-Queue-Id: CFD1B642571
 
 On Thu, Jun 4, 2026 at 6:06=E2=80=AFAM Hao Jia <jiahao.kernel@gmail.com> wr=
 ote:
@@ -167,16 +204,19 @@ ed
 > > cursor, unless we have numbers to prove that the efficiency is
 > > affected when we use a small batch size. Let's only introduce
 > > complexity when needed please.
->
->
-> If you prefer not to use per-cgroup cursors, do we still need to keep
-> the global cursor (i.e., the root cgroup's cursor) zswap_next_shrink?
-> I found this part to be quite tricky when trying to reuse the main logic
-> of shrink_worker() in zswap_proactive_writeback().
->
-> Of course, I think we could also keep zswap_next_shrink and write a
-> small helper to check if it's the root cgroup, allowing us to use
-> different memcg iteration methods.
 
-I think we want to keep the global cursor, at least for now.
+I'm impartial towards the complexity of per-memcg cursor. I don't
+think it's that big of a deal, but only if it's warranted.
+
+Hao, if you're convinced that doing small batch is not efficient,
+could you run some experiments to show the improvement bigger batchign
+and fairness? Maybe implement a small batch, no-memcg cursor first.
+Then implement a patch on top of it to add per-memcg cursor, and show
+how much performance win we can get from that patch on top of the
+patch series?
+
+FWIW, zswap writeback right now is not that batch-efficient :) There
+is no IO batching, or batched lock operations (we drop the lock
+whenever we attempt to writeback a page), etc. Might be a good avenue
+to optimize.
 
