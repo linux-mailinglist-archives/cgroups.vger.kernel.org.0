@@ -1,209 +1,267 @@
-Return-Path: <cgroups+bounces-16667-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16668-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id dlppFZ/qImrPfAEAu9opvQ
-	(envelope-from <cgroups+bounces-16667-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 05 Jun 2026 17:26:23 +0200
+	id RYSCNcvvImrZfQEAu9opvQ
+	(envelope-from <cgroups+bounces-16668-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 05 Jun 2026 17:48:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D3C64948A
-	for <lists+cgroups@lfdr.de>; Fri, 05 Jun 2026 17:26:23 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F32649775
+	for <lists+cgroups@lfdr.de>; Fri, 05 Jun 2026 17:48:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=GSPu40WW;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16667-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-16667-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=BR20jETF;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16668-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16668-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 96898303885F
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jun 2026 15:18:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4591A3067F8D
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jun 2026 15:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E413D1CB5;
-	Fri,  5 Jun 2026 15:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FCF03F0746;
+	Fri,  5 Jun 2026 15:36:10 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA2835BDDB;
-	Fri,  5 Jun 2026 15:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C98175A8D
+	for <cgroups@vger.kernel.org>; Fri,  5 Jun 2026 15:36:05 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780672696; cv=none; b=mz6+ohfbpHgpWVgaCdYFDeNCNotOVh+u1Ho/6/aa4OwpJTHMQodDTnaSZzQTI6ZZCZ9s1an5+ET1+mte/5erWL/jsO0A96UK1QN32pTf0lGecgT1qOqE2b9JFlCB0IfEg63SCuvhVKgxJVAla+UrAkZ1IKx1xBKR1lUSXoUinDc=
+	t=1780673769; cv=none; b=Ic5rfhpRBm5vPnszn/lhtF1rGzmzfCgpaUB9QRGy3abQsjHQ62hZohrhn6I9EHyu5TMSL4U7ve+3YduvlY69a7wLsGIVgad/9SMmgKGMUwA/HtGcF3GKnxCxVplAXU7ZoFBIAbadE/rOfvknJisD+S4HPYASHMasir1ye8mtPY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780672696; c=relaxed/simple;
-	bh=vn/5cXhuJlOMn30ZTneglH3cHmpvMV952zzgBo9k3TQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PHIu2y41jAa7ACfYYFZj3vTkCE8L2KP5jAWd8WGpfki2df7Yhn1iixtJUaF0rZsYG8xzi2NJUhQvJzM66PC204K1P+Fh2w0nfKhyz6r5L7ozWRVc5lr/MKABfKwvnwKJ7Zr5n+MtnbOD80cydgj+iE7Gx+6qOkQR+38avqA4Yvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GSPu40WW; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 696671F00893;
-	Fri,  5 Jun 2026 15:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780672694;
-	bh=bpBz50L7GInctas+/Il3i3Hx7c4Pv4RIfM6k49q0DxM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=GSPu40WWv9onXNY6VO0dlcw7gsX0kg6588NMgROX+7us5AEUFjsK+9/iM1JALiQve
-	 s9FIHVxGScwUx0snSzqh7890Rvu3diNQ15ki1tIq4j85wka8H7p6WucwIqbQyOM2I2
-	 hBnkXoJI7ZJAVkpkIbJHfqCEh/o6znOhql5PeV2JEp1IfSIOLjl5P7nQ3iis3Uzq+P
-	 9u60D0CPpvy8fLYJp7JncpQfH9t2EKVDtKWBGdJkd2OBdXVDzj6rGRatKgUGb8/23Z
-	 3WlhRQF0kKRXyR0Kptz8QJfDNfZ3JHMDu8VjLy2Y3RB4RxB6Mo2Y/6NFLb9Ra1VK57
-	 7YcT54/CLRijQ==
-Message-ID: <25c4bc47-b65d-4c04-8a8f-18eef2b5566a@kernel.org>
-Date: Fri, 5 Jun 2026 17:18:07 +0200
+	s=arc-20240116; t=1780673769; c=relaxed/simple;
+	bh=fhq8e8X9blJMJLSwX7ZK1MoKmj66J3cq3EZ6sKEAElA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IoApF5wF+buXBKDlDztVamsU+6yuX884U85bC8jgO6rAVtCDYLdnfKa/UjAyR91AqGMKefWqGlxu02nhL7GhUpPCHs2yus2zU1wSScOZLHJQ9K2w7Ng7SGtx/AUW18rR/ZYWbYNWm3bMRJ9A4BEAc6gQcZQgC15H8KQXzPbXpY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BR20jETF; arc=none smtp.client-ip=209.85.210.49
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-7e6f27619e7so1528639a34.2
+        for <cgroups@vger.kernel.org>; Fri, 05 Jun 2026 08:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780673764; x=1781278564; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OrISvpPCKWDj31WRr2OteniiAJNmHCrQHZNb3nzP7nc=;
+        b=BR20jETFS+kbSwrFSmvfyKrzCl7Nl7Qk4PRD6B4nK6ixCpPCMESgibqrY4eGpD5Diz
+         W631CApwethzktX8PzniFaEIBrknlDHqKg9zi3i6TmSySwXpL+MFHrYQSI32lPi2wsIq
+         WDq7dfiaw/OLLLEm2zo9NLlEt47xCjFKvblmiYIhdMsxNj6CbNKmX4uYd/yFvgUOAwYv
+         Qpj5RPPMqIurURSDd/yYhSquwgE9aAu7Czw/9ktKFJ2OpZ3AmvdO7V3a4GJo77D8aeNv
+         prA48ZHyJcTNl/SFZsOpX4on+AaAJAWgBDAb4jJB3q+hMmtpfo+Xozmc45foUg4w/3tf
+         Q0VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780673764; x=1781278564;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OrISvpPCKWDj31WRr2OteniiAJNmHCrQHZNb3nzP7nc=;
+        b=nlSg/Bos6XKrowdgTLHbciBTOXrzOHBFwjXqoenqHy7W4YzlqNzIXCNgRG64KiFqg4
+         8rELbmd/Goe8a2j2IBFt6i7XBMyFuwjEYWRaah0aqhWeecHA8LSwXsKucxiQmrKE8Npu
+         ra1cdfhaII3SIaTN4UYFoqoCd9XQBZRPjxyU2NBx3tyYQSi08x50jqSQKi9yU0lZeqCW
+         WRXJEaogJKwkhEB60KNfna6QRAto41oSbcCdmHfdIPjCFqiPT/lTfcwIkUI+H1S6176O
+         g8gCliR1dHVthEU9BZeZGdM0w1zlSdhU90xg1CugdEynNVpT3H2iKeTzYv0dL2CD/MOa
+         NBcA==
+X-Forwarded-Encrypted: i=1; AFNElJ85aERPQWV/IsDEc6jJRsRqDgzY7cRs4MYlFYuJIdjuaBrxtbiUKbj5wP4/eVeVzmiYMiR1GXsw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0A05XtSZ2xrIXVdWydCa20QCInwEaEIW70GBsIoowveS/pKpU
+	6I/X8fEu3WQdCE8Abssf5uTJpQYQ5otdYM8MBBZnJJExEr2H/wlzLGvM
+X-Gm-Gg: Acq92OEuQAf350S0ZB1C/caYIURffg/gPV98voFKAjtz802Kk0Xag3OS26HY4lbwTAw
+	krNIWpm2jwOBatttyBjHct7iA9KG1IAQAZSfZFlF0rWDV7XqcNcF+nDXECfx8p4Qn39/zfhXJ2n
+	xLT7FtiHcgtB6JzPBuQA+Qbpdm1jteO9tKwgf9REpKcnYiQZnVAjcztJjiisOdTvadaUrl5YBrG
+	6bdQmcw7L2a5nYm4slEZXn1wJtCEGkQLDY9lrysUC/aD70BuULeQiQhBhujYm0TjLI0RDoeopn8
+	WXQCZAf+oIdmKoIWjoW3SzR+L/9g7nylIxU/OZZvVSP9alIeewTaOiWXWARWxjXC0Dn+uOB+9WZ
+	TjJ6dJKHqBxIaYwZyzQqQeDoMYenD9EJx9G2YxEYhN8Rz4qVyqxBwyNRlUvxUCyltfB2c0kjrKQ
+	Nzrn2ff//eQc5cm3iTP7aCCu4NSXCt1z4jksgI3lswcc6wm8Iz/dksG8YGD9JdHc7+
+X-Received: by 2002:a05:6830:4425:b0:7e6:ff83:4b46 with SMTP id 46e09a7af769-7e70ca5c621mr2621260a34.23.1780673764515;
+        Fri, 05 Jun 2026 08:36:04 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:54::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7e6e7468f8fsm6342595a34.6.2026.06.05.08.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jun 2026 08:36:04 -0700 (PDT)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	"Liam R . Howlett" <liam.howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH 0/6 v3] mm/memcontrol, page_counter: move stock from mem_cgroup to page_counter
+Date: Fri,  5 Jun 2026 08:35:56 -0700
+Message-ID: <20260605153603.234296-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: don't allow empty relative nodemask in
- mpol_relative_nodemask()
-To: Farhad Alemi <farhad.alemi@berkeley.edu>,
- Gregory Price <gourry@gourry.net>
-Cc: falemi@asu.edu, Yury Norov <ynorov@nvidia.com>,
- Joshua Hahn <joshua.hahnjy@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
- Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>,
- Byungchul Park <byungchul@sk.com>, Ying Huang
- <ying.huang@linux.alibaba.com>, Alistair Popple <apopple@nvidia.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Waiman Long <longman@redhat.com>, Rasmus Villemoes
- <linux@rasmusvillemoes.dk>, cgroups@vger.kernel.org
-References: <20260528124133.c88c27b11a8ea0ef05e494f7@linux-foundation.org>
- <20260529152616.2308736-1-joshua.hahnjy@gmail.com> <ahnRIDBk4bQ3xX2q@yury>
- <fe33c767-ea11-43e2-8732-f752c9c1205c@kernel.org>
- <ah6X-RtVX75YP7VX@gourry-fedora-PF4VCD3F>
- <c98eb14d-b878-4eeb-91f0-d2b1d4407e1e@kernel.org>
- <ah6oS7wiGB4u4-eR@gourry-fedora-PF4VCD3F>
- <CA+0ovCiEz6SP_sn3kN4Tb+_oC=eHMXy_Ffj=usV3wREdQrUtww@mail.gmail.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
-Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- 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
- qIws/H2t
-In-Reply-To: <CA+0ovCiEz6SP_sn3kN4Tb+_oC=eHMXy_Ffj=usV3wREdQrUtww@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16667-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FORGED_RECIPIENTS(0.00)[m:farhad.alemi@berkeley.edu,m:gourry@gourry.net,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:akpm@linux-foundation.org,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:longman@redhat.com,m:linux@rasmusvillemoes.dk,m:cgroups@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-16668-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam.howlett@oracle.com,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:kernel-team@meta.com,s:lists@lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[asu.edu,nvidia.com,gmail.com,linux-foundation.org,intel.com,sk.com,linux.alibaba.com,kvack.org,vger.kernel.org,redhat.com,rasmusvillemoes.dk];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 13D3C64948A
+X-Rspamd-Queue-Id: 49F32649775
 
-On 6/2/26 17:01, Farhad Alemi wrote:
-> Confirmed, with a standalone reproducer (attached); it panics linus/master
-> at e8c2f9fdadee. cs->mems_allowed can legitimately be empty
-> on v2 -- a freshly created cpuset child that never had cpuset.mems
-> written keeps mems_allowed empty (never initialized) while effective_mems
-> is inherited non-empty in cpuset_css_online(), and v2 allows attaching
-> tasks to it (the empty-mems guard in cpuset_can_attach_check() is gated
-> on !is_in_v2_mode()). So the non-empty guarantee holds for effective_mems,
-> not for the configured cs->mems_allowed; forbidding empty cpuset.mems
-> would break v2's inherit-from-parent semantics.
-> 
-> The reproducer enables +cpuset, mkdirs a child without writing
-> cpuset.mems, moves a task in, mbind()s a VMA with
-> MPOL_BIND | MPOL_F_RELATIVE_NODES, and offlines a CPU; the hotplug walk
-> then calls mpol_rebind_mm(mm, &cs->mems_allowed) with the empty mask and
-> folds modulo nodes_weight(*rel) == 0 (console logs attached).
-> 
-> The newmems instinct looks right: it's the effective, online mask the
-> task is actually allowed to use, guarantee_online_mems() keeps it
-> non-empty, and it matches cpuset_attach(), which already rebinds against
-> cs->effective_mems. The fix this implies:
-> 
->   - mpol_rebind_mm(mm, &cs->mems_allowed);
->   + mpol_rebind_mm(mm, &newmems);
-> 
-> I built the current base (e8c2f9fdadee) with and without this one-liner:
-> the unpatched kernel panics on the first cpu1 offline, while the patched
-> kernel runs the reproducer's 8 offline/online cycles cleanly, with no
-> divide error.
-> 
-> This regressed in ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}",
-> v3.17), which moved cpuset_attach() to the effective mask but left this
-> rebind on cs->mems_allowed.
-> 
-> Happy to send this as a proper patch (Fixes: ae1c802382f7, Cc: stable,
-> reproducer) if you agree the cpuset side is right, or to test a
-> mempolicy-side fix if not.
+Memcg currently keeps a "stock" of 64 pages per-cpu to cache pre-charged
+allocations, allowing small allocations to avoid walking the expensive
+mem_cgroup hierarchy traversal and atomic operations on each charge.
+This design introduces a fastpath, but there is room for improvement:
 
-Yes, please send a patch, including a high-level explanation of what you
-analyzed above!
+1. Currently, each CPU tracks up to 7 (NR_MEMCG_STOCK) mem_cgroups. When
+   more than 7 mem_cgroups are actively charging on a single CPU, a
+   random victim is evicted and its associated stock is drained.
+
+2. Stock management is tightly coupled to struct mem_cgroup, which makes
+   it difficult to add a new page_counter to mem_cgroup and have
+   multiple sources of stock management, which is required when trying
+   to introduce fastpaths to multiple hard limit checks.
+
+This series moves the per-cpu stock down into the page_counter which
+consolidates stock limit checking and page_counter limit checking into
+page_counter_try_charge. This eliminates the 7-memcg-per-cpu slot limit,
+the random evictions (drain & refill), and slot traversal.
+
+In turn, we can add independent stock management for additional
+page_counters in each memcg, which is used in my tiered memory limits
+series to add a new page_counter to track toptier usage [1].
+
+The resulting code in memcg is also easier to follow, as the caching
+becomes transparent from memcg's perspective and managed entirely within
+page_counter.
+
+There are, however, a few tradeoffs.
+
+First, the bound on how much memory can be overcharged (and remain stale
+as stock) is raised. Previously, it was fixed to nr_cpus x 7 x 64 pages.
+Now, it becomes nr_leaf_cgroups x nr_cpus x 64 pages. On large machines
+with many cgroups, this could be significant.
+
+There are four qualifying points:
+1. Larger machines should be able to tolerate the additional overhead,
+2. Stock should not remain stale as long as the cgroups are actively
+   charging memory,
+3. Getting close to this overhead is rare, as it would require a process
+   to migrate across all CPUs and leave stock there.
+4. These charges are not "real" allocated memory, but rather accounting
+   done in memcg; they are easily returned on pressure.
+
+Secondly, we introduce some additional memory footprint. The new struct
+page_counter_stock adds 2 words of extra overhead per-(cpu x memcg).
+
+A small change is that for cgroupv1, reported memsw usage can be lower
+than reported memory usage, if the memsw page_counter overcharges to its
+stock whereas the memory page_counter does not.
+
+Finally, to keep the above memory footprint limited, I opted to not
+embed a work_struct into page_counter_stock, but rather decided to
+trigger synchronous stock draining, since the drain operation is rarer
+now, and only happens under memory pressure and on cgroup death.
+
+One side effect of doing synchronous work is that drain_all_stock holds
+the percpu_charge_mutex longer while it performs the work, which means
+chargers may be more likely to be unable to grab the mutex lock and
+exhaust MAX_RECLAIM_RETRIES and OOM, in theory. In practice, I have not
+been able to replicate this behavior in my experiments.
+
+Performance testing across single-cgroup, as well as 4-cgroup (under the
+7 memcg limit) and 32-cgroup scenarios on a 40CPU, 50G memory system
+shows moderate performance gains (~1%). In the tests, I repeatedly
+fault and release anonymous pages using madvise(MADV_DONTNEED) to
+stress the charge/uncharge path, across 30 trials of 50 iterations.
+Metric here is time it took across each iteration (ms).
+
++----------+--------+-------+-----------+
+| #cgroups | before | after | delta (%) |
++----------+--------+-------+-----------+
+|        1 |    357 |   350 |    -1.960 |
+|        4 |   1221 |  1204 |    -1.392 |
+|       32 |   9184 |  9032 |    -1.682 |
++----------+--------+-------+-----------+
+
+Further testing on other stress-ng microbenchmarks also agreed with
+these results.
+
+v2 --> v3:
+- Dropped the cgroup v2 optimization, since it could indeed lead to too
+  much time held with the cgroup_mutex. Instead we let the stock
+  accumulate in the parent cgroups, which is not so bad; charges can
+  still land on these cgroups, and if we ever reach the mem_cgroup
+  limit, we can easily return those charges.
+- page_counter_disable_stock no longer drains, just prevents
+  accumulating stock. The actual draining is done in the free_stock
+  variant, where we know for sure there are no in-flight charges.
+- Reordering the page_counter_disable_stock path to disable before
+  draining as to prevent accumulating stock first.
+- Skip isolated CPUs when draining synchronously
+- Rebase on newest mm-new
+- Wordsmithing
+
+v1 --> v2:
+- Dropped stock returning on uncharge to preserve same behavior as memcg
+  stock. This resolves some race conditions present in v1.
+- Fixed many race conditions between disabling page_counter_stock and
+  in-flight charges
+- Restructured drain_all_stock to iterate over all CPUs first before
+  memcgs, to reduce the number of synchronous CPU work scheduling
+- Optimized cgroup v2 further to drain only on the first child and skip
+  the root mem_cgroup
+- Dropped RFC
+- Wordsmithing cover letter
+
+[1] https://lore.kernel.org/all/20260423203445.2914963-1-joshua.hahnjy@gmail.com/
+
+Joshua Hahn (6):
+  mm/page_counter: introduce per-page_counter stock
+  mm/page_counter: use page_counter_stock in page_counter_try_charge
+  mm/page_counter: introduce stock drain APIs
+  mm/memcontrol: convert memcg to use page_counter_stock
+  mm/memcontrol: optimize memsw stock for cgroup v1
+  mm/memcontrol: remove unused memcg_stock code
+
+ include/linux/page_counter.h |  16 ++
+ mm/memcontrol.c              | 276 ++++++-----------------------------
+ mm/page_counter.c            | 129 +++++++++++++++-
+ 3 files changed, 188 insertions(+), 233 deletions(-)
 
 -- 
-Cheers,
+2.53.0-Meta
 
-David
 
