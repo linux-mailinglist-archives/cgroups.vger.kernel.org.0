@@ -1,80 +1,80 @@
-Return-Path: <cgroups+bounces-16722-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16724-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id JgnIIcmzJmribQIAu9opvQ
-	(envelope-from <cgroups+bounces-16722-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:21:29 +0200
+	id UL3nNhO1Jmo2bgIAu9opvQ
+	(envelope-from <cgroups+bounces-16724-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:26:59 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3946065618B
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:21:29 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FE4465625C
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:26:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=MNtbC7fq;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16722-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16722-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=pYWVUIOt;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16724-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16724-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D2A203042FBE
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 12:17:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DB82230A8184
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 12:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9EE3C0613;
-	Mon,  8 Jun 2026 12:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F023C1F40;
+	Mon,  8 Jun 2026 12:16:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560993BB9FC
-	for <cgroups@vger.kernel.org>; Mon,  8 Jun 2026 12:16:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483EE3BCD34
+	for <cgroups@vger.kernel.org>; Mon,  8 Jun 2026 12:16:10 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780920971; cv=none; b=uVVykCZnT4DB7ImEE2k4qUJE3SJ0lzMfXfQfCtMRw9UwB+bYhV07n/NJLTlCJJZ1vztHnK3AtTmg6kYbBdOILuTYKD9jJXfgKx0UifBItbdN4nbZJrTeLFLNlj60jgBTtE3xNHStq2VjxfYj0MxV1bOIxeYHtTLV74Yta7ivAkI=
+	t=1780920972; cv=none; b=V4hHv1bNRe8XW7QwPkEKCNjI14l/IlU3b5CLDNwIBt9TP7FJ8tHuU8rrPusbgzoKLJuzB1K3fQfbqixZ5LY+nBsDF7QqcWPAuQE4FsRA1MU+pDV8vRUZeMoSinYHZ0L/W+bLxniLrqtx2SZVM4tPfvKl2F3nK+TAcZYLhmD4wTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780920971; c=relaxed/simple;
-	bh=tDC7u52egQ55UBVu3L5EMvdM3Vtu7xDSms+xUy0L7YA=;
+	s=arc-20240116; t=1780920972; c=relaxed/simple;
+	bh=FaDubOoH7dsOeXM2Hn0EEIBjQF2nxAfMMPK3pnb2MTw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rrb1eYKMPPCPagILTW+WB/08HwkODQc6VezdRUZwjcgvop+yZEjxpowzEZPYoBb8BJSruZDYWF4uIrBzxdGnTJQiCLnkn1xNjFAhAVFODc9bKOfVrGavL0pz3y65NWGgWFOsgOetGEqGhjqiUsnLYJYYUj5CcbGjDi6zdpBR46g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNtbC7fq; arc=none smtp.client-ip=209.85.221.50
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-45ee5cdbd28so3071275f8f.1
+	 MIME-Version; b=tSIJRYGoXOc+k2RUsYCrPlxPIUnO25uwUL3lZW5TN/6qPNVfYYXmJPgKOdt50a9gtcpPH+5dmViepOi5HAThUdESyskoxaZys2D+2QQEhJsjET0eel45gVQoIR6iUeJLKLiL0HKxJ1BPKN8St4jVYdOkbYO+Pk23FDRkAsk3+do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pYWVUIOt; arc=none smtp.client-ip=209.85.221.50
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-45f3cf907ceso1956691f8f.2
         for <cgroups@vger.kernel.org>; Mon, 08 Jun 2026 05:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20251104; t=1780920968; x=1781525768; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tOIvSewylSpCmuC9OVq7JPT5uWWaJG2zU5cqeF25bdA=;
-        b=MNtbC7fqAvcJ4DGOCs299AC1jcmNRSVulF0OCzJXgyEEudLQ0BHWrVQmCKNjzpjUy3
-         EAhTlyR6s/LwwMlt6CG7Cn+UErlYebwG/EoQxZsbhmYr+nggiC6LAOK1yjOWwlMASAXv
-         7TkTrG9vRsMjMyvfGzR5JrtGM4ygdthlIF4rC5HTvUKdk4nTRGSZWKcsZMWzMFFN/NyP
-         Ff5Eyca/HY/kdyPc9yKUZe6OIBQ8oaXhf/QpSbyfV7AvYQ9OV1mrcym9+iVuQORCr5jj
-         nfzQPpinN8PvJ0mUJNqo5F5o/VOdvNptKKiFruY6ELgcLlwa3+CSxXnQAGVAekVJ5NFa
-         P1yg==
+        bh=+KNwOSXF/MHMJ4z938tfpzy14/zc4Yo7RxXmK9ytG1M=;
+        b=pYWVUIOtKnwUaxFmjZXqWJmLbqpvWO6MdR6+ukJFYuk7injJ4Ftvgv7G7A7l46dYnS
+         ik38HpvlaBDHaWy8cNTfliNBYJIhSs2EgzSGO4WzNHMGEmfIawECd4XFhVpb7i2mwOBL
+         Bp2LEjNpyV8BZojMttVlDSUPc+b+vPkTDk9aM9mrWum6tpjMla0IqyWdz1Wls5kQPKXb
+         UvT+ZZfaVCC0TwKk7aVQhWnBPup5TyQBGHP3UYlj4rhTdV192qUyOzMaC5H00rzGxf/P
+         pOlRFutV+ZnAQwYxBJPKODujppk+uAjnQsWnTMiD8qS95d8Zym3Ovd/exEJ8krOB3mUT
+         VMhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20251104; t=1780920968; x=1781525768;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=tOIvSewylSpCmuC9OVq7JPT5uWWaJG2zU5cqeF25bdA=;
-        b=ir9nc9EECuMF/YqHNm9KEim1//pkfQB6JOejV2qe1YJe5K/DoEbUUXjoXfVKaVGIxU
-         OtjdaMWKGvhJZ1YXVR3wJwGpJLkHXTDYTHG1N820UTLJ2n3vAFOUlnyY1YrqGYxmVjB8
-         FOIdHD7EQfRdNTW9ua0GP3fjk2c63DXkxS4u7gAK9nJUXhfxJF0PVXleF+Zz1RdLouYv
-         FmP8rOnwrNKnbNvmT6f4OBmT3KOrBXzEvUK3+mLX9/Yi/LgVX2qrldaqG2chE6KGNog9
-         4UFG2ExM6lxUgjaAxWvoZnAAgwRlSiyiKbWpjWjGkTxmMUX3FcXruIrktodjr+W+5m1C
-         /J/A==
-X-Gm-Message-State: AOJu0Yx/bAKmKCRpO2Pv8a9/tEHgY1oh4W+BuL6oJ2wcBFl4po8Cxivk
-	rfpzYXY17otZHhhV7cnW1CXO5Y0iQuACvza6JX9+CM1p/JLJhF6s731e
-X-Gm-Gg: Acq92OHHMSrF1lNLempx0TlkPnf9RsP6uuSBJRMFxZL4HjGuMWbkf2VpyI4JmGKYEB+
-	aTCFkN3Xlz0f0SPt21c+KKL/8eicaGiyiK6W2z6uDyxh7rNsyN8ot3Zorpm5lBuD893jtz9zU11
-	Ydf/EJayIZvU0IDbs/4qcpp66BBP0df5WLfJ0b+JRLzFmOfRyyyOtNHSnGlWAvNwtaqNyUEm8Hn
-	X4FGo1SqmDxRL4e9ql35PHPcZDan86WCwE+p/ocEvpgHvP9mHhmFYGt26tA7S5f1ZbkF2XLYWyY
-	dHQVMwXJnVN9qH0PQ5jT1TtqblFVPcINXiTwUqBKMjMAAO5PWaNrCsHYvdvJ+91AZlcwGPbNZEX
-	JgaM4fMAaPgRDPi+b7PCMI15NU/0lGbEGeE2aWZWXqIjV5wlRd2hmCwaG68a49iaUKlUdsYZmqi
-	WPQFC9G50UuN414/BZD/rtvIsgwV4WpeY=
-X-Received: by 2002:a5d:6448:0:b0:460:d18:865c with SMTP id ffacd0b85a97d-46032b61422mr15269071f8f.1.1780920967701;
-        Mon, 08 Jun 2026 05:16:07 -0700 (PDT)
+        bh=+KNwOSXF/MHMJ4z938tfpzy14/zc4Yo7RxXmK9ytG1M=;
+        b=bz82ILJnQFinB6gzs40BFGTrQ0rBkz/dMmHQ3Mh18XCzojEXPqBWgW10BrYA5PmfU9
+         QoHg+saUYdkDD6MyHgqyVhCI4CDyrnSC3V0HTw6wzb1bHKwJES5XTugU7TklXw0hDG2Z
+         euvXcMUT+a34oVnQZ6XgN9g96Cl/5dQJbbFHeadlCbM/lz0XwWylKRc/k2hcLLvne9cd
+         07YEZqRq1hVt31srjzaoIwiBILo5x2VFg53eKp3ZYk8ZYVeN++hLd/5s/nWT7fxOLQSU
+         ObhIU3NflQEhIr0r9bTXbyxjXWeT4Hx46iM9qE9CnnwTcJSbRJ1liDRFWxOL7+X8Myb/
+         iWIw==
+X-Gm-Message-State: AOJu0YzYSNn24kcMhxN6Jc6MBmW402MIFBdlU0HIDq/Ne5WuzuqCHfxl
+	++Jz33baR6/B4dNg2pDr/9N0yistxd4USXBvoNny4bKTHkB5IoYS5k8hOxW/2Mix
+X-Gm-Gg: Acq92OHUvU9y4kIdbfoGFp9RiHWlK1eiFC328ClLQv+0fjtI8LDq0rNmGTap+xxYLL1
+	MyVzhUCFEhodFa6pYgCaKLGmA6Icf9nkSrRTr/6KyEkA4c90K9OL0nxbEuWy40a/tD4sfhAceOV
+	zs9NCY4zoWWjNnd3bFO+M0s0pJuJ7OIBaWSL6RlOpO0kpWD75kVlTO66Nu1pT6TsF471iUvW5v9
+	cyvkz9OpdVCyxZyTOcx0oY6qPLJpcqb1dt4aAg84530neSlkq4PSyXtYbO6fDMjg9OFKw4jk03R
+	3z76gTH1UlPkiRDmSnMEhNcUMeq1YwAqkCq6mQ7UoiZt3ZsEOv6GRdjRRHl53bSVJG1cnLwrXRs
+	WQd0cPtyq+Wz26SJUqzrkUVBu0Rhs31x9z45PZNZLVYLwi8AZ0rKaA3KAzE+FiGI3pcpSS2oUiW
+	3ck1aByOCPMwJoZEb5vFcSFWfrdc5cy6I=
+X-Received: by 2002:a05:600c:a088:b0:48a:5301:bb5c with SMTP id 5b1f17b1804b1-490c25fc129mr246357485e9.16.1780920968525;
+        Mon, 08 Jun 2026 05:16:08 -0700 (PDT)
 Received: from victus-lab ([193.205.81.5])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f2ec711sm50644906f8f.12.2026.06.08.05.16.06
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f2ec711sm50644906f8f.12.2026.06.08.05.16.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2026 05:16:07 -0700 (PDT)
+        Mon, 08 Jun 2026 05:16:08 -0700 (PDT)
 From: Yuri Andriaccio <yurand2000@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -92,9 +92,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Luca Abeni <luca.abeni@santannapisa.it>,
 	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
-Subject: [RFC PATCH v6 21/25] sched/rt: Hook HCBS migration functions
-Date: Mon,  8 Jun 2026 14:15:40 +0200
-Message-ID: <20260608121546.69910-22-yurand2000@gmail.com>
+Subject: [RFC PATCH v6 22/25] sched/core: Execute enqueued balance callbacks when changing allowed CPUs
+Date: Mon,  8 Jun 2026 14:15:41 +0200
+Message-ID: <20260608121546.69910-23-yurand2000@gmail.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260608121546.69910-1-yurand2000@gmail.com>
 References: <20260608121546.69910-1-yurand2000@gmail.com>
@@ -111,21 +111,21 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-16722-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16724-lists,cgroups=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:mingo@redhat.com,m:peterz@infradead.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:luca.abeni@santannapisa.it,m:yuri.andriaccio@santannapisa.it,s:lists@lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[yurand2000@gmail.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -138,126 +138,91 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[santannapisa.it:email,sssup.it:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,santannapisa.it:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3946065618B
+X-Rspamd-Queue-Id: 3FE4465625C
 
-Hook rt-cgroup migration functions:
+From: luca abeni <luca.abeni@santannapisa.it>
 
-- select_task_rt_rq
-  Always return the cpu where the task is scheduled.
-- balance_rt
-- put_prev_task_rt
-  If a server is throttled, put_prev_task_rt is invoked and a push is
-  necessary so that the task can keep running on another server if possible.
-- switched_to_rt
-  Keep track of the deadline server that is assigned to the task switching
-  to FIFO/RR priority.
+Execute balancing callbacks when setting the affinity of a task, since
+the HCBS scheduler may request balancing of throttled dl_servers to fully
+utilize the server's bandwidth.
 
-Co-developed-by: Alessio Balsini <a.balsini@sssup.it>
-Signed-off-by: Alessio Balsini <a.balsini@sssup.it>
-Co-developed-by: Andrea Parri <parri.andrea@gmail.com>
-Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
-Co-developed-by: luca abeni <luca.abeni@santannapisa.it>
 Signed-off-by: luca abeni <luca.abeni@santannapisa.it>
 Signed-off-by: Yuri Andriaccio <yurand2000@gmail.com>
 ---
- kernel/sched/rt.c | 38 +++++++++++++++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 7 deletions(-)
+ kernel/sched/core.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 276eebe8d0a9..964704d88ba1 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -976,6 +976,10 @@ select_task_rq_rt(struct task_struct *p, int cpu, int flags)
- 	struct rq *rq;
- 	bool test;
- 
-+	/* Just return the task_cpu for processes inside task groups */
-+	if (is_dl_group(rt_rq_of_se(&p->rt)))
-+		goto out;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1ad1efe1dca7..9e337f0090b3 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2933,6 +2933,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask) ||
+ 	    (task_current_donor(rq, p) && !task_current(rq, p))) {
+ 		struct task_struct *push_task = NULL;
++		struct balance_callback *head;
+
+ 		if ((flags & SCA_MIGRATE_ENABLE) &&
+ 		    (p->migration_flags & MDF_PUSH) && !rq->push_busy) {
+@@ -2951,11 +2952,13 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		}
+
+ 		preempt_disable();
++		head = splice_balance_callbacks(rq);
+ 		task_rq_unlock(rq, p, rf);
+ 		if (push_task) {
+ 			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
+ 					    p, &rq->push_work);
+ 		}
++		balance_callbacks(rq, head);
+ 		preempt_enable();
+
+ 		if (complete)
+@@ -3010,6 +3013,8 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 	}
+
+ 	if (task_on_cpu(rq, p) || READ_ONCE(p->__state) == TASK_WAKING) {
++		struct balance_callback *head;
 +
- 	/* For anything but wake ups, just return the task_cpu */
- 	if (!(flags & (WF_TTWU | WF_FORK)))
- 		goto out;
-@@ -1065,21 +1069,25 @@ static void check_preempt_equal_prio(struct rq *rq, struct task_struct *p)
- 	resched_curr(rq);
- }
- 
--static int balance_rt(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
-+static int balance_rt(struct rq *global_rq, struct task_struct *p, struct rq_flags *rf)
- {
--	if (!on_rt_rq(&p->rt) && need_pull_rt_task(rq, p)) {
-+	struct rt_rq *rt_rq = rt_rq_of_se(&p->rt);
-+
-+	if (!on_rt_rq(&p->rt) && need_pull_rt_task(rq_of_rt_rq(rt_rq), p)) {
  		/*
- 		 * This is OK, because current is on_cpu, which avoids it being
- 		 * picked for load-balance and preemption/IRQs are still
- 		 * disabled avoiding further scheduler activity on it and we've
- 		 * not yet started the picking loop.
- 		 */
--		rq_unpin_lock(rq, rf);
--		pull_rt_rq_task(&rq->rt);
--		rq_repin_lock(rq, rf);
-+		rq_unpin_lock(global_rq, rf);
-+		pull_rt_rq_task(rt_rq);
-+		rq_repin_lock(global_rq, rf);
- 	}
- 
--	return sched_stop_runnable(rq) || sched_dl_runnable(rq) || sched_rt_runnable(rq);
-+	return sched_stop_runnable(global_rq) ||
-+	       sched_dl_runnable(global_rq) ||
-+	       sched_rt_runnable(global_rq);
- }
- 
- /*
-@@ -1241,6 +1249,13 @@ static void put_prev_task_rt(struct rq *rq, struct task_struct *p, struct task_s
- 	 */
- 	if (on_rt_rq(&p->rt) && p->nr_cpus_allowed > 1)
- 		enqueue_pushable_task(rt_rq, p);
+ 		 * MIGRATE_ENABLE gets here because 'p == current', but for
+ 		 * anything else we cannot do is_migration_disabled(), punt
+@@ -3023,16 +3028,19 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 			p->migration_flags &= ~MDF_PUSH;
+
+ 		preempt_disable();
++		head = splice_balance_callbacks(rq);
+ 		task_rq_unlock(rq, p, rf);
+ 		if (!stop_pending) {
+ 			stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+ 					    &pending->arg, &pending->stop_work);
+ 		}
++		balance_callbacks(rq, head);
+ 		preempt_enable();
+
+ 		if (flags & SCA_MIGRATE_ENABLE)
+ 			return 0;
+ 	} else {
++		struct balance_callback *head;
+
+ 		if (!is_migration_disabled(p)) {
+ 			if (task_on_rq_queued(p))
+@@ -3043,7 +3051,12 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 				complete = true;
+ 			}
+ 		}
 +
-+	if (is_dl_group(rt_rq)) {
-+		struct sched_dl_entity *dl_se = dl_group_of(rt_rq);
-+
-+		if (dl_se->dl_throttled)
-+			rt_queue_push_tasks(rt_rq);
-+	}
- }
- 
- /* Only try algorithms three times */
-@@ -2050,12 +2065,21 @@ static void switching_to_rt(struct rq *rq, struct task_struct *p) {}
-  */
- static void switched_to_rt(struct rq *rq, struct task_struct *p)
- {
-+	struct rt_rq *rt_rq = rt_rq_of_se(&p->rt);
-+
- 	/*
- 	 * If we are running, update the avg_rt tracking, as the running time
- 	 * will now on be accounted into the latter.
- 	 */
- 	if (task_current(rq, p)) {
- 		update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 0);
-+
-+		if (is_dl_group(rt_rq)) {
-+			struct sched_dl_entity *dl_se = dl_group_of(rt_rq);
-+
-+			p->dl_server = dl_se;
-+		}
-+
- 		return;
- 	}
- 
-@@ -2066,7 +2090,7 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
- 	 */
- 	if (task_on_rq_queued(p)) {
- 		if (p->nr_cpus_allowed > 1 && rq->rt.overloaded)
--			rt_queue_push_tasks(rt_rq_of_se(&p->rt));
-+			rt_queue_push_tasks(rt_rq);
- 
- 		if (p->prio < rq->donor->prio && cpu_online(cpu_of(rq)))
- 			resched_curr(rq);
--- 
++		preempt_disable();
++		head = splice_balance_callbacks(rq);
+ 		task_rq_unlock(rq, p, rf);
++		balance_callbacks(rq, head);
++		preempt_enable();
+
+ 		if (complete)
+ 			complete_all(&pending->done);
+--
 2.54.0
 
 
