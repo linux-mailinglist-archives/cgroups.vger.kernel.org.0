@@ -1,80 +1,80 @@
-Return-Path: <cgroups+bounces-16716-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16717-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id MNDgNXGzJmqUbQIAu9opvQ
-	(envelope-from <cgroups+bounces-16716-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:20:01 +0200
+	id qwAdAIWzJmqtbQIAu9opvQ
+	(envelope-from <cgroups+bounces-16717-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:20:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7916465613B
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:20:01 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BB9665614F
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:20:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=pLT9Q2di;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16716-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-16716-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=dOlAHn18;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16717-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16717-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A407D30362FC
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 12:17:01 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E17A83013B92
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 12:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73D73A5438;
-	Mon,  8 Jun 2026 12:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DD03B47F3;
+	Mon,  8 Jun 2026 12:16:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF09F3803F9
-	for <cgroups@vger.kernel.org>; Mon,  8 Jun 2026 12:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC68379EC8
+	for <cgroups@vger.kernel.org>; Mon,  8 Jun 2026 12:16:03 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780920965; cv=none; b=bB6Ii7eIqvOZPz+4Kyt+JsO7kPveQ6gVVSiPik5LN39sGeLmsSJ3m2IMsMNtWw2USd6Ym5bcql0tkS/eJU30FIvzFTbJw+QW8eqFy8G+6VxdeGdm9wldsZ5ZXIaX6p+jArD+uDopVZnJd2kl9KERpVzDLvqunI4pER+VN1PQ/wk=
+	t=1780920966; cv=none; b=SlzBpzx6EnpWgJoNf+p3mpbcg44X7IRgpkfugMp3y9wlYTm1ryKtfSjMECK0+6pZN0kJohMtmAEoAp/dU6dumMkrxtwVF13jV2hvUCH2E7LyJONHEqrlv3A6ijaDVeE3pu6yX4cesB01Ho6YpKQV0gF6DbG57LqQBTNa/KkEUfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780920965; c=relaxed/simple;
-	bh=jcQB6FhJIuwr/IRdvU92ziCijr23bUOi8QVp9D/t2PA=;
+	s=arc-20240116; t=1780920966; c=relaxed/simple;
+	bh=bFpBJKY+dY1TRn8e9BmV1Ywb6ktkznGZhF8ataM/d3c=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HhvpDGIkTCWny1Fq4WqnXuZvqLszh3/Sob16uvkcX9R1COueatnI27g4kzCRkxi3bpSW/28HQhWl7jOiYkCKrEaiUyAHXyWDdY25MHmRukM2ZFe3brAveWhLtt1btGfwQT6BX7EJPmBZq14sxlgev0U/GwK3ARRrHPvqHHtQMIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=pLT9Q2di; arc=none smtp.client-ip=209.85.221.50
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-45fd45e596cso2020151f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 08 Jun 2026 05:16:02 -0700 (PDT)
+	 MIME-Version; b=lj6tl2I1Td+HJI0ZXTuST0Ym+TJ1NGKhVYswsE4Ccg67fBTeBGhf2Ww4CSaQghE5uludlPPh7GlLTRA9X16RW7vkpqATfScy+/djYO7+yHeOpAOgRj5kA9I+LSulIi3c87pPz/zZa4w7icYHfnS/7tGwqTEfT2nbpcnRbx2PcsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dOlAHn18; arc=none smtp.client-ip=209.85.221.43
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-45ef1629ff4so2797667f8f.0
+        for <cgroups@vger.kernel.org>; Mon, 08 Jun 2026 05:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780920961; x=1781525761; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1780920962; x=1781525762; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=voPji+yceKdPoSsP7jAvETRoIpzyXcg+YDnlEYuWa/U=;
-        b=pLT9Q2di3fH6fmDCWb5Xlx8sRTV6KyPs79TlKMc06GB6RSOPC7YICGS+pD1ikrY3Mk
-         Tx9FO+ksdl0x844QLSuHIDBkMpMbvCzhkMsOb7Jp06z4PjbWRZHqBfB6xGjStCupoEEL
-         AHBzdQiKz7uo2PTRsWBeFWM84xaDXaLU+PtAiBeSk5CJThufNyFEYzhxRsfkBa2Cuj3I
-         W2yDWNb7ORS4EpuXn0LfLMpeeb1Kt+Y2TcgvjvwKRXQjAU31Q3vJhqF2pHSl48C6hZPC
-         /FgQphLXlg747agq8mX5yjIw/TRKwyuBkFOV4d9v5CzZZXDErA6xHJx5IaGpegtL4Nky
-         RE7A==
+        bh=u4pbifYzHaqVoXX1q5IVhVdB74Q/h2EMaW5Z7DLocPs=;
+        b=dOlAHn18fkvkPv5DVbs9H2FuIi73oh6Ow6aSyPh8Yzj6QkZwuGsYOl0OkZeJ1OpK7E
+         pW4xEoO2kmmPPKekSh9KZKcokPwWheAPFu5fhN4C6iZq2vYenrgQls4fv9ynjdI6NMNc
+         sGiYHjvCiVA4nlaRy36XRK6wIPKYaNR0YL2PfAKJphUPf/0xfXUCie70ydkH5iUXnwo+
+         8/QLGQjCiUtfE5X6nt/VYhgZjAyoIhs/45Uig+MLeMVf0PMpjGSKOLHI+a43tJ6Zzy5Y
+         eN3Mm3/0rImAuqpJlOR95U7HfNaYr3st+LmXCFMo8yWAqBmvZtyGPjqAHlw785MWwKrO
+         Hq4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780920961; x=1781525761;
+        d=1e100.net; s=20251104; t=1780920962; x=1781525762;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=voPji+yceKdPoSsP7jAvETRoIpzyXcg+YDnlEYuWa/U=;
-        b=nnFpJhJpQ7VoZBmGLbpe3WdQ0SoW7SDXyL02URNxq+ImuS3bqdTlhC/kEmTZQgM9ao
-         RX7+iL+pDmoO5Makcoxp7Y5QxMdalJk3Ryc65N6d1IZxQyUyO0FEiN6M+BTrKmxbk1VJ
-         n35Ne3dA3Dx2KHo0DCCv0Y4+EYxXpcQIXvwt1NLBSsMpB3TjoUCHrqgN04m+6MxVpSsK
-         ndDz5rNeXUp+3gv2Btb0xD2LPtMtKkeLUegLVhCw4yc4KVsOLwHkhVgnmOjUeorsTRPa
-         LyF1v/ytYSe9O05L+zLZbK7FYlPK+jyelQX2bFmGLAeShrIjPBCl2X6v3zvaO4En+O8v
-         023w==
-X-Gm-Message-State: AOJu0YzgxjXR4es3hLHPe/taDjBQlshLtqrJYIuNf29NbFxECQ9k3OwO
-	4kioz0syD14xyvyX967gt6fc8eUxYbY0T2/DN40CdMBJkmfrqlsmvCe0
-X-Gm-Gg: Acq92OHyWBoxSu3HgoofKkyQCF4N3bajFSJ8bZt4QWSoFTudHqKM2trSnJmznEMdNb4
-	gZY/DCJfJtwLDFaQN9BSHRwvs6LQy1pSDCFX4HhnTkyGJafIxOA741+vM2SzI8Ut9VWq2kPLpo/
-	kr+LqtfeqWm96wbk0ckfXyXWkaU7PIZTKvmqGkDZZ9/8Uw4wmM1+jwduDdmnKOirASVicaHiw0i
-	rTkLAv+WoS6I1XpGA58kgzgbknT82qq0q3fLdEezodHHxAk79zV9TENdCdfgKU4v+Sy/jqlCjGl
-	MQSUm6I/O9u3CXBwsAcyksl4lmxU2PKOzwtkUGNVLN/IVRJgAPBc5TuDhzKYPzTQjfSIFJDFq5/
-	vV545oMvz3A19WSvoiEh1Vw6yZnx5J/uYgFmsRcJ80rzrd1a/RS3LT+57/V4hRVpUaEdrx6fSo8
-	GGouRAk+S6337MsUbBtirbCCp4x9qLEPU=
-X-Received: by 2002:a5d:5049:0:b0:460:1a57:dd7c with SMTP id ffacd0b85a97d-4603063d5acmr18425112f8f.23.1780920961065;
-        Mon, 08 Jun 2026 05:16:01 -0700 (PDT)
+        bh=u4pbifYzHaqVoXX1q5IVhVdB74Q/h2EMaW5Z7DLocPs=;
+        b=UmHyks5wAJjdTb+CSduOW6mESwXGG+kIDhdgEMXuLKyLwqey6fhscbAgPejuLF4zt5
+         y8tSyX5D9t+hqOpo7zH6Y7w74PULf6w2BIyLauAunciZpJAkx3SgyK1HrKJBjhX12mJu
+         pEYLVL6HvGsWoFGPBfH1FGitM1uRUOr6xr9Wqrik7LEfl3SukSv+X/etpplL3/gMW4X+
+         w0btvRDmUxcchyRB2jyQ/gBIyDNHwlqI9abpMf7CntxUDMvt6dbdvUk4M5PkYMWkU8gW
+         LX6fBh7KONE9QpUaD+0BDetxIqcS3pMYSkD31hGjlrYJnIF1Cp99vX/UKRZ5E5GGq2N6
+         vseA==
+X-Gm-Message-State: AOJu0YygyLcdn1rb55RMg4ctejb7I+K9wu0wBpkS2ipY2b8545Z/E9TL
+	xvnMl0Eg1ZZJCayf12+smr4pw/VNb6CzwwXe8xbMOhl9B8Fe5XXi5x4D
+X-Gm-Gg: Acq92OHLSzR8nQAGIyCTfD6dLyD+JqJXc+EB3In6x+/e6UNpyKpF+kLECOzon+vRLbX
+	WFrY9hNEuXRhONUc5dZDMSScU7yLiRUdcmfml3Wk0yMnsMxX9K9oaH7kzJAsVzSswYlHz+e9CIE
+	B9iUXNEiQ2j8sHLnSTgYO6JyE7eivVjO4wNy2x63I01BKKOHt9WbpCH6NZpxJJNBMkGH0pdacLC
+	x0QGjjmlmX8M9b9Z0fE17rkVf94R8wzBbo4XRkucTc0QLHKUWY1eZ4yBL265yPyx7FQAb7MK2Uc
+	3MIRAJh3X1w4umRCJ3Gw9qcgsybhyhR6R1U7oEf+FYXhVvke1nKpHfRdwSa4p20PG1j1Jqn4KgZ
+	64Pvb9dM8aKE/t5WLn0UkJu9CAf8v7NMR3B+eOP6uaB6hCSSH60vgXEwWTZsRWJuv+Y2GdHuJ0g
+	akuuWjx/KT5idycnpht2iASBdYwNs6HCI=
+X-Received: by 2002:a5d:5a4c:0:b0:452:273:5cd6 with SMTP id ffacd0b85a97d-460302e3749mr17960879f8f.1.1780920962145;
+        Mon, 08 Jun 2026 05:16:02 -0700 (PDT)
 Received: from victus-lab ([193.205.81.5])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f2ec711sm50644906f8f.12.2026.06.08.05.16.00
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f2ec711sm50644906f8f.12.2026.06.08.05.16.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jun 2026 05:16:00 -0700 (PDT)
+        Mon, 08 Jun 2026 05:16:01 -0700 (PDT)
 From: Yuri Andriaccio <yurand2000@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -92,9 +92,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Luca Abeni <luca.abeni@santannapisa.it>,
 	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
-Subject: [RFC PATCH v6 14/25] sched/rt: Implement dl-server operations for rt-cgroups.
-Date: Mon,  8 Jun 2026 14:15:33 +0200
-Message-ID: <20260608121546.69910-15-yurand2000@gmail.com>
+Subject: [RFC PATCH v6 15/25] sched/rt: Update task event callbacks for HCBS scheduling
+Date: Mon,  8 Jun 2026 14:15:34 +0200
+Message-ID: <20260608121546.69910-16-yurand2000@gmail.com>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260608121546.69910-1-yurand2000@gmail.com>
 References: <20260608121546.69910-1-yurand2000@gmail.com>
@@ -111,21 +111,21 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-16716-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16717-lists,cgroups=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:mingo@redhat.com,m:peterz@infradead.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:luca.abeni@santannapisa.it,m:yuri.andriaccio@santannapisa.it,s:lists@lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[yurand2000@gmail.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -138,57 +138,45 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sssup.it:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,santannapisa.it:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,sssup.it:email,vger.kernel.org:from_smtp,santannapisa.it:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7916465613B
+X-Rspamd-Queue-Id: 8BB9665614F
 
-Implement rt_server_pick, the callback that deadline servers use to
-pick a task to schedule.
-  rt_server_pick(): pick the next runnable rt task and tell the
-  scheduler that it is going to be scheduled next.
+Update wakeup_preempt_rt, switched_{from/to}_rt and prio_changed_rt with
+rt-cgroup's specific preemption rules:
 
-Let enqueue_task_rt function start the attached deadline server when the
-first task is enqueued on a specific rq/server.
-  The server is not symmetrically stopped in dequeue_task_rt as it is
-  stopped when server_pick_task returns NULL (see deadline.c).
+- In wakeup_preempt_rt(), whenever a task wakes up, it must be checked if
+  it is served by a deadline server or it lives on the global runqueue.
+  Preemption rules (as documented in the function), change based on the
+  current task's donor and woken task runqueue:
+  - If both tasks are FIFO/RR tasks on the global runqueue, or the same
+    cgroup, run as normal.
+  - If woken is inside a cgroup, but donor is a FIFO task on the global
+    runqueue, always preempt. If donor is a DEADLINE task, check if the dl
+    server preempts donor.
+  - If both tasks are FIFO/RR tasks in served but different groups, check
+    whether the woken server preempts the donor server.
+- In prio_changed_rt(), if the task is not running, only run preemption
+  checks if the running task resides on the same task group of the task
+  that changed priority.
 
-Change update_curr_rt to perform a deadline server update if the
-updated task is served by non-root group.
+Update sched_rt_can_attach() to check if a task can be attached to a given
+cgroup. For now the check only consists in checking if the group has
+non-zero bandwidth. Remove the tsk argument from sched_rt_can_attach, as
+it is unused.
 
-Update {enqueue/dequeue}_pushable_task and rt_{set/clear}_overload to
-only set the CPU-wise overload flag only if the root runqueues are
-overloaded, but not for HCBS runqueues.
+Change cpu_cgroup_can_attach() to check if the attachee is a FIFO/RR
+task before attaching it to a cgroup.
 
-Update inc/dec_dl_tasks to account the number of active tasks in the
-local runqueue for rt-cgroups servers, as their local runqueue is
-different from the global runqueue, and thus when a rt-group server is
-activated/deactivated, the number of served tasks' must be
-added/removed. This uses nr_running to be compatible with future
-dl-server interfaces. Account also the deadline server so that it is
-picked for shutdown when its runqueue is empty (future patches will
-try to pull tasks before stopping).
+Update __sched_setscheduler() to perform checks when trying to switch
+to FIFO/RR for a task inside a cgroup, as the group needs to have
+runtime allocated.
 
-Update inc/dec_rt_prio_smp to change a rq's cpupri only if the rt_rq
-is the global runqueue, since cgroups are scheduled via their
-dl-server priority.
+Update task_is_throttled_rt() for SCHED_CORE, returning the is_throttled
+value of the server if present, while global rt-tasks are never throttled.
 
-Update inc/dec_rt_tasks to account for waking/sleeping tasks on the
-global runqueue, when the task runs on the root cgroup, or its local
-dl server is active. The accounting is not done when servers are
-throttled, as they will add/sub the number of tasks running when they
-get enqueued/dequeued. For rt cgroups, account for the number of active
-tasks in the nr_running field of the local runqueue (add/sub_nr_running),
-as this number is used when a dl server is enqueued/dequeued.
-
-Update set_task_rq to record the rt_rq of the cgroup's active_context,
-tracking where to schedule the given task.
-
-Update set_task_rq to record the dl_rq, tracking which deadline
-server manages a task.
-
-Update set_task_rq to not use the parent field anymore, as it is
-unused by this patchset's code. Remove the unused parent field from
-sched_rt_entity.
+Update migration functions to ignore cgroups migration, to be implemented
+in later patches.
 
 Co-developed-by: Alessio Balsini <a.balsini@sssup.it>
 Signed-off-by: Alessio Balsini <a.balsini@sssup.it>
@@ -198,259 +186,267 @@ Co-developed-by: luca abeni <luca.abeni@santannapisa.it>
 Signed-off-by: luca abeni <luca.abeni@santannapisa.it>
 Signed-off-by: Yuri Andriaccio <yurand2000@gmail.com>
 ---
- include/linux/sched.h   |  1 -
- kernel/sched/deadline.c |  8 +++++
- kernel/sched/rt.c       | 70 ++++++++++++++++++++++++++++++++++++-----
- kernel/sched/sched.h    | 11 +++++--
- 4 files changed, 79 insertions(+), 11 deletions(-)
+ kernel/sched/core.c     |  2 +-
+ kernel/sched/rt.c       | 98 ++++++++++++++++++++++++++++++++++++++---
+ kernel/sched/sched.h    |  2 +-
+ kernel/sched/syscalls.c | 12 +++++
+ 4 files changed, 105 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 411ffe9b34b3..b20451fcda55 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -630,7 +630,6 @@ struct sched_rt_entity {
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9e47a02cfaf7..1252f45feda0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9545,7 +9545,7 @@ static int cpu_cgroup_can_attach(struct cgroup_taskset *tset)
+ 		goto scx_check;
 
- 	struct sched_rt_entity		*back;
- #ifdef CONFIG_RT_GROUP_SCHED
--	struct sched_rt_entity		*parent;
- 	/* rq on which this entity is (to be) queued: */
- 	struct rt_rq			*rt_rq;
- 	/* rq "owned" by this entity/group: */
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 166d23f45cab..a63253ec6441 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2096,6 +2096,10 @@ void inc_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
-
- 	if (!dl_server(dl_se))
- 		add_nr_running(rq_of_dl_rq(dl_rq), 1);
-+	else if (rq_of_dl_se(dl_se) != dl_se->my_q) {
-+		WARN_ON(dl_se->my_q->rt.rt_nr_running != dl_se->my_q->nr_running);
-+		add_nr_running(rq_of_dl_rq(dl_rq), dl_se->my_q->nr_running + 1);
-+	}
-
- 	inc_dl_deadline(dl_rq, deadline);
- }
-@@ -2108,6 +2112,10 @@ void dec_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
-
- 	if (!dl_server(dl_se))
- 		sub_nr_running(rq_of_dl_rq(dl_rq), 1);
-+	else if (rq_of_dl_se(dl_se) != dl_se->my_q) {
-+		WARN_ON(dl_se->my_q->rt.rt_nr_running != dl_se->my_q->nr_running);
-+		sub_nr_running(rq_of_dl_rq(dl_rq), dl_se->my_q->nr_running - 1);
-+	}
-
- 	dec_dl_deadline(dl_rq, dl_se->deadline);
- }
+ 	cgroup_taskset_for_each(task, css, tset) {
+-		if (!sched_rt_can_attach(css_tg(css), task))
++		if (rt_task(task) && !sched_rt_can_attach(css_tg(css)))
+ 			return -EINVAL;
+ 	}
+ scx_check:
 diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index a6adf21772a6..61e9dab894d1 100644
+index 61e9dab894d1..168a92945b4a 100644
 --- a/kernel/sched/rt.c
 +++ b/kernel/sched/rt.c
-@@ -284,9 +284,19 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
- 	return 1;
- }
-
-+static struct sched_rt_entity *pick_next_rt_entity(struct rt_rq *rt_rq);
-+
- static struct task_struct *rt_server_pick(struct sched_dl_entity *dl_se, struct rq_flags *rf)
+@@ -372,6 +372,9 @@ static inline void rt_queue_push_tasks(struct rt_rq *rt_rq)
  {
--	return NULL;
-+	struct rt_rq *rt_rq = &dl_se->my_q->rt;
-+	struct task_struct *p;
-+
-+	if (!sched_rt_runnable(dl_se->my_q))
-+		return NULL;
-+
-+	p = rt_task_of(pick_next_rt_entity(rt_rq));
-+
-+	return p;
- }
+ 	struct rq *rq = global_rq_of_rt_rq(rt_rq);
 
- #else /* !CONFIG_RT_GROUP_SCHED */
-@@ -314,6 +324,9 @@ static inline int rt_overloaded(struct rq *rq)
-
- static inline void rt_set_overload(struct rq *rq)
- {
-+	if (is_dl_group(&rq->rt))
++	if (is_dl_group(rt_rq))
 +		return;
 +
- 	if (!rq->online)
+ 	if (!has_pushable_tasks(rt_rq))
  		return;
 
-@@ -333,6 +346,9 @@ static inline void rt_set_overload(struct rq *rq)
-
- static inline void rt_clear_overload(struct rq *rq)
+@@ -382,6 +385,9 @@ static inline void rt_queue_pull_task(struct rt_rq *rt_rq)
  {
-+	if (is_dl_group(&rq->rt))
+ 	struct rq *rq = global_rq_of_rt_rq(rt_rq);
+
++	if (is_dl_group(rt_rq))
 +		return;
 +
- 	if (!rq->online)
- 		return;
-
-@@ -392,7 +408,7 @@ static void enqueue_pushable_task(struct rt_rq *rt_rq, struct task_struct *p)
- 		rt_rq->highest_prio.next = p->prio;
-
- 	if (!rt_rq->overloaded) {
--		rt_set_overload(global_rq_of_rt_rq(rt_rq));
-+		rt_set_overload(rq_of_rt_rq(rt_rq));
- 		rt_rq->overloaded = 1;
- 	}
+ 	queue_balance_callback(rq, &per_cpu(rt_pull_head, rq->cpu), pull_rt_task);
  }
-@@ -410,7 +426,7 @@ static void dequeue_pushable_task(struct rt_rq *rt_rq, struct task_struct *p)
- 		rt_rq->highest_prio.next = MAX_RT_PRIO-1;
 
- 		if (rt_rq->overloaded) {
--			rt_clear_overload(global_rq_of_rt_rq(rt_rq));
-+			rt_clear_overload(rq_of_rt_rq(rt_rq));
- 			rt_rq->overloaded = 0;
- 		}
- 	}
-@@ -511,6 +527,7 @@ static inline int rt_se_prio(struct sched_rt_entity *rt_se)
- static void update_curr_rt(struct rq *rq)
+@@ -1031,7 +1037,55 @@ static int balance_rt(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
+ static void wakeup_preempt_rt(struct rq *rq, struct task_struct *p, int flags)
  {
  	struct task_struct *donor = rq->donor;
-+	struct rt_rq *rt_rq;
- 	s64 delta_exec;
-
- 	if (donor->sched_class != &rt_sched_class)
-@@ -520,21 +537,32 @@ static void update_curr_rt(struct rq *rq)
- 	if (unlikely(delta_exec <= 0))
- 		return;
-
--	if (!rt_bandwidth_enabled())
++	struct sched_dl_entity *woken_dl_se = NULL;
++	struct sched_dl_entity *donor_dl_se = NULL;
++
 +	if (!rt_group_sched_enabled())
++		goto same_group_sched;
++
++	/*
++	 * Preemption checks are different if the waking task and the current donor
++	 * are running on the global runqueue or in a cgroup. The following rules
++	 * apply:
++	 *   - dl-tasks (and equally dl_servers) always preempt FIFO/RR tasks.
++	 *     - if donor is a FIFO/RR task inside a cgroup (i.e. run by a
++	 *       dl_server), or donor is a DEADLINE task and waking is a FIFO/RR
++	 *       task on the root cgroup, do nothing.
++	 *     - if waking is inside a cgroup but donor is a FIFO/RR task in the
++	 *       root cgroup, always reschedule.
++	 *   - if they are both on the global runqueue or in the same cgroup, run
++	 *     the standard code.
++	 *   - if they are both in a cgroup, but not the same one, check whether the
++	 *     woken task's dl_server preempts the donor's dl_server.
++	 *   - if donor is a DEADLINE task and waking is in a cgroup, check whether
++	 *     the woken task's server preempts donor.
++	 */
++	if (is_dl_group(rt_rq_of_se(&p->rt)))
++		woken_dl_se = dl_group_of(rt_rq_of_se(&p->rt));
++	if (is_dl_group(rt_rq_of_se(&donor->rt)))
++		donor_dl_se = dl_group_of(rt_rq_of_se(&donor->rt));
++	else if (task_has_dl_policy(donor))
++		donor_dl_se = &donor->dl;
++
++	if (woken_dl_se != NULL && donor_dl_se != NULL) {
++		if (woken_dl_se == donor_dl_se) {
++			goto same_group_sched;
++		}
++
++		if (dl_entity_preempt(woken_dl_se, donor_dl_se))
++			resched_curr(rq);
++
 +		return;
 +
-+	if (!dl_bandwidth_enabled())
- 		return;
++	} else if (woken_dl_se != NULL) {
++		resched_curr(rq);
++		return;
 +
-+	rt_rq = rt_rq_of_se(&donor->rt);
-+	if (is_dl_group(rt_rq)) {
-+		struct sched_dl_entity *dl_se = dl_group_of(rt_rq);
-+
-+		dl_server_update(dl_se, delta_exec);
++	} else if (donor_dl_se != NULL) {
++		return;
 +	}
- }
 
- static void
- inc_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
- {
--	struct rq *rq = rq_of_rt_rq(rt_rq);
-+	struct rq *rq;
-
++same_group_sched:
  	/*
- 	 * Change rq's cpupri only if rt_rq is the top queue.
+ 	 * XXX If we're preempted by DL, queue a push?
  	 */
--	if (IS_ENABLED(CONFIG_RT_GROUP_SCHED) && &rq->rt != rt_rq)
+@@ -1055,7 +1109,8 @@ static void wakeup_preempt_rt(struct rq *rq, struct task_struct *p, int flags)
+ 	 * to move current somewhere else, making room for our non-migratable
+ 	 * task.
+ 	 */
+-	if (p->prio == donor->prio && !test_tsk_need_resched(rq->curr))
++	if (!is_dl_group(rt_rq_of_se(&p->rt)) &&
++	    p->prio == donor->prio && !test_tsk_need_resched(rq->curr))
+ 		check_preempt_equal_prio(rq, p);
+ }
+
+@@ -1362,6 +1417,9 @@ static int push_rt_rq_task(struct rt_rq *rt_rq, bool pull)
+ 	struct rt_rq *lowest_rt_rq;
+ 	int ret = 0;
+
 +	if (is_dl_group(rt_rq))
++		return 0;
++
+ 	if (!rt_rq->overloaded)
+ 		return 0;
+
+@@ -1668,6 +1726,9 @@ static void pull_rt_rq_task(struct rt_rq *this_rt_rq)
+ 	struct rq *src_rq;
+ 	int rt_overload_count = rt_overloaded(this_rq);
+
++	if (is_dl_group(&this_rq->rt))
++		return;
++
+ 	if (likely(!rt_overload_count))
  		return;
 
-+	rq = rq_of_rt_rq(rt_rq);
- 	if (rq->online && prio < prev_prio)
- 		cpupri_set(&rq->rd->cpupri, rq->cpu, prio);
- }
-@@ -542,14 +570,15 @@ inc_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
- static void
- dec_rt_prio_smp(struct rt_rq *rt_rq, int prio, int prev_prio)
+@@ -1811,6 +1872,8 @@ static void rq_offline_rt(struct rq *rq)
+  */
+ static void switched_from_rt(struct rq *rq, struct task_struct *p)
  {
--	struct rq *rq = rq_of_rt_rq(rt_rq);
-+	struct rq *rq;
-
++	struct rt_rq *rt_rq = rt_rq_of_se(&p->rt);
++
  	/*
- 	 * Change rq's cpupri only if rt_rq is the top queue.
+ 	 * If there are other RT tasks then we will reschedule
+ 	 * and the scheduling of the other RT tasks will handle
+@@ -1818,10 +1881,10 @@ static void switched_from_rt(struct rq *rq, struct task_struct *p)
+ 	 * we may need to handle the pulling of RT tasks
+ 	 * now.
  	 */
--	if (IS_ENABLED(CONFIG_RT_GROUP_SCHED) && &rq->rt != rt_rq)
-+	if (is_dl_group(rt_rq))
+-	if (!task_on_rq_queued(p) || rq->rt.rt_nr_running)
++	if (!task_on_rq_queued(p) || rt_rq->rt_nr_running)
  		return;
 
-+	rq = rq_of_rt_rq(rt_rq);
- 	if (rq->online && rt_rq->highest_prio.curr != prev_prio)
- 		cpupri_set(&rq->rd->cpupri, rq->cpu, rt_rq->highest_prio.curr);
- }
-@@ -610,6 +639,15 @@ void inc_rt_tasks(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
- 	rt_rq->rr_nr_running += is_rr_task(rt_se);
-
- 	inc_rt_prio(rt_rq, rt_se_prio(rt_se));
-+
-+	if (is_dl_group(rt_rq)) {
-+		struct sched_dl_entity *dl_se = dl_group_of(rt_rq);
-+
-+		if (!dl_se->dl_throttled)
-+			add_nr_running(global_rq_of_rt_rq(rt_rq), 1);
-+	}
-+
-+	add_nr_running(rq_of_rt_rq(rt_rq), 1);
+-	rt_queue_pull_task(rt_rq_of_se(&p->rt));
++	rt_queue_pull_task(rt_rq);
  }
 
- static inline
-@@ -620,6 +658,15 @@ void dec_rt_tasks(struct sched_rt_entity *rt_se, struct rt_rq *rt_rq)
- 	rt_rq->rr_nr_running -= is_rr_task(rt_se);
+ void __init init_sched_rt_class(void)
+@@ -1858,6 +1921,7 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
+ 	if (task_on_rq_queued(p)) {
+ 		if (p->nr_cpus_allowed > 1 && rq->rt.overloaded)
+ 			rt_queue_push_tasks(rt_rq_of_se(&p->rt));
++
+ 		if (p->prio < rq->donor->prio && cpu_online(cpu_of(rq)))
+ 			resched_curr(rq);
+ 	}
+@@ -1870,6 +1934,8 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
+ static void
+ prio_changed_rt(struct rq *rq, struct task_struct *p, u64 oldprio)
+ {
++	struct rt_rq *rt_rq = rt_rq_of_se(&p->rt);
++
+ 	if (!task_on_rq_queued(p))
+ 		return;
 
- 	dec_rt_prio(rt_rq, rt_se_prio(rt_se));
+@@ -1882,15 +1948,24 @@ prio_changed_rt(struct rq *rq, struct task_struct *p, u64 oldprio)
+ 		 * may need to pull tasks to this runqueue.
+ 		 */
+ 		if (oldprio < p->prio)
+-			rt_queue_pull_task(rt_rq_of_se(&p->rt));
++			rt_queue_pull_task(rt_rq);
+
+ 		/*
+ 		 * If there's a higher priority task waiting to run
+ 		 * then reschedule.
+ 		 */
+-		if (p->prio > rq->rt.highest_prio.curr)
++		if (p->prio > rt_rq->highest_prio.curr)
+ 			resched_curr(rq);
+ 	} else {
++		/*
++		 * This task is not running, thus we check against the currently
++		 * running task for preemption. We can preempt only if both tasks are
++		 * in the same cgroup or on the global runqueue.
++		 */
++		if (rt_group_sched_enabled() &&
++		    rt_rq->tg != rt_rq_of_se(&rq->curr->rt)->tg)
++			return;
 +
-+	if (is_dl_group(rt_rq)) {
-+		struct sched_dl_entity *dl_se = dl_group_of(rt_rq);
+ 		/*
+ 		 * This task is not running, but if it is
+ 		 * greater than the current running task
+@@ -1983,7 +2058,16 @@ static unsigned int get_rr_interval_rt(struct rq *rq, struct task_struct *task)
+ #ifdef CONFIG_SCHED_CORE
+ static int task_is_throttled_rt(struct task_struct *p, int cpu)
+ {
++#ifdef CONFIG_RT_GROUP_SCHED
++	struct rt_rq *rt_rq;
 +
-+		if (!dl_se->dl_throttled)
-+			sub_nr_running(global_rq_of_rt_rq(rt_rq), 1);
-+	}
++	rt_rq = task_group(p)->rt_rq[cpu];
++	WARN_ON(!rt_group_sched_enabled() && rt_rq->tg != &root_task_group);
 +
-+	sub_nr_running(rq_of_rt_rq(rt_rq), 1);
++	return dl_group_of(rt_rq)->dl_throttled;
++#else
+ 	return 0;
++#endif
+ }
+ #endif /* CONFIG_SCHED_CORE */
+
+@@ -2222,10 +2306,10 @@ long sched_group_rt_period(struct task_group *tg)
+ 	return rt_period_us;
  }
 
- /*
-@@ -806,6 +853,13 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
- 	check_schedstat_required();
- 	update_stats_wait_start_rt(rt_rq_of_se(rt_se), rt_se);
+-int sched_rt_can_attach(struct task_group *tg, struct task_struct *tsk)
++int sched_rt_can_attach(struct task_group *tg)
+ {
+ 	/* Don't accept real-time tasks when there is no way for them to run */
+-	if (rt_group_sched_enabled() && rt_task(tsk) && tg->rt_bandwidth.rt_runtime == 0)
++	if (rt_group_sched_enabled() && tg->dl_bandwidth.dl_runtime == 0)
+ 		return 0;
 
-+	/* Task arriving in an idle group of tasks. */
-+	if (is_dl_group(rt_rq) && rt_rq->rt_nr_running == 0) {
-+		struct sched_dl_entity *dl_se = dl_group_of(rt_rq);
-+
-+		dl_server_start(dl_se);
-+	}
-+
- 	enqueue_rt_entity(rt_se, flags);
-
- 	if (task_is_blocked(p))
+ 	return 1;
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 58f67093145e..66d5bd1aa4f1 100644
+index 66d5bd1aa4f1..bde49f216081 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -2310,10 +2310,11 @@ static inline void set_task_rq(struct task_struct *p, unsigned int cpu)
- 	 * root_task_group's rt_rq than switching in rt_rq_of_se()
- 	 * Clobbers tg(!)
- 	 */
-+	guard(raw_spinlock_irqsave)(&tg->dl_bandwidth.dl_runtime_lock);
- 	if (!rt_group_sched_enabled())
- 		tg = &root_task_group;
--	p->rt.rt_rq  = tg->rt_rq[cpu];
--	p->rt.parent = tg->rt_se[cpu];
-+	p->rt.rt_rq  = tg->dl_bandwidth.active_context->rt_rq[cpu];
-+	p->dl.dl_rq  = &cpu_rq(cpu)->dl;
- #endif /* CONFIG_RT_GROUP_SCHED */
- }
+@@ -611,7 +611,7 @@ extern int sched_group_set_rt_runtime(struct task_group *tg, long rt_runtime_us)
+ extern int sched_group_set_rt_period(struct task_group *tg, u64 rt_period_us);
+ extern long sched_group_rt_runtime(struct task_group *tg);
+ extern long sched_group_rt_period(struct task_group *tg);
+-extern int sched_rt_can_attach(struct task_group *tg, struct task_struct *tsk);
++extern int sched_rt_can_attach(struct task_group *tg);
 
-@@ -2976,6 +2977,9 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
- 	unsigned prev_nr = rq->nr_running;
+ extern struct task_group *sched_create_group(struct task_group *parent);
+ extern void sched_online_group(struct task_group *tg,
+diff --git a/kernel/sched/syscalls.c b/kernel/sched/syscalls.c
+index 9c1ba10ea5a7..773f744c0460 100644
+--- a/kernel/sched/syscalls.c
++++ b/kernel/sched/syscalls.c
+@@ -606,6 +606,18 @@ int __sched_setscheduler(struct task_struct *p,
+ change:
 
- 	rq->nr_running = prev_nr + count;
-+	if (rq != cpu_rq(rq->cpu))
-+		return;
+ 	if (user) {
++		/*
++		 * Do not allow real-time tasks into groups that have no runtime
++		 * assigned.
++		 */
++		if (rt_group_sched_enabled() &&
++		    dl_bandwidth_enabled() && rt_policy(policy) &&
++		    !sched_rt_can_attach(task_group(p)) &&
++		    !task_group_is_autogroup(task_group(p))) {
++			retval = -EPERM;
++			goto unlock;
++		}
 +
- 	if (trace_sched_update_nr_running_tp_enabled()) {
- 		call_trace_sched_update_nr_running(rq, count);
- 	}
-@@ -2989,6 +2993,9 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
- static inline void sub_nr_running(struct rq *rq, unsigned count)
- {
- 	rq->nr_running -= count;
-+	if (rq != cpu_rq(rq->cpu))
-+		return;
-+
- 	if (trace_sched_update_nr_running_tp_enabled()) {
- 		call_trace_sched_update_nr_running(rq, -count);
- 	}
+ 		if (dl_bandwidth_enabled() && dl_policy(policy) &&
+ 				!(attr->sched_flags & SCHED_FLAG_SUGOV)) {
+ 			cpumask_t *span = rq->rd->span;
 --
 2.54.0
 
