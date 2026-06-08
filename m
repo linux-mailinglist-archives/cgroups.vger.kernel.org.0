@@ -1,177 +1,296 @@
-Return-Path: <cgroups+bounces-16728-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16729-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id O3VfFbq4Jmo5bwIAu9opvQ
-	(envelope-from <cgroups+bounces-16728-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:42:34 +0200
+	id bPALHIm7JmrPbwIAu9opvQ
+	(envelope-from <cgroups+bounces-16729-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:54:33 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7FD9656486
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:42:33 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D817765658B
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 14:54:32 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=RxCqkpfD;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16728-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16728-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=TDEEEbcw;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16729-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16729-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D5C330131F4
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 12:42:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 037B33028474
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 12:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0DD372071;
-	Mon,  8 Jun 2026 12:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C365C284682;
+	Mon,  8 Jun 2026 12:50:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A86372EDD;
-	Mon,  8 Jun 2026 12:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413D127B50F
+	for <cgroups@vger.kernel.org>; Mon,  8 Jun 2026 12:50:30 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780922542; cv=none; b=OelDSlyDXDGosZDkwGo7p8vft9hUELMVU0TBTYf/0OAYYqT0x5MsAARSFiwusqJTa0geHyYgo1s3tv7AkT/3F9R/0mvJuGScDL3Tmj7MjFpVN0F6KFraR9fWSsCKtEsYe8J6qLDx+QSYXJYZ8U9f4bKcP+QDv7l4ecG+9+zkLGc=
+	t=1780923031; cv=none; b=ATjkdfLpSzOt8NTclP3eUEbXOfpskXXv9r1pgahiq/j1otDtLvImMsHR4bAM9B1Tv2VDXanxVpu7juQj024BwoTxfT8IgwR4QfWSxH24vxoO9XfDpHrYkdor70UjY0zcTdkVEa/ZLIJK6+hO1JbJHyVXSKipXnvOvutt7snUCIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780922542; c=relaxed/simple;
-	bh=vLaVLICk2oe4ISqtVdPrHK0C9aAoO37wlzmXljjTcj8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=auts2FJLVQZJ7rgkNlZu1G0v5Ldx8fv8PP1TZm7AokTS+9sAxTjkxD1/2kAQLIHAnP7GUugC/mJN9AQ0lUlgH010TPb53afDGgdjD8FN+BzCNzLU+/nO5bvU4QFYFb7T0Dozqre6BjMSzkCENo/UZA3QsZGrlV7n0qM+TzsW0gM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RxCqkpfD; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57A9F1F00893;
-	Mon,  8 Jun 2026 12:42:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780922540;
-	bh=vLaVLICk2oe4ISqtVdPrHK0C9aAoO37wlzmXljjTcj8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=RxCqkpfDbtZTmk/0sYjPbrwF/SlaRm/qRYvBpg7H0oHhCack+QaVRI+puOmv3YAxz
-	 FcAWmyoJRRyHlzp6rhpXpc+puLtL01HKZF9Ogv0Un9tfUHoWK+bkMTQrKLbr+k1nKR
-	 ezptbklHPxfXeqoTp50RpkmwSnypd/DUiJGkH7RIzbDUXmk/oLnsKoFOU3xHd2K3Ke
-	 LtDhEbhXaFbN4dzPJHSyLhCT9yti39m2KBXStxAB4H+T/Djq4mLfKzGOOmUOs+6wVP
-	 8l+uYl4FGhKkMNJARfp0h4tz+weRpPHOOZ/ltRinrAql+Tw9Qq/mI5lN04ChLa9+Ye
-	 1O++vPssIJiMA==
-Date: Mon, 8 Jun 2026 14:42:18 +0200
-From: Maxime Ripard <mripard@kernel.org>
-To: Maarten Lankhorst <dev@lankhorst.se>
-Cc: Natalie Vock <natalie.vock@gmx.de>, 
-	Eric Chanudet <echanude@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Albert Esteve <aesteve@redhat.com>
-Subject: Re: [PATCH] cgroup/dmem: accept only one region per limit write
-Message-ID: <20260608-glorious-fluorescent-salamander-93daec@houat>
-References: <20260605-cgroup-dmem-write-single-region-v1-1-9137f296579c@redhat.com>
- <271b1c16-3c3c-4a1e-b09e-c4361c63814c@gmx.de>
- <f00e7771-cd70-4c86-9fac-149897e02b12@lankhorst.se>
+	s=arc-20240116; t=1780923031; c=relaxed/simple;
+	bh=TG6r/3Lp+ODfq+/oUWl3Qo2qwI2yFx1wavbyGgxzkRg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DYh9OZGhAmVVhLhI617yCsnK/8HqF0DTENwbvsO1HFi/8amcZrjyZflNuicCrmNNWC7pX8GmTmWQbvXMH6v5RgLvKjIaK4cRVYvt3NMLK1fuohAYtVhp+qC2FXrrDyFBMM4/F6PRZ+zZ4/EFwFY51cv6MaILOWF9ekNd95KZDrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TDEEEbcw; arc=none smtp.client-ip=209.85.216.46
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-36d630c0e35so4298125a91.3
+        for <cgroups@vger.kernel.org>; Mon, 08 Jun 2026 05:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780923030; x=1781527830; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DiIdK82JBJK4ZmshrTXuh1DETm09pI5fnq4TS+v0gOw=;
+        b=TDEEEbcw5RoeiTZWI0FoBMax+eR8C2tcdBXsoC+PVkb2kta9/b0PKb+Cryf5bxVHk9
+         EXPPksQj/YtwtXgbDHTY3JQOJ2Nv6FluWu5JO5iPqok0/j/Ha3g8Kwnio4Qkf6wqdZoH
+         F3Z+eqfxbLHS9xrmNQ6pM1dy8aSKtU4csj1lrP29ZHYowwpqmQnYnMYH0G2stf+oH2Ub
+         RZ2uPCmsfX6MKtKxwBmj9eFS7ESqVI5Jk6eldnDE1yu+/W+Tkwv1nCqTl7Zsoa0yq9pQ
+         6L0dacSQlLRGULqGdfFEKRBg9atT7bR5DArD2+zguLh+IVU9a01pvi+daWLHuCxHX+vp
+         io7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780923030; x=1781527830;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DiIdK82JBJK4ZmshrTXuh1DETm09pI5fnq4TS+v0gOw=;
+        b=mH47B74PweULIJo/1dueSAdX/yoMrxWVJE/aUoHoc5GdTsAqm/eCchSpuRYctwifRa
+         KDG2V3HNlox+RxontiP1A2oR9nbyUaiXTDfDyX72W8OyGmHCdZo4rWIw0fqQzR78Qw5Q
+         9Iwix4v3oRYX6UlD59r85eL7dQxd7SzZ3Q1nPviiAZAZe/1I7C3CZRgBRlzCg1Od8BxJ
+         a0Cqt1NTkXC/AuU5syDtHaTVyef5dJNdRlnPsBI8H7MSsLpnP/52w8TRVj+LqCzttCWb
+         suTjqT/RzRQlkpTRxREov6D0On6Ay6Yu+rR3Z3WTFh5jQdgE4oqBtDonBIwnYnQEdPTW
+         mrKw==
+X-Forwarded-Encrypted: i=1; AFNElJ9BJXqyiQzcb64rmY2YV9WXG3fKYydOwBsrP26O9gudjRxf1vydFhEq/1K1zz3BXgOdjN8dNXyP@vger.kernel.org
+X-Gm-Message-State: AOJu0YxGvPseTIUTPzDhYDGdsQULqqSSLOSsae/NrD1+DXHEn6utN0Py
+	0tiIv5FNaf7i0nqKNI0wglmzaxMIbL+PYVd6oZE4rQgmSGquJP8I05Pn
+X-Gm-Gg: Acq92OHHr15ZL+RDpWfnBqeYui1OcPk1s+CJ1z3heZhQW2rGvRhu7oP6dj1iIEgR9R/
+	A3HdAqhXVxoaue2Ocqi0G2uA62kNVeJUA+hFaqhCQLm8qOgar0xQBHRJX7hElLlkMqO+8a4knz8
+	Ml2E0ylK3k5zDTJ+cJA9FLEjibIqkemjsbcCXcEJdPYL25U6ybE0k4fDml6pNgwNj7zPh8f9bWM
+	EglaxQvB/mXF+lzxYtjZhiqbGnWo2A8rGy+2/pSdHKcvfTidX9e6N2KUClIRJSR16PUjmFl/aJ6
+	PQdn9xBo8SLkcZhD2WF3iBPo5MeW5UrgmTAIr7xPM4bpq+M/xAP+Zwv47iu1AZIs2ZpiN47+T90
+	eIvFyIZRUwnAROG1tOjS8/vRqvVWi4JHvPMX2BJzDFwkKOOZH5wmtFQBSR8rRYgpY6A3KxxINRa
+	WqmOLRR/EzjzZihL/s8n5MKyHjPcfZmgbnGwQCND4ut6VZXcN2MT2v0w==
+X-Received: by 2002:a17:90b:5345:b0:35c:30a8:330 with SMTP id 98e67ed59e1d1-370ebff342fmr15636109a91.0.1780923029551;
+        Mon, 08 Jun 2026 05:50:29 -0700 (PDT)
+Received: from [10.125.192.72] ([210.184.73.204])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c1663981basm179520225ad.67.2026.06.08.05.50.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Jun 2026 05:50:29 -0700 (PDT)
+Message-ID: <90730fa7-62e7-d5f4-b638-23b22a8509f2@gmail.com>
+Date: Mon, 8 Jun 2026 20:50:19 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha384;
-	protocol="application/pgp-signature"; boundary="yiowilux2t2cndhw"
-Content-Disposition: inline
-In-Reply-To: <f00e7771-cd70-4c86-9fac-149897e02b12@lankhorst.se>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v3 1/4] mm/zswap: Make shrink_worker writeback cursor
+ per-memcg
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, tj@kernel.org,
+ hannes@cmpxchg.org, shakeel.butt@linux.dev, mhocko@kernel.org,
+ mkoutny@suse.com, chengming.zhou@linux.dev, muchun.song@linux.dev,
+ roman.gushchin@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ Hao Jia <jiahao1@lixiang.com>
+References: <20260526114601.67041-1-jiahao.kernel@gmail.com>
+ <20260526114601.67041-2-jiahao.kernel@gmail.com>
+ <aho7nepN5jZtKmef@google.com>
+ <8c0e60e1-5713-69f0-a687-088c87e75764@gmail.com>
+ <ah4ZZGl7GYJf54Wz@google.com>
+ <ff344c9f-51da-8b3a-e7a9-c4a7f4702ef8@gmail.com>
+ <ah9i3uhh3PFiS0Uk@google.com>
+ <c7870fe2-3588-79db-cbfb-bd6a2b78f594@gmail.com>
+ <aiBpibRNi0BcM1Zu@google.com>
+ <9898f83d-fae9-e284-6b85-c7f4089840a0@gmail.com>
+ <CAO9r8zPBH6-0SQ6-_ZOhTQeyu=rz4F=ugikCrU-JR_skm6fEWA@mail.gmail.com>
+ <a60eedb6-f3fd-4092-b726-04a17a695ace@gmail.com>
+ <CAKEwX=MQ3xXBAY-2H8vA+XSX5GHNBubJ2GCYAXGD+Hra++ZM7A@mail.gmail.com>
+From: Hao Jia <jiahao.kernel@gmail.com>
+In-Reply-To: <CAKEwX=MQ3xXBAY-2H8vA+XSX5GHNBubJ2GCYAXGD+Hra++ZM7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16728-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[gmx.de,redhat.com,kernel.org,cmpxchg.org,suse.com,vger.kernel.org,lists.freedesktop.org];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_RECIPIENTS(0.00)[m:dev@lankhorst.se,m:natalie.vock@gmx.de,m:echanude@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,m:aesteve@redhat.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[mripard@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:nphamcs@gmail.com,m:yosry@kernel.org,m:akpm@linux-foundation.org,m:tj@kernel.org,m:hannes@cmpxchg.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:mkoutny@suse.com,m:chengming.zhou@linux.dev,m:muchun.song@linux.dev,m:roman.gushchin@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jiahao1@lixiang.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16729-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mripard@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiahaokernel@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,houat:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,patchwork.freedesktop.org:url]
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A7FD9656486
+X-Rspamd-Queue-Id: D817765658B
 
 
---yiowilux2t2cndhw
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] cgroup/dmem: accept only one region per limit write
-MIME-Version: 1.0
 
-On Sat, Jun 06, 2026 at 11:44:10PM +0200, Maarten Lankhorst wrote:
-> Hey,
->=20
-> On 6/6/26 18:31, Natalie Vock wrote:
-> > On 6/6/26 00:44, Eric Chanudet wrote:
-> >> Accept only one "region value" pair entry for the dmem.max, dmem.min,
-> >> dmem.low files.>
-> >> This changes the UAPI that otherwise accepted multiple lines for setti=
-ng
-> >> multiple entries in one write. No existing user is known to rely on
-> >> writing multiple regions in a single write.
-> >=20
-> > Ugh, shoot.
-> >=20
-> > For dmem.low specifically, there already are some userspace thingies fl=
-oating around that may write more than one region/value pairs.
-> >=20
-> > These thingies all depend on that one patchset for dmemcg protection th=
-at I should really get around to merging[1]. Since the userspace utilities =
-depend on not-yet-merged patches, they sort of have to expect stuff changin=
-g under their belts, so I wouldn't really consider those users a blocker by=
- necessity.
-> >=20
-> > As I see it, we could go down one of two paths:
-> > 1. We go ahead with the patch as proposed, and I make sure that the use=
-rs I know of adapt. Could be a bit icky wrt. "do not break userspace" rules=
-, but since the already use non-merged UAPIs in one place, you can argue th=
-at these users kind of have to expect breakage.
-> > 2. We use the old handling allowing multiple lines for dmem.min and dme=
-m.low only. This preserves compatibility but uglifies the code by quite a b=
-it.
-> >=20
-> > All things considered, I think I personally would prefer going with 1. =
-and taking the patch as proposed and just having one codepath handling ever=
-y limit file. Just highlighting this so we don't do it on accident.
-> >=20
-> > [1] https://patchwork.freedesktop.org/series/163183/
-> >=20
->=20
-> I prefer option 1 as well, but would like an ack from one of the core cgr=
-oup maintainers too,
-> and what Maxime's opinion on this as well.
+On 2026/6/5 01:23, Nhat Pham wrote:
+> On Thu, Jun 4, 2026 at 6:06 AM Hao Jia <jiahao.kernel@gmail.com> wrote:
+>>
+>>
+>>
+>> On 2026/6/4 13:34, Yosry Ahmed wrote:
+>>>>>> For instance, suppose a parent memcg has two children, memcg1 and memcg2,
+>>>>>> each with 200MB of zswap (100MB inactive). Triggering proactive writeback on
+>>>>>> the parent memcg will exhaust memcg1's inactive zswap pages. After that,
+>>>>>> even though memcg2 still has plenty of inactive zswap pages, it will
+>>>>>> continue to write back memcg1's active zswap pages. Writing back active
+>>>>>> zswap pages causes the user-space agent to prematurely abort the writeback
+>>>>>> because it detects that certain memcg metrics have exceeded predefined
+>>>>>> thresholds.
+>>>>>
+>>>>> This will only happen if the reclaim size is smaller than the batch
+>>>>> size, right? Otherwise the kernel should reclaim more or less equally
+>>>>> from both memcgs?
+>>>>>
+>>>>
+>>>> I gave it some thought. Not using a cursor could lead to unfairness
+>>>> issues with certain writeback sizes:
+>>>>
+>>>>     - If the writeback size is an odd multiple of WB_BATCH (e.g.,
+>>>> triggering a writeback of 3 * WB_BATCH), with 2 child cgroups, the
+>>>> writeback ratio might end up being 2:1.
+>>>>     - If a memcg has 5 child cgroups and a writeback of 2 * WB_BATCH is
+>>>> triggered, it might repeatedly write back from only the first 2 child
+>>>> cgroups.
+>>>>
+>>>> Although setting a smaller WB_BATCH might mitigate this unfairness, it
+>>>> could hurt writeback efficiency. Let's just use per-memcg cursors to
+>>>> completely fix these corner cases.
+>>>
+>>> Exactly, the batch size should be small enough that any unfairness is
+>>> not a problem. I would honestly just do batching without a per-memcg
+>>> cursor, unless we have numbers to prove that the efficiency is
+>>> affected when we use a small batch size. Let's only introduce
+>>> complexity when needed please.
+> 
+> I'm impartial towards the complexity of per-memcg cursor. I don't
+> think it's that big of a deal, but only if it's warranted.
+> 
+> Hao, if you're convinced that doing small batch is not efficient,
+> could you run some experiments to show the improvement bigger batchign
+> and fairness? Maybe implement a small batch, no-memcg cursor first.
+> Then implement a patch on top of it to add per-memcg cursor, and show
+> how much performance win we can get from that patch on top of the
+> patch series?
+> 
 
-Option 1 works for me too if doable
+Thanks for the suggestion!
 
-Maxime
+I ran some tests and found that neither the per-memcg cursor nor 
+different batch sizes have a significant impact on proactive writeback 
+performance. However, exactly as we suspected, without the per-memcg 
+cursor, the writeback distribution among child memcgs is highly unfair.
 
---yiowilux2t2cndhw
-Content-Type: application/pgp-signature; name="signature.asc"
+Test Setup:
 
------BEGIN PGP SIGNATURE-----
+   zswap config: 18G capacity, LZ4 compression.
+   cgroup hierarchy: 1 parent test memcg with 10 child memcgs.
+   Allocation: Allocated 1600MB of anonymous pages in each child memcg. 
+To ensure compressibility, the first half of each page was filled with 
+random data and the second half with zeros.
+   Force to zswap: Ran echo "1600M" > memory.reclaim on each child memcg 
+to squeeze all their memory into zswap.
+   Trigger writeback: Ran echo "<size> zswap_writeback_only" > 
+memory.reclaim on the parent cgroup 200 times, with a 2-second interval 
+between each run.
+   Metric: Monitored the zswpwb_proactive metric in memory.stat to 
+observe the writeback volume.
+   **Note**: The size here refers to the uncompressed memory size. Also, 
+since the second-chance algorithm would cause many writebacks to fall 
+short of the target size, I **bypassed** it during these tests to avoid 
+interference.
 
-iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCaia4qQAKCRAnX84Zoj2+
-din2AYCvqKvH/o7VpqQLqfHK9E3iomJjqu4qZHf9t4cZBA2j3r33qyhweWWRiqFh
-ZSIh91cBgJmqTLmBkpwO0jzWVfoU4+3DYvBPepU6Qh/cFc65rF7hZPAcicvpRpDO
-cWm6LjUb1g==
-=OpIe
------END PGP SIGNATURE-----
+Without cursor (size: 1M, batch: 32)
+   child        wb_pages        wb_MB     share%
+   child0           6368        24.88      12.50
+   child1           6368        24.88      12.50
+   child2           6368        24.88      12.50
+   child3           6368        24.88      12.50
+   child4           6368        24.88      12.50
+   child5           6368        24.88      12.50
+   child6           6368        24.88      12.50
+   child7           6368        24.88      12.50
+   child8              0         0.00       0.00
+   child9              0         0.00       0.00
+Without cursor (size: 1M, batch: 128)
+   child        wb_pages        wb_MB     share%
+   child0          25472        99.50      50.00
+   child1          25472        99.50      50.00
+   child2              0         0.00       0.00
+   child3              0         0.00       0.00
+   child4              0         0.00       0.00
+   child5              0         0.00       0.00
+   child6              0         0.00       0.00
+   child7              0         0.00       0.00
+   child8              0         0.00       0.00
+   child9              0         0.00       0.00
+Without cursor (size: 6M, batch: 128)
+   child        wb_pages        wb_MB     share%
+   child0          51200       200.00      16.67
+   child1          51200       200.00      16.67
+   child2          25600       100.00       8.33
+   child3          25600       100.00       8.33
+   child4          25600       100.00       8.33
+   child5          25600       100.00       8.33
+   child6          25600       100.00       8.33
+   child7          25600       100.00       8.33
+   child8          25600       100.00       8.33
+   child9          25600       100.00       8.33
 
---yiowilux2t2cndhw--
+
+With cursor (size: 1M, batch: 32)
+   child        wb_pages        wb_MB     share%
+   child0           5120        20.00      10.00
+   child1           5120        20.00      10.00
+   child2           5120        20.00      10.00
+   child3           5120        20.00      10.00
+   child4           5120        20.00      10.00
+   child5           5120        20.00      10.00
+   child6           5120        20.00      10.00
+   child7           5120        20.00      10.00
+   child8           5120        20.00      10.00
+   child9           5120        20.00      10.00
+With cursor (size: 1M, batch: 128)
+   child        wb_pages        wb_MB     share%
+   child0           5120        20.00      10.00
+   child1           5120        20.00      10.00
+   child2           5120        20.00      10.00
+   child3           5120        20.00      10.00
+   child4           5120        20.00      10.00
+   child5           5120        20.00      10.00
+   child6           5120        20.00      10.00
+   child7           5120        20.00      10.00
+   child8           5120        20.00      10.00
+   child9           5120        20.00      10.00
+
+Thakns,
+Hao
 
