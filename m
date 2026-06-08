@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-16698-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16699-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id opdSCg48JmoMTwIAu9opvQ
-	(envelope-from <cgroups+bounces-16698-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 05:50:38 +0200
+	id WY5JH389JmpiTwIAu9opvQ
+	(envelope-from <cgroups+bounces-16699-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 05:56:47 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3FA56527FF
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 05:50:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1304B652871
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 05:56:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=UTPS5cu7;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16698-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16698-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="I/hy1WWM";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16699-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16699-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C8D9F300F141
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 03:43:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BFA133056506
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 03:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D2D34D384;
-	Mon,  8 Jun 2026 03:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E055C34D4C9;
+	Mon,  8 Jun 2026 03:43:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6F334C9AF;
-	Mon,  8 Jun 2026 03:43:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C8534CFC2;
+	Mon,  8 Jun 2026 03:43:33 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780890209; cv=none; b=QOj0ad4S7/Dg9Qodl5jQAmkyGh9qxeUiT1hJiBTvYPLLFu0ym38OdFiWOVI7oU6nSap+aC6mrLw/DCDVmiWPIndNhmVTZKwpKWNjl+P/nfiA+EV7a8tInwMktDykydDWYQi49AKff5D4iFDC2XIJRSy+0VdK8KR0wwJnEq7lL54=
+	t=1780890214; cv=none; b=MrRxL2mf62CuDMBdGWo3P/P+i/dpRICGlTzbxRKwJAmz3lvPj2xSO+oj93UJCCgfqhEjs8QgYsU23SrbKofYvlJJkFoPfbIcxeoXsRcjDMYZ2zIHPHJr+bA6hoyFIRLE6rw8bwOkpU9Zt5Ep5H25RI6JEq7RTnhYvliy+0R4qaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780890209; c=relaxed/simple;
-	bh=9D5PJ3RqupKuJ6Bac8Auh17iIsRwMGcbxGQ2pVINhMg=;
+	s=arc-20240116; t=1780890214; c=relaxed/simple;
+	bh=Zb2XE25uaHlK/+opsNgYdYZJXxMxNofDlF0d2ZJgiGw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=niHd2ceAXNcVE8lmWWmzWlSOoTrGx6LZyQrM/69gkEbQcUNB1/HFLBfdz/Wq0VnROlUnXY8TC6LrzrB2RRKAZ7TXtNZcMuljlgsMEfQ2ViX/oZOJTA31XNS2g75lLWSJPpQs5WD451BnKrCXD4lrjUTPIFjxkv0bfvdkBfL4f6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UTPS5cu7; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A27DE1F00893;
-	Mon,  8 Jun 2026 03:43:24 +0000 (UTC)
+	 MIME-Version; b=XHknd98WT451Tv1kpBaw8Al2+4u6jbT7oguDbJjfbu/MZ5irwT1UF7T438/55okQBxmBBaB/XpA7CgeuegH4qMrHfvtlk1Uifdvd/oQr36LukRXCeTkZWLhEUpO/8DNVQa+yVrcTkVzpwvG4GhcgIgMKNNlRQD1g9uvoIRNs65U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I/hy1WWM; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FB51F00898;
+	Mon,  8 Jun 2026 03:43:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780890208;
-	bh=xbxrLUIuHStdHaKlhEhtpSuTr7xLq2M6g2rOrGI1zRY=;
+	s=k20260515; t=1780890213;
+	bh=AonplpX8sMcYxl+OvnPIJmvLE6nh3WkDiHtVVORseZY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=UTPS5cu7VlzINgI3kKmHxHbbFQvryV9PycNA5wH3n8YHw1oTF6/2JHEKn3uCofyQy
-	 waOb2600Hd8AYZFpZP/nPBIVZ2F0EkQ3P8HUWjb9Gm2iDAyCiZOE7Y+l2xyQt3ee34
-	 CQUBignVLDwUjLOBcekxUuJxcBj7EsOTToYRg5hu1OJcnX7iW0IzFDBV/OfJHpAKMT
-	 aY9ukY+NSF+yjMYDkMqrSL/FTHCIG3Hn2r0xGSrdNGU7isnnSDZKhGnYVhl7QNehKe
-	 GdgIIW2RY7rk25dDZNXn4rUu3JGWYBKcKvc9tQ0ychxYj0msv769sHOtAeAJkQ+847
-	 ViJzYOZgf0f3g==
+	b=I/hy1WWM0CXwiJZsze4Z95np3aJq6uUHdKzNYSVT8eFfJc8A8LFQpseaCtzOdOpAb
+	 UE3j53LDXK6ypjGYSIdIPUdfqOMczpANEUCyukcBALvGj1Rv64qZTEfXBixfsMm7Yi
+	 u8J+/5ib6E24hQ/VCBMxIZ6mseDM5o6Rinb3revCHCGp93zLytyucnuMiwzg16L81n
+	 19aTzKCP0MxwTu9WN0iPjTe6QgC4TqCUhKVea7Cj2PeWPAKWZ2A8l2UyiQ+j3k4iX7
+	 ezLRGxkEFmVWu7ajqdqTqn6E9agBUPjnj4s2qGA0uxFvxTFfkwLS6mur1TLoA8CFz5
+	 V8mrh/8dkQdNQ==
 From: Yu Kuai <yukuai@kernel.org>
 To: nilay@linux.ibm.com,
 	tom.leiming@gmail.com,
@@ -66,9 +66,9 @@ Cc: akpm@linux-foundation.org,
 	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
-Subject: [PATCH 7/8] mm/page_io: don't nest queue_lock under rcu in bio_associate_blkg_from_page()
-Date: Mon,  8 Jun 2026 11:42:48 +0800
-Message-ID: <c910d2c39d3ec97f67de68af636a52394342d55f.1780621988.git.yukuai@fygo.io>
+Subject: [PATCH 8/8] block, bfq: don't grab queue_lock to initialize bfq
+Date: Mon,  8 Jun 2026 11:42:49 +0800
+Message-ID: <1965073ea20f33114a8d903816b986e483b9bb34.1780621988.git.yukuai@fygo.io>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <cover.1780621988.git.yukuai@fygo.io>
 References: <cover.1780621988.git.yukuai@fygo.io>
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [9.34 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER(0.00)[yukuai@kernel.org,cgroups@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-16698-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16699-lists,cgroups=lfdr.de];
 	R_DKIM_ALLOW(0.00)[kernel.org:s=k20260515];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS(0.00)[m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:axboe@kernel.dk,m:yukuai@fygo.io,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:tomleiming@gmail.com,s:lists@lfdr.de];
@@ -110,56 +110,70 @@ X-Spamd-Result: default: False [9.34 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[yukuai@kernel.org,cgroups@vger.kernel.org];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	R_SPF_ALLOW(0.00)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(0.00)[+ip4:172.234.253.10:c];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,fygo.io:mid,fygo.io:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,fygo.io:mid,fygo.io:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D3FA56527FF
+X-Rspamd-Queue-Id: 1304B652871
 X-Spam: Yes
 
 From: Yu Kuai <yukuai@fygo.io>
 
-Take a css reference under RCU, drop RCU, and then associate the bio with
-the blkg. This avoids nesting queue_lock under RCU and prepares to protect
-blkcg with blkcg_mutex instead of queue_lock.
-
-Use css_tryget() instead of css_tryget_online() so swap writeback for
-pages charged to a dying memcg still passes the dying css to
-bio_associate_blkg_from_css(). That preserves the existing closest-live
-ancestor fallback instead of charging those bios to the root blkg.
+The request_queue is frozen and quiesced while the elevator init_sched()
+method runs, so queue_lock is not needed for BFQ cgroup initialization.
 
 Signed-off-by: Yu Kuai <yukuai@fygo.io>
 ---
- mm/page_io.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ block/bfq-iosched.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index 70cea9e24d2f..3b54c60c278e 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -315,12 +315,17 @@ static void bio_associate_blkg_from_page(struct bio *bio, struct folio *folio)
- 		return;
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 42ccfd0c6140..5cabee2d4e7c 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -7207,14 +7207,11 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_queue *eq)
+ 	bfqd = kzalloc_node(sizeof(*bfqd), GFP_KERNEL, q->node);
+ 	if (!bfqd)
+ 		return -ENOMEM;
  
- 	rcu_read_lock();
- 	memcg = folio_memcg(folio);
- 	css = cgroup_e_css(memcg->css.cgroup, &io_cgrp_subsys);
--	bio_associate_blkg_from_css(bio, css);
-+	if (!css || !css_tryget(css))
-+		css = NULL;
- 	rcu_read_unlock();
-+
-+	bio_associate_blkg_from_css(bio, css);
-+	if (css)
-+		css_put(css);
- }
- #else
- #define bio_associate_blkg_from_page(bio, folio)		do { } while (0)
- #endif /* CONFIG_MEMCG && CONFIG_BLK_CGROUP */
+ 	eq->elevator_data = bfqd;
+-
+-	spin_lock_irq(&q->queue_lock);
+ 	q->elevator = eq;
+-	spin_unlock_irq(&q->queue_lock);
  
+ 	/*
+ 	 * Our fallback bfqq if bfq_find_alloc_queue() runs into OOM issues.
+ 	 * Grab a permanent reference to it, so that the normal code flow
+ 	 * will not attempt to free it.
+@@ -7243,11 +7240,10 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_queue *eq)
+ 	bfqd->num_actuators = 1;
+ 	/*
+ 	 * If the disk supports multiple actuators, copy independent
+ 	 * access ranges from the request queue structure.
+ 	 */
+-	spin_lock_irq(&q->queue_lock);
+ 	if (ia_ranges) {
+ 		/*
+ 		 * Check if the disk ia_ranges size exceeds the current bfq
+ 		 * actuator limit.
+ 		 */
+@@ -7269,11 +7265,10 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_queue *eq)
+ 	/* Otherwise use single-actuator dev info */
+ 	if (bfqd->num_actuators == 1) {
+ 		bfqd->sector[0] = 0;
+ 		bfqd->nr_sectors[0] = get_capacity(q->disk);
+ 	}
+-	spin_unlock_irq(&q->queue_lock);
+ 
+ 	INIT_LIST_HEAD(&bfqd->dispatch);
+ 
+ 	hrtimer_setup(&bfqd->idle_slice_timer, bfq_idle_slice_timer, CLOCK_MONOTONIC,
+ 		      HRTIMER_MODE_REL);
 -- 
 2.51.0
 
