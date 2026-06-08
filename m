@@ -1,204 +1,175 @@
-Return-Path: <cgroups+bounces-16690-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16691-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 9XRhL/0tJmqLTAIAu9opvQ
-	(envelope-from <cgroups+bounces-16690-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 04:50:37 +0200
+	id wepACFU8JmobTwIAu9opvQ
+	(envelope-from <cgroups+bounces-16691-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 05:51:49 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA8C652548
-	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 04:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9566E652824
+	for <lists+cgroups@lfdr.de>; Mon, 08 Jun 2026 05:51:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=fygo-io.20200929.dkim.larksuite.com header.s=s1 header.b=G3eONcA3;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16690-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16690-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=fygo.io (policy=quarantine);
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=l79LEIS4;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16691-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16691-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ED94C303A136
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 02:48:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6EABB300F9EB
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jun 2026 03:42:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 466D43396F4;
-	Mon,  8 Jun 2026 02:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CF134B682;
+	Mon,  8 Jun 2026 03:42:58 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from va-2-50.ptr.blmpb.com (va-2-50.ptr.blmpb.com [209.127.231.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CE4337107
-	for <cgroups@vger.kernel.org>; Mon,  8 Jun 2026 02:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035FA2820AC;
+	Mon,  8 Jun 2026 03:42:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780886917; cv=none; b=W2E2tq7UffRDEsahiYGxKKtKBpORaeWSSuN2q3fhhvom31bey2VZlpVOaYkJDOD3L0aa0tUTNUnNOodGtjDHzRFls+3h3wjtG+ITUodeIqeBYBqQAGLuvNakPBrO4h9VpIuC0ohkaCTruX2fVeIMUTgch/8cCqzQbWsnzGcrqfc=
+	t=1780890177; cv=none; b=D/YvMmxzRDKqABsfJ42VB5gZlInjIMvDHClLhIRlPYxZHvzMFENhzaKSlyyYt+pMSCQ1NBj7eQyAYs0hL/0W1vIfJ5G8ytHcKVI3COFdHH8jFefOka6mf9z6W4PLgZqdLADUjIRbh/bwwlO3675xYkU0Izm5BhHAotVBzjBkORs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780886917; c=relaxed/simple;
-	bh=1ynSFMKb9ZvgL5PeJlWf1M/tDiJ1S5VVOIiJ2ag7HEs=;
-	h=To:In-Reply-To:Message-Id:Mime-Version:References:Cc:From:Subject:
-	 Date:Content-Type; b=TzUmjcIP38CIFuS1tiVp3pwkiax93LM6ClvFPBvogDGh/nijcK3XDBH5/SH9TeHkx8zBFn8nfzzDQz4DIsGS+6fd+rW8vVzpRHU2VZrXQNBYliqN7EVOdzNqjN2FeQsz0wA5/XP3FZhUq2i8rvhBrNeTJu+pS3NHzmqKX2kjY9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fygo.io; spf=pass smtp.mailfrom=fygo.io; dkim=pass (2048-bit key) header.d=fygo-io.20200929.dkim.larksuite.com header.i=@fygo-io.20200929.dkim.larksuite.com header.b=G3eONcA3; arc=none smtp.client-ip=209.127.231.50
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=fygo-io.20200929.dkim.larksuite.com; t=1780886899;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=1ynSFMKb9ZvgL5PeJlWf1M/tDiJ1S5VVOIiJ2ag7HEs=;
- b=G3eONcA3Az/cEoTzYNOiNoGApr8XH479yvGxe/hY7rcwNRtRtRrhdMBb304iCbbRr2iOT8
- 2eauYdSi7AItvlAlHBaTq0V8dcM64rdKJVaPB80RxggBOUeMYECrDMm8AYtCkScWdrcVFS
- 8y2ODc0Ynf0kVP6P/gnor4Chb4M+PKqkODjm3pgRF8GYYduH6D5MCDBlrIgVeHb50p250s
- eKTzXQbaqFO8U0Iahp4L1NgmOqC32iJE1EPso+uQ5ndiursTz3xqGNiBefwj1ILDppaEV5
- 8C9qAtIYoR6X5/npTnjnpcKjPxjYF5qOcxLUS1PETE5ZKbvpi7M39oP6zXcquw==
-To: "Nilay Shroff" <nilay@linux.ibm.com>, "Jens Axboe" <axboe@kernel.dk>
-X-Original-From: yu kuai <yukuai@fygo.io>
-X-Lms-Return-Path: <lba+26a262d73+b555d0+vger.kernel.org+yukuai@fygo.io>
-In-Reply-To: <a532857a-16d5-4bef-bbd1-3bc080363182@linux.ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Reply-To: yukuai@fygo.io
-Message-Id: <47c29e00-3781-4056-8874-e913ea28dd2a@fygo.io>
+	s=arc-20240116; t=1780890177; c=relaxed/simple;
+	bh=rMpDG54GJiZEqBgIXe2Jnd/jal4BcLX2TvvSY7AtWtQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X9HCpJT95GgKI7seflh5kpEyfLABt8/iyTyTrjqg0eglpbSHGJA8c78JV8cd29ES/jZZo5w7bgi6bEWVsk6YG/sczuHGz/a43gUIegsaWb+6vBSI1tvluQkOJWQsvlTDbOzVCGVj3GejWJrnB07/6jxVbGB4FlpFuwPS9Cb47zU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l79LEIS4; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F58A1F00893;
+	Mon,  8 Jun 2026 03:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780890176;
+	bh=kTfnsBWKWstk18ZI7HL6+/xILjAyO2gIFYcndqvX6qQ=;
+	h=From:To:Cc:Subject:Date;
+	b=l79LEIS4XhbNdoLkkK3F0lXimfDS8dnD5BMItZVYJottxcS1M8KxguF1uQxNctd+B
+	 tADht0NE86tZ1vit4SMnac6zRD9AE9aamVouDK2C/0VrLC6WH+xVe0jfG5kDChoVTN
+	 Iaoq9WDdCAuGAAHCtWIV0DO9ziDyz1SfVsRTH5Rn55KdhuiO3Bocijgg5KhCk/S/ap
+	 ZUPLcEexYFBjSVFZvMEHtRetNnNbLAvK7ILzXYuc9czKHTVXgVYxI0Ab+kVf8n/8fe
+	 Jk+oYHurZxt5mSXeh/bsihd34n3nIpuWd1x2FtDoeVw44z8nIlTMw+uyY2wV9dU6NF
+	 lb0ZokElT9e9g==
+From: Yu Kuai <yukuai@kernel.org>
+To: nilay@linux.ibm.com,
+	tom.leiming@gmail.com,
+	bvanassche@acm.org,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk,
+	yukuai@fygo.io
+Cc: akpm@linux-foundation.org,
+	chrisl@kernel.org,
+	kasong@tencent.com,
+	shikemeng@huaweicloud.com,
+	nphamcs@gmail.com,
+	bhe@redhat.com,
+	baohua@kernel.org,
+	youngjun.park@lge.com,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg paths
+Date: Mon,  8 Jun 2026 11:42:41 +0800
+Message-ID: <cover.1780621988.git.yukuai@fygo.io>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Received: from [192.168.1.104] ([39.182.0.146]) by smtp.larksuite.com with ESMTPS; Mon, 08 Jun 2026 02:48:18 +0000
-References: <cover.1780492756.git.yukuai@fygo.io> <89f9448c5d703e6123e1be6c8e0550c803e9c057.1780492756.git.yukuai@fygo.io> <a532857a-16d5-4bef-bbd1-3bc080363182@linux.ibm.com>
-Cc: "Tejun Heo" <tj@kernel.org>, "Josef Bacik" <josef@toxicpanda.com>, 
-	"Ming Lei" <tom.leiming@gmail.com>, 
-	"Bart Van Assche" <bvanassche@acm.org>, <linux-block@vger.kernel.org>, 
-	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
-	<yukuai@fygo.io>
-From: "yu kuai" <yukuai@fygo.io>
-Subject: Re: [PATCH 2/5] bfq: protect q->blkg_list iteration in bfq_end_wr_async() with blkcg_mutex
-Date: Mon, 8 Jun 2026 10:48:14 +0800
-Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.84 / 15.00];
-	DMARC_POLICY_QUARANTINE(1.50)[fygo.io : SPF not aligned (relaxed), DKIM not aligned (relaxed),quarantine];
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Action: add header
+X-Spamd-Result: default: False [9.34 / 15.00];
+	URIBL_BLACK(7.50)[fygo.io:mid,fygo.io:email];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[fygo-io.20200929.dkim.larksuite.com:s=s1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-16690-lists,cgroups=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[yukuai@kernel.org,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16691-lists,cgroups=lfdr.de];
+	R_DKIM_ALLOW(0.00)[kernel.org:s=k20260515];
 	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:axboe@kernel.dk,m:yukuai@fygo.io,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:tomleiming@gmail.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	GREYLIST(0.00)[pass,body];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,toxicpanda.com,gmail.com,acm.org,vger.kernel.org,fygo.io];
-	FORGED_RECIPIENTS(0.00)[m:nilay@linux.ibm.com,m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yukuai@fygo.io,m:tomleiming@gmail.com,s:lists@lfdr.de];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FREEMAIL_TO(0.00)[linux.ibm.com,gmail.com,acm.org,kernel.org,toxicpanda.com,kernel.dk,fygo.io];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,vger.kernel.org,kvack.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DKIM_TRACE(0.00)[fygo-io.20200929.dkim.larksuite.com:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TAGGED_RCPT(0.00)[cgroups];
-	HAS_REPLYTO(0.00)[yukuai@fygo.io];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yukuai@kernel.org,cgroups@vger.kernel.org];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,fygo-io.20200929.dkim.larksuite.com:dkim,fygo.io:mid,fygo.io:email,fygo.io:from_mime,fygo.io:replyto,vger.kernel.org:from_smtp]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,fygo.io:mid,fygo.io:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1CA8C652548
+X-Rspamd-Queue-Id: 9566E652824
+X-Spam: Yes
+
+From: Yu Kuai <yukuai@fygo.io>
 
 Hi,
 
-=E5=9C=A8 2026/6/5 1:31, Nilay Shroff =E5=86=99=E9=81=93:
-> On 6/3/26 6:57 PM, Yu Kuai wrote:
->> bfq_end_wr_async() iterates q->blkg_list while only holding bfqd->lock,
->> but not blkcg_mutex. This can race with blkg_free_workfn() that removes
->> blkgs from the list while holding blkcg_mutex.
->>
->> Add blkcg_mutex protection in bfq_end_wr() before taking bfqd->lock to
->> ensure proper synchronization when iterating q->blkg_list.
->>
->> Signed-off-by: Yu Kuai <yukuai@fygo.io>
->> ---
->> =C2=A0 block/bfq-cgroup.c=C2=A0 | 3 ++-
->> =C2=A0 block/bfq-iosched.c | 6 ++++++
->> =C2=A0 2 files changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
->> index 37ab70930c8d..f765e767d36a 100644
->> --- a/block/bfq-cgroup.c
->> +++ b/block/bfq-cgroup.c
->> @@ -939,11 +939,12 @@ void bfq_end_wr_async(struct bfq_data *bfqd)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct blkcg_gq *blkg;
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_for_each_entry(blkg, &bfqd->q=
-ueue->blkg_list, q_node) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bfq_group =
-*bfqg =3D blkg_to_bfqg(blkg);
->> =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bfq_end_wr_async_queu=
-es(bfqd, bfqg);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (bfqg)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bfq_=
-end_wr_async_queues(bfqd, bfqg);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bfq_end_wr_async_queues(bfqd, bfqd->root_=
-group);
->> =C2=A0 }
->> =C2=A0 =C2=A0 static int bfq_io_show_weight_legacy(struct seq_file *sf, =
-void *v)
->> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->> index 141c602d5e85..42ccfd0c6140 100644
->> --- a/block/bfq-iosched.c
->> +++ b/block/bfq-iosched.c
->> @@ -2643,10 +2643,13 @@ void bfq_end_wr_async_queues(struct bfq_data=20
->> *bfqd,
->> =C2=A0 static void bfq_end_wr(struct bfq_data *bfqd)
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct bfq_queue *bfqq;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int i;
->> =C2=A0 +#ifdef CONFIG_BFQ_GROUP_IOSCHED
->> +=C2=A0=C2=A0=C2=A0 mutex_lock(&bfqd->queue->blkcg_mutex);
->> +#endif
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock_irq(&bfqd->lock);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < bfqd->num_actuat=
-ors; i++) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_for_each_ent=
-ry(bfqq, &bfqd->active_list[i], bfqq_list)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 bfq_bfqq_end_wr(bfqq);
->> @@ -2654,10 +2657,13 @@ static void bfq_end_wr(struct bfq_data *bfqd)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_for_each_entry(bfqq, &bfqd->idle_lis=
-t, bfqq_list)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bfq_bfqq_end_wr(b=
-fqq);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bfq_end_wr_async(bfqd);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_unlock_irq(&bfqd->lock);
->> +#ifdef CONFIG_BFQ_GROUP_IOSCHED
->> +=C2=A0=C2=A0=C2=A0 mutex_unlock(&bfqd->queue->blkcg_mutex);
->> +#endif
->> =C2=A0 }
->
-> The above change protects the q->blkg_list iteration in=20
-> bfq_end_wr_async()
-> against list removal in blkg_free_workfn(). However the blkg insertion in
-> blkg_create() still doesn't use q->blkcg_mutex and so list traversal in
-> bfq_end_wr_async() may still race with blkg_create().
->
-> So I think we may also need to protect blkg insert in blkg_create() using
-> q->blkcg_mutex.
+This series is the follow-up blk-cgroup locking cleanup on top of the
+earlier blkg-list protection fixes, and prepares blk-cgroup to stop using
+q->queue_lock as the global blkg lifetime/iteration lock.
 
-Yes, this is done in another huge patchset, because currently blkg_create()
-is protected by queue_lock and can be called under rcu, code refactor will
-be required.
+The current queue_lock based protection is hard to maintain because
+queue_lock is used from hardirq and softirq completion paths, while some
+blkcg cgroup file paths also need to iterate blkgs, print policy data, or
+create blkgs from RCU-protected contexts.  This series first tightens the
+blkcg-side lifetime rules:
 
-I'll send the first set soon.
+- blkcg_print_stat() iterates blkgs under blkcg->lock with IRQs disabled.
+- policy data freeing is delayed past an RCU grace period.
+- blkcg_print_blkgs(), blkg lookup/create, bio association, page-IO
+  association, blkg destruction, and BFQ initialization stop nesting
+  queue_lock under RCU or blkcg->lock.
 
->
-> Thanks,
-> --Nilay
+Using blkcg->lock and RCU for blkcg-owned lists/data keeps the lock order
+local to blk-cgroup and avoids extending queue_lock into cgroup file
+iteration paths.  It also makes the subsequent conversion to q->blkcg_mutex
+possible without carrying forward queue_lock's interrupt-context
+constraints.
 
---=20
-Thanks,
-Kuai
+Yu Kuai (8):
+  blk-cgroup: protect iterating blkgs with blkcg->lock in
+    blkcg_print_stat()
+  blk-cgroup: delay freeing policy data after rcu grace period
+  blk-cgroup: don't nest queue_lock under rcu in blkcg_print_blkgs()
+  blk-cgroup: don't nest queue_lock under rcu in blkg_lookup_create()
+  blk-cgroup: don't nest queue_lock under rcu in bio_associate_blkg()
+  blk-cgroup: don't nest queue_lock under blkcg->lock in
+    blkcg_destroy_blkgs()
+  mm/page_io: don't nest queue_lock under rcu in
+    bio_associate_blkg_from_page()
+  block, bfq: don't grab queue_lock to initialize bfq
+
+ block/bfq-cgroup.c        |  17 ++++-
+ block/bfq-iosched.c       |   5 --
+ block/blk-cgroup-rwstat.c |  15 ++--
+ block/blk-cgroup.c        | 151 ++++++++++++++++++++++----------------
+ block/blk-cgroup.h        |   8 +-
+ block/blk-iocost.c        |  22 ++++--
+ block/blk-iolatency.c     |  10 ++-
+ block/blk-throttle.c      |  13 +++-
+ mm/page_io.c              |   7 +-
+ 9 files changed, 158 insertions(+), 90 deletions(-)
+
+
+base-commit: b23df513de562739af61fa61ba80ef5e8059a636
+-- 
+2.51.0
 
