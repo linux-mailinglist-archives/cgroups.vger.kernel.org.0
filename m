@@ -1,224 +1,212 @@
-Return-Path: <cgroups+bounces-16753-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16754-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id SeQnDNKGJ2o7ygIAu9opvQ
-	(envelope-from <cgroups+bounces-16753-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 05:21:54 +0200
+	id CCnnCRGYJ2o9zQIAu9opvQ
+	(envelope-from <cgroups+bounces-16754-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 06:35:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95B9065C056
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 05:21:53 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7121B65C398
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 06:35:28 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=FZke0vfO;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16753-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16753-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lge.com (policy=none);
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16754-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16754-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 37A013073480
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 03:21:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DE72C30376AA
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 04:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988C03655EB;
-	Tue,  9 Jun 2026 03:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40959373C1E;
+	Tue,  9 Jun 2026 04:34:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C2F3603DB
-	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 03:21:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC28B3655DB
+	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 04:34:14 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780975297; cv=none; b=qE/EohabQnbYTGoLak3y+Dz3vLzgPY2P4rnetcCLHUZ/FC9AeDKLDfiwdYdt7aG9/OzJ3oGz38ip2lZB9TX8pJkKWs8u3hKyOfz6FPBRZkAt7FNYAklC2yu5rEqt6kmHRB+VdrJkC+5erOh0NHbgp5bJJA7GDdONN7CbJhKJwRE=
+	t=1780979659; cv=none; b=C1hDpMmk+fQ0lIpVsWP/EoTlhcaZSGyCgiiPcgK9IMIj5wcJwUjZHi7uzajPg9tgvQWnKpJfgO1t1W2PsKRZJ5FItM4rLRkcmr3XBN99cAGVA61CzAZT72Un2kH48acBtTlTb1p/N5+AZQGc/mYozMHRkx3piYUogTIK373ICHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780975297; c=relaxed/simple;
-	bh=wATMRDzNJdCbN5HuzQxjF6c7i7/DlB+3OtSVfRbNmr4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d4gD8phsN//dQaB0tp+3/REQUKJOBlAnaPe87NN03+NekswmuzSqu662dbs73ryo00XCWd/8eM2rlzRTLxWElfNjG4tAYeRDpbBfrkU72OYCg/IH1VBNg9z9nGs1a6LA9CrjrD2YXjoGgLWkTmr+jVMwil6OxrCb2QY6kzgFjvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FZke0vfO; arc=none smtp.client-ip=95.215.58.181
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780975283;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xlehNq+dGhjF8xlBwPq9xUEl93005P8DJEDN49foV2w=;
-	b=FZke0vfO68yr6RGe+gmExYKpGubD3NRE4r0BoJb/bgJd1TBzspF/AJkmv3vdYQ21xphqqT
-	GO3OdzWzK4UGast1YrK+Oz22+ee21ay+UTrsAJ/sfTXt82KPv26klQsKExZBVj2Y82Gykb
-	gWOI/qBsQAz01ln6jRz1jxcjWYDh1vs=
-From: Lance Yang <lance.yang@linux.dev>
-To: hannes@cmpxchg.org
-Cc: lance.yang@linux.dev,
-	baolin.wang@linux.alibaba.com,
-	akpm@linux-foundation.org,
-	david@kernel.org,
-	ljs@kernel.org,
-	shakeel.butt@linux.dev,
-	mhocko@kernel.org,
-	david@fromorbit.com,
-	roman.gushchin@linux.dev,
-	muchun.song@linux.dev,
-	qi.zheng@linux.dev,
-	yosry.ahmed@linux.dev,
-	ziy@nvidia.com,
-	liam@infradead.org,
-	usama.arif@linux.dev,
-	kas@kernel.org,
-	vbabka@kernel.org,
-	ryncsn@gmail.com,
-	zaslonko@linux.ibm.com,
-	gor@linux.ibm.com,
-	baohua@kernel.org,
-	dev.jain@arm.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 9/9] mm: switch deferred split shrinker to list_lru
-Date: Tue,  9 Jun 2026 11:20:58 +0800
-Message-Id: <20260609032058.23770-1-lance.yang@linux.dev>
-In-Reply-To: <ah3MuK3GuimKVORB@cmpxchg.org>
-References: <ah3MuK3GuimKVORB@cmpxchg.org>
+	s=arc-20240116; t=1780979659; c=relaxed/simple;
+	bh=+hQ+RWuqaS/Jpfm/1pJ71r7akfcY/Ua/eGAmRinOwPI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZVkFGagZuAWDSlDdiYkQkwYNus/HIoXJHx/k3LDvgjFrCJ15YLebldcMT19cQDLr9pJls2b9pARW3Ve8eLiey2vypLmlgojtqMOzagUHDe7TZRyO9FOvmA+ZY03+850+5MhiGcfQqZGQ4jZ4TU/o7T+R9wuQb/fe0e0/33Vjmnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 9 Jun 2026 13:19:13 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Tue, 9 Jun 2026 13:19:13 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Yosry Ahmed <yosry@kernel.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,
+	Hao Jia <jiahao.kernel@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, mhocko@kernel.org,
+	tj@kernel.org, mkoutny@suse.com, roman.gushchin@linux.dev,
+	Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+	chengming.zhou@linux.dev, muchun.song@linux.dev,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	Hao Jia <jiahao1@lixiang.com>, chrisl@kernel.org,
+	kasong@tencent.com, baoquan.he@linux.dev
+Subject: Re: [PATCH v3 2/4] mm/zswap: Implement proactive writeback
+Message-ID: <aieUQUBHI+E3uNPW@yjaykim-PowerEdge-T330>
+References: <6deeaea7-3cd1-4403-29fc-d2dc55c297f8@gmail.com>
+ <aiBqzOtEv5iAC_qC@google.com>
+ <CAKEwX=OhxUxRCEfvZMnWzXy=Fa4jgzL3DuP-RmaVzdK65m4bew@mail.gmail.com>
+ <6db27a22-cc7a-9a94-db3f-c912fd39aa32@gmail.com>
+ <CAO9r8zM4SDdTgz9L2s1VfXL8K2VBjMD9ej2BTDxaGge1t2+quA@mail.gmail.com>
+ <aicJBVT4pBvmyooT@linux.dev>
+ <aicZ-5GX9De3MAU7@linux.dev>
+ <CAO9r8zNBJ-BsXyKFveA92jbwMu63uFVTY5CuT4fRHTBVcOjhPw@mail.gmail.com>
+ <aictKA0XWMWbxFdN@linux.dev>
+ <CAO9r8zPvCaCqvoUhPdAN5Oi_Sj0mK-t7DJhOOz3Xf1DT-Wrgcw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAO9r8zPvCaCqvoUhPdAN5Oi_Sj0mK-t7DJhOOz3Xf1DT-Wrgcw@mail.gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [0.64 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux.dev,linux.alibaba.com,linux-foundation.org,kernel.org,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16753-lists,cgroups=lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:lance.yang@linux.dev,m:baolin.wang@linux.alibaba.com,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:david@fromorbit.com,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:qi.zheng@linux.dev,m:yosry.ahmed@linux.dev,m:ziy@nvidia.com,m:liam@infradead.org,m:usama.arif@linux.dev,m:kas@kernel.org,m:vbabka@kernel.org,m:ryncsn@gmail.com,m:zaslonko@linux.ibm.com,m:gor@linux.ibm.com,m:baohua@kernel.org,m:dev.jain@arm.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:yosry@kernel.org,m:shakeel.butt@linux.dev,m:jiahao.kernel@gmail.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:tj@kernel.org,m:mkoutny@suse.com,m:roman.gushchin@linux.dev,m:nphamcs@gmail.com,m:akpm@linux-foundation.org,m:chengming.zhou@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jiahao1@lixiang.com,m:chrisl@kernel.org,m:kasong@tencent.com,m:baoquan.he@linux.dev,m:jiahaokernel@gmail.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[lance.yang@linux.dev,cgroups@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16754-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lance.yang@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux.dev,gmail.com,cmpxchg.org,kernel.org,suse.com,linux-foundation.org,vger.kernel.org,kvack.org,lixiang.com,tencent.com];
+	R_DKIM_NA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 95B9065C056
+X-Rspamd-Queue-Id: 7121B65C398
+
+On Mon, Jun 08, 2026 at 03:27:07PM -0700, Yosry Ahmed wrote:
+
++Chris +Kairui +Baoquan
+
+Hello
+
+Thanks for inviting me to the discussion, Shakeel.
+
+> > > > Youngjun is working on swap tiers. At the moment he is more interested in
+> > > > allowing a specific swap device to a memcg or not. I can imagine in future there
+> > > > will be use-cases where there will be a need to demote data on higher tier swap
+> > > > to lower tier swap. What would be the appropriate interface?
+
+Speaking of my work on swap tiers, I recently submitted a patch and am
+currently considering memcg integration:
+https://lore.kernel.org/linux-mm/20260527062247.3440692-1-youngjun.park@lge.com/
+
+The future use-cases imagined above seem to align with this
+direction. (BTW, I am currently waiting for reviews/feedback from the memcg
+folks on this patch. Any reviews would be highly appreciated!)
+
+We could potentially assign a target tier
+for writeback within the existing memory.zswap.writeback interface. 
+
+For instance, '0' could mean disabled, while non-zero values could represent
+specific tiers, which would maintain backward compatibility with the current
+version. Alternatively, if zswap is treated as the default top tier, 
+the `memory.swap.tiers` interface could potentially replace `memory.zswap.writeback`.
+
+Furthermore, this could be expanded so that each swap tier can demote data
+user-triggered demotion between swap tiers.
+
+Based on the current patch's ideas combined with my swap tiers concept:
+
+Assuming a hierarchy like:
+zswap -> tier1 (SSD swap) -> tier2 (HDD swap) -> tier3 (Network swap)
+
+We could configure the active tiers via a setting like `memory.swap.tiers`
+(tier2 enabled, tier3 enabled).
+
+For example, the concept of `echo "100M zswap_writeback_only > memory.reclaim"`
+could be extended. A user could run `echo "100M tier2 > memory.reclaim"`
+to explicitly trigger demotion from tier2 to tier3.
+(BTW, if we combine these features, my personal preference for the keyword
+format would be `<size> <demote_prefix><tier_name>`. I think it would be
+better to explicitly indicate that it is a swap demotion by using a specific
+prefix followed by the tier name. 
+Or make demote prefix another key is also possible)
+
+So, the whole picture would look something like this:
+- memory.swap.tiers		: Interface for configuring the tier mask.
+- memory.reclaim                : Entry point for user-triggered demotion.
+
+> > > Things will probably get more
+> > > blurry with memory tiers and compressed memory nodes though.
+> >
+> > I think there will still be distinction between byte addressable and fault on
+> > access devices.
+> 
+> Yeah, I think it makes sense to define "swap" as fault on access
+> (zswap, SSD, etc), and memory tiers as byte-addressable (even if you
+> put an SSD behind CXL and make it byte-addressable). But I also
+> remember seeing discussions about unifying memory tiers and swap in a
+> way, and it makes sense from a reclaim perspective (swap or demote
+> first?).
 
 
-On Mon, Jun 01, 2026 at 02:17:28PM -0400, Johannes Weiner wrote:
->On Mon, Jun 01, 2026 at 09:21:35PM +0800, Lance Yang wrote:
->> 
->> On Wed, May 27, 2026 at 04:45:16PM -0400, Johannes Weiner wrote:
->> [...]
->> >diff --git a/mm/swap_state.c b/mm/swap_state.c
->> >index 04f5ce992401..9c3a5cf99778 100644
->> >--- a/mm/swap_state.c
->> >+++ b/mm/swap_state.c
->> >@@ -465,6 +465,16 @@ static struct folio *__swap_cache_alloc(struct swap_cluster_info *ci,
->> > 		return ERR_PTR(-ENOMEM);
->> > 	}
->> > 
->> 
->> Shouldn't this be limited to anon swapin?
->> 
->> e.g. vmf && vma_is_anonymous(vmf->vma)
->> 
->> >+	if (order > 1 && folio_memcg_alloc_deferred(folio)) {
->> 
->> __swap_cache_alloc() is also used by shmem direct swapin, so shmem can
->> get here too when handling a large swap entry:
->> 
->> shmem_get_folio_gfp()
->>   shmem_swapin_folio()
->>     shmem_swap_alloc_folio()
->>       swapin_sync()
->>         swap_cache_alloc_folio()
->>           __swap_cache_alloc()
->>             folio_memcg_alloc_deferred()
->
->Good catch, I think you're right. I shouldn't have dismissed that
->branch due to "/* Direct swapin skipping swap cache & readahead */"
->
->> @Baolin please correct me if I got it wrong :)
->> 
->> folio_memcg_alloc_deferred() itself doesn't filter shmem out either; it
->> only allocates the memcg list_lru metadata for deferred_split_lru:
->> 
->> int folio_memcg_alloc_deferred(struct folio *folio)
->> {
->> 	if (mem_cgroup_disabled())
->> 		return 0;
->> 	return folio_memcg_list_lru_alloc(folio, &deferred_split_lru, GFP_KERNEL);
->> }
->> 
->> Since deferred_split_lru only queues anon large folios, doing this for
->> shmem swapin doesn't buy us anything :)
->
->Yes, agreed. I don't think it's a big deal / show stopper in terms of
->user-visible effect, but of course still worth fixing.
->
->I'll send a follow-up patch.
+> > > > will be use-cases where there will be a need to demote data on higher tier swap
+> > > > to lower tier swap. What would be the appropriate interface?
+> > > >
+> > > > BTW does zswap folks think of zswap as a top swap tier or something different?
+> > >
+> > > I haven't been following the swap tiers work closely, but personally I
+> > > do think of zswap as a top swap tier.
 
-Thanks.
+Regarding zswap's position, I agree it needs to be defined as the default,
+top-most tier in swap_tier. In my early RFC, I allocated a separate tier
+specifically for zswap:
+(https://lore.kernel.org/linux-mm/20251109124947.1101520-3-youngjun.park@lge.com/)
 
-Looks like this has already landed in mm-stable. If you're okay with it,
-I can send the follow-up.
+> > Same for me though I imagine swap tiers would introduce some duplication i.e.
+> > different way (interface) to set limits for swap tiers for a given memcg.
+> >
 
-From: Lance Yang <lance.yang@linux.dev>
-Date: Tue, 9 Jun 2026 10:56:45 +0800
-Subject: [PATCH] mm: prepare deferred split metadata only for anon swapin
+I also agree with the concern about interface duplication. We will eventually
+need a mechanism to control swap amounts per tier, which requires thinking
+about its relationship with swap.max. (I raised this as an open question in
+my early RFC).
+https://lore.kernel.org/linux-mm/20251109124947.1101520-1-youngjun.park@lge.com/
+(Further Discussion and Open Questions Part)
+However, since this feature is necessary anyway, wouldn't the proposed
+interface be acceptable without causing conflicts at this early stage?
 
-__swap_cache_alloc() prepares deferred split metadata for large swapcache
-folios.
+Additionally, `memory.zswap.writeback` seems redundant. Restricting a cgroup
+to only use the zswap tier (assuming it's the first tier) is practically
+identical to disabling `memory.zswap.writeback` (correct me if I'm wrong).
+But there is no problem to integrate it as I think
+e.g  `memory.zswap.writeback` could internally act as an alias for setting `memory.swap.tier` to 'zswap only'.
 
-That also covers shmem swapin, because shmem_swap_alloc_folio() can call
-swapin_sync() with a large order[1]. But shmem folios are not queued on
-the deferred split queue, so preparing the metadata doesn't buy us
-anything there.
-
-So let's limit it to anon swapin.
-
-[1] https://lore.kernel.org/all/20260601132135.14272-1-lance.yang@linux.dev/
-
-Signed-off-by: Lance Yang <lance.yang@linux.dev>
----
- mm/swap_state.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 9c3a5cf99778..7adac957c2b8 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -465,7 +465,8 @@ static struct folio *__swap_cache_alloc(struct swap_cluster_info *ci,
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	if (order > 1 && folio_memcg_alloc_deferred(folio)) {
-+	if (order > 1 && vma && vma_is_anonymous(vma) &&
-+	    folio_memcg_alloc_deferred(folio)) {
- 		spin_lock(&ci->lock);
- 		__swap_cache_do_del_folio(ci, folio, entry, shadow);
- 		spin_unlock(&ci->lock);
--- 
-2.39.3 (Apple Git-146)
+BR,
+Youngjun Park
 
