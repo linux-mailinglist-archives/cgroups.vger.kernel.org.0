@@ -1,257 +1,227 @@
-Return-Path: <cgroups+bounces-16788-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16789-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ewpFAd03KGpxAQMAu9opvQ
-	(envelope-from <cgroups+bounces-16788-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 17:57:17 +0200
+	id xrpKIU5AKGovBAMAu9opvQ
+	(envelope-from <cgroups+bounces-16789-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 18:33:18 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 935D56620FC
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 17:57:16 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id E97606626AC
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 18:33:16 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=Vu2RYFPj;
-	dkim=pass header.d=redhat.com header.s=google header.b=tY13qfqf;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16788-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16788-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=santannapisa.it header.s=selector1 header.b=WWiL64ia;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16789-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-16789-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=santannapisa.it;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 641213057FBD
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 15:47:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 63E9B308DC6C
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 16:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35984963B1;
-	Tue,  9 Jun 2026 15:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9D637DAAC;
+	Tue,  9 Jun 2026 16:23:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from MRWPR03CU001.outbound.protection.outlook.com (mail-francesouthazon11021096.outbound.protection.outlook.com [40.107.130.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFBB4949F1
-	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 15:46:51 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781020013; cv=none; b=kJc/H8YA9VezMYB+647m9jaYZjWltQLTwfjL8wR1Wzp1SBMY1eCbVv7Mo+os2KtrbAW6cu9brLXdhyzXvWalVMv9kBZ6a8Sv2P694TT+2pERtjGb8kfZMvhJWB0EBWSBuHSPRXFxHo1GhYH5i+WieyT7z4fXl/LX3L9oUPASaNw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781020013; c=relaxed/simple;
-	bh=+10onJO+W5BOSXLmXSI1bLQs3ISBGVQreNFwTxRYx7c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n4f1PMU31xKlxMG1YVkAuSTsRSeXom72nDxl2V6hi2tBKPakYle5+oVlXCO/ttenSdLAgM5CNiRAZk8Unk+ArYYdhWzIToStB21WhaF/5z6SU+qiNhiisqa5NEk6Ex3EROk+nVvVa8RVfuqefa8OyRj8hQNx8oDLhRC0HdLc4gc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Vu2RYFPj; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=tY13qfqf; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1781020011;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wA//FI/2V4/dhiJOqrsJhgwbCCnYt4JC9cGle24iCFY=;
-	b=Vu2RYFPj2/JytsEEvN0Dl7QlqnNbFOn31CTJ7pqdueYj0uupM+u7EyopFsSIdGjO4WUM4b
-	Y42PvRWNkK6KsAJgVO/HZ7bJBLODQmtU9q05oOuExjqmTLykcH4bX0eMgAcO7AAhoO3cBD
-	Ahwlzu0BGUnNty0ZmvWRgdwdsKc+P1A=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-154-a-6_y9YjPXGPjE1j5H6ylQ-1; Tue, 09 Jun 2026 11:46:49 -0400
-X-MC-Unique: a-6_y9YjPXGPjE1j5H6ylQ-1
-X-Mimecast-MFC-AGG-ID: a-6_y9YjPXGPjE1j5H6ylQ_1781020008
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-490ae0167ceso26514905e9.1
-        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 08:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1781020008; x=1781624808; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wA//FI/2V4/dhiJOqrsJhgwbCCnYt4JC9cGle24iCFY=;
-        b=tY13qfqfUUGy0jDTnuFIpDwV/4miJc6gcpoMCs/Q92bS19nCXhBuht49alnOJGFI05
-         6ThDD9oE096JETGnszlehtPcpEE20e7cdri36jy8MJFaI48JsK5fnNHSmjv2nUFeHiJ+
-         pUy266dRgJflZOl2UpCZkucVcofrqTAL6IJRhb2dpAIWPq8Crc036f10vc8e2v08OlBj
-         eNCKoyaGo05Infr5ymr9mTsJjoc5l99Gml+Aiar5JjPkzfxfH5Iep/k5TgdfGzDD4jAi
-         S2X7SksIpX7j08fpLmbeLPf9bVUahvvBYDEu0twny2n4WYyG1SLYEtPwPQEHkT1IgPuc
-         bCuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781020008; x=1781624808;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wA//FI/2V4/dhiJOqrsJhgwbCCnYt4JC9cGle24iCFY=;
-        b=nOdA3JEXPnB+iqA0510EMsr7aUFSXdJqzHwwFdzqbukCp1HsmOXfLKbfPlQlaS2dUR
-         ygB9IW84C7/0XostBWfCCz/T9OfC1CTh/oXF+SAutMR60YpsMGi3BpbrCkO8X1bd7Q7q
-         E+P5wo1BEjnFmHmEoA0oRVISmjnCSTtupap/m2l0FsOry0SFNq7NcjZ9AAnts8RztuDJ
-         u2eQ/pulH8AEw4OsYfZOfmA5TOD7/h8HjOIb/KT/ni2I09Cfneap1IrgmKsXRHrJtlkg
-         gZL7oD4S9maxitbFizIptDvhfT4t7ZzqOwcUnNkSEFHf82PGqBA1JeMtcAXtYTOm0wM+
-         wDRQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9aIKxcn9Au3LKEZLO9ZhhMrvZ4/X4AfeuGRbkzvuK4Xxt43dHHganS8X38LmY2PyjwIDChO0R8@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8Fy3yd/cHsjQaov7Fjnut9ycE+2JS5KfrMTz2rae1S1TMEOor
-	A4hDGbKarc6tJdtDAL3MFfmx7yTCXwgVTlS/GIz0rzRNSN0sO6YN78ZM6Q4ggUB6NYsW+PtoOVB
-	nY36dD5ONWjGHopo4GStXh3uNujm5y8TjCEcn7XSMRDNkdT23ZSPxEISykbk=
-X-Gm-Gg: Acq92OF9a/Vwts9x2UdOpWyx0CMkCp8WiKOmGDpTF/TDmJMAYerSrMoHRthpXLuB+0o
-	4f40+n8WJzDPFkC2l4BysvY4Voxi8wr4NqO5KCUAPh7TbPAQ1y5ST24Xugzvgqj5D0bKTjdLxvr
-	RQvO8OLpR2+0b/ZoDTmr3HmBA6LYhl8jDrZfGOdVbDcY+CGQdCW9VWBp9nNlj1xPX9+3qfcxeEZ
-	B3co27LXsTb0Di2HPB8k39gs/k/4A/wcZan/Rp7QW6kt2kXjcLuaND/xCb8PmgLpKg2zY/0FJ1c
-	N6hm///YxkLcIFyFjByVWvXxUPhQT2k6NCj/GEv7KSXhiL3CCSS40tP2g152s/Q7rtWFtKEwzDO
-	xfuPm6HxI2KCPQvqU4Tx3vWAc8jCxgRO8W3gNzTq/CW4tcbV5VA+NhnBP24ApgiM=
-X-Received: by 2002:a05:600c:870f:b0:490:44eb:c1e7 with SMTP id 5b1f17b1804b1-490c2624a03mr331518455e9.30.1781020007801;
-        Tue, 09 Jun 2026 08:46:47 -0700 (PDT)
-X-Received: by 2002:a05:600c:870f:b0:490:44eb:c1e7 with SMTP id 5b1f17b1804b1-490c2624a03mr331517885e9.30.1781020007355;
-        Tue, 09 Jun 2026 08:46:47 -0700 (PDT)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.95.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490bc40716bsm522410715e9.12.2026.06.09.08.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2026 08:46:46 -0700 (PDT)
-Date: Tue, 9 Jun 2026 17:46:44 +0200
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Yuri Andriaccio <yurand2000@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Luca Abeni <luca.abeni@santannapisa.it>,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2A7377EBA;
+	Tue,  9 Jun 2026 16:23:42 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781022227; cv=fail; b=MGiZrxUJ4ITgSHZOHWC7LZYcD1Fzl1otV24ct500myfFyeqT67FmvibBkhVOetCk4zPnbb36rqOPMi79SVy/4dxYsjUsp8QWZ/eywf5jiLfVtuGEJ725A3VSrEQS019d9CGnGEF6g70KoumdADVKZlwbpU9X1N3HVEQCBrQHU4Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781022227; c=relaxed/simple;
+	bh=mkRAEEOmdU8K3DZH1ScaSPsKo2Jm4qjLiUFTsRVywUI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=GIBwBlvC+8duoQCV8BUlHmnSqY3HraRjz6Lsm8B19JYgoIgiqs4H+hkqTZw8E2jdzgnoceX7wTPjskNauuI1ZcQb5umzRRniM8JZ7LHYKBemCTgDFc7M5WWWYjOeoPSrJmMFToMOkk7v+2E9caRWTQTTRLC6/q7gUPjk9uf3VHs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=WWiL64ia; arc=fail smtp.client-ip=40.107.130.96
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=a1bI3VNzDItd7g9wHvySHeR0t5Mba+n7RSKLY6CzBjL5qDLcyOc1OISNzWMxTAeyQbC2gWB5wENTiO+wXobT2EHBPki69IXgsEqDsqqSzAIzhc4pXsLb4ZCx+mm8VQ22PJDRsuYzETHMf3C+QDUprnzfFimnpsURrRf9nGwIRbaQRTPOJS6eEbq9ctMpw2AVbW7grZnkgTpYNKCzAqgB2KgNDBSnSZaRjHlKEwZeinS8LgZQbq7fQ+JkuVNFVN9O0jx5wyTewZkmLNfs3bN63IRakIDIHfo5njx4UZLSdpSQvI7dOazmcEHcxR9NzUMELX915mUgZ2Dz50MUCJzmeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IykR76QfJG0XMGdvn0nTAxArO+io9x3zs4i/JjQHHO4=;
+ b=pPjhPRYuTwixDW/LPShQeOzC0pgVZjbiJSOkYknxYd0wupQFzX47Cm1ZKG09HYawkDN+DyESvUXM47aXvi+i/J5EFMuyNmwaYURxncBlZtUT5CVkheGMakIuv1d6veOaGXsdnpvAv/xSDtDFfdg0dLZdy1x1NKbILcvMvojXm6Roo5jPKtXMCFMc/HT39tm/xN4gcl7vWyO61Mtn/VJMmWAIXpnze4A+cLYVnuMG2Q08FJwr7x2TKo4T++76rdwE04pL3SRZGlsnPstl6+6F3UGSm1LnYbMNE1RwS/bLQjhAyKIMiov/prU5SqjFWXn9WpFih/J65KElT0lhiGLybw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=santannapisa.it; dmarc=pass action=none
+ header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IykR76QfJG0XMGdvn0nTAxArO+io9x3zs4i/JjQHHO4=;
+ b=WWiL64iaImIhOfwtAPjblPsVcM5YDE/qEc+GA0KuInt/cUsy5i7kp0AYnrWK5VPOp658LNsBaxoxEIVdcoz3LX4jipK+d0dPDkTfemB1vLFrJTKgTUOkqBlgeSbC6YIjP/OTuXtHEId7T5czO2iP6SZjmrZ2eAToLpHHCNwdZzc=
+Received: from DBBPR03MB10258.eurprd03.prod.outlook.com (2603:10a6:10:52b::6)
+ by GV2PR03MB8679.eurprd03.prod.outlook.com (2603:10a6:150:7a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.14; Tue, 9 Jun 2026
+ 16:23:36 +0000
+Received: from DBBPR03MB10258.eurprd03.prod.outlook.com
+ ([fe80::b7a6:58ae:c374:12d9]) by DBBPR03MB10258.eurprd03.prod.outlook.com
+ ([fe80::b7a6:58ae:c374:12d9%2]) with mapi id 15.21.0092.011; Tue, 9 Jun 2026
+ 16:23:36 +0000
+Message-ID: <9c0d3d19-5c14-42e0-b29d-4ea32d9e624f@santannapisa.it>
+Date: Tue, 9 Jun 2026 18:23:34 +0200
+User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH v6 00/25] Hierarchical Constant Bandwidth Server
-Message-ID: <aig1ZGEq0Vr0qLzl@jlelli-thinkpadt14gen4.remote.csb>
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
+ Yuri Andriaccio <yurand2000@gmail.com>
 References: <20260608121546.69910-1-yurand2000@gmail.com>
+ <aig1ZGEq0Vr0qLzl@jlelli-thinkpadt14gen4.remote.csb>
+Content-Language: en-US
+From: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
+In-Reply-To: <aig1ZGEq0Vr0qLzl@jlelli-thinkpadt14gen4.remote.csb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MI1P293CA0012.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:2::10) To DBBPR03MB10258.eurprd03.prod.outlook.com
+ (2603:10a6:10:52b::6)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260608121546.69910-1-yurand2000@gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DBBPR03MB10258:EE_|GV2PR03MB8679:EE_
+X-MS-Office365-Filtering-Correlation-Id: 57a98447-65bf-4fdc-6fab-08dec6437502
+X-LD-Processed: d97360e3-138d-4b5f-956f-a646c364a01e,ExtFwd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|786006|7416014|376014|366016|22082099003|18002099003|4143699003|5023799004|56012099006|11063799006;
+X-Microsoft-Antispam-Message-Info:
+	e6CQ8ZfFJ6qxB3A3Vex7kFMSomZW3vIs3magFM+DE4nOXqtyIAyjOM0EBrjZrgRoL4S5KwcnMKtXFjhGSpfrN++y6yIS6R/AqaXFumzfcfZ28bD89bOtSsn/sZaz1iv4HO2zLCwqaOjmDzMNrz5xYIKwfy6rMTC+KNDShZfUt6c6HGT+4yH2/q4HzJAC4Df4JmWbIsxAv5VqjS8tUB5hT74OGLHnrHQdADZCHFPID0iOLUJIs+5ZD5mQVtYWBaA7b2VXSdbZMgi7EQjPPgKXE8OeaUFXRX361NusGfrsQdaxOvczYi5RfQvrbBhHTOyND7zVyggLWRZWmiS9R/g6N4IbgH4VnhKfT9t3nd/v3JJ+xZakj/5GPfexld+miup/2lbImV8Q0ItBbyNnkbHoh5kqgbnbW5q1KRVbOrH3MUApPu4vqAyY/AXOEYOB8f2Utvqc/NYnjW+MYmT1b6mnjQhq9Ev+a/5HUJHj0IDB0ji5TaQ/vHLC5MBmNX9+qK7EgzvVJMo2coHorpJGJN0z38xgKh+ad2aBLQg+I6QLu0SHRMf50os0iM00uUI9ldMr2+lwRQK/IMALpyQXI59l3B4cNVGdSRxVq8lwgp9IhEEn2AF2g1dZf43pe9ZXRxdh9NfiTy9GgGJ6RcvfINTKY23eH7uY2uxvtjtkvas5gd/spYsSkGZb0hMa5Rypz3Ic
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR03MB10258.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(786006)(7416014)(376014)(366016)(22082099003)(18002099003)(4143699003)(5023799004)(56012099006)(11063799006);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WGY1VFprVEsrcWdBZU1SS3ZPYmFLUXUvT3FmWlFRbFBwc3Zxckw5TmRIeFVr?=
+ =?utf-8?B?VU4rdmxjbzVERi9ka0lYcTVhR1A3RllVSTgzdmdEaHl4MzVIaHZXQzRQazlT?=
+ =?utf-8?B?WlVYcWpHQ2VRSmU0QUdzSGVNRWc3NGhOTTdST0ZaZkZDNUlNS2I0THo3d0tk?=
+ =?utf-8?B?U0t2OXFESDV4dkRYTXJiMU9KS1VsdmJlMllCV0NDcUtYSDRtdUxucm9PTGNJ?=
+ =?utf-8?B?Rnd1aDRkN2dlVnZSd2lRa3lxQlU1L05DVDlFL2NnNG5MZmk2eDc5bmZpRXdT?=
+ =?utf-8?B?VTZuV0l6QndsSVhwS3JScU9PU212L3o0UFZITG5KUUhtZFN6bS9RWWdFTjFV?=
+ =?utf-8?B?eXhiQU5xSXdzblkwMmxYRzFkbG5lUjJMLytTL2lvQWFzWDZTbHN0YnNRUFRv?=
+ =?utf-8?B?Uzd2QVVNWGZBT0tpQVM4ZWkyQXFCbkN2ck1ranBrdWF0cEduRWdzRUlVa3pk?=
+ =?utf-8?B?OEZrNEdvcnk2Z1JUdkF5UTVXT0tLMENlenlVSERRY0tCay9pMjhia3E3WjJX?=
+ =?utf-8?B?QlFIVDZUNHdUSEUySEtjU3VKYXpqaGpsbjRPMytlNVRrQzU4VGlSQ3hXM0dE?=
+ =?utf-8?B?Zm9waHcyaGpXQ2w2U2MrVzNJazFPbEZ5L1Z3SG1XVVAweFZkdFJRWGVyM0JQ?=
+ =?utf-8?B?WXE5NjZWcXZSa1RHWUhBSmhRRUpTbW80RWFyNFY3MGRjNmh5TjNlaUhtMDVr?=
+ =?utf-8?B?ejdqRVBFRzN1dzRDTEpORjUyVjRZZCszZGpEMXdZUTFvZlZCbWZuL0g2QjJi?=
+ =?utf-8?B?Ni9vWW11Z25MSzA3VEUwYXl3dmpYS3ltOWV1RUYydXUxcUV4ekd2SThsMWJE?=
+ =?utf-8?B?anlzTm95R1kxSUV4bUs3eHl5bVJ2VExLaWR5ZFRheWNqQ0VYZmNHdWpqT3lB?=
+ =?utf-8?B?MWMwbWU0U2tMRzlmK2JNSlhuajk4dENCVjFXUXNVd28xQ1JFbys5NVFaNGx4?=
+ =?utf-8?B?YXNKY3ZBOElsTmlHQnV1V0N4N3RLWndVVzdBRVRpQ3U3TkJrbjJQUFpCRmF2?=
+ =?utf-8?B?SWFTWXBNTE54ajdRQ1VkK1N4dityc0RHMDhEaWFhRitaSU54dGZPeUdWN1NX?=
+ =?utf-8?B?TlhBY2EwZnljSmxNdlVVRVZMWTJEbC9lUGM1U3FuVDdlcCtGcnRkT2NyVVdj?=
+ =?utf-8?B?ZDkvVXZKdkZiMGhPMmRNNm5neExLMDdvRnFPb3FPNFI0VjhWajBOMzA2S0E3?=
+ =?utf-8?B?Q0E3QkFXeFZmR2txNVlKSWhIdU04S2QzL3VtM011eDZsZHlrb05sQTdWZ3ZY?=
+ =?utf-8?B?bGNOUitrVTZGZWRJOG9tTG1kaURWTkNTZno2T0JwaXZVdWQ5NlF2QVNuTG9p?=
+ =?utf-8?B?b0JOTWRPSDE5ckFITERVZUM4bk1tbUNQSmJiRkZTNjhLS0NKK0NKa1RMWnhp?=
+ =?utf-8?B?eHhLekhOT2NGczBNNVJjN2dxMTFKdEV2cEoxOEZyN3VKa1J0QWhLQW5iOTd2?=
+ =?utf-8?B?UDdKS25oQzgwUTF0bnlnbkZRekxveFhtWUFZTitPbm9BLzhGTU1TcGRYUndi?=
+ =?utf-8?B?VDRLamNrQUNCWGR3cHVzdXIyTzFGRDNMT3B0N2NESzZPSVA2bEtETDZXc0ht?=
+ =?utf-8?B?K0ZHWWhSekRLRFRmekVyRHEzeE5vaUZzUElJUWYrMDZ2bDg3RERhY1V1YU9t?=
+ =?utf-8?B?b2I3RlhSZ0dVN3hpTm1SdTRDeHIzRGhEWFpuNlJZL3hCeC9XZmgrRjN1UkpD?=
+ =?utf-8?B?V1VTWXpuWkwxUm5LVUZlbFROa3Fkc2o5aHVnWmU4cGFDWDViSXY2a1FDV211?=
+ =?utf-8?B?RjE1OWNON3l0WXpTY2RYZXBKWnhmTkJ0OUFIV2ZxUTh5OUxRUDNZSWtkRFVG?=
+ =?utf-8?B?M3p3TXVYYlFzWXFTdXhHdHg2aldoWDh1b1ZvS0VWbklYUFFBbHgyMlBvZmlP?=
+ =?utf-8?B?ZXEwMWhGM21tY3RGOFd6cmhtUlNqT1hZNjkxOFBDTDZ1RThSSklOL1B2T25H?=
+ =?utf-8?B?aE9zbk5ScDBHZTNTV2xlcFNSOEJZMURKTkNqRGZEZUpvL2hXSUVOS0RzL3BQ?=
+ =?utf-8?B?K2dEMVk2S3Y1NEVhczBBcUl2cjcrYWlHWmwyZVViN1haMDJUNjc4Q3B0NVVh?=
+ =?utf-8?B?SzdNcEkxUVRseUZOOVY2WWlmOEdveG5mTmNQVjIwY1ZuWUZZUHJPMkJxZEE3?=
+ =?utf-8?B?dnlHUEZrMXUyVS9qNkY0U3VJOVFvLy8xTGhhc2V2cHg0VVRTNGx0T3ZhTDYw?=
+ =?utf-8?B?ck11bDEyQmltTENtZ3RkWnZJd1hyeWpuMTVocHdEbC82Vnl1eDcycm93S1BK?=
+ =?utf-8?B?Y1JwTjBsUnlUcW9mbGdFQVNXc3hWT0hKVS96ODZIeE1IRnY0K1BNdG1kUVE3?=
+ =?utf-8?B?UkE5SW5zdm4yVXg0NGR6Mm9NVDRYaGVPVUovMGRrellVaExqMmRjbDlTcEMr?=
+ =?utf-8?Q?+muQWK0SyOr2gWx8=3D?=
+X-OriginatorOrg: santannapisa.it
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57a98447-65bf-4fdc-6fab-08dec6437502
+X-MS-Exchange-CrossTenant-AuthSource: DBBPR03MB10258.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2026 16:23:36.3010
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 86P+78aK3Bd8TMa3u3SYOg8IflRny/RfibdHzBoDsW8lgqGTSnPzdMdlxnPJ/zj33w38Z07DRBEyEPDfS8+oauFZ7EO6axNjP/Z5HXsu9I4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR03MB8679
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[santannapisa.it,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[santannapisa.it:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16788-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:yurand2000@gmail.com,m:mingo@redhat.com,m:peterz@infradead.org,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:luca.abeni@santannapisa.it,m:yuri.andriaccio@santannapisa.it,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16789-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
-	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:juri.lelli@redhat.com,m:mingo@redhat.com,m:peterz@infradead.org,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:luca.abeni@santannapisa.it,m:yurand2000@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[yuri.andriaccio@santannapisa.it,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[redhat.com,infradead.org,linaro.org,arm.com,goodmis.org,google.com,suse.de,kernel.org,cmpxchg.org,suse.com,vger.kernel.org,santannapisa.it,gmail.com];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yuri.andriaccio@santannapisa.it,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[santannapisa.it:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,lwn.net:url]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 935D56620FC
+X-Rspamd-Queue-Id: E97606626AC
 
-Hi Yuri,
+Hi Juri,
 
-Thanks for sending this out.
+Thanks for looking into this.
 
-On 08/06/26 14:15, Yuri Andriaccio wrote:
-> Hello,
-> 
-> This is the v6 for Hierarchical Constant Bandwidth Server, aiming at replacing
-> the current RT_GROUP_SCHED mechanism with something more robust and
-> theoretically sound. The patchset has been presented at OSPM25 and OSPM26
-> (https://retis.sssup.it/ospm-summit/), and a summary of its inner workings can
-> be found at https://lwn.net/Articles/1021332/ . You can find the previous
-> versions of this patchset at the bottom of the page, in particular version 1
-> which talks in more detail what this patchset is all about and how it is
-> implemented.
-> 
-> This v6 version works on the comments by the reviewers and introduces the
-> following meaningful changes:
-> - Update to kernel version 7.1.
-> - Refactorings and general cleanups.
-> - Removal of substantial duplicated code.
-> - Express more locking constraints in code.
-> - New cpu.rt.max interface.
-> - Refactoring of migration code to reduce code duplication.
->   The new migration code now reuses the existing push/pull and similar functions
->   and specializes where needed, substantially reducing the footprint of group
->   migration code from previous versions.
-> 
-> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-> New cgroup-v2 interface:
-> After extensive discussions with the kernel's maintainers, we have built a new
-> interface to support HCBS scheduling. Since this will be a cgroup-v2 only
-> feature (the fate of cgroup-v1 old RT_GROUP_SCHED has yet to be decided), it was
-> possible to drop the original v1 interface entirely and create a completely new
-> one that is similar to those that are already existing.
-> 
-> Every cgroup has now two new files:
-> - cpu.rt.max (similar to the cpu.max file)
-> - cpu.rt.internal (read-only, not available in the root cgroup, it may be
->                    removed if deemed unnecessary, see later for details)
-> 
-> In this new interface, HCBS cgroups may either be set to use deadline servers,
-> and thus reserving a specified amount of bandwidth, very similarly to the
-> previous system, or can delegate their FIFO/RR tasks' scheduling to the nearest
-> ancestor that it is configured (default on group creation). If the nearest
-> configured ancestor is the root cgroup, tasks will be effectively run on the
-> root runqueue even if their cgroup is not the root task group.
-> 
-> This means that subtrees are allowed to retain the original non-RT_GROUP_SCHED
-> behaviour, scheduling on root, while the feature is nonetheless active. In the
-> meantime other subtrees may use HCBS, and the whole hierarchy can coexist
-> without issues.
-> 
-> This behaviour is specified in the cpu.rt.max file, which accepts the string
-> "<runtime | 'max'> <period>". A zero runtime disables FIFO/RR scheduling for
-> tasks in that group, a non-zero runtime creates a reservation and uses HCBS, a
-> runtime of 'max' instead tells the scheduler to use the nearest configured
-> ancestor for the FIFO/RR task scheduling.
-> 
-> The admission test now does not only check the immediate children of a cgroup
-> for schedulability (recall that a group's bandwidth must be always greater than
-> or equal to its children total bandwidth), but it has to check its whole
-> subtree: if a child delegates its tasks to its parents (runtime = 'max'), then
-> this child's own children (the grandchildrens) are effectively viewed as
-> immediate children that compete for the same bandwidth of their grandparent, and
-> so on down the hierarchy.
-> 
-> To support both threaded and domain cgroups, the original test that allowed only
-> to run tasks in leaf cgroups has been removed: this is already enforced for
-> domain cgroups by existing code, while this must not be the case for threaded
-> cgroups.
-> 
-> Since groups in the middle of the hierarchy can now also run tasks, their
-> dl_servers must be configured properly: a parent cgroup dl_servers can only use
-> their assigned bandwidth minus the total of their children. The cpu.rt.internal
-> file reads exactly what is this "remainder" bandwidth. Since dl_servers must
-> have a runtime and period values assigned, the period is taken from the user
-> configured cpu.rt.max file and the runtime is computed from the remainder bw.
-> This runtime and the period are the values shown by cpu.rt.internal.
-> 
-> Supporting both threaded and domain cgroups also dropped all the extra code
-> related to active and 'live' cgroups as mentioned in previous RFCs.
-> 
+ > I started playing with the new interface and ended up with the following
+ >
+ > bash-5.3# cat cpu.rt.max  (root)
+ > 10000 100000
+ > bash-5.3# cat g1/cpu.rt.max
+ > 10000 100000
+ > bash-5.3# cat g1/cpu.rt.internal
+ > 9999 100000
+ >
+ > which looks odd to me, as nothing is running on g1 yet and no children
+ > groups either. Maybe a rounding error of some kind?
 
-I started playing with the new interface and ended up with the following
+You are right. I should have mentioned that it is just a rounding error 
+that occurs when converting from a bandwidth value to a runtime value. 
+This happens because the tg_rt_internal_bandwidth() function truncates 
+the value when transforming the runtime from nanoseconds to micros. 
+Rounding could be used here to report a more accurate value.
 
-bash-5.3# cat cpu.rt.max  (root)
-10000 100000
-bash-5.3# cat g1/cpu.rt.max
-10000 100000
-bash-5.3# cat g1/cpu.rt.internal
-9999 100000
+This same issue is probably found in the from_ratio() function, which 
+has a similar truncation issue when converting from bandwidth to 
+runtime, but since it is working in the nanoseconds range it might not 
+be that big of a problem. The value from from_ratio() is used for the 
+setup of the dl_servers even when the children bw is zero, so maybe it 
+is possible to add a special case?
 
-which looks odd to me, as nothing is running on g1 yet and no children
-groups either. Maybe a rounding error of some kind?
+Anyways, as it is right now, the cpu.rt.internal may have only a +1/-1us 
+error in reporting the actual used values, while the error for the 
+runtime value used internally to setup the dl_servers is in the range of 
+tens of nanoseconds.
 
 Thanks,
-Juri
-
+Yuri
 
