@@ -1,163 +1,159 @@
-Return-Path: <cgroups+bounces-16778-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16779-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id qoKkFZPkJ2rc4AIAu9opvQ
-	(envelope-from <cgroups+bounces-16778-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 12:01:55 +0200
+	id WQZlKND9J2oB6wIAu9opvQ
+	(envelope-from <cgroups+bounces-16779-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 13:49:36 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 983E265EAA2
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 12:01:54 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A967F65FA56
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 13:49:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=IhOXKGqU;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16778-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16778-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=aAbg9JEC;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16779-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16779-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 988703045452
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 09:59:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2DF313018F72
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 11:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DD23E6DD0;
-	Tue,  9 Jun 2026 09:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D527F3FF1CB;
+	Tue,  9 Jun 2026 11:42:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f67.google.com (mail-qv1-f67.google.com [209.85.219.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8123E2750;
-	Tue,  9 Jun 2026 09:59:32 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780999174; cv=none; b=kksw7OhaQx9YD73Af8Ktm7eW4zynH8zUOPfFsxQedsM/CJgqzED9ylLHNbxZBYWWG3aRcpGQuvIGCEzNoNdXQQzK5cVn9z/oKlIPAUPiQUWZRpEuGHE4ihzDPFqPRdDW2Ph5gy8pB/Agfzf445wM6yEc9eTVs3xMSaUEQDIlx/I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780999174; c=relaxed/simple;
-	bh=0cfElR1Xnw096CFMNN+EGb31Ue56zc0P2jUYo2zdKCY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=StMdjBv7daMTnpXCqqhVffCYZAhDfaBEJqqf+Sb7AdVvhcM262EIfHLRAmsSAzYFyyhf8F+pgS5w/s1jb8tC7QIypfN31FCnEL+SVDfWsSJsUukGMdk0yn0cqpImCoqKe0t8ooF5tF0uP8b2ChHKCV23zXTpLDoxq9QCuHu/Cbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IhOXKGqU; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E8D91F00893;
-	Tue,  9 Jun 2026 09:59:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780999172;
-	bh=oWSy9s2Uo+D2yHOeSy2A7Sp60cndUtpnDFI5TAu/XEo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=IhOXKGqUm6L3V+PBCFLx67FYr5PsFMcbN8iSD1NfcEvWmdqO1IP3BZkVDj1sw63/M
-	 apLzVHIK4EixUi2aDQGo1i3D6CQjQZQAyTTRWonxcj6OYqXjLA2A6tnS26zawG0v/U
-	 4bRg85UPf5OQH8W25ixAjOnIt04JWfQK+nLTlb+Snbb67b8wOnCbTcnj7dArmM2f8n
-	 nNQc0Move2S6KHgziXDATYzb18y1O67QArByqe1mug5UI9O21vuFaInqgXDJ8SMdJd
-	 bm4ORDubVKyTFExlCDOkwInIP0TdzhHU7KBG3UXzglmS1XWhKXp2Y7wZ9Kfu62EuYp
-	 vBYTCJQ3hEfIg==
-Message-ID: <f0953b11-7524-40c6-9d8c-9aa8b8fd24ea@kernel.org>
-Date: Tue, 9 Jun 2026 11:59:24 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2385C400E15
+	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 11:42:18 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781005342; cv=pass; b=QIpYQTGtq0kTpfAd0lM82b5jQ/U+pLsuqedvsKiplC+tNzilDD3gQLr7aYgv6vL61slCqDjWgvicUb6YNCiur5EMOgv3CtXj2rh5M91zr0RurLjUZTON2OPCI38umd/QW2o45GCMc7vMrKK/uKQWN6iv8EgCji6Mtv9arVqvH0M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781005342; c=relaxed/simple;
+	bh=lZahKJJVe/nElVoJF5mGEgxxp4lOFM/xPbEibG6nZto=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=WuzXtlGW8wDU555cfy7q1vGYCKkEv58UPFVxMyTjbYadrA6r6e+dkbicXtFYe+dJA3pqJlcLwqnFHyhHpFBbZp24uQJ81NSm1y0OUYBf8m/xPq9tauAT6/FYbtdebpIfvlSs5zRlG4HiXnMI37qRsAPM0ggzUyBGse+B8nZwVjU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aAbg9JEC; arc=pass smtp.client-ip=209.85.219.67
+Received: by mail-qv1-f67.google.com with SMTP id 6a1803df08f44-8ce9df48e1bso53718456d6.1
+        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 04:42:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781005338; cv=none;
+        d=google.com; s=arc-20240605;
+        b=L6Vxh6f/KxNYJStL3npbVnL4Yvu5NoqG/HzBT217SytuCSHwrIvolY8/t+TF3/BI6r
+         09sUKZmqkRO/kdPjisiqYcKtzoQOsr+cfN2dISLFRSYjOA3E9YnLX4GSh6v1CTVgHrx7
+         WfQ9jr8fSURE6WWRBg75deIXppAmNUBfkEM4tzh/kO/8tcYJsJFU6B6xw71Qcb35hd+x
+         rhGZOSNHzsbbfCFDG3tkXzdSXsTy1SsWAULvBTvMq40sBxpidORDWH6ATbQhxr87wMr+
+         oMRg50MSMHqFXNB85/QNqW4O3OPU6fcFZsuvDAczYk6kKRTcXS7Wn9ol1a7uTGK4gmKZ
+         AaXQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=zPHGFXUCMBQH6l5HOHJr2FVYQTZtYPpvIAEtCs4Ydmc=;
+        fh=cJT0ro3bmtAGByAoWkOZ7y6hUdmRUB0hJhLWOH6t6TE=;
+        b=XzGzay6RO9whvsg88fTmtrF6XLAb7dTc5yGylFY7cd0jy7YrPVeQpmLvn9XKCrOWTy
+         uv/3JpF8H8KI/SPHgeQhqZkozJF7f9iiFdBOcBJ3GJADvY6DduTbdbcCDn6azWAs3rC3
+         HD0e2bTLxMT4TYuPr7UDPbMzPNuuVbx/ETXswJ5moOjzgia3n67DVca/+Bg6tuQLJNk/
+         i3RcMmxq+O9KQHIEXamc76MuQCUTN0vFIIL8ajRRkFtEKMZJ5hdz7mq2GlYHvBnimxSz
+         FlQkqkFBF3uEXDikirO5odrIl8iBcodon9NEPMTJMrjpj2t2yriA32VQxkkoAbQSVjwH
+         dHpw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781005338; x=1781610138; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zPHGFXUCMBQH6l5HOHJr2FVYQTZtYPpvIAEtCs4Ydmc=;
+        b=aAbg9JEC6gh2AWA279mppumRMDgxDR7rgmSzODG7ajJ6entqQqfpoZoMMDsfhwv7oV
+         ZhT4gXV5x8fSllKjEC6HCHnJrHMwYRyGg06o6IkhNx8Khy+72RJsb3fGlUOqEmRRfFIB
+         HUk3kDX92gLTyLmn9CtuYZSjE9FQyuFdGZSAuMpzqHy7WlY5xutFR265gAzTuIYWgPa2
+         NrOgS2XziUYKbX5i5KQqS7tD7bzqrS+wcvNr0eAQsv2UDNiT98+bKqKgWMAvD7nDgwcR
+         KMBFVmdDTpC6rhJE2a3cAu9lXsmHfFzFboHHIotiTPIdhZS1+tfRxGvZq4XhcyK+Kkez
+         l99w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781005338; x=1781610138;
+        h=to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zPHGFXUCMBQH6l5HOHJr2FVYQTZtYPpvIAEtCs4Ydmc=;
+        b=Phu6l+fu88yAAl/Hm8Bn833gdNYmwe9MhbjfW3KtkvRKMcxGkDpf7HU4X9hHPyW+xv
+         VoVcZbgvBG+YIVZV6sTWfCEycUsobsHhOT5xSpEYGnAVHd/jRFSPiv5VmaWdxAeiSada
+         7ummACQxp3JrSPZBLnN9SZc7tYkBWRiiRH3wUKKq/QbNH5D8igSj26/LGeZMiTh0hmsF
+         wUNWL7M24bdFwILy7Conyv8F3AoLQ7zB4lrl1WxH+2+fpLP0sHkp5Qf0tBqHtxHSTKQg
+         pfpb9w7l+SNQy27DBd5UlDa175Rs7m5rYEOvsi6Ys4qxNGsuwl34EQ63dV0dC+MJSfl3
+         jxNg==
+X-Forwarded-Encrypted: i=1; AFNElJ/kjI33n+t56uvgpykR4f+/UJil24lJjIzEM++c2Os0fB+5VL4Bgqz9MScuDP+rh1gK8UcckDGj@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm2QCXbzg1vocQBL6ZlbZZSqEMl4TUUPEfGfjTgFutQN3GH0RV
+	fvIQHpYSepDVSpgMa3vLNl3aBJQ6Efhh3IuCEkQiczji+WDb4SmPsCBR1dN03Ioo+VvyuP+0P38
+	Tie1VcwpuIsTnqWMwEIWhlAjXz37q1dY=
+X-Gm-Gg: Acq92OGfLpyJ/BShbsoGTw0LZpRBOFo0lce3b1qshrQQvFjMP3MGfXNXGfLodtQzgbU
+	toS9jcB5XiO6l6etnqqlvCeotYqIaVybXrgjSk1dtC00VouCqsvtfRvHWecRtOSjMP6FD37+UQH
+	FYxmbRnzd/46z/sL9B5jhCPQJiQ/2kAetU1xD8syDxgCscimh62vBQtlTXz9NjGDA6cfqNTnhTo
+	Qn3O9vcVtip66uJkk8ZKjMkctxVi68eiyBauUGfgFFkXksnq7XAVPmIqxZDfmUnlHbLP3pIi2q9
+	pvPScV0V4CtTefXRufTD5K4OzhA3
+X-Received: by 2002:a0c:f942:0:b0:8cc:ce88:9eda with SMTP id
+ 6a1803df08f44-8cee5fcb3c1mr241726446d6.15.1781005337834; Tue, 09 Jun 2026
+ 04:42:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: constify oom_control, scan_control, and alloc_context
- nodemask
-Content-Language: en-US
-To: Gregory Price <gourry@gourry.net>, linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- kernel-team@meta.com, longman@redhat.com, chenridong@huaweicloud.com,
- akpm@linux-foundation.org, david@kernel.org, ljs@kernel.org,
- liam@infradead.org, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- kasong@tencent.com, qi.zheng@linux.dev, shakeel.butt@linux.dev,
- baohua@kernel.org, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, rientjes@google.com, chrisl@kernel.org,
- shikemeng@huaweicloud.com, nphamcs@gmail.com, baoquan.he@linux.dev,
- youngjun.park@lge.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
- jackmanb@google.com, ziy@nvidia.com
-References: <20260609002919.3967782-1-gourry@gourry.net>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Autocrypt: addr=vbabka@kernel.org; keydata=
- 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
-In-Reply-To: <20260609002919.3967782-1-gourry@gourry.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Longxing Li <coregee2000@gmail.com>
+Date: Tue, 9 Jun 2026 19:42:06 +0800
+X-Gm-Features: AVVi8CedgpnmgjSUFjIf3H3BkNpL6r0L84QPtlnw7Oo1l5fSuebp25U7olz4XVs
+Message-ID: <CAHPqNmxGfjsKGEJJaSCrJqoU9WHY3q8CX1oTA7GV5BBHvDzgpg@mail.gmail.com>
+Subject: [Kernel Bug] INFO: task hung in cgroup_drain_dying
+To: syzkaller@googlegroups.com, tj@kernel.org, hannes@cmpxchg.org, 
+	mkoutny@suse.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16778-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:kernel-team@meta.com,m:longman@redhat.com,m:chenridong@huaweicloud.com,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:baohua@kernel.org,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:rientjes@google.com,m:chrisl@kernel.org,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:youngjun.park@lge.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:ziy@nvidia.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[vger.kernel.org,meta.com,redhat.com,huaweicloud.com,linux-foundation.org,kernel.org,infradead.org,google.com,suse.com,tencent.com,linux.dev,gmail.com,lge.com,cmpxchg.org,nvidia.com];
-	RCPT_COUNT_TWELVE(0.00)[32];
+	TAGGED_FROM(0.00)[bounces-16779-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_SENDER(0.00)[coregee2000@gmail.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:syzkaller@googlegroups.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,gourry.net:email,vger.kernel.org:from_smtp]
+	FORGED_SENDER_FORWARDING(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[coregee2000@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 983E265EAA2
+X-Rspamd-Queue-Id: A967F65FA56
 
-On 6/9/26 02:29, Gregory Price wrote:
-> The nodemasks in these structures may come from a variety of sources,
-> including tasks and cpusets - and should never be modified by any code
-> when being passed around inside another context.
-> 
-> Signed-off-by: Gregory Price <gourry@gourry.net>
+Dear Linux kernel developers and maintainers,
 
-Nice!
+We would like to report a new kernel bug found by our tool. INFO: task
+hung in cgroup_drain_dying. Details are as follows.
 
-Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Kernel commit: v7.0.6
+Kernel config: see attachment
+report: see attachment
 
+We are currently analyzing the root cause and  working on a
+reproducible PoC. We will provide further updates in this thread as
+soon as we have more information.
+
+Best regards,
+Longxing Li
+
+==================================================================
+https://drive.google.com/file/d/1riFUIPWojkYVZu0B5BW8uVPocUWwibqN/view?usp=drive_link
 
