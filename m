@@ -1,54 +1,55 @@
-Return-Path: <cgroups+bounces-16768-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16769-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4MgkJircJ2os3gIAu9opvQ
-	(envelope-from <cgroups+bounces-16768-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 11:26:02 +0200
+	id yGDYIPXdJ2qm3gIAu9opvQ
+	(envelope-from <cgroups+bounces-16769-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 11:33:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033DC65E4EB
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 11:26:02 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E930565E5F4
+	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 11:33:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=UtZ6gzxN;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16768-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16768-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=oD0i1VLV;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16769-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16769-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0DFF130D3C25
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 09:19:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2238D316662C
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 09:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978C03F4DEB;
-	Tue,  9 Jun 2026 09:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FB5D3F483E;
+	Tue,  9 Jun 2026 09:18:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4413F4831;
-	Tue,  9 Jun 2026 09:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E493F58DF;
+	Tue,  9 Jun 2026 09:18:26 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780996703; cv=none; b=cS1qWjqPVtEc0ZfgrC85U6wupjmvgJOLvI7BJqobzg3CCGb1xF8JyatHa0WIOzVsdK8NzcTlrZpp/1WWowfAoRyqH4Q8HZHV62v9/CAyCuY2iiaojNEk9fioNuCMHYZ5+LKIPA4fg7pmEI/RKjC26PV6TQTgGnxXB7y/EAhsToo=
+	t=1780996708; cv=none; b=HfHEUZ+fy7nOzZk0rTg0XacU7t5c8KhuwLET+sYYKQFbU+VBDgyE6O9lVxMoZcajlnO9OW17TGacqdiSl/wxTv8tzwx9DC1/eTXMNepiuaiW+cY3wCYRbWNxHwL7v4mff/THsiBYgaU5RbQ9NbwCTc1qs4DvMWFOOCdciR0tgK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780996703; c=relaxed/simple;
-	bh=sjEEzLRuaqLLAW55S/ondGJWXtmb85RaReSQIT51yGc=;
+	s=arc-20240116; t=1780996708; c=relaxed/simple;
+	bh=eqqkND3CC7/hHHEEMvgTJXcfie6IHo4L6hhLaUNkRks=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GWeq6LbyC9OI2uQroAwGOS69Cfep4jrSxa5swvC9eBfnOpQPxK3kPFK6VaWtbEt9He5DFckH6vczY2p5rVwOS1AUBa9gcVUb0TiTK/ISdAVeIsD3iuEbclYX18m+gYyEgnG7AgguSGE2Mno5JKfuM4WnET9ESdRXIcxBH2KMt2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UtZ6gzxN; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1DAE1F00899;
-	Tue,  9 Jun 2026 09:18:18 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=msA4oSgy6748Raf42oG61CwEL8ri6J7VyLxPf5tdqYIDcasmONhHHm77BCvHlS9vlniWiIgR5h5aakVtgzS76WDNZ6b73iDz3H7dF4Bohv82YXqFULf5ltlGTL8mXtif6qnMpmVx2B7aSQFtvq+urC5RqI7aNy0X6S6+oG7GO3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oD0i1VLV; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FD851F00898;
+	Tue,  9 Jun 2026 09:18:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780996702;
-	bh=lUdhGEsiIkmEk98q3M/PwP2pTSml7IktU/L4N6zTfjk=;
+	s=k20260515; t=1780996706;
+	bh=nCpSWlchkeKZmx6rE2e5R1dkCFGfPuoJVPYULJPYfvM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=UtZ6gzxNRqJnwAm06gvctWhYRD1xV7p2uYuLW7IkT76bgUGxQilzhLe4h3POLT3Rl
-	 Fli0goPoJ6XbQS+O5oCeQfJ2cbwUPao6Zwqtf+P8nkcgt3cTTd624a1s0d+g+IVCPd
-	 ZV6sDEdiH4Hf9pRMTAiPubWpczu7irXpSc0IYDV0v3CuiqqhVdy8Xw4yRIyXh+SB1N
-	 N8NJgQTKSPWxWf5J9DFruOAPnOi3MpleCxvmh9/O/zXFevg1klFbMT0NQ8G9k7exJb
-	 gkY0drGG8uu275WdSpHbUjFN7uGnWgkl2HKp+8MejZtPbku79OJZogCD86MRsJD8dk
-	 ZZSeyyeLJAWLg==
+	b=oD0i1VLVMUVflavtGIlneCAHBIS7oQKelrI7EIf9IZaGr78w1OUAnGALkmpo1VHRH
+	 cEylbYxSFqqpXSns1cwskw1ram0MrpAkcQ85ltWvmy0kT3VjdIeytA6L4c8piWA0l9
+	 NTRIvlMvpvOvQp1AwzCHi/2XxBt8LrBieKaeD2W2AdVwmrlvvv1tf+xRwvRWGJIFRE
+	 2hOWw8juBX7NeXfn/F/ZJYozsYWbVdUaGQG+3JGeCTP3/O37LydGenSxj5Mo/VVDfi
+	 NStUNpGp9IDGdTvYuuebnglDCbLJ33Xwr0eYbWW2u6pYBN5RV7zoVGkP4pGs5R7vic
+	 k7Zu8xI7rcKOw==
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Tue, 09 Jun 2026 11:17:52 +0200
-Subject: [PATCH RFC 07/15] mm/slab: pass alloc_flags to new slab allocation
+Date: Tue, 09 Jun 2026 11:17:53 +0200
+Subject: [PATCH RFC 08/15] mm/slab: pass alloc_flags through
+ slab_post_alloc_hook() chain
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,7 +58,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260609-slab_alloc_flags-v1-7-2bf4a4b9b526@kernel.org>
+Message-Id: <20260609-slab_alloc_flags-v1-8-2bf4a4b9b526@kernel.org>
 References: <20260609-slab_alloc_flags-v1-0-2bf4a4b9b526@kernel.org>
 In-Reply-To: <20260609-slab_alloc_flags-v1-0-2bf4a4b9b526@kernel.org>
 To: Harry Yoo <harry@kernel.org>
@@ -77,7 +78,7 @@ X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -88,11 +89,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16768-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16769-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
@@ -104,114 +105,387 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 033DC65E4EB
+X-Rspamd-Queue-Id: E930565E5F4
 
-Add the alloc_flags parameter to allocate_slab() and new_slab()
-so it can be used to determine if spinning is allowed, independently
-from gfp flags.
+Convert the whole following call stack to pass either slab_alloc_context
+(thus including alloc_flags) or just alloc_flags as necessary:
 
-refill_objects() passes SLAB_ALLOC_DEFAULT because it can only be
-reached from contexts that allow spinning.
+slab_post_alloc_hook()
+  alloc_tagging_slab_alloc_hook()
+    __alloc_tagging_slab_alloc_hook()
+      prepare_slab_obj_exts_hook()
+        alloc_slab_obj_exts()
+  memcg_slab_post_alloc_hook()
+    __memcg_slab_post_alloc_hook()
+      alloc_slab_obj_exts()
 
-Also change how trynode_flags are constructed in ___slab_alloc() to
-achieve the same "do not upgrade to GFP_NOWAIT" by using masking instead
-of a branch. It will now also not upgrade in cases where gfp is weaker
-than GFP_NOWAIT (i.e. lacks __GFP_KSWAPD_RECLAIM) but doesn't come from
-kmalloc_nolock() - which is more correct anyway.
+Converting all these at once avoids unnecessary churn and is mostly
+mechanical.
+
+This ultimately allows to decide if spinning is allowed using
+alloc_flags in alloc_slab_obj_exts(), as well as slab_post_alloc_hook().
+Aside from alloc_from_pcs_bulk() (to be handled next) there is nothing
+else in slab itself relying on gfpflags_allow_spinning() which can
+be false even if not called from kmalloc_nolock().
+
+A followup change will also use the alloc_flags availability in the call
+stack above to remove the __GFP_NO_OBJ_EXT flag.
+
+For alloc_slab_obj_exts(), also replace the suboptimal "bool new_slab"
+parameter with a SLAB_ALLOC_NEW_SLAB flag with identical functionality.
+
+To further reduce the number of parameters of slab_post_alloc_hook(),
+also make 'struct list_lru *lru' (which is NULL for most callers) a new
+field of slab_alloc_context.
 
 Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 ---
- mm/slub.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ mm/memcontrol.c |  5 +--
+ mm/slab.h       |  6 ++--
+ mm/slub.c       | 94 +++++++++++++++++++++++++++++++++------------------------
+ 3 files changed, 62 insertions(+), 43 deletions(-)
 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c03d4787d466..29390ba13baa 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3424,7 +3424,8 @@ static inline size_t obj_full_size(struct kmem_cache *s)
+ }
+ 
+ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+-				  gfp_t flags, size_t size, void **p)
++				  gfp_t flags, unsigned int slab_alloc_flags,
++				  size_t size, void **p)
+ {
+ 	size_t obj_size = obj_full_size(s);
+ 	struct obj_cgroup *objcg;
+@@ -3472,7 +3473,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+ 		slab = virt_to_slab(p[i]);
+ 
+ 		if (!slab_obj_exts(slab) &&
+-		    alloc_slab_obj_exts(slab, s, flags, false)) {
++		    alloc_slab_obj_exts(slab, s, flags, slab_alloc_flags)) {
+ 			continue;
+ 		}
+ 
+diff --git a/mm/slab.h b/mm/slab.h
+index 3e75182ee144..13517abcad21 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -19,6 +19,7 @@
+ /* slab's alloc_flags definitions */
+ #define SLAB_ALLOC_DEFAULT	0x00
+ #define SLAB_ALLOC_TRYLOCK	0x01
++#define SLAB_ALLOC_NEW_SLAB	0x02 /* a flag for alloc_slab_obj_exts() */
+ 
+ static inline bool alloc_flags_allow_spinning(const unsigned int alloc_flags)
+ {
+@@ -612,7 +613,7 @@ static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
+ }
+ 
+ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+-                        gfp_t gfp, bool new_slab);
++                        gfp_t gfp, unsigned int alloc_flags);
+ 
+ #else /* CONFIG_SLAB_OBJ_EXT */
+ 
+@@ -642,7 +643,8 @@ static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
+ 
+ #ifdef CONFIG_MEMCG
+ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+-				  gfp_t flags, size_t size, void **p);
++				  gfp_t flags, unsigned int slab_alloc_flags,
++				  size_t size, void **p);
+ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+ 			    void **p, int objects, unsigned long obj_exts);
+ #endif
 diff --git a/mm/slub.c b/mm/slub.c
-index 0bde4f6d9126..20df6b131f63 100644
+index 20df6b131f63..034f2cd1c1fd 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -3378,9 +3378,10 @@ static __always_inline void unaccount_slab(struct slab *slab, int order,
+@@ -218,6 +218,7 @@ struct slab_alloc_context {
+ 	unsigned long caller_addr;
+ 	unsigned long orig_size;
+ 	unsigned int alloc_flags;
++	struct list_lru *lru;
+ };
+ 
+ /* Structure holding parameters for get_partial_node_bulk() */
+@@ -2155,9 +2156,9 @@ static inline size_t obj_exts_alloc_size(struct kmem_cache *s,
  }
  
- /* Allocate and initialize a slab without building its freelist. */
--static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
-+static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags,
-+				  unsigned int alloc_flags, int node)
+ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+-		        gfp_t gfp, bool new_slab)
++		        gfp_t gfp, unsigned int alloc_flags)
  {
--	bool allow_spin = gfpflags_allow_spinning(flags);
-+	bool allow_spin = alloc_flags_allow_spinning(alloc_flags);
- 	struct slab *slab;
- 	struct kmem_cache_order_objects oo = s->oo;
- 	gfp_t alloc_gfp;
-@@ -3438,15 +3439,17 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
- 	return slab;
+-	bool allow_spin = gfpflags_allow_spinning(gfp);
++	const bool allow_spin = alloc_flags_allow_spinning(alloc_flags);
+ 	unsigned int objects = objs_per_slab(s, slab);
+ 	unsigned long new_exts;
+ 	unsigned long old_exts;
+@@ -2206,7 +2207,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+ 	old_exts = READ_ONCE(slab->obj_exts);
+ 	handle_failed_objexts_alloc(old_exts, vec, objects);
+ 
+-	if (new_slab) {
++	if (alloc_flags & SLAB_ALLOC_NEW_SLAB) {
+ 		/*
+ 		 * If the slab is brand new and nobody can yet access its
+ 		 * obj_exts, no synchronization is required and obj_exts can
+@@ -2331,7 +2332,7 @@ static inline void init_slab_obj_exts(struct slab *slab)
  }
  
--static struct slab *new_slab(struct kmem_cache *s, gfp_t flags, int node)
-+static struct slab *new_slab(struct kmem_cache *s, gfp_t flags,
-+			     unsigned int alloc_flags, int node)
+ static int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+-			       gfp_t gfp, bool new_slab)
++			       gfp_t gfp, unsigned int alloc_flags)
  {
- 	if (unlikely(flags & GFP_SLAB_BUG_MASK))
- 		flags = kmalloc_fix_flags(flags);
+ 	return 0;
+ }
+@@ -2351,10 +2352,10 @@ static inline void alloc_slab_obj_exts_early(struct kmem_cache *s,
  
- 	WARN_ON_ONCE(s->ctor && (flags & __GFP_ZERO));
+ static inline unsigned long
+ prepare_slab_obj_exts_hook(struct kmem_cache *s, struct slab *slab,
+-			   gfp_t flags, void *p)
++			   gfp_t flags, unsigned int alloc_flags, void *p)
+ {
+ 	if (!slab_obj_exts(slab) &&
+-	    alloc_slab_obj_exts(slab, s, flags, false)) {
++	    alloc_slab_obj_exts(slab, s, flags, alloc_flags)) {
+ 		pr_warn_once("%s, %s: Failed to create slab extension vector!\n",
+ 			     __func__, s->name);
+ 		return 0;
+@@ -2366,7 +2367,8 @@ prepare_slab_obj_exts_hook(struct kmem_cache *s, struct slab *slab,
  
--	return allocate_slab(s,
--		flags & (GFP_RECLAIM_MASK | GFP_CONSTRAINT_MASK), node);
-+	flags &= GFP_RECLAIM_MASK | GFP_CONSTRAINT_MASK;
-+
-+	return allocate_slab(s, flags, alloc_flags, node);
+ /* Should be called only if mem_alloc_profiling_enabled() */
+ static noinline void
+-__alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
++__alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags,
++				unsigned int alloc_flags)
+ {
+ 	unsigned long obj_exts;
+ 	struct slabobj_ext *obj_ext;
+@@ -2382,7 +2384,7 @@ __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
+ 		return;
+ 
+ 	slab = virt_to_slab(object);
+-	obj_exts = prepare_slab_obj_exts_hook(s, slab, flags, object);
++	obj_exts = prepare_slab_obj_exts_hook(s, slab, flags, alloc_flags, object);
+ 	/*
+ 	 * Currently obj_exts is used only for allocation profiling.
+ 	 * If other users appear then mem_alloc_profiling_enabled()
+@@ -2401,10 +2403,11 @@ __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
  }
  
- static void __free_slab(struct kmem_cache *s, struct slab *slab, bool allow_spin)
-@@ -4467,25 +4470,22 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	 * 1) try to get a partial slab from target node only by having
- 	 *    __GFP_THISNODE in pc.flags for get_from_partial()
- 	 * 2) if 1) failed, try to allocate a new slab from target node with
--	 *    GPF_NOWAIT | __GFP_THISNODE opportunistically
-+	 *    (at most) GPF_NOWAIT | __GFP_THISNODE opportunistically
- 	 * 3) if 2) failed, retry with original gfpflags which will allow
- 	 *    get_from_partial() try partial lists of other nodes before
- 	 *    potentially allocating new page from other nodes
- 	 */
- 	if (unlikely(node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE)
- 		     && try_thisnode)) {
--		if (unlikely(!allow_spin))
--			/* Do not upgrade gfp to NOWAIT from more restrictive mode */
--			trynode_flags = gfpflags | __GFP_THISNODE;
--		else
--			trynode_flags = GFP_NOWAIT | __GFP_THISNODE;
-+		trynode_flags &= GFP_NOWAIT;
-+		trynode_flags |= __GFP_NOWARN | __GFP_THISNODE;
+ static inline void
+-alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
++alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags,
++			      unsigned int alloc_flags)
+ {
+ 	if (mem_alloc_profiling_enabled())
+-		__alloc_tagging_slab_alloc_hook(s, object, flags);
++		__alloc_tagging_slab_alloc_hook(s, object, flags, alloc_flags);
+ }
+ 
+ /* Should be called only if mem_alloc_profiling_enabled() */
+@@ -2443,7 +2446,8 @@ alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+ #else /* CONFIG_MEM_ALLOC_PROFILING */
+ 
+ static inline void
+-alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags)
++alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags,
++			      unsigned int alloc_flags)
+ {
+ }
+ 
+@@ -2461,8 +2465,9 @@ alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+ static void memcg_alloc_abort_single(struct kmem_cache *s, void *object);
+ 
+ static __fastpath_inline
+-bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+-				gfp_t flags, size_t size, void **p)
++bool memcg_slab_post_alloc_hook(struct kmem_cache *s, gfp_t flags,
++				size_t size, void **p,
++				struct slab_alloc_context *ac)
+ {
+ 	if (likely(!memcg_kmem_online()))
+ 		return true;
+@@ -2470,7 +2475,8 @@ bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+ 	if (likely(!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT)))
+ 		return true;
+ 
+-	if (likely(__memcg_slab_post_alloc_hook(s, lru, flags, size, p)))
++	if (likely(__memcg_slab_post_alloc_hook(s, ac->lru, flags,
++						ac->alloc_flags, size, p)))
+ 		return true;
+ 
+ 	if (likely(size == 1)) {
+@@ -2558,14 +2564,15 @@ bool memcg_slab_post_charge(void *p, gfp_t flags)
+ 		put_slab_obj_exts(obj_exts);
  	}
  
- 	object = get_from_partial(s, node, trynode_flags, ac);
- 	if (object)
- 		goto success;
+-	return __memcg_slab_post_alloc_hook(s, NULL, flags, 1, &p);
++	return __memcg_slab_post_alloc_hook(s, NULL, flags, SLAB_ALLOC_DEFAULT,
++					    1, &p);
+ }
  
--	slab = new_slab(s, trynode_flags, node);
-+	slab = new_slab(s, trynode_flags, ac->alloc_flags, node);
+ #else /* CONFIG_MEMCG */
+ static inline bool memcg_slab_post_alloc_hook(struct kmem_cache *s,
+-					      struct list_lru *lru,
+-					      gfp_t flags, size_t size,
+-					      void **p)
++					      gfp_t flags,
++					      size_t size, void **p,
++					      struct slab_alloc_context *ac)
+ {
+ 	return true;
+ }
+@@ -3352,12 +3359,14 @@ static inline void init_freelist_randomization(void) { }
+ #endif /* CONFIG_SLAB_FREELIST_RANDOM */
  
- 	if (unlikely(!slab)) {
- 		if (node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE)
-@@ -7215,7 +7215,7 @@ refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
+ static __always_inline void account_slab(struct slab *slab, int order,
+-					 struct kmem_cache *s, gfp_t gfp)
++					 struct kmem_cache *s, gfp_t gfp,
++					 unsigned int alloc_flags)
+ {
+ 	if (memcg_kmem_online() &&
+ 			(s->flags & SLAB_ACCOUNT) &&
+ 			!slab_obj_exts(slab))
+-		alloc_slab_obj_exts(slab, s, gfp, true);
++		alloc_slab_obj_exts(slab, s, gfp,
++				    alloc_flags | SLAB_ALLOC_NEW_SLAB);
  
- new_slab:
+ 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+ 			    PAGE_SIZE << order);
+@@ -3434,7 +3443,7 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags,
+ 	 * to prevent the array from being overwritten.
+ 	 */
+ 	alloc_slab_obj_exts_early(s, slab);
+-	account_slab(slab, oo_order(oo), s, flags);
++	account_slab(slab, oo_order(oo), s, flags, alloc_flags);
  
--	slab = new_slab(s, gfp, local_node);
-+	slab = new_slab(s, gfp, SLAB_ALLOC_DEFAULT, local_node);
- 	if (!slab)
+ 	return slab;
+ }
+@@ -4568,9 +4577,8 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
+ }
+ 
+ static __fastpath_inline
+-bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+-			  gfp_t flags, size_t size, void **p,
+-			  unsigned int orig_size)
++bool slab_post_alloc_hook(struct kmem_cache *s, gfp_t flags, size_t size,
++			  void **p, struct slab_alloc_context *ac)
+ {
+ 	bool init = slab_want_init_on_alloc(flags, s);
+ 	bool kasan_init = init;
+@@ -4599,15 +4607,15 @@ bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+ 		p[i] = kasan_slab_alloc(s, p[i], init_flags, kasan_init);
+ 		if (p[i] && init && (!kasan_init ||
+ 				     !kasan_has_integrated_init()))
+-			memset(p[i], 0, orig_size);
+-		if (gfpflags_allow_spinning(flags))
++			memset(p[i], 0, ac->orig_size);
++		if (alloc_flags_allow_spinning(ac->alloc_flags))
+ 			kmemleak_alloc_recursive(p[i], s->object_size, 1,
+ 						 s->flags, init_flags);
+ 		kmsan_slab_alloc(s, p[i], init_flags);
+-		alloc_tagging_slab_alloc_hook(s, p[i], flags);
++		alloc_tagging_slab_alloc_hook(s, p[i], flags, ac->alloc_flags);
+ 	}
+ 
+-	return memcg_slab_post_alloc_hook(s, lru, flags, size, p);
++	return memcg_slab_post_alloc_hook(s, flags, size, p, ac);
+ }
+ 
+ /*
+@@ -4902,6 +4910,12 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ {
+ 	const unsigned int alloc_flags = SLAB_ALLOC_DEFAULT;
+ 	void *object;
++	struct slab_alloc_context ac = {
++		.caller_addr = addr,
++		.orig_size = orig_size,
++		.alloc_flags = alloc_flags,
++		.lru = lru,
++	};
+ 
+ 	s = slab_pre_alloc_hook(s, gfpflags);
+ 	if (unlikely(!s))
+@@ -4913,14 +4927,8 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 
+ 	object = alloc_from_pcs(s, gfpflags, alloc_flags, node);
+ 
+-	if (unlikely(!object)) {
+-		struct slab_alloc_context ac = {
+-			.caller_addr = addr,
+-			.orig_size = orig_size,
+-			.alloc_flags = alloc_flags,
+-		};
++	if (!object)
+ 		object = __slab_alloc_node(s, gfpflags, node, &ac);
+-	}
+ 
+ 	maybe_wipe_obj_freeptr(s, object);
+ 
+@@ -4929,7 +4937,7 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 	 * In case this fails due to memcg_slab_post_alloc_hook(),
+ 	 * object is set to NULL
+ 	 */
+-	slab_post_alloc_hook(s, lru, gfpflags, 1, &object, orig_size);
++	slab_post_alloc_hook(s, gfpflags, 1, &object, &ac);
+ 
+ 	return object;
+ }
+@@ -5224,6 +5232,10 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+ 				   struct slab_sheaf *sheaf)
+ {
+ 	void *ret = NULL;
++	struct slab_alloc_context ac = {
++		.orig_size = s->object_size,
++		.alloc_flags = SLAB_ALLOC_DEFAULT,
++	};
+ 
+ 	if (sheaf->size == 0)
  		goto out;
+@@ -5234,7 +5246,7 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+ 		ret = sheaf->objects[--sheaf->size];
  
-@@ -7563,7 +7563,7 @@ static void early_kmem_cache_node_alloc(int node)
+ 	/* add __GFP_NOFAIL to force successful memcg charging */
+-	slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, s->object_size);
++	slab_post_alloc_hook(s, gfp | __GFP_NOFAIL, 1, &ret, &ac);
+ out:
+ 	trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
  
- 	BUG_ON(kmem_cache_node->size < sizeof(struct kmem_cache_node));
+@@ -5421,7 +5433,7 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
  
--	slab = new_slab(kmem_cache_node, GFP_NOWAIT, node);
-+	slab = new_slab(kmem_cache_node, GFP_NOWAIT, SLAB_ALLOC_DEFAULT, node);
+ success:
+ 	maybe_wipe_obj_freeptr(s, ret);
+-	slab_post_alloc_hook(s, NULL, alloc_gfp, 1, &ret, orig_size);
++	slab_post_alloc_hook(s, alloc_gfp, 1, &ret, &ac);
  
- 	BUG_ON(!slab);
- 	if (slab_nid(slab) != node) {
+ 	ret = kasan_kmalloc(s, ret, orig_size, alloc_gfp);
+ 	return ret;
+@@ -7287,6 +7299,10 @@ bool kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags,
+ {
+ 	unsigned int i = 0;
+ 	void *kfence_obj;
++	struct slab_alloc_context ac = {
++		.orig_size = s->object_size,
++		.alloc_flags = SLAB_ALLOC_DEFAULT,
++	};
+ 
+ 	if (!size)
+ 		return false;
+@@ -7337,7 +7353,7 @@ bool kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags,
+ 
+ out:
+ 	/* memcg and kmem_cache debug support and memory initialization */
+-	return likely(slab_post_alloc_hook(s, NULL, flags, size, p, s->object_size));
++	return likely(slab_post_alloc_hook(s, flags, size, p, &ac));
+ }
+ EXPORT_SYMBOL(kmem_cache_alloc_bulk_noprof);
+ 
 
 -- 
 2.54.0
