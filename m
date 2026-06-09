@@ -1,187 +1,217 @@
-Return-Path: <cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 90qCIBacKGoYGwMAu9opvQ
-	(envelope-from <cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:04:54 +0200
+	id +ok+KZGoKGriHQMAu9opvQ
+	(envelope-from <cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:58:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03AB664B27
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:04:53 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 423AA664DD2
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:58:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=appspotmail.com (policy=none);
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=berkeley.edu header.s=google header.b=XkfutodT;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=berkeley.edu;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 803C6303FF9A
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 23:04:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A013530177AC
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 23:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E585F3C197C;
-	Tue,  9 Jun 2026 23:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9543EFFCB;
+	Tue,  9 Jun 2026 23:57:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F15368287
-	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 23:04:34 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781046275; cv=none; b=bzmME0tEORH58ZKkymuN3iBUk7GB0EaMU3N2JCviKRic5/dnXe7cY/ZNnadFkNxSt4Mwhr44g63du9ZeMko0oR46fbMlTikpqPmAqi/zAqUsQoqieax2tPl7kXYlAtdbSTb3TPYI0ZgSrxwxB6lhfhnIXSNtvK66wEunjm1Brmk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781046275; c=relaxed/simple;
-	bh=bh+MNbKEbVSmeqmrTm0maztBaeQGvdCEOWzR6EEoFJA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UpPjABLAxqe3Pj4qBZVErFWon0PY7cDeOO7sGJ2Fz1gkwwUjkCVt35oMjgt/LwGk52QZTvskyjIFxVf392ronkgdC2J1IV53S98+MeoHvtTtYlHgeErBTd/Rd07mX9S+Hohp6a63dHbHFzR7eZdPTZl8Tbu6Aw/eJEQogog+tSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.208
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-48687df43c4so9503253b6e.0
-        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 16:04:34 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829983E4C87
+	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 23:57:44 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781049466; cv=pass; b=ZOw4vMVuA6yy3tuUWGL2zpkUcKuLxe1k0WicSMc1KUcts4IOgIhq5fIzZvHMmf2ypasrqumWlYwsDlvUKeJSC4LiQPLHBH0hlrcr84jlLuYAiLBdXtLVTVrTfhjFVTmoXapZAFj4IyBRxswc7P8SllMDIURa1yTf3Wg0NlnC8Bw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781049466; c=relaxed/simple;
+	bh=6o2xFZURyWP+tObe4cjpPDsfyvJKRP0tCizMlSF5sH8=;
+	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gxug8G3VaV/+CYRpWIg06ra08Hz+YAJrIMPYb3WWFMylxjQPdAEJLPIPCPzu2IbXCS25us+beU5a7Zr90F6JDQJl6juRTiXGw8SqytaRKANNtEm4e7UwCcr5SNEyXeuQiXVKxHShVwRSicDCcWKcAmy/uBe3KIXZsHrT150L/AA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=berkeley.edu; spf=pass smtp.mailfrom=berkeley.edu; dkim=pass (2048-bit key) header.d=berkeley.edu header.i=@berkeley.edu header.b=XkfutodT; arc=pass smtp.client-ip=74.125.224.51
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-660456349d9so5965432d50.3
+        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 16:57:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781049463; cv=none;
+        d=google.com; s=arc-20240605;
+        b=UFtlUvswRh3lL7KQeCPkSYxD3jfPlEvFKov1WIQq5rBORvuhgIqN64QJ7Q9z320Pb8
+         DDipFBxNXpKycdHisSN7MJjAvn1q0P9Swz/TUZdVU1ThK62QcbhsbCmsT+Oi9R+CKa14
+         Hv4ps4xlFwabjKwB5WVv0AgKi/6d2L4pLkafDnmr2HJ3HWWgaaGYhkgQIn5VS2PBCOmQ
+         4fBJSqs1tvdSuCyv+MENkjgVQG0gXrI3zuemI0IyENFTuETVNrz9wpqPuIjh7j+HgPhQ
+         xn0FUvfv7H9zFemc4g8Hg1gpPrupwoISI6vlGIyrbAN4sIwZ3kvIgfisrkx2iqfb8BZF
+         deUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:dkim-signature;
+        bh=JsLwA10csQX3mPa70cbCrNe5YAZmOcAQoD0WQz/1mlc=;
+        fh=Eq3s3L/EU4MmDrq1L7ByeUSrATEswuf3B6LeiQmYiiM=;
+        b=Ss0bFNhDPMKlnQdqtcwiZ1GpW9sizrjW3o4x/oCwKVTOORnzmiFe94ob63lCA6DAhs
+         giMPW5v4HXTcTTzJ52mCJeiJmBcVRufZf+5dloHmAbYZ1CflLwJmijSsU0PiT8zAiehW
+         FmG+kNrUCHFRHoZBAMtyLnISUiEELve7mkC4kdWHgOCQ4ybG/E+wX4Ulj0Y0rIAC949y
+         CifHykW9oQI7X996Em+VWX0KOFWiiQ2HSoQgFjtQm17hZVjQ8TCRHLsBtyeTA+9/oZBM
+         yLF5N+SjTTldRzgRpesFhVyDRl1qncT73SzWZCfEjRAgB+C3iPlNv4nWDFktj6ayecuw
+         v7AQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=berkeley.edu; s=google; t=1781049463; x=1781654263; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JsLwA10csQX3mPa70cbCrNe5YAZmOcAQoD0WQz/1mlc=;
+        b=XkfutodTdC3aWFewu//ZtfbOXEP8PT/+JXGIH2EK+v3USw+hg623JDXIagiWJjV9+z
+         qIwFHvEWF4lszgEHh/eFJfxSHDoXHlXRX799qyjokf+BXr8jEraQuiRhdXJ3qsuhVyc8
+         CZvV8faGpk2SHfvMUoDaSK5Vmkz4LFHipNl4CmacHz+/7Aj/D6ANtoztAnqCg0qysTqo
+         ASQ8yC5CDwDbTcHcxkow2X+yAWm6d72oyuxgfezfMQhLdspPpc2kSpYp4PncrbuoXi9a
+         4IITgy+W6/Sx+IN3uiptKMmn7CBq253mvGubffw1lX+GNHWQ5hy7v2QZy/2Cecqggifz
+         +JMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781046273; x=1781651073;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yLcbPIP3DqH41We2y8RFQOo6XVKoUumZBhjBdhDFF2M=;
-        b=QEzekV5Z5+fgpKuZk8MYlzJH5fzVgzjYThCluqXMxcs9Xb12EcBa1ozHlsyjSBw8nW
-         I65D8M5rjgJprU+FgBW4DzGvCisaLsz7TREPu679Dm3Jd18xyQTQ3oAh5MCZ6+BUtQPa
-         lpMyu6hQyP/AbU7o5yFkVC0opiUK3+nyaiaoTPOBybtFK2pYkAEi4bcffC57gNk9iD0J
-         aqF6zANAlXOKj3exzsuQEa9/lz7JuzJ+BKwfDoX189cNBTNSbb0FbG7y3sAJ8cZszh8k
-         JCOoYQHIcwPvEpjjx98duzNtG5wQAhtXUqiqsnT1ldNp49SGSX6dVLEDTeoNBC/ChRgs
-         peLw==
-X-Forwarded-Encrypted: i=1; AFNElJ8c3IeTthKHK4YhjsIYMV2fdUNjRbQQrwJKXUUUWNoheKTfH74ZPl3DsraUwFLddCDKVqpLKpZe@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywr64PVocvcjViVQ3liudiAJNaX1BaYicD1/EZdjTKEqyLWuBBj
-	KL0fNxaRdtbcMCufA7z2SY3/SmeRIoZxAVAn1rbDSI6OC3dZcqHWHnR5KJJhAK4FgSderhOq69F
-	JbhCx/6QQtA+F2udzVnPWCUCqybuQ72do7SdOLrqeXzDeVWdzyDQeglLelks=
+        d=1e100.net; s=20251104; t=1781049463; x=1781654263;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JsLwA10csQX3mPa70cbCrNe5YAZmOcAQoD0WQz/1mlc=;
+        b=hOEkO+KHIW3AblCfpP0hobA8/kI51lPJlUauY1nWyztRBNILkiWSyx6Xjvxvi9CaxE
+         DzjQGRcnS2NI4H5H4waUw7BJwpFg5LhIrXBpn6aT0qfPIR+b3UQ7o29+MGZCn6i5t/Oh
+         /iyH9ceW+G0kn4xA0U+JkI4AqPOskDstxl3h460KCKZVeqRNb+nAPXUTYtsrLwB6YROA
+         sR+6WsgPFsd9JaO3rWfziDjH5v2FQGM6fALTxxLS1fTY+ZJDH8B0NuD344OPt5w27Ije
+         Kt2pKKpX2pGvHpqdTWp9xvDad8Ti+59t3gFdTIXXOHf6hTpEIaqDevOj95t7+9sjvLyW
+         rpCA==
+X-Forwarded-Encrypted: i=1; AFNElJ9/fOM/UDSP/LXRXoVZwpjXEWAcW8isEojZPsGEzjCtVnqoANyc5G3ULSoz0vjk9+/ixNWQ0LMH@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7IrOF4LdbwDyZm9TsGn2RCPd29qFx1ARKf+LCcjVitw0Ym6qk
+	JLUXxM48coC6OPnYCojuJcZ41fQtOusZ9MlnO7zIGK4j3HN5qG1AlUJmzx3G0oobR19YrzAcoMR
+	MK9wsXPgDzeVJDtEeHSSSHUt25/ENd+LH5++kknzL
+X-Gm-Gg: Acq92OHv0hP6Mtr8rt9+JNQJ2/R4D2CpDyIyC+JwnvIDSooGD01Y86eKHf/jmiPTqh5
+	4hk6//b0iVrvGJiMV20yJdy4xEvWCTgxKF1CCNimfR44g5ZkA0QQxXBUw2KcJ4XvWmfBSDYXC16
+	q/clw/xTwkMvg60aKHg+khUO2Yd+cDvqTAyYrvnMSHpZjknlsse41pYdVTJRR1mzhd87RJpLxgl
+	Gi53ErztCu9GJ5mGn8FUnctA6FmlHfgaWHMSTtHQvm71ZNekoDWcikkUMDVJOm0Pfwt+Ej2zJ/e
+	u9hljyDKY9vgiOSmaXVG
+X-Received: by 2002:a05:690c:e3ca:b0:7bd:5c77:1aa9 with SMTP id
+ 00721157ae682-7ed09935207mr231089217b3.0.1781049462534; Tue, 09 Jun 2026
+ 16:57:42 -0700 (PDT)
+Received: from 474444807712 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 9 Jun 2026 19:57:41 -0400
+Received: from 474444807712 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 9 Jun 2026 19:57:41 -0400
+From: Farhad Alemi <farhad.alemi@berkeley.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <25c4bc47-b65d-4c04-8a8f-18eef2b5566a@kernel.org>
+References: <25c4bc47-b65d-4c04-8a8f-18eef2b5566a@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:4b86:b0:67d:ea53:b9c8 with SMTP id
- 006d021491bc7-69eac8d9b8dmr3506618eaf.18.1781046273469; Tue, 09 Jun 2026
- 16:04:33 -0700 (PDT)
-Date: Tue, 09 Jun 2026 16:04:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a289c01.39669fcc.33b062.00a9.GAE@google.com>
-Subject: [syzbot] [cgroups?] [mm?] WARNING in hrtick_start_fair
-From: syzbot <syzbot+2cbf10efc23b22ff9c31@syzkaller.appspotmail.com>
-To: anna-maria@linutronix.de, cgroups@vger.kernel.org, frederic@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com, tglx@kernel.org
+Date: Tue, 9 Jun 2026 19:57:41 -0400
+X-Gm-Features: AVVi8CdwZwsROR8QvBcPRl0TTYKS3lybsjC7VZyFrbO3L3H_GqOslrHHbiWZhF0
+Message-ID: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
+Subject: [PATCH] cgroup/cpuset: rebind mm mempolicy to effective_mems, not mems_allowed
+To: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
+	Gregory Price <gourry@gourry.net>
+Cc: Farhad Alemi <falemi@asu.edu>, Yury Norov <ynorov@nvidia.com>, 
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>, 
+	Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>, 
+	Byungchul Park <byungchul@sk.com>, Ying Huang <ying.huang@linux.alibaba.com>, 
+	Alistair Popple <apopple@nvidia.com>, Waiman Long <longman@redhat.com>, 
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.36 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=da47745f686dc823];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[berkeley.edu,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[berkeley.edu:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:anna-maria@linutronix.de,m:cgroups@vger.kernel.org,m:frederic@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:syzkaller-bugs@googlegroups.com,m:tglx@kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16791-lists,cgroups=lfdr.de,2cbf10efc23b22ff9c31];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,appspotmail.com:email,syzkaller.appspotmail.com:from_mime,storage.googleapis.com:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,googlegroups.com:email,syzkaller.appspot.com:url];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16792-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
+	FORGED_SENDER(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@kernel.org,m:gourry@gourry.net,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:longman@redhat.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[asu.edu,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,redhat.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[berkeley.edu:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	SUBJECT_HAS_QUESTION(0.00)[]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid,gourry.net:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D03AB664B27
+X-Rspamd-Queue-Id: 423AA664DD2
 
-Hello,
+cpuset_update_tasks_nodemask() rebinds a task's own mempolicy to the
+cpuset's effective, online mems (newmems, from guarantee_online_mems()),
+but rebinds that task's VMA mempolicies to the *configured* mask instead:
 
-syzbot found the following issue on:
+	cpuset_change_task_nodemask(task, &newmems);
+	...
+	mpol_rebind_mm(mm, &cs->mems_allowed);
 
-HEAD commit:    a87737435cfa Add linux-next specific files for 20260608
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11715db6580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da47745f686dc823
-dashboard link: https://syzkaller.appspot.com/bug?extid=2cbf10efc23b22ff9c31
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12df60ae580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11edb0ae580000
+On the default (v2) hierarchy a cpuset that has never had cpuset.mems
+written keeps mems_allowed empty while effective_mems is inherited
+non-empty from the parent, and tasks may be attached to it (the
+empty-mems attach check is v1-only).  A subsequent rebind -- e.g. from a
+CPU hotplug event walking the cpuset -- then calls mpol_rebind_mm() with
+an empty mask.  For a VMA policy created with MPOL_F_RELATIVE_NODES this
+reaches mpol_relative_nodemask() ->
+nodes_fold(..., nodes_weight(cs->mems_allowed) == 0) -> bitmap_fold(),
+whose set_bit(oldbit % sz, dst) divides by zero:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/85d19fe6bb4e/disk-a8773743.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/30c683ce26e1/vmlinux-a8773743.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4db5027513d2/bzImage-a8773743.xz
+  Oops: divide error: 0000 [#1] SMP KASAN NOPTI
+  RIP: 0010:bitmap_fold+0x5e/0xb0
+   mpol_rebind_nodemask
+   mpol_rebind_mm
+   cpuset_update_tasks_nodemask
+   cpuset_handle_hotplug
+   sched_cpu_deactivate
+   cpuhp_thread_fun
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2cbf10efc23b22ff9c31@syzkaller.appspotmail.com
+cs->mems_allowed is the only nodemask in this function that is not the
+effective set: the task-policy rebind, the page-migration target and
+cs->old_mems_allowed all use newmems.  The sibling cpuset_attach() path
+already rebinds VMA policies against the effective mems
+(cpuset_attach_nodemask_to = cs->effective_mems) and explicitly notes
+that mems_allowed can be empty under hotplug.  Rebind the VMA policies to
+newmems too: it is guaranteed non-empty by guarantee_online_mems(), which
+fixes the divide-by-zero, and it makes the VMA policies consistent with
+the task policy and with the nodes the task is actually allowed to use.
 
-------------[ cut here ]------------
-task_rq(p) != rq
-WARNING: kernel/sched/fair.c:7656 at hrtick_start_fair+0x196/0x1f0 kernel/sched/fair.c:7656, CPU#0: rcu_preempt/18
-Modules linked in:
-CPU: 0 UID: 0 PID: 18 Comm: rcu_preempt Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/09/2026
-RIP: 0010:hrtick_start_fair+0x196/0x1f0 kernel/sched/fair.c:7656
-Code: 42 80 3c 20 00 74 08 4c 89 ff e8 85 e3 97 00 4d 39 37 0f 85 0c ff ff ff 48 89 df 5b 41 5c 41 5d 41 5e 41 5f e9 4b 65 fa ff 90 <0f> 0b 90 e9 d1 fe ff ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 82
-RSP: 0018:ffffc900001777e0 EFLAGS: 00010087
-RAX: ffff8880b873ba40 RBX: ffff8880b863ba40 RCX: ffffffff8197c7de
-RDX: 0000000000000000 RSI: ffff88802c528000 RDI: ffff8880b863ba40
-RBP: dffffc0000000000 R08: ffffffff8fcf0b0f R09: 1ffffffff1f9e161
-R10: dffffc0000000000 R11: fffffbfff1f9e162 R12: dffffc0000000000
-R13: 1ffff110170c78d6 R14: ffff88802c528000 R15: ffffffff8dc217d8
-FS:  0000000000000000(0000) GS:ffff888125a76000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007eff95e6a540 CR3: 0000000028e30000 CR4: 00000000003526f0
-Call Trace:
- <TASK>
- set_next_task_fair+0xa68/0xce0 kernel/sched/fair.c:15058
- put_prev_set_next_task kernel/sched/sched.h:2770 [inline]
- pick_next_task kernel/sched/core.c:6443 [inline]
- __schedule+0x3e03/0x5550 kernel/sched/core.c:7144
- __schedule_loop kernel/sched/core.c:7308 [inline]
- schedule+0x164/0x360 kernel/sched/core.c:7323
- schedule_timeout+0x158/0x2c0 kernel/time/sleep_timeout.c:99
- rcu_gp_fqs_loop+0x312/0x11b0 kernel/rcu/tree.c:2123
- rcu_gp_kthread+0x9e/0x2b0 kernel/rcu/tree.c:2325
- kthread+0x388/0x470 kernel/kthread.c:436
- ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-
-
+Fixes: ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}")
+Suggested-by: Gregory Price <gourry@gourry.net>
+Signed-off-by: Farhad Alemi <farhad.alemi@berkeley.edu>
+Cc: stable@vger.kernel.org
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/cgroup/cpuset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2649,7 +2649,7 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ 		migrate = is_memory_migrate(cs);
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-		mpol_rebind_mm(mm, &cs->mems_allowed);
++		mpol_rebind_mm(mm, &newmems);
+ 		if (migrate)
+ 			cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
+ 		else
+-- 
+2.43.0
 
