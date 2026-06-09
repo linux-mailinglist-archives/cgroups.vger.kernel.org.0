@@ -1,165 +1,187 @@
-Return-Path: <cgroups+bounces-16790-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 6I62HEleKGpKCwMAu9opvQ
-	(envelope-from <cgroups+bounces-16790-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 20:41:13 +0200
+	id 90qCIBacKGoYGwMAu9opvQ
+	(envelope-from <cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:04:54 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF13663611
-	for <lists+cgroups@lfdr.de>; Tue, 09 Jun 2026 20:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D03AB664B27
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:04:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=PoEvoAEP;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16790-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16790-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=appspotmail.com (policy=none);
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16791-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6F01C302F71D
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 18:40:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 803C6303FF9A
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 23:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F894968FB;
-	Tue,  9 Jun 2026 18:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E585F3C197C;
+	Tue,  9 Jun 2026 23:04:35 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9BE2F28FC
-	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 18:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57F15368287
+	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 23:04:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781030427; cv=none; b=lrAmf9Pqignc2WLOm76Ejz3OAswlz2pLzj+CfcBYnZ4S7xoindf1FlhtTfUtAuUquUxBBDRyqMpFrRE3jA07+xPJEu4Mst7MwWG7YSOJ4U64SZlJsSO70v7Vv90QKsADZ1SQ+KhrWWjSvRDp/XLClmc8Q/Ae/sFdXxLE3514WqQ=
+	t=1781046275; cv=none; b=bzmME0tEORH58ZKkymuN3iBUk7GB0EaMU3N2JCviKRic5/dnXe7cY/ZNnadFkNxSt4Mwhr44g63du9ZeMko0oR46fbMlTikpqPmAqi/zAqUsQoqieax2tPl7kXYlAtdbSTb3TPYI0ZgSrxwxB6lhfhnIXSNtvK66wEunjm1Brmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781030427; c=relaxed/simple;
-	bh=65CJZdok3oEZsd2q+cvJ0TIoA8llHzQp0VLaqDaVRho=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=u4Q2deSpaeu98AnTmWB8KOC9wqBDwmnwIBaUfG4u/xy3HZ6RqxyhwrubeF++Ej0xkpizWlMANgkhI7EDKEUax3LWCoEU/UPUlZGMGWP4fBnROGTfCa5pqsyd9lwxlVf7w1sGL1PFJbHwaXqY7qKJaw7sD+U+W6FmySgcy9Bh+AQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PoEvoAEP; arc=none smtp.client-ip=209.85.161.42
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-69e32df92c1so2946805eaf.0
-        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 11:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781030425; x=1781635225; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=65CJZdok3oEZsd2q+cvJ0TIoA8llHzQp0VLaqDaVRho=;
-        b=PoEvoAEPElItO1imZZz7M/TzqPHUlPl6p4dBCjXtv4wFKimDtA+y+FoXSRKL+4MYYW
-         Gwo10lpB28FuSNDXlOJH45/ayQhhkDY0QdDMiDSd0guo5jsrNskXdpKfyqAtEO5jpQr2
-         9ZML3UZSWp1zIzWNAZVoIZLIUWG2pchcc4oC7LmidHu9oQnacshc/DrhPdDuPK9zr3G4
-         qplNIQAIc6ONdBW2uffidFZbNplwiOcn6m8iK2n/3K8RCURcVB9w7wx7yfBHUbP3PfPv
-         uSyJIg4+S72GhNKHb7NKdzP0f6vxeMrX2u+3Kyb8uTEArPB5TekObFMuUrvRI4jg1VbS
-         zvGg==
+	s=arc-20240116; t=1781046275; c=relaxed/simple;
+	bh=bh+MNbKEbVSmeqmrTm0maztBaeQGvdCEOWzR6EEoFJA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=UpPjABLAxqe3Pj4qBZVErFWon0PY7cDeOO7sGJ2Fz1gkwwUjkCVt35oMjgt/LwGk52QZTvskyjIFxVf392ronkgdC2J1IV53S98+MeoHvtTtYlHgeErBTd/Rd07mX9S+Hohp6a63dHbHFzR7eZdPTZl8Tbu6Aw/eJEQogog+tSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.208
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-48687df43c4so9503253b6e.0
+        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 16:04:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781030425; x=1781635225;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
+        d=1e100.net; s=20251104; t=1781046273; x=1781651073;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=65CJZdok3oEZsd2q+cvJ0TIoA8llHzQp0VLaqDaVRho=;
-        b=PBh7PVGtdstsEkCtKZZMru81YJqIX7o2u+Kj3aAzt5u8zNSd2u4vdsA9gO70/RlcAK
-         weqkkClkk3ActwB2xa9LB0PYWMRiKUQUnNW1coabP8DR6CxaYbzNTtIj6M1dl9KO7iDJ
-         qhzwhnZ6jCYguZn4sZUaS00mVlPaS3qn9kaJ9H4igfrJJNL5WXDJzXWsCVkkF7s7Vz9H
-         C5l48q1tKPJieeYWwSJN7CEX4G/0lPWEWR0JEZOBch3aHqPY+MNk4mV8ClOyIO/60sYw
-         n+s6lhQtOz+qHPmuUbGiHYANN986yHEuBOYxPw+SZ+PbM72Vxhsgn9sS+Uy6JhXWx24d
-         i6Cw==
-X-Forwarded-Encrypted: i=1; AFNElJ/JnjNGNawFCCASTxtx8xwzGlUCWcBcditL18NZcOtN3n2JsCljY3nmFj/GAvW3Zt9g5p0cOwY1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyy8OXpjYWQ9OEgc4TVWEWd7s5ktCKoLQlvnWVyRjIcAcY1wBAH
-	bRQmzC27zJ4Y7OJz6HbKdwr6AEoLgpWrkok4x53stuedzUxY6PfT1KAV
-X-Gm-Gg: Acq92OE6phUFQF/NdnQMMqd2x4oCVzyw16oN/u9M0O/yt5EqJBCG1UI3rCdLcGUKouT
-	OohfLAunIff/NyPk3Vz8Xe5afNAol2iYJUvHQFhX7zz/KZ0BgfLJYx1uSyPKeUgHBw/coeCt4Zp
-	VaPDkCYgDt2qAUM14xsOF9eg1H1veZdN8UQX58TlOTbJEBjyCorcaI63609KNCfq1xRtUX66Fxe
-	ojMlgltQLoPxCYU3OabCM8fVgJ8+IevyQ7iBkHhyc9Er+XeuDiVtfSXdlPwDFJ0JPNFzYzxki94
-	GuAxt+3WEEhSp+hH1gjv/BPEyjllwCUSK1i+Wb8U34I9A6A1VYnzxP9oHCO6OmFhNNVwNtAoSEi
-	mMJMatqcXDSj+XtCtkBzvXdBylOJ3UOQCmc9WF6R7wEeH7CJOxXVDPxswUQio7Qcy7W0afye3BU
-	8YZ/gKWVHB9RBY872qYdpxg9IN+USHjKZSLh8Tvulbpkcq53GH0fFONjiS06bAn20XvS56HsAId
-	i7Sl4VHcyKWco2l83oQDTlTbxpn/SqoPLGa4Q==
-X-Received: by 2002:a05:6820:c2c7:20b0:69d:f044:5dc3 with SMTP id 006d021491bc7-69e68b847d6mr8241185eaf.25.1781030425313;
-        Tue, 09 Jun 2026 11:40:25 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:6::])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-69e46405105sm11146756eaf.10.2026.06.09.11.40.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jun 2026 11:40:24 -0700 (PDT)
+        bh=yLcbPIP3DqH41We2y8RFQOo6XVKoUumZBhjBdhDFF2M=;
+        b=QEzekV5Z5+fgpKuZk8MYlzJH5fzVgzjYThCluqXMxcs9Xb12EcBa1ozHlsyjSBw8nW
+         I65D8M5rjgJprU+FgBW4DzGvCisaLsz7TREPu679Dm3Jd18xyQTQ3oAh5MCZ6+BUtQPa
+         lpMyu6hQyP/AbU7o5yFkVC0opiUK3+nyaiaoTPOBybtFK2pYkAEi4bcffC57gNk9iD0J
+         aqF6zANAlXOKj3exzsuQEa9/lz7JuzJ+BKwfDoX189cNBTNSbb0FbG7y3sAJ8cZszh8k
+         JCOoYQHIcwPvEpjjx98duzNtG5wQAhtXUqiqsnT1ldNp49SGSX6dVLEDTeoNBC/ChRgs
+         peLw==
+X-Forwarded-Encrypted: i=1; AFNElJ8c3IeTthKHK4YhjsIYMV2fdUNjRbQQrwJKXUUUWNoheKTfH74ZPl3DsraUwFLddCDKVqpLKpZe@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywr64PVocvcjViVQ3liudiAJNaX1BaYicD1/EZdjTKEqyLWuBBj
+	KL0fNxaRdtbcMCufA7z2SY3/SmeRIoZxAVAn1rbDSI6OC3dZcqHWHnR5KJJhAK4FgSderhOq69F
+	JbhCx/6QQtA+F2udzVnPWCUCqybuQ72do7SdOLrqeXzDeVWdzyDQeglLelks=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 09 Jun 2026 11:40:23 -0700
-Message-Id: <DJ4QLD7TWSOU.3LEDXKMML5DMK@gmail.com>
-Cc: "Hao Li" <hao.li@linux.dev>, "Christoph Lameter" <cl@gentwo.org>, "David
- Rientjes" <rientjes@google.com>, "Roman Gushchin"
- <roman.gushchin@linux.dev>, "Suren Baghdasaryan" <surenb@google.com>,
- "Alexei Starovoitov" <ast@kernel.org>, "Andrew Morton"
- <akpm@linux-foundation.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
- "Michal Hocko" <mhocko@kernel.org>, "Shakeel Butt"
- <shakeel.butt@linux.dev>, "Alexander Potapenko" <glider@google.com>, "Marco
- Elver" <elver@google.com>, "Dmitry Vyukov" <dvyukov@google.com>,
- <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
- <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>
-Subject: Re: [PATCH RFC 00/15] mm/slab: introduce alloc_flags and
- slab_alloc_context
-From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, "Harry Yoo"
- <harry@kernel.org>
-X-Mailer: aerc
-References: <20260609-slab_alloc_flags-v1-0-2bf4a4b9b526@kernel.org>
-In-Reply-To: <20260609-slab_alloc_flags-v1-0-2bf4a4b9b526@kernel.org>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6820:4b86:b0:67d:ea53:b9c8 with SMTP id
+ 006d021491bc7-69eac8d9b8dmr3506618eaf.18.1781046273469; Tue, 09 Jun 2026
+ 16:04:33 -0700 (PDT)
+Date: Tue, 09 Jun 2026 16:04:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a289c01.39669fcc.33b062.00a9.GAE@google.com>
+Subject: [syzbot] [cgroups?] [mm?] WARNING in hrtick_start_fair
+From: syzbot <syzbot+2cbf10efc23b22ff9c31@syzkaller.appspotmail.com>
+To: anna-maria@linutronix.de, cgroups@vger.kernel.org, frederic@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com, tglx@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.65 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MV_CASE(0.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=da47745f686dc823];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:vbabka@kernel.org,m:harry@kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-16790-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:anna-maria@linutronix.de,m:cgroups@vger.kernel.org,m:frederic@kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:syzkaller-bugs@googlegroups.com,m:tglx@kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16791-lists,cgroups=lfdr.de,2cbf10efc23b22ff9c31];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,appspotmail.com:email,syzkaller.appspotmail.com:from_mime,storage.googleapis.com:url,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,googlegroups.com:email,syzkaller.appspot.com:url];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	RCPT_COUNT_SEVEN(0.00)[7];
+	SUBJECT_HAS_QUESTION(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EFF13663611
+X-Rspamd-Queue-Id: D03AB664B27
 
-On Tue Jun 9, 2026 at 2:17 AM PDT, Vlastimil Babka (SUSE) wrote:
-> This series is based on slab/for-next. If all goes well, it would
-> hopefully go to slab/for-next soon after the 7.2 merge window, so any
-> other work can be based on it to avoid conflicts, as it touches a lot
-> parts of slab.
->
-> Git: https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log=
-/?h=3Db4/slab_alloc_flags
+Hello,
 
-Overall looks great to me.
-I would ship all patches except the last one for this merge window,
-since I don't see anything controversial or dangerous in there.
-Especially since it touches slab so much. My slab-arena changes
-would need to adopt it and I don't want to delay the whole thing by two mer=
-ge windows.
-Harry's changes would need to rebased as well.
-So the sooner the trees converge the better.
+syzbot found the following issue on:
 
+HEAD commit:    a87737435cfa Add linux-next specific files for 20260608
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11715db6580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da47745f686dc823
+dashboard link: https://syzkaller.appspot.com/bug?extid=2cbf10efc23b22ff9c31
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12df60ae580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11edb0ae580000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/85d19fe6bb4e/disk-a8773743.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/30c683ce26e1/vmlinux-a8773743.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4db5027513d2/bzImage-a8773743.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2cbf10efc23b22ff9c31@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+task_rq(p) != rq
+WARNING: kernel/sched/fair.c:7656 at hrtick_start_fair+0x196/0x1f0 kernel/sched/fair.c:7656, CPU#0: rcu_preempt/18
+Modules linked in:
+CPU: 0 UID: 0 PID: 18 Comm: rcu_preempt Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/09/2026
+RIP: 0010:hrtick_start_fair+0x196/0x1f0 kernel/sched/fair.c:7656
+Code: 42 80 3c 20 00 74 08 4c 89 ff e8 85 e3 97 00 4d 39 37 0f 85 0c ff ff ff 48 89 df 5b 41 5c 41 5d 41 5e 41 5f e9 4b 65 fa ff 90 <0f> 0b 90 e9 d1 fe ff ff 44 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 82
+RSP: 0018:ffffc900001777e0 EFLAGS: 00010087
+RAX: ffff8880b873ba40 RBX: ffff8880b863ba40 RCX: ffffffff8197c7de
+RDX: 0000000000000000 RSI: ffff88802c528000 RDI: ffff8880b863ba40
+RBP: dffffc0000000000 R08: ffffffff8fcf0b0f R09: 1ffffffff1f9e161
+R10: dffffc0000000000 R11: fffffbfff1f9e162 R12: dffffc0000000000
+R13: 1ffff110170c78d6 R14: ffff88802c528000 R15: ffffffff8dc217d8
+FS:  0000000000000000(0000) GS:ffff888125a76000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007eff95e6a540 CR3: 0000000028e30000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ set_next_task_fair+0xa68/0xce0 kernel/sched/fair.c:15058
+ put_prev_set_next_task kernel/sched/sched.h:2770 [inline]
+ pick_next_task kernel/sched/core.c:6443 [inline]
+ __schedule+0x3e03/0x5550 kernel/sched/core.c:7144
+ __schedule_loop kernel/sched/core.c:7308 [inline]
+ schedule+0x164/0x360 kernel/sched/core.c:7323
+ schedule_timeout+0x158/0x2c0 kernel/time/sleep_timeout.c:99
+ rcu_gp_fqs_loop+0x312/0x11b0 kernel/rcu/tree.c:2123
+ rcu_gp_kthread+0x9e/0x2b0 kernel/rcu/tree.c:2325
+ kthread+0x388/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
