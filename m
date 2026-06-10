@@ -1,274 +1,209 @@
-Return-Path: <cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16799-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id o7lSG8IgKWqBRAMAu9opvQ
-	(envelope-from <cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 10:30:58 +0200
+	id IIVxGGAwKWqVSAMAu9opvQ
+	(envelope-from <cgroups+bounces-16799-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 11:37:36 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF8BD6672E2
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 10:30:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF724667E74
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 11:37:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=V5VqP0g0;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b="LtZtMMV/";
+	dkim=pass header.d=redhat.com header.s=google header.b=P5XbKeil;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16799-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16799-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F15353014680
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 08:30:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2225D325608B
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 09:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741A83ACF1D;
-	Wed, 10 Jun 2026 08:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521373DB634;
+	Wed, 10 Jun 2026 09:21:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD26A3ACEE0
-	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 08:30:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E63F83AD50F
+	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 09:21:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781080242; cv=none; b=BjNE8Tf+gwtPzSuttPCtynadA9cDUQmF7e1kCVimg7ErNyddG77y8tcqWBg39XHTf7UJDzN/H0h6r0eqDw9zPBdHc1A6wqh3WWrw1oF8t3TaCgCzuzCT5nfsLA7XXH0FBxPSQ3jxp3ytbfINkIxFTLLFDD33w0F3XagXSi2Pl28=
+	t=1781083306; cv=none; b=CA9xoR6x5dHYvxWyoi8TxY8Nkd22gLjpjFF4ZjgInoQnCKJsJevbRWhCsvXX2WbaOsB6XuG13W3M7qBD7h6UkJO3vsx+ZsoLP0woQY5L+PsadoYY75GTk/6F4+dA/1WDnn5smmkKJPJ9TpdqrsLIzJ5vj5v3LFixO9jd7ZuidBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781080242; c=relaxed/simple;
-	bh=cu42RRbLiM8L0VLdlcCAQdo8B2+vi35iBa5fbg6t6o8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Bhm/hhnlLx1tQAEZR+xhdowHFGLWiJr3Eyw91sCp9nQewqI/XwXuQy0kmT2KwqtWLBOag/DoC0Wzc1DhctICZ7kucIg5vaesHefbvetskdbxjP4L2LjcpCZ9j11Cr21JWhHSdgMW9ugO7gERSZFliOouc/lJPzHRh9uDUC9mPI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V5VqP0g0; arc=none smtp.client-ip=91.218.175.183
-Message-ID: <104171fa-6a1c-43b0-a6c4-f71f54129d88@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1781080237;
+	s=arc-20240116; t=1781083306; c=relaxed/simple;
+	bh=g5+W+jLy9btQjSDtxGia7H7MJP8ofhpJzo3kG4SNk7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=svTo4IrU60C3yDzvWik1X1oLI36aFncAuEvNQZNTdmrzl3V+zOXANgvXQNOXh+BkeJtllstFq1TlLk2eVYyliWHLVwtLU5/MHiQu7TI1jOqyA9yJDGYY4mLYIDhlMj4xwBcyQ8etNGwdCN/ADF3uk4Uu+N0JJfYeMH72JvE2Yxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LtZtMMV/; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=P5XbKeil; arc=none smtp.client-ip=170.10.133.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1781083304;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UyYAKG2WDoLAbE1LWkheGa6RjXvXcPLoe7XXaMCnGK8=;
-	b=V5VqP0g0/2QVtPLYQCSiV719xuD7bOb3CpvhN+0IMKIh/j5Y/g3qYhAVH2bW/olN69GYBR
-	EJuAtb1QASKglqFL4XeS/eWvX0P+oCQWoqP2kbIJVGWzUcxp7YJYLzyTuWA//bCOuiJwNU
-	3qIkjmrDd9VEF33VtktPcvQCTv2VPks=
-Date: Wed, 10 Jun 2026 16:29:53 +0800
+	bh=lNoSE7CdhqapQyjtlFSi1j5OlaFx/mTNFdn28cYSfbk=;
+	b=LtZtMMV/57cxUznwAX3QOB4CzsNS+NxCIQ0vBnJorh8YI3aY0PAdbG75fRlxk30ftN7BfC
+	wjwdZS97SLcu6jZE+MJJkOvu8iLf/wOQuy812JMFZhBRM6SRWIR3rMIVC4MZlWTnLqJhiZ
+	e4GkRnsFIhEuwGAHcrKW7s+1N/68aUw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-296-dop2_b5GOx-SbReaA8snaA-1; Wed, 10 Jun 2026 05:21:42 -0400
+X-MC-Unique: dop2_b5GOx-SbReaA8snaA-1
+X-Mimecast-MFC-AGG-ID: dop2_b5GOx-SbReaA8snaA_1781083301
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-490bae3a39bso7925625e9.1
+        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 02:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1781083301; x=1781688101; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lNoSE7CdhqapQyjtlFSi1j5OlaFx/mTNFdn28cYSfbk=;
+        b=P5XbKeilyj6PjLc+j+bms2IePvgNd56oDnGCmNfcJBF4RytKWmPGWnFYUa9ewS/Gy8
+         CTG8FtAQzWymwV+Ioc3QBe8jS8XbG0w5vFHwUBNutXIk0YBEzvg+7iIX/t5aq7vohXPx
+         ADMiKKpZPRrvx9w7NKWpeuTxAOuaGPKxi4K3Ngg4+OkzCvvoX/lxLLdrUHlVKd2plvmT
+         DhpgQVA6O8IrHXy4El2L8hWSQaXF1jtx/aMp+hMiyYWOXECF3u6rLJYIEHrcBb0ySwJs
+         2KS4jXeuDpPBgjM9lxoVHuhgMEFE8mQoMiObTkyh8b7ssCHio5ZDvONLldsI29CI0ykB
+         rISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781083301; x=1781688101;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lNoSE7CdhqapQyjtlFSi1j5OlaFx/mTNFdn28cYSfbk=;
+        b=QT+a7g4kKcT+jG6HOCbAoSwWbJXlSHutAGIOGL+ntZS6KXePHKwMMKhJAL801FqPpK
+         IEuLgi8nMGhwCmsKZK5/xWqXG1WCwBv//gMUDuR+PKLX6W2w8qUHVQWUlCCMdmqQ9Tl4
+         7FfCRiSQ2vNPfqS1NG7RVBNzanvFtPt1oWJ644a+3BOo7LLh9FpPMXGgFzhJydC/sp17
+         TKOCI0OPCuhmU51cfWHYcGVzB6L8OMSGfQ4MJ5eSrqbH6VmtTx4J9C/XmqqBpjOV3YbL
+         vX1M9hXEY6YnXwQ4uuqMLiqkA4FvQr80+gaE3pmJO+isSjK3p8AQ/z47WNIAtqNixuGa
+         uBeg==
+X-Forwarded-Encrypted: i=1; AFNElJ+O+5rn9/cUEuSzzZvq5CwioDs6KDOVfirHKFWe5sRi4AnPs6HFJH+uo1MfhhJou8LEDoGgLkCh@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMAQpegUs3ljuCAvFGbsGyRqUvItLsMSVKU/2yf2H0kw8l8zga
+	88yYckOwpXGJ5m9Oxz6kn7D3gi3+TehbTNwzl8knNOkaNfsBsyJuidAA6IAfC6Xcx/P05R6A6rY
+	rcNm2YPWrDVG7fQfX9XyHOTki4aQjxlPiEfrtptSGSdafTORLHR2aRKaVFBs=
+X-Gm-Gg: Acq92OEwgMNNS2J/+KgOkJY+eNPFosYF/kG4F7QOYSEiD5oHR7iodC1TC3EIpr/tZ5I
+	SWP/EQ5Onhuo5PhdfFvTBFk1JjlX0tIE7AzucWSofmom2NL8N6b8z8rBIt0Hg4gY5TQaFtrRZ7U
+	XZuD9tLMhY/6mypLivk3FJhf+6J+XTS4bVXlPCxxDBZzkEWg5P8y7Nvve8wjur5dCUQ9wuWSM9U
+	rWCfjJeMtnfPWUrWQFv90vEZO95uHwCRbCjCdU1ECpYdlT5YeK9HO7IudAluAg2PgEclgItRTM7
+	3dBuw96c+xlxe5q9FITbO2XHOAqrlhRnRIJ3gLQjICKQQYCvpDKLb5aMIlkOiv1vdM+pOLLFmKK
+	MDwV476eGQC7tGw1g7vRMtHjidG7YRc71bG5dGpr9Ll+U8vHOMFTgSg2+nNx4X20=
+X-Received: by 2002:a05:600c:1554:b0:490:7dfd:f7c2 with SMTP id 5b1f17b1804b1-490c25eaca1mr406762885e9.11.1781083301123;
+        Wed, 10 Jun 2026 02:21:41 -0700 (PDT)
+X-Received: by 2002:a05:600c:1554:b0:490:7dfd:f7c2 with SMTP id 5b1f17b1804b1-490c25eaca1mr406762205e9.11.1781083300690;
+        Wed, 10 Jun 2026 02:21:40 -0700 (PDT)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.95.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f35eae5sm70938593f8f.33.2026.06.10.02.21.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jun 2026 02:21:40 -0700 (PDT)
+Date: Wed, 10 Jun 2026 11:21:37 +0200
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Luca Abeni <luca.abeni@santannapisa.it>,
+	Yuri Andriaccio <yurand2000@gmail.com>
+Subject: Re: [RFC PATCH v6 00/25] Hierarchical Constant Bandwidth Server
+Message-ID: <aiksoUznUgTMUgXX@jlelli-thinkpadt14gen4.remote.csb>
+References: <20260608121546.69910-1-yurand2000@gmail.com>
+ <aig1ZGEq0Vr0qLzl@jlelli-thinkpadt14gen4.remote.csb>
+ <9c0d3d19-5c14-42e0-b29d-4ea32d9e624f@santannapisa.it>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC 00/15] mm/slab: introduce alloc_flags and
- slab_alloc_context
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
- Usama Arif <usama.arif@linux.dev>
-Cc: Harry Yoo <harry@kernel.org>, Hao Li <hao.li@linux.dev>,
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260609133534.3548059-1-usama.arif@linux.dev>
- <fe1bd73b-d956-442f-8c4f-f5f62587346e@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Ge <hao.ge@linux.dev>
-In-Reply-To: <fe1bd73b-d956-442f-8c4f-f5f62587346e@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <9c0d3d19-5c14-42e0-b29d-4ea32d9e624f@santannapisa.it>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16799-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[redhat.com,infradead.org,linaro.org,arm.com,goodmis.org,google.com,suse.de,kernel.org,cmpxchg.org,suse.com,vger.kernel.org,santannapisa.it,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:usama.arif@linux.dev,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[hao.ge@linux.dev,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	TAGGED_FROM(0.00)[bounces-16798-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FORGED_RECIPIENTS(0.00)[m:yuri.andriaccio@santannapisa.it,m:mingo@redhat.com,m:peterz@infradead.org,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:luca.abeni@santannapisa.it,m:yurand2000@gmail.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hao.ge@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,jlelli-thinkpadt14gen4.remote.csb:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: AF8BD6672E2
+X-Rspamd-Queue-Id: BF724667E74
 
-HiÂ Vlastimil and Usama
+On 09/06/26 18:23, Yuri Andriaccio wrote:
+> Hi Juri,
+> 
+> Thanks for looking into this.
+> 
+> > I started playing with the new interface and ended up with the following
+> >
+> > bash-5.3# cat cpu.rt.max  (root)
+> > 10000 100000
+> > bash-5.3# cat g1/cpu.rt.max
+> > 10000 100000
+> > bash-5.3# cat g1/cpu.rt.internal
+> > 9999 100000
+> >
+> > which looks odd to me, as nothing is running on g1 yet and no children
+> > groups either. Maybe a rounding error of some kind?
+> 
+> You are right. I should have mentioned that it is just a rounding error that
+> occurs when converting from a bandwidth value to a runtime value. This
+> happens because the tg_rt_internal_bandwidth() function truncates the value
+> when transforming the runtime from nanoseconds to micros. Rounding could be
+> used here to report a more accurate value.
+> 
+> This same issue is probably found in the from_ratio() function, which has a
+> similar truncation issue when converting from bandwidth to runtime, but
+> since it is working in the nanoseconds range it might not be that big of a
+> problem. The value from from_ratio() is used for the setup of the dl_servers
+> even when the children bw is zero, so maybe it is possible to add a special
+> case?
+> 
+> Anyways, as it is right now, the cpu.rt.internal may have only a +1/-1us
+> error in reporting the actual used values, while the error for the runtime
+> value used internally to setup the dl_servers is in the range of tens of
+> nanoseconds.
 
-On 2026/6/9 22:28, Vlastimil Babka (SUSE) wrote:
-> On 6/9/26 15:35, Usama Arif wrote:
->> On Tue, 09 Jun 2026 11:17:45 +0200 "Vlastimil Babka (SUSE)"<vbabka@kernel.org>  wrote:
->>
->>> This series is based on slab/for-next. If all goes well, it would
->>> hopefully go to slab/for-next soon after the 7.2 merge window, so any
->>> other work can be based on it to avoid conflicts, as it touches a lot
->>> parts of slab.
->>>
->>> Git:https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slab_alloc_flags
->>>
->>> The slab implementation currently relies on gfp flags to convey
->>> some context information internally:
->>>
->>> - The absence of both __GFP_RECLAIM flags is interpreted as "cannot spin
->>>    on locks", and intended to be used by kmalloc_nolock(). But false
->>>    positives are possible e.g. during early boot where gfp_allowed_mask
->>>    clears __GFP_RECLAIM from all allocations. This leads to unnecessary
->>>    allocation failures and workarounds such as fd3634312a04 ("debugobject:
->>>    Make it work with deferred page initialization - again").
->>>
->>> - __GFP_NO_OBJ_EXT exists and takes up valuable bit in the gfp flags
->>>    space, only to prevent recursive kmalloc() allocations for obj_ext
->>>    arrays and sheaves.
->>>
->> Hello Valstimil!
->>
->> I think memory allocation profiling uses __GFP_NO_OBJ_EXT, and I dont see
->> it being removed in the series (hopefully I didnt miss it).
->>
->> Adding Hao Ge in CC who did this in the commit:
->> mm/alloc_tag: replace fixed-size early PFN array with dynamic linked list
+Not a huge problem per se, but it will raise some eyebrows (and generate
+questions) if we leave things as is, I fear.
 
+I wonder if, instead of converting to bandwidth ratios and back (losing
+precision in both directions), we can compute children's runtime sum directly
+in nanoseconds. For children with different periods, we can maybe normalize
+(128-bit intermediate?). Parent's internal runtime is then a simple exact
+subtraction: parent_runtime - children_runtime_sum. This should reduce
+precision loss from double conversions. Also, as you suggest as well, apply
+rounding when displaying to user. 
 
-Thanks for the CC. I'm now aware of this.
-
-
-> Thanks for the heads up. I missed it because my series is based on
-> slab/for-next and that commit is in mm-unstable. My patch 15 actually
-> modifies the TODO comment that is meanwhile resolved by Hao Ge's patch.
->
-> Which means my patch 15/15 can't be used as-is, and at worst I will drop it.
-> But I'd encourage Hao Ge with Suren to find some way to avoid the gfp flag
-> usage too, because it's now quite a niche use case (preventing false
-> positive CONFIG_MEM_ALLOC_PROFILING_DEBUG warnings, IIUC?) to take a
-> valuable gfp flag bit, IMHO.
-
-
-I previously used __GFP_NO_OBJ_EXT because it serves the same purpose as 
-in slab.
-
-We use it here to prevent recursion within the page allocator.
-
-I hadn't anticipated that __GFP_NO_OBJ_EXT would be removed so soon.
-
-I agree with you. Since slab no longer uses it, retaining this GFP flag 
-solely for debug is indeed costly.
-
-I've also been thinking about possible solutions today. Since we are 
-working in the page allocation path,
-
-we need to take various race conditions into consideration.
-
-For instance, what if an interrupt is triggered inside page_alloc, which 
-then invokes page_alloc again?
-
-I'm not sure if such a scenario exists in practice, but I believe we 
-still need to account for it.
-
-I would highly appreciate it if anyone could share their ideas.
-
-I've made a note of this.
-
-Would it make sense to hold off on merging patch 15/15 for now?
-
-We can always include it in a later cycle once we have a proper 
-replacement for the
-
-memory allocation profilingside. Thanks Best Regards Hao
-
->>> The page allocator uses its internal alloc_flags to convey various
->>> context information, including ALLOC_TRYLOCK (meaning "cannot spin").
->>> This series copies that concept for the slab allocator, with its own
->>> slab-specific internal flags:
->>>
->>> - SLAB_ALLOC_DEFAULT - no extra flags (the value is 0), but explicit
->>> - SLAB_ALLOC_TRYLOCK - do not spin on locks (used by kmalloc_nolock())
->>> - SLAB_ALLOC_NEW_SLAB - replacing existing 'bool new_slab' parameter
->>> 			for allocating obj_ext arrays
->>> - SLAB_ALLOC_NO_RECURSE - replacing usage of __GFP_NO_OBJ_EXT
->>>
->>> To reduce the amount of parameters in various internal functions, we
->>> additionally introduce slab_alloc_context (also inspired by page
->>> allocator's alloc_context) for passing a number of existing arguments
->>> and the new alloc_flags:
->>>
->>> /* Structure holding extra parameters for slab allocations */
->>> struct slab_alloc_context {
->>> 	unsigned long caller_addr;
->>> 	unsigned long orig_size;
->>> 	unsigned int alloc_flags;
->>> 	struct list_lru *lru;
->>> };
->>>
->>> This also replaces the existing struct partial_context.
->>>
->>> The last necessary piece is kmalloc_flags() which can take the
->>> alloc_flags in addition to gfp flags and is intended for the recursive
->>> allocations of sheaves and obj_ext arrays, so that both
->>> SLAB_ALLOC_TRYLOCK and SLAB_ALLOC_NO_RECURSE can be communicated.
->>> Internally it decides between kmalloc_nolock() and normal kmalloc()
->>> depending SLAB_ALLOC_TRYLOCK.
->>>
->>> The rest of the series is gradually expanding the usage of both
->>> alloc_flags and slab_alloc_context as necessary, with bits of
->>> refactoring. Then, __GFP_NO_OBJ_EXT is removed completely.
->>>
->>> Note that some usage of gfpflags_allow_spinning() relying on absence of
->>> __GFP_RECLAIM remains outside of slab (and page allocator) in memcg,
->>> page_owner and stackdepot code. These can thus yield false-positive
->>> decisions that spinning is not allowed, but should not result in
->>> important allocations failing anymore.
->>>
->>> Signed-off-by: Vlastimil Babka (SUSE)<vbabka@kernel.org>
->>> ---
->>> Vlastimil Babka (SUSE) (15):
->>>        mm/slab: always zero only requested size on alloc
->>>        mm/slab: stop inlining __slab_alloc_node()
->>>        mm/slab: introduce slab_alloc_context
->>>        mm/slab: introduce alloc_flags and SLAB_ALLOC_TRYLOCK
->>>        mm/slab: add alloc_flags to slab_alloc_context
->>>        mm/slab: replace struct partial_context with slab_alloc_context
->>>        mm/slab: pass alloc_flags to new slab allocation
->>>        mm/slab: pass alloc_flags through slab_post_alloc_hook() chain
->>>        mm/slab: replace slab_alloc_node() parameters with slab_alloc_context
->>>        mm/slab: allow kmem_cache_alloc_bulk() with any gfp flags
->>>        mm/slab: pass slab_alloc_context to __do_kmalloc_node()
->>>        mm/slab: introduce kmalloc_flags()
->>>        mm/slab: remove __GFP_NO_OBJ_EXT usage from alloc_slab_obj_exts()
->>>        mm/slab: replace __GFP_NO_OBJ_EXT with SLAB_ALLOC_NO_RECURSE for sheaves
->>>        mm: remove the __GFP_NO_OBJ_EXT flag
->>>
->>>   include/linux/gfp_types.h       |   7 -
->>>   include/linux/slab.h            |  14 +-
->>>   include/trace/events/mmflags.h  |  10 +-
->>>   lib/alloc_tag.c                 |   2 +-
->>>   mm/kfence/core.c                |   6 +-
->>>   mm/memcontrol.c                 |   5 +-
->>>   mm/slab.h                       |  16 +-
->>>   mm/slub.c                       | 423 ++++++++++++++++++++++++----------------
->>>   tools/include/linux/gfp_types.h |   7 -
->>>   9 files changed, 288 insertions(+), 202 deletions(-)
->>> ---
->>> base-commit: 500b2c9755301742bdbb61249511ac11a4665dae
->>> change-id: 20260601-slab_alloc_flags-25c782b0c57c
->>>
->>> Best regards,
->>> --
->>> Vlastimil Babka (SUSE)<vbabka@kernel.org>
 
