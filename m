@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-16832-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16833-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id NmpWHV3FKWo6dAMAu9opvQ
-	(envelope-from <cgroups+bounces-16832-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 22:13:17 +0200
+	id WZuqBrHiKWoPfAMAu9opvQ
+	(envelope-from <cgroups+bounces-16833-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 00:18:25 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE99B66CB68
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 22:13:13 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68FFB66D2C9
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 00:18:24 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gourry.net header.s=google header.b=U89rvehF;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16832-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-16832-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gourry.net header.s=google header.b=V3vKIxUP;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16833-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16833-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5A58430028FD
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 20:13:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A491930E9489
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 22:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C753403EA3;
-	Wed, 10 Jun 2026 20:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C461346A10;
+	Wed, 10 Jun 2026 22:18:15 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3006F403B04
-	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 20:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EA120C029
+	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 22:18:13 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781122384; cv=none; b=palZ5eRZfCZ2ZihLBGADKBuu5dYBeId3hitjklTEYGJ7JvpcqnFqA3mMP4qO9mrpEVTfq5iLQHX1NUvGPQGjORx4ofrPQRIMPVqHeHDj68Hcj/ss7z2smqdgvE+ton+VA5jhN6MhJyuBcY5gTCYO3p41zm1NEP3PzWZ3M1au5Iw=
+	t=1781129895; cv=none; b=TYXvl0noQKMySn7MZG+hbOwYSG1abj8CnLONHdUIm2p36hNTQALqRc7zHsmCIfXd68J8xgIkgk1z3gEPFwo8pgjtD+sIH4A/vSOdXRgKtQDffaKp+dQsJDMr7HOEs8ZW+NZ1U15ibLljhitCWfdB0nGZ9GMZw5YhBNhNIWC/cAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781122384; c=relaxed/simple;
-	bh=XCLXnOmTwKXh09FcYtQFFaA7Jpvehuih5/s/Esa9XgA=;
+	s=arc-20240116; t=1781129895; c=relaxed/simple;
+	bh=n6qQe/H8M9f/HunhZcM7AZ4l6+kkk/hPRfn60YC5VlI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MwwOYg35a477Nz7RAZJHDtJjJmoaZW5ORIhqjHQlZL5i43K4PGw2Fbl/xTrm7t+S9Ra3hFYz2vQDYD2pBP518oAhFdAk+4X9C8NeSDipTrkJEGXAoU/JdbVwc2Ynk9fYAAi1FudFAjRZ7UP6RF4vPmldf0iknVtKvkQgVcvndeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=U89rvehF; arc=none smtp.client-ip=209.85.219.42
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-8ce9df4732cso72537666d6.1
-        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 13:12:57 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sBs+vqv5gvvlA6khURbomlTYry1NAnAdZLSTOCPOgC5ULE8L1UNP8sssd39DVhJkOjdV2jNv75vpv7K37TC2u7R503qISj4n+Dx7H0xY350w10RjXQCManwGUyGzGCZODiWtcM5QvzzsTO7v4fImi/BDWTgAGBxTqSe+6QvWcb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=V3vKIxUP; arc=none smtp.client-ip=209.85.222.174
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-9159da9bba5so529597685a.1
+        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 15:18:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1781122377; x=1781727177; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1781129892; x=1781734692; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5/w5IO6RWAJnNghyz7HGZ8KjTibYl6mxc1wTK9gnS8M=;
-        b=U89rvehFEHxEMK7PFZYfFR18kWOCZanlPn7D/236dPmSgbe7z0Rd3TEztIDx1OlD5S
-         WyW1gy0UaLBCVLn8ykVE83DvMbZHrr5S8k1D3urbym10cvGs3BbGuG51gVbK7DPhnDYP
-         1Hp0Hkon7DdJ8AzAxskbDCU+y8x4C28hdT3TX6bZ53QS0YXGcPn3oetMo7UdYvMCXSDR
-         gDtH+u9bE5LYnhCWmWMMdbUUy3ZwAnuBWNit6YAIbqbyfZ8dbNvTY/Fhy46E7M164yjh
-         itKxUsar6LFAgPXEB1nDpvaZDIbFJ5Eae7CcrI1dQU5SxTE/9DtR+91S6Md/EC4RDx7T
-         Tu0w==
+        bh=j1PbvrJxmu0Zl4ziOeo1RdvYlevUlgdJVEfHD2noTRQ=;
+        b=V3vKIxUP2xQMBPVbbKnJ/vNJOjqfa2Eji6/VFzoKcer3eo+JRBwicBO8NaCpEb08y2
+         RAW7SmKqHygNl72UBObn4fn/nuHkqdvWW1dKPuzdEEcSWboJZ5JOS9WVn/D9sNIg/tOf
+         2MvqrjyXRommi696jqaFRJYj57UZOi+5XcribHaAg/43qvEuApqTYAAiwTwkZOBPC6dn
+         azP5IvkGkft42VwkW5Ue835DqIj+UpvZhdoEWGrva6lq7YNvgd1YOkj7nqGrhJD/RDQz
+         ywkCPP7sMepNhKf6jDO9ZFAb4HbaENWNB7AynuXgZJKT350BEJFmUbrNeKR/o2IAMVh4
+         Xwxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781122377; x=1781727177;
+        d=1e100.net; s=20251104; t=1781129892; x=1781734692;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5/w5IO6RWAJnNghyz7HGZ8KjTibYl6mxc1wTK9gnS8M=;
-        b=fNDlL1gqhJX4kzkHMutFSRMjqfgpYTPFWy2SN3WnYaqLqTDzUBw56APWx3n7UC71KV
-         HPSDHJsnH2kAUhWrJHTzgUn/15ZMP1jrCKc+8GShFZm4LqqKmwuz5nCWv4ldmoRFLuZg
-         DFKcN9FrdwjAQY+sn100tv8lyJiDhY3wCLx+EKhqkxe7mXJOI8XHqFQjOiFZetSYyXIq
-         aPQwJ/JDQsYd94qps9Gal7117prz+vvnpSZghAtXDCkT1y/ys/CD2EzyUAqADYqa587b
-         2aJNKtcTJNWwa1m2IvMNlrBijgAge6f8rzQK5ywW6Mk08TxlthzA+eutzsesvDNkLsbw
-         5Vkw==
-X-Forwarded-Encrypted: i=1; AFNElJ9KuZMiZXCHH6FqLtXUM2dobZDgZ1TJbuEAH89axauQj1/I5RfD6o+k/l4JgzAzwtIxQYuREvOS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6KK9fp/Xh/d86u5HMmE2WHmP3ZLO4yAtdt51m+/U+QcTZlad3
-	Mfe5msbW7wloYYrc/W5EDtbRSLDvD+6TZJKmmytaTRHvdrTtP/5b3wXp2CSwn5eHSuk=
-X-Gm-Gg: Acq92OG5d6wcYxRcTtlnUORSS1mXYwNET1AwhMxYOAhgqiHH9PYVQhY7NGHiMgWsXIi
-	Opot2YMOYsEv/sVqjukSNwArwK6V+kBcWje7g1sbk32gsXMBArYHdzqZVjlfGYPDCZnkV2vsQDi
-	NnY1MQFx6tCeyDRMEEpmMBubZBcoF4gc9zeFYOO1jTnBubnxsFtw5XIsNP2tddSPI0Z4nWoAwgV
-	n0Z2kg+WW7XPQMq4HbkMTo3heI3gEPGx8UgekVpuPGkWl+xxI9cVLaT1/1hBASAzLbAUH8bZDnZ
-	vPdvym0qThYCZGMRg5M8SSFdbOWPXHQpXnhtVKaU+7GEgYgqraWsQ3u7Geeom5cBdaYMYSq8OHc
-	19CC1Dh1T593mqHFinNkQdGROEjYQTf1JAgo/12sK+6DPP+JoPTcoLk/LoXOcjaQcn6f4ysLJrU
-	MHfi9VSxS5qpAdYYeEFhx6qS8/551J+n/y523xeNPdjoIM/V9T2E/8N8wxh67Xx4yIS8iji7F7V
-	TwQOxWwqzPoUiCJhw==
-X-Received: by 2002:a05:6214:4586:b0:8ac:a6bd:503b with SMTP id 6a1803df08f44-8d187aef6a5mr16950546d6.15.1781122376601;
-        Wed, 10 Jun 2026 13:12:56 -0700 (PDT)
+        bh=j1PbvrJxmu0Zl4ziOeo1RdvYlevUlgdJVEfHD2noTRQ=;
+        b=kHyDqVmY7kkqe2X8xx8qN8nr6/Ncew7mZyRbCOroYI5jetAqVuO4vfocPdoqSYO+IC
+         W2FoTJWBALJXaEIc3U6fXq/jItRjKN+pSw2slLUGuMfFDKBVf2jRMX6Qw3BQzKsiJG5M
+         CR9RuIFBcdAy7I9a5zCtYB3H9yUA+sQ2Ess0Om6+smLNasZ8gIIMqBNtSqbcKfDZdpzD
+         yzi2OYRIr2qvAs64tcldOYLfjzQGeXg9X5+/xRsgk8GsYw4jjINb1sG4MxaSjIwClUPA
+         JnlExaIvJ2D5fDam+GKPfgxJ442rmuEPeS93YwhKXniUYMTgJKkJGmAIcV4h097mxKtK
+         m2cQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8CMfq2AxeKHw/2g/4yxrHQo7UndjeBSfxSCr7FfOrXsx4IqzCuUy9Oou9VujONih6fFHKHvIVC@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWnWPagxCK2DS83bAEnwq9QYkz6TLIzL/Zdyxd9zZj44EE9BaL
+	GKqPqY0BEo4Ur2uRtgL465tBMx3zqQYhqwpyBK46XmWUPhKx0rkWgU8tnPkilo4w3q8=
+X-Gm-Gg: Acq92OFtWdeTV+Ki6aWThMszdFXFzufIFxYOU7vG41zV/uYXRR5WIHzaeHEnVor2CCT
+	d0pasg8qAQEcEgAxKaJmQxE1vGWo0I9ogsrc7vFtFLZOeGTd+GtQ1BNmC830tTWGO9l2VPqXbB1
+	rwpDZK/7kct5AJVEj2E3qPLs3VWvtYt326Xd8Srd4VtiPmFCnq5QsfcF8WQHpfPrpI/Yp5giBcC
+	vel3h7EpGTUcP600JEG8t4UFkOaMSYXvdlfyQSbEW/uyzv/KOcOWuA2vkARqln4Q0oddLur4XAk
+	COrea9zWUlm59GyjMId9UN5ThJ/7luktqY6DOEhRLQQ2KlvWY3bRMBFx8PyElDgl8G0uHBIBig8
+	QDu4TxigaoBQ8GeOIGOU9ypJJBKmGRCWQzvmHPstf3IBK2gw7OAhFSV2g4QnaFBDPAWWvxU9h1w
+	h1i07DogIniiEjhx5KK/rZvwkEPqU0l7xrrm29QOvXeaD6BRvnN30tER3z8FFks9ViexXwUl6vY
+	BZ1kBVRbiGz6luipA==
+X-Received: by 2002:a05:620a:2993:b0:8f1:5e8f:fff3 with SMTP id af79cd13be357-915a9cc266bmr4381110385a.26.1781129892358;
+        Wed, 10 Jun 2026 15:18:12 -0700 (PDT)
 Received: from gourry-fedora-PF4VCD3F (pool-173-79-60-52.washdc.fios.verizon.net. [173.79.60.52])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8cecd0535b0sm241706096d6.28.2026.06.10.13.12.54
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-9158a243041sm2641676685a.18.2026.06.10.15.18.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2026 13:12:55 -0700 (PDT)
-Date: Wed, 10 Jun 2026 16:12:52 -0400
+        Wed, 10 Jun 2026 15:18:11 -0700 (PDT)
+Date: Wed, 10 Jun 2026 18:18:08 -0400
 From: Gregory Price <gourry@gourry.net>
 To: "David Hildenbrand (Arm)" <david@kernel.org>
 Cc: Balbir Singh <balbirs@nvidia.com>, lsf-pc@lists.linux-foundation.org,
@@ -108,7 +108,7 @@ Cc: Balbir Singh <balbirs@nvidia.com>, lsf-pc@lists.linux-foundation.org,
 	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
 Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
  Compressed RAM)
-Message-ID: <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
+Message-ID: <ainioCiFo0vI9ohY@gourry-fedora-PF4VCD3F>
 References: <20260222084842.1824063-1-gourry@gourry.net>
  <ag6XyvxR-NU5rGn-@parvat>
  <ahOqzpzAua96HVkn@gourry-fedora-PF4VCD3F>
@@ -133,12 +133,12 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16832-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16833-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:david@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:yury.norov@gmail.com,m:linux@rasmus
@@ -159,32 +159,15 @@ X-Spamd-Result: default: False [0.34 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_GT_50(0.00)[74];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,gourry.net:dkim,gourry.net:from_mime,gourry-fedora-PF4VCD3F:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,gourry-fedora-PF4VCD3F:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: AE99B66CB68
+X-Rspamd-Queue-Id: 68FFB66D2C9
 
 On Wed, Jun 10, 2026 at 08:59:59PM +0200, David Hildenbrand (Arm) wrote:
-> On 6/10/26 18:37, Gregory Price wrote:
-> > On Wed, Jun 10, 2026 at 05:00:33PM +0200, David Hildenbrand (Arm) wrote:
-> >> On 6/10/26 12:41, Gregory Price wrote:
-> > 
-> > So, I remember this being asked, and I didn't fully grok the request.
-> > 
-> > I'm still not sure I fully understand the question, so apologies if I'm
-> > answer the wrong things here.
-> > 
-> > I understand this question in two ways:
-> > 
-> >   1) Can we disallow PAGE allocation and limit this to FOLIO allocation
-> 
-> Yes. Can we only allow folios to be allocated from private memory nodes. So let
-> me reply to that one below.
-> 
-... snip ...
 > 
 > At LSF/MM we talked about how GFP flags are bad and how deriving stuff from the
 > context might be better. I think there was also talk about how the memalloc_*
@@ -192,175 +175,56 @@ On Wed, Jun 10, 2026 at 08:59:59PM +0200, David Hildenbrand (Arm) wrote:
 > allocator more context ("we are allocating a folio").
 > 
 > The following is incomplete (esp. hugetlb stuff I assume), just as some idea:
->
-
-Ok, the mental gap I have is not knowing the full context behind
-memalloc.  I'll take this and do some reading / prototyping, but
-this looks entirely reasonable.
-
-I will still probably send the next RFC version tomorrow or friday,
-as I want to get some eyes on the __GFP_PRIVATE-less pattern.
-
-Also, I made a new `anondax` driver which enables userland testing
-of this functionality without any specialty hardware.
-
-tl;dr:
-
-fd = open("/dev/anondax0.0", ....);
-buf = mmap(fd, ...);
-buf[0] = 0xDEADBEEF; /* fault to anondax driver */
-
-static vm_fault_t anon_dax_fault(struct vm_fault *vmf)
-{
-        struct dev_dax *dev_dax = vmf->vma->vm_file->private_data;
-        vm_fault_t ret;
-        int id;
-
-        id = dax_read_lock();
-        if (!dax_alive(dev_dax->dax_dev))
-                ret = VM_FAULT_SIGBUS;
-        else
-                ret = do_anonymous_page_node(vmf, dev_dax->target_node);
-        dax_read_unlock(id);
-
-        if (ret & VM_FAULT_OOM)
-                return VM_FAULT_SIGBUS;
-        return ret ? ret : VM_FAULT_NOPAGE;
-}
-
-With:
-  qemu-system-x86_64 -m 5G \
-    -object memory-backend-ram,id=m0,size=4G -numa node,nodeid=0,memdev=m0 \
-    -object memory-backend-ram,id=m1,size=1G -numa node,nodeid=1,memdev=m1 \
-    -append "... memmap=0x40000000!0x140000000"
-
-Voila - buddy-managed private anonymous memory (1G region)
-
-No need to reinvent page_alloc.c or fault handling :]
-
-This can be used to hammer on reclaim/compaction/whatever support
-without needing any particular hardware setup, and in fact it gives
-some memory devices a path to support in userland while standards
-get worked out.
-
-do_anonymous_page_node is a bit of a bodge right now but I just haven't
-fleshed it out yet.  The idea is - don't reinvent the fault path, just
-provide the appropriate context to memory.c to do the right thing.
-
-If this is acceptable, I imagine whatever interface gets implemented
-will carry an in-tree driver export only, similar to hotplug/kmem.
-
-> From 64aaff5f40497201ecc089c3339df6576184c433 Mon Sep 17 00:00:00 2001
-> From: "David Hildenbrand (Arm)" <david@kernel.org>
-> Date: Wed, 10 Jun 2026 20:55:49 +0200
-> Subject: [PATCH] tmp
 > 
-> Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
-> ---
->  include/linux/sched.h    |  2 +-
->  include/linux/sched/mm.h | 11 +++++++++++
->  mm/mempolicy.c           | 14 ++++++++++++--
->  mm/page_alloc.c          |  7 ++++++-
->  4 files changed, 30 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index ee06cba5c6f5..9c850b7be6bf 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1778,7 +1778,7 @@ extern struct pid *cad_pid;
->  						 * I am cleaning dirty pages from some other bdi. */
->  #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
->  #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
-> -#define PF__HOLE__00800000	0x00800000
-> +#define PF__MEMALLOC_FOLIO	0x00800000	/* Allocating a folio that can end up on
-> private memory nodes */
->  #define PF__HOLE__01000000	0x01000000
->  #define PF__HOLE__02000000	0x02000000
->  #define PF_NO_SETAFFINITY	0x04000000	/* Userland is not allowed to meddle with
-> cpus_mask */
-> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-> index 95d0040df584..2101a447c084 100644
-> --- a/include/linux/sched/mm.h
-> +++ b/include/linux/sched/mm.h
-> @@ -471,6 +471,17 @@ static inline void memalloc_pin_restore(unsigned int flags)
->  	memalloc_flags_restore(flags);
->  }
-> 
-> +static inline unsigned int memalloc_folio_save(void)
-> +{
-> +	return memalloc_flags_save(PF_MEMALLOC_FOLIO);
-> +}
-> +
-> +static inline void memalloc_folio_restore(unsigned int flags)
-> +{
-> +	memalloc_flags_restore(flags);
-> +}
-> +
-> +
->  #ifdef CONFIG_MEMCG
->  DECLARE_PER_CPU(struct mem_cgroup *, int_active_memcg);
->  /**
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 36699fabd3c2..a78b0e5a1fce 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2506,8 +2506,13 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned
-> int order,
->  struct folio *folio_alloc_mpol_noprof(gfp_t gfp, unsigned int order,
->  		struct mempolicy *pol, pgoff_t ilx, int nid)
->  {
-> -	struct page *page = alloc_pages_mpol(gfp | __GFP_COMP, order, pol,
-> +	struct page *page;
-> +	int flags;
-> +
-> +	flags = memalloc_folio_save();
-> +	page = alloc_pages_mpol(gfp | __GFP_COMP, order, pol,
->  			ilx, nid);
-> +	memalloc_folio_restore(flags);
->  	if (!page)
->  		return NULL;
-> 
-> @@ -2588,7 +2593,12 @@ EXPORT_SYMBOL(alloc_pages_noprof);
-> 
->  struct folio *folio_alloc_noprof(gfp_t gfp, unsigned int order)
->  {
-> -	return page_rmappable_folio(alloc_pages_noprof(gfp | __GFP_COMP, order));
-> +	struct folio *folio;
-> +	int flags;
-> +
-> +	flags = memalloc_folio_save();
-> +	folio = page_rmappable_folio(alloc_pages_noprof(gfp | __GFP_COMP, order));
-> +	memalloc_folio_restore(flags);
-> +	return folio;
->  }
->  EXPORT_SYMBOL(folio_alloc_noprof);
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index ee902a468c2f..37434b37f7af 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5345,8 +5345,13 @@ EXPORT_SYMBOL(__alloc_pages_noprof);
->  struct folio *__folio_alloc_noprof(gfp_t gfp, unsigned int order, int
-> preferred_nid,
->  		nodemask_t *nodemask)
->  {
-> -	struct page *page = __alloc_pages_noprof(gfp | __GFP_COMP, order,
-> +	struct page *page;
-> +	int flags;
-> +
-> +	flags = memalloc_folio_save();
-> +	page = __alloc_pages_noprof(gfp | __GFP_COMP, order,
->  					preferred_nid, nodemask);
-> +	memalloc_folio_restore(flags);
->  	return page_rmappable_folio(page);
->  }
->  EXPORT_SYMBOL(__folio_alloc_noprof);
-> -- 
-> 2.43.0
-> 
-> 
-> -- 
-> Cheers,
-> 
-> David
+
+Ok, this was easier to test than I expected, and hugetlb is indeed a
+stickler.  We can't get there 100% with just MEMALLOC_FOLIO, we still
+need a MEMALLOC_PRIVATE - specifically because of users like hugetlb.
+
+hugetlb uses __GFP_THISNODE to do its allocations, and all hugetlb
+allocations are folio allocations - so the code you shared by itself
+does not gate hugetlb from spilling into private nodes.
+
+That means we still need something like this in hugetlb:
+
+  if (node_is_private(nid))
+      /* fail allocation */
+
+HOWEVER... if you have MEMALLOC_PRIVATE - you make the allocation
+failure a *page allocator* problem, and it serves exactly the same
+purpose that __GFP_PRIVATE did.
+
+the resulting code is two lines in my anondax driver:
+
+    unsigned int priv_flags = memalloc_private_save();
+    ret = do_anonymous_page_node(vmf, dev_dax->target_node);
+    memalloc_private_restore(priv_flags);
+
+No special hugetlb, slab, arch code handling - they all just fail
+to allocate / fall back.  If they fail - it means that code is using
+a bad nodemask and we need to go fix it (exactly what we want!)
+
+I think additionally, we might be able to repurpose MEMALLOC_PRIVATE
+flag for Brendan's needs as well [1].
+
+Their goal (IIRC) was to have a pile of unmapped blocks that could
+be opportunistically converted to normal memory, but otherwise left
+unmapped and sitting in the buddy.
+
+Same thing - different filter point (blocks vs nodes).
+
+If you set MEMALLOC_PRIVATE - it makes private node allocations
+possible, and "private block" access (without conversion) possible.
+
+Otherwise private nodes are unreachable, and private blocks would be
+treated like CMA (last-resort stealing, lazy-direct-mapping).
+
+And they stack (private blocks on private nodes :V).
+
+I don't have enough time looking at his proposal, but it seems like we
+can kill two birds with one stone on this.
+
+[1] https://lore.kernel.org/linux-mm/agYJcRgOHho8upVv@gourry-fedora-PF4VCD3F/
+
+~Gregory
 
