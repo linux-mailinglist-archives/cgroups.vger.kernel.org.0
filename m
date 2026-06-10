@@ -1,273 +1,238 @@
-Return-Path: <cgroups+bounces-16827-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16828-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 6soEHaSOKWrkZQMAu9opvQ
-	(envelope-from <cgroups+bounces-16827-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 18:19:48 +0200
+	id ywGZFzuPKWomZgMAu9opvQ
+	(envelope-from <cgroups+bounces-16828-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 18:22:19 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B037C66B550
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 18:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACEC766B61B
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 18:22:18 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Qg4uqDVH;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16827-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16827-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=esb2t0XX;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16828-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16828-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1BD1A3581F8D
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 15:45:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 02D3036FDD9D
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 15:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84E84439000;
-	Wed, 10 Jun 2026 15:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC57495506;
+	Wed, 10 Jun 2026 15:43:02 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3570B426EA3;
-	Wed, 10 Jun 2026 15:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1B44963B5
+	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 15:43:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781106138; cv=none; b=dBUp/ydNVCfwCJUbWeAbYrTe4nggJRUlPjqk8JVEQj7Pp7yODOdQQetcAIUxMe6BQzjIoIQzVKTqOxJ6vix7reNEC3wuE+Hyy7kSY7aN0lKtzAUSRZUk65A4+14+m6N1RYEEbFMqEWsqACXHlrc29Ol/uwkM0h4FFt0i2WyyCME=
+	t=1781106182; cv=none; b=oPhj9zwEpiSayLCejCI95YgWBYAyPXa+3bLWpMGCYCbnwujeKtnk6DCgnXD9lnluCwZ1Tw8yFcuzjB4+ugBRsMMuNF/gMg3J1bMCWhoOv4vPx6lRFgSjoQTXE2U3iE4MtZAtz9flgVVODu/RmXJj/98ygPj/BwYGJw18Ky6Fcmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781106138; c=relaxed/simple;
-	bh=UhFKdGvlgEdUTBdxGukGgMy8Ibmlcup+9MWJ7N51uK4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ZEkYA2qiAzwfv2mAXNftP3g/nikzrxsXqttWlXKQuIPeZVatARH5GeAnkS9bDVF5n7c68AogUIKjY5R9Hu6ofppgytr750lzM6TOUpw1Llr7mBVoi/LaAB96f8TBrmrKvt5kjKIac38+fx6N8hZ+1DG7yKguOBVJVhGATAWxP2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qg4uqDVH; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01F571F00893;
-	Wed, 10 Jun 2026 15:42:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781106137;
-	bh=6aryytOBNurBkp5Uw74m0IHlGcpQ9KrOL+zxkUQGPho=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=Qg4uqDVH2Od4OJDTajLnIl8nVeghe4DAgiT0czgSacooafpW481IQQDixrdbMhLcb
-	 GlRnhZpCu4p7BLw4qvBcTYtVUXh5LcCj6ceGF6PlaOolrp5TyN3TgEVZVqR//+QXdm
-	 vRdCklZf1Erf1fyXoBSfZDH2F0UsVjwY0uiKiSojTHdETEd2NkTF5YQNl8uZ4oNZ6n
-	 HmM6jQT15H+wuCPzDBvfHhkGcvwCZjCmsTS+4aQexi4TUFtCeTt3t1z1ty67arWq1v
-	 +Djs/uKFnMOEFUaeyJwgMKJmqujy8ZlMWv5jUNl0IVypqs218B5ZEijmNE1HjQMOIj
-	 jwyKEnXTIeK7g==
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Wed, 10 Jun 2026 17:40:18 +0200
-Subject: [PATCH v2 16/16] mm/slab: replace __GFP_NO_OBJ_EXT with
- SLAB_ALLOC_NO_RECURSE for sheaves
+	s=arc-20240116; t=1781106182; c=relaxed/simple;
+	bh=0oR1qvb22dc+OExU0QYrrizxoPflOHo+J/KXjQ88hvY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SL5LshvCBSxO50ntQHjsXmRSFFPo46o6EG0w/iVr3PklLpx2B2/wDh7kmGySmNCdndSTVCkTXYZxMrV7l+OgsW6/qJ40CYzxi4JJ43GFV0mPgFJ3gR3ra+H7OniGYMSQN+fiUHO01vZnwQYFvj7Xd/+MirHVh5LedwjTE0BzCdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=esb2t0XX; arc=none smtp.client-ip=170.10.133.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1781106180;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yHR5VsZRG/XRONgVNxWJZvyiTccBL9d9QwrMa6akIoQ=;
+	b=esb2t0XXshxdaeNx/hw2B/r4/Cx1ahd7fkAdYko8k7I8r53sifofZDeQk0LBGoAmR4ikUD
+	vGSqRuIXFsxa7SW0otmSMh630t0kMJlJkrX8nWQzelff0TOPI7DxHANaCeKFIcuTBciYuN
+	ktvrQ7dfZwj0t1dsVWf7WCoySke7/Vg=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-192-76zeZShlOGWp1FmRFNxjtQ-1; Wed,
+ 10 Jun 2026 11:42:54 -0400
+X-MC-Unique: 76zeZShlOGWp1FmRFNxjtQ-1
+X-Mimecast-MFC-AGG-ID: 76zeZShlOGWp1FmRFNxjtQ_1781106172
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E1C3C1964CFE;
+	Wed, 10 Jun 2026 15:42:51 +0000 (UTC)
+Received: from [10.22.81.61] (unknown [10.22.81.61])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2B87D18005B7;
+	Wed, 10 Jun 2026 15:42:48 +0000 (UTC)
+Message-ID: <0cbc8a90-8e88-4227-bea5-f12fb0f293db@redhat.com>
+Date: Wed, 10 Jun 2026 11:42:47 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260610-slab_alloc_flags-v2-16-7190909db118@kernel.org>
-References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
-In-Reply-To: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
-To: Harry Yoo <harry@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
- David Rientjes <rientjes@google.com>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
- Shakeel Butt <shakeel.butt@linux.dev>, 
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-X-Mailer: b4 0.15.2
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/7] sched/fair: Add cgroup_mode: max
+From: Waiman Long <longman@redhat.com>
+To: Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org
+Cc: chenridong@huaweicloud.com, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jstultz@google.com, kprateek.nayak@amd.com,
+ qyousef@layalina.io
+References: <20260605105513.354837583@infradead.org>
+ <20260605124051.589618504@infradead.org>
+ <d4ca5fe7-fd76-47c8-949a-a69916bfcbd4@redhat.com>
+Content-Language: en-US
+In-Reply-To: <d4ca5fe7-fd76-47c8-949a-a69916bfcbd4@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:vbabka@kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16828-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:peterz@infradead.org,m:mingo@kernel.org,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,s:lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16827-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MID_RHS_MATCH_FROM(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,infradead.org:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B037C66B550
+X-Rspamd-Queue-Id: ACEC766B61B
 
-Finish the switch away from __GFP_NO_OBJ_EXT by replacing it with
-SLAB_ALLOC_NO_RECURSE when allocating empty sheaves. Pass alloc_flags to
-[__]alloc_empty_sheaf(). Callers that can't be part of a recursive
-kmalloc() chain simply pass SLAB_ALLOC_DEFAULT. Use kmalloc_flags()
-instead of kzalloc() for allocating the sheaf.
+On 6/10/26 11:09 AM, Waiman Long wrote:
+> On 6/5/26 8:40 AM, Peter Zijlstra wrote:
+>> In order to avoid the average CPU fraction avg(F_g_n) becoming tiny 
+>> '1/N',
+>> assume each cgroup is maximally concurrent and distrubute 'N*weight', 
+>> such
+>> that:
+>>
+>>     F_g_n' = N * F_g_n
+>>
+>> Giving:
+>>
+>>     avg(F_g_n') = N*avg(F_g_n) ~ N * 1/N = 1
+>>
+>> And while this sounds like it solves things, remember what that ~ 
+>> meant. There
+>> is the corner case when a cgroup is minimally loaded, eg a single 
+>> runnable
+>> task, therefore limit the CPU fraction to that of a nice -20 task to 
+>> avoid
+>> getting too much load.
+>>
+>> This last bit is what makes it different from a previous proposal to 
+>> allow
+>> raising cpu.weight to '100 * N', that would not limit the mininal 
+>> concurrency
+>> case and results in a very large F_g_n. And just like F_g_n << 1 is
+>> problematic, so is F_g_n >> 1 for the exact same reasons (it would 
+>> drown the
+>> kthreads, but it also risks overflowing the load values).
+>>
+>> So while this might appear to be a better scheme than the current 
+>> default
+>> scheme, it doesn't really handle less than maximal concurrency nicely 
+>> -- it
+>> clips and introduces artificially large weights. So where the 
+>> traditional SMP
+>> mode works well when nr_tasks << nr_cpus, MAX doesn't work well in 
+>> that regime
+>> and vice-versa.
+>>
+>> The meaning of "cpu.weight" would be: weight per allowed CPU.
+>>
+>> Included for completeness (and infrastructure).
+>>
+>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> ---
+>>   include/linux/cpuset.h |    6 +++++
+>>   kernel/cgroup/cpuset.c |   15 ++++++++++++++
+>>   kernel/sched/debug.c   |    1
+>>   kernel/sched/fair.c    |   52 
+>> ++++++++++++++++++++++++++++++++++++++++++++-----
+>>   4 files changed, 69 insertions(+), 5 deletions(-)
+>>
+>> --- a/include/linux/cpuset.h
+>> +++ b/include/linux/cpuset.h
+>> @@ -80,6 +80,7 @@ extern void lockdep_assert_cpuset_lock_h
+>>   extern void cpuset_cpus_allowed_locked(struct task_struct *p, 
+>> struct cpumask *mask);
+>>   extern void cpuset_cpus_allowed(struct task_struct *p, struct 
+>> cpumask *mask);
+>>   extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
+>> +extern int cpuset_num_cpus(struct cgroup *cgroup);
+>>   extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+>>   #define cpuset_current_mems_allowed (current->mems_allowed)
+>>   void cpuset_init_current_mems_allowed(void);
+>> @@ -216,6 +217,11 @@ static inline bool cpuset_cpus_allowed_f
+>>       return false;
+>>   }
+>>   +static inline int cpuset_num_cpus(struct cgroup *cgroup)
+>> +{
+>> +    return num_online_cpus();
+>> +}
+>> +
+>>   static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
+>>   {
+>>       return node_possible_map;
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -4116,6 +4116,21 @@ bool cpuset_cpus_allowed_fallback(struct
+>>       return changed;
+>>   }
+>>   +int cpuset_num_cpus(struct cgroup *cgrp)
+>> +{
+>> +    int nr = num_online_cpus();
+>> +    struct cpuset *cs;
+>> +
+>> +    if (is_in_v2_mode()) {
+>> +        guard(rcu)();
+>> +        cs = css_cs(cgroup_e_css(cgrp, &cpuset_cgrp_subsys));
+>> +        if (cs)
+>> +            nr = cpumask_weight(cs->effective_cpus);
+>> +    }
+>> +
+>> +    return nr;
+>> +}
+>
+> I just have a question about cgroup v1 support. I am assuming that 
+> cgroup v1 without the cpuset_v2_mode mount option is not supported. To 
+> fully support cgroup v1, you may have to use guarantee_active_cpus() 
+> to return the actual set of CPUs that the task can run on. Also there 
+> is a caveat about the arm64 specific task_cpu_possible_mask() for 
+> certain arm64 CPUs. That is for 32-bit binary running on 64-bit core 
+> which are allowed only on a selected subset of cores within the CPU.
+>
+> This is probably not what you want to focus on right now, but it will 
+> be good to have a comment to list items that are not fully supported 
+> here. 
 
-This leaves __GFP_NO_OBJ_EXT with no users in slab, so stop allowing the
-flag in kmalloc_nolock().
+FYI, you may have to take the callback_lock to ensure the stability of 
+the effective_cpus mask.
 
-Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
----
- include/linux/slab.h |  6 +++---
- mm/slub.c            | 31 ++++++++++++++++---------------
- 2 files changed, 19 insertions(+), 18 deletions(-)
-
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index b955f3cbb732..43c3d9b51107 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -1039,9 +1039,9 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
- /**
-  * kmalloc_nolock - Allocate an object of given size from any context.
-  * @size: size to allocate
-- * @gfp_flags: GFP flags. Only __GFP_ACCOUNT, __GFP_ZERO, __GFP_NO_OBJ_EXT
-- * allowed. Also __GFP_NOWARN and __GFP_NOMEMALLOC are allowed but added
-- * internally thus not necessary.
-+ * @gfp_flags: GFP flags. Only __GFP_ACCOUNT and __GFP_ZERO allowed.  Also
-+ * __GFP_NOWARN and __GFP_NOMEMALLOC are allowed but added internally thus not
-+ * necessary.
-  * @node: node number of the target node.
-  *
-  * Return: pointer to the new object or NULL in case of error.
-diff --git a/mm/slub.c b/mm/slub.c
-index 7dfbd0251aa2..5d7ea72ebebd 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2756,7 +2756,7 @@ static inline void *setup_object(struct kmem_cache *s, void *object)
- }
- 
- static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
--					      unsigned int capacity)
-+				unsigned int alloc_flags, unsigned int capacity)
- {
- 	struct slab_sheaf *sheaf;
- 	size_t sheaf_size;
-@@ -2767,10 +2767,10 @@ static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
- 	 * bucket)
- 	 */
- 	if (s->flags & SLAB_KMALLOC)
--		gfp |= __GFP_NO_OBJ_EXT;
-+		alloc_flags |= SLAB_ALLOC_NO_RECURSE;
- 
- 	sheaf_size = struct_size(sheaf, objects, capacity);
--	sheaf = kzalloc(sheaf_size, gfp);
-+	sheaf = kmalloc_flags(sheaf_size, gfp | __GFP_ZERO, alloc_flags, NUMA_NO_NODE);
- 
- 	if (unlikely(!sheaf))
- 		return NULL;
-@@ -2783,20 +2783,20 @@ static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
- }
- 
- static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
--						   gfp_t gfp)
-+				gfp_t gfp, unsigned int alloc_flags)
- {
--	if (gfp & __GFP_NO_OBJ_EXT)
-+	if (alloc_flags & SLAB_ALLOC_NO_RECURSE)
- 		return NULL;
- 
- 	gfp &= ~OBJCGS_CLEAR_MASK;
- 
--	return __alloc_empty_sheaf(s, gfp, s->sheaf_capacity);
-+	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
- }
- 
- static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
- {
- 	/*
--	 * If the sheaf was created with __GFP_NO_OBJ_EXT flag then its
-+	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its
- 	 * corresponding extension is NULL and alloc_tag_sub() will throw a
- 	 * warning, therefore replace NULL with CODETAG_EMPTY to indicate
- 	 * that the extension for this sheaf is expected to be NULL.
-@@ -4689,7 +4689,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
- 		return NULL;
- 
- 	if (!empty) {
--		empty = alloc_empty_sheaf(s, gfp);
-+		empty = alloc_empty_sheaf(s, gfp, alloc_flags);
- 		if (!empty)
- 			return NULL;
- 	}
-@@ -5063,7 +5063,7 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
- 
- 	if (unlikely(size > s->sheaf_capacity)) {
- 
--		sheaf = __alloc_empty_sheaf(s, gfp, size);
-+		sheaf = __alloc_empty_sheaf(s, gfp, SLAB_ALLOC_DEFAULT, size);
- 		if (!sheaf)
- 			return NULL;
- 
-@@ -5108,7 +5108,7 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
- 
- 
- 	if (!sheaf)
--		sheaf = alloc_empty_sheaf(s, gfp);
-+		sheaf = alloc_empty_sheaf(s, gfp, SLAB_ALLOC_DEFAULT);
- 
- 	if (sheaf) {
- 		sheaf->capacity = s->sheaf_capacity;
-@@ -5392,7 +5392,7 @@ static void *__kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_f
- 
- 	VM_WARN_ON_ONCE(alloc_flags_allow_spinning(ac->alloc_flags));
- 	VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_ACCOUNT | __GFP_ZERO |
--			__GFP_NO_OBJ_EXT | __GFP_NOWARN | __GFP_NOMEMALLOC));
-+				      __GFP_NOWARN | __GFP_NOMEMALLOC));
- 
- 	gfp_flags |= __GFP_NOWARN | __GFP_NOMEMALLOC;
- 
-@@ -5907,7 +5907,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
- 	if (!allow_spin)
- 		return NULL;
- 
--	empty = alloc_empty_sheaf(s, GFP_NOWAIT);
-+	empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
- 	if (empty)
- 		goto got_empty;
- 
-@@ -6091,7 +6091,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
- 
- 		local_unlock(&s->cpu_sheaves->lock);
- 
--		empty = alloc_empty_sheaf(s, GFP_NOWAIT);
-+		empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
- 
- 		if (!empty)
- 			goto fail;
-@@ -7636,7 +7636,7 @@ static int init_percpu_sheaves(struct kmem_cache *s)
- 		if (!s->sheaf_capacity)
- 			pcs->main = &bootstrap_sheaf;
- 		else
--			pcs->main = alloc_empty_sheaf(s, GFP_KERNEL);
-+			pcs->main = alloc_empty_sheaf(s, GFP_KERNEL, SLAB_ALLOC_DEFAULT);
- 
- 		if (!pcs->main)
- 			return -ENOMEM;
-@@ -8502,7 +8502,8 @@ static void __init bootstrap_cache_sheaves(struct kmem_cache *s)
- 
- 		pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
- 
--		pcs->main = __alloc_empty_sheaf(s, GFP_KERNEL, capacity);
-+		pcs->main = __alloc_empty_sheaf(s, GFP_KERNEL,
-+				SLAB_ALLOC_DEFAULT, capacity);
- 
- 		if (!pcs->main) {
- 			failed = true;
-
--- 
-2.54.0
+Cheers,
+Longman
 
 
