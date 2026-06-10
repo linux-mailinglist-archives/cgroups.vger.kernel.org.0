@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16806-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16807-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id W/FIL2xwKWq6WwMAu9opvQ
-	(envelope-from <cgroups+bounces-16806-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 16:10:52 +0200
+	id 3eanDM56KWpdXgMAu9opvQ
+	(envelope-from <cgroups+bounces-16807-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 16:55:10 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B2366A205
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 16:10:52 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30A7466A773
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 16:55:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=IZ27F55V;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16806-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16806-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=HV+JRSbH;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16807-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16807-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 669363004272
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 14:04:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 39BB4300609C
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 14:54:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D83C3A75A2;
-	Wed, 10 Jun 2026 14:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C93416CF5;
+	Wed, 10 Jun 2026 14:54:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E2C33CEA8;
-	Wed, 10 Jun 2026 14:04:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8935B3CAA54;
+	Wed, 10 Jun 2026 14:54:48 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781100263; cv=none; b=bVtdsRXfRM0M2FdpFQjUhVH7nCmS24qHhSgx4amxuew8o19DgedHiepzRTyVCGagFdWjZgvM/m9fPau0ySgCtAtP+4pw/OWrh+sg8qXcmgYr/xl8tvLQ6Ubxywqwiv5Sl926xMeukTG/WGhB10KwTqIhhfbkXWwK5Uf2iXljeo8=
+	t=1781103289; cv=none; b=NGT/ju3l0nkjstk3FWgwSwdhL22ItkTIKygqcog88g5ZHTY4apmWNN+3zdJyXQ4T/kEKTXvsj9S7VDJHn2s4oZXfP2EnFxTuoE1Ddouzqm60MAXbg+OfBwb8avMrB+ZdS+42bSF1r1aEEuZn+nUyoObbJ6LR5UUgX/o6NSGta74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781100263; c=relaxed/simple;
-	bh=ZAgIGcFyTgo8OZNINn6R1wPxSuL5Cv9V5+N3MRgOtMQ=;
+	s=arc-20240116; t=1781103289; c=relaxed/simple;
+	bh=H6qSnfK+6VLZxsIvHONhGvVAOtDVEXxeYfaWQ26WqJE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GG5qT8adHXhHpnDtNwLVep7jfcm23zIRr/TLT2iollOGVzXp22Adz9C8d8ZiYd44fYaF8K4Htgqd2sAOVlXz/Syi7fznGPY2FZFt/uGSFDyZr2JceauocPbhhYbQJHj0qFbLDTLJZ+Y++yH0lhP4Tlg+I/ThBmhgVEnxVkAMMAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IZ27F55V; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ABCA1F00893;
-	Wed, 10 Jun 2026 14:04:18 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=lRWJrR8/TraJ1P4hAJv9RryXXgRC1H2MuVn0NFsp0CmEYlTaDIIDpSPIaAF5lxkBjcS4JL7OV1QpYN77fTAMnL84Kj0dMsR9bLKlmYmEqU88Jvn0PI+OnalgGur91rBFe6REVNbNZjCGIO0ueoj7SHLtczxwhaalZXw2VGvPZzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HV+JRSbH; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 743721F00893;
+	Wed, 10 Jun 2026 14:54:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781100261;
-	bh=9WoSNkxkAmlgrYK5pk3MND8Naa2H15fz8ABwUK5IjXY=;
+	s=k20260515; t=1781103288;
+	bh=XzvATamoarWbKL+9WgzetuIll6aemx7kmaC8tNAoMZY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=IZ27F55VADckRYY8xgm9G5m7RFOh2m9iXBN76hocpR5kABCo/Zw5kokS0S0fDpLQ0
-	 KJgYVhRktms9A04Hk8JU+nckrcqwjF6KJ48y6aVWsnm1d4uZQAZySgDlcnks8S2BWW
-	 6p5JD5TN71HgBEjB+R+DtiwcRKSuQItBNxwQ39BzIxjca54eGqrzJezOV/29By0atf
-	 LqcA+37V9reCSYLZtZAoba7+Xh37l8cs6/DsqkviPtq9mCoxSSUW/WH5FpgvqUKLTy
-	 yX2oOVDSjX8LKFuerQvVIa4B2SHx8gqYv9blvJFStIapgiVRDTZM0PCq5YBldO9/gc
-	 N/mUHucPZyDtQ==
-Message-ID: <0b9dce0f-f2a8-4b52-9c06-600eb13d4a7c@kernel.org>
-Date: Wed, 10 Jun 2026 16:04:16 +0200
+	b=HV+JRSbHVx4wJyaho5Cscn9BT1B6SP6eYEFRpshwrzIEc2MveqOT8QmWOFB59HGHy
+	 MfvkBTqBmg7vZCEqwILgKDZVLc24+M5P8T15Ja9h7IdJXTA+N/xbHMm4p5G3ML4Ibp
+	 DGk0zAvzpIP1LYL02fp+hEC3P9n7WQw+tUryHsT9UhWKMJKYG7yD54XRpbin+bseRM
+	 gqcRvJG7wqsx+k8lgVMgILWlE3VKE1t6Uu+mPRadUOcsibB/WMgxq6C8Z38wd3SVmv
+	 x661c3QeoxOEym8STSd65eT3MBinyC65dYIPBjsnx4Ecfg7fQdMUaxAsVmt/3YDG4N
+	 khpWh+t6eVaWg==
+Message-ID: <a49dbb71-98d0-4233-a0ed-bc4157a83911@kernel.org>
+Date: Wed, 10 Jun 2026 16:54:42 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,7 +58,8 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH RFC 00/15] mm/slab: introduce alloc_flags and
  slab_alloc_context
 Content-Language: en-US
-To: Harry Yoo <harry@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Harry Yoo <harry@kernel.org>
 Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  David Rientjes <rientjes@google.com>,
  Roman Gushchin <roman.gushchin@linux.dev>,
@@ -70,7 +71,7 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260609-slab_alloc_flags-v1-0-2bf4a4b9b526@kernel.org>
- <e650e125-5f6c-4de7-88b5-9da666bb0a4e@kernel.org>
+ <DJ4QLD7TWSOU.3LEDXKMML5DMK@gmail.com>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -111,209 +112,76 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <e650e125-5f6c-4de7-88b5-9da666bb0a4e@kernel.org>
+In-Reply-To: <DJ4QLD7TWSOU.3LEDXKMML5DMK@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:alexei.starovoitov@gmail.com,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:alexeistarovoitov@gmail.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16806-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16807-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	TO_DN_SOME(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 15B2366A205
+X-Rspamd-Queue-Id: 30A7466A773
 
-On 6/10/26 15:46, Harry Yoo wrote:
-> 
-> 
-> On 6/9/26 6:17 PM, Vlastimil Babka (SUSE) wrote:
+On 6/9/26 20:40, Alexei Starovoitov wrote:
+> On Tue Jun 9, 2026 at 2:17 AM PDT, Vlastimil Babka (SUSE) wrote:
 >> This series is based on slab/for-next. If all goes well, it would
 >> hopefully go to slab/for-next soon after the 7.2 merge window, so any
 >> other work can be based on it to avoid conflicts, as it touches a lot
 >> parts of slab.
->> 
+>>
 >> Git: https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slab_alloc_flags
->> 
->> The slab implementation currently relies on gfp flags to convey
->> some context information internally:
->> 
->> - The absence of both __GFP_RECLAIM flags is interpreted as "cannot spin
->>   on locks", and intended to be used by kmalloc_nolock(). But false
->>   positives are possible e.g. during early boot where gfp_allowed_mask
->>   clears __GFP_RECLAIM from all allocations. This leads to unnecessary
->>   allocation failures and workarounds such as fd3634312a04 ("debugobject:
->>   Make it work with deferred page initialization - again").
->> 
->> - __GFP_NO_OBJ_EXT exists and takes up valuable bit in the gfp flags
->>   space, only to prevent recursive kmalloc() allocations for obj_ext
->>   arrays and sheaves.
 > 
-> [ Cc'ing Vishal and Matthew as it's somewhat relevant to memdescs... ]
-> 
-> When the page allocator starts allocateing slab objects,
-> we still need a way to avoid recursion for obj_ext arrays and sheaves
-> (by passing SLAB_ALLOC_NO_RECURSE).
-> 
-> Looking at kmalloc_flags(), probably we'll end up introducing a separate
-> gfp type for slab-specific flags?
+> Overall looks great to me.
+> I would ship all patches except the last one for this merge window,
+> since I don't see anything controversial or dangerous in there.
 
-What do you mean by separate gfp type?
+Hmm that's ambitious :)
 
-> Hmm but SLAB_ALLOC_* flags are defined in mm/slab.h and kmalloc_flags()
-> is defined in include/linux/slab.h. Do yo intend to restrict the slab
-> alloc flags to MM only?
+> Especially since it touches slab so much. My slab-arena changes
+> would need to adopt it and I don't want to delay the whole thing by two merge windows.
+> Harry's changes would need to rebased as well.
 
-Yeah I don't expect users outside MM. If a valid one appears, we can move
-it. I should try moving kmalloc_flags() to mm/slab.h as well, unless there's
-some header dependency issue that will prevent it.
+It wouldn't be a problem if they went through the slab tree as well, and
+just be applied on top of this series already in the slab tree.
+In case of bpf tree there could be a shared stable branch.
+So no delays by two merge windows.
 
->> The page allocator uses its internal alloc_flags to convey various
->> context information, including ALLOC_TRYLOCK (meaning "cannot spin").
->> This series copies that concept for the slab allocator, with its own
->> slab-specific internal flags:
->> 
->> - SLAB_ALLOC_DEFAULT - no extra flags (the value is 0), but explicit
->> - SLAB_ALLOC_TRYLOCK - do not spin on locks (used by kmalloc_nolock())
->> - SLAB_ALLOC_NEW_SLAB - replacing existing 'bool new_slab' parameter
->> 			for allocating obj_ext arrays
->> - SLAB_ALLOC_NO_RECURSE - replacing usage of __GFP_NO_OBJ_EXT
->> 
->> To reduce the amount of parameters in various internal functions, we
->> additionally introduce slab_alloc_context (also inspired by page
->> allocator's alloc_context) for passing a number of existing arguments
->> and the new alloc_flags:
->> 
->> /* Structure holding extra parameters for slab allocations */
->> struct slab_alloc_context {
->> 	unsigned long caller_addr;
->> 	unsigned long orig_size;
->> 	unsigned int alloc_flags;
->> 	struct list_lru *lru;
->> };
-> 
-> Perhaps beyond the scope of the patchset, but I wonder if we could have
-> something like struct slab_alloc_context but for kmalloc callers to
-> simplify {PASS,DECL}_KMALLOC_PARAMS().
-> 
-> Something like:
-> 
-> struct kmalloc_params {
-> #ifdef CONFIG_SLAB_BUCKETS
-> 	kmem_buckets *b;
-> #endif
-> #ifdef CONFIG_KMALLOC_PARTITION_CACHES
-> 	kmalloc_token_t token;
-> #endif
-> };
-> 
-> The idea is to move optional kmalloc parameters (depending on config)
-> into a single struct, instead of using the macros.
-> 
-> void *__kmalloc_node(size_t size, gfp_t flags, int node,
-> 		     unsigned long caller,
-> 		     struct kmalloc_params params);
-> 
-> void *kmalloc_node() {
->     /* ... snip ...*/
->     struct kmalloc_params params = KMALLOC_PARAMS(params.b, params.token);
->     return __kmalloc_node(size, flags, node, _RET_IP_, params);
-> }
-> 
-> The compiler should optimize away unused fields based on the config.
-> 
-> Per System V AMD64 ABI, the compiler will use registers to pass the
-> struct, as long as the struct size does not exceed 16 bytes.
-> (Otherwise it will be passed on stack).
+> So the sooner the trees converge the better.
 
-Hm but does this work on all architectures, and are we doing this somewhere
-(for structures larger than a native word) already?
-Also Marco noted earlier that gcc won't optimize away the struct if it
-becomes zero-sized:
-
-https://lore.kernel.org/all/CANpmjNO1aNm3mKphDGWasK_NUfVY8q4K9GCjyREZFqrOu9WLcw@mail.gmail.com/
-
->> This also replaces the existing struct partial_context.
->> 
->> The last necessary piece is kmalloc_flags() which can take the
->> alloc_flags in addition to gfp flags and is intended for the recursive
->> allocations of sheaves and obj_ext arrays, so that both
->> SLAB_ALLOC_TRYLOCK and SLAB_ALLOC_NO_RECURSE can be communicated.
->> Internally it decides between kmalloc_nolock() and normal kmalloc()
->> depending SLAB_ALLOC_TRYLOCK.
->> 
->> The rest of the series is gradually expanding the usage of both
->> alloc_flags and slab_alloc_context as necessary, with bits of
->> refactoring. Then, __GFP_NO_OBJ_EXT is removed completely.
->> 
->> Note that some usage of gfpflags_allow_spinning() relying on absence of
->> __GFP_RECLAIM remains outside of slab (and page allocator) in memcg,
->> page_owner and stackdepot code. These can thus yield false-positive
->> decisions that spinning is not allowed, but should not result in
->> important allocations failing anymore.
->> 
->> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
->> ---
->> Vlastimil Babka (SUSE) (15):
->>       mm/slab: always zero only requested size on alloc
->>       mm/slab: stop inlining __slab_alloc_node()
->>       mm/slab: introduce slab_alloc_context
->>       mm/slab: introduce alloc_flags and SLAB_ALLOC_TRYLOCK
->>       mm/slab: add alloc_flags to slab_alloc_context
->>       mm/slab: replace struct partial_context with slab_alloc_context
->>       mm/slab: pass alloc_flags to new slab allocation
->>       mm/slab: pass alloc_flags through slab_post_alloc_hook() chain
->>       mm/slab: replace slab_alloc_node() parameters with slab_alloc_context
->>       mm/slab: allow kmem_cache_alloc_bulk() with any gfp flags
->>       mm/slab: pass slab_alloc_context to __do_kmalloc_node()
->>       mm/slab: introduce kmalloc_flags()
->>       mm/slab: remove __GFP_NO_OBJ_EXT usage from alloc_slab_obj_exts()
->>       mm/slab: replace __GFP_NO_OBJ_EXT with SLAB_ALLOC_NO_RECURSE for sheaves
->>       mm: remove the __GFP_NO_OBJ_EXT flag
->> 
->>  include/linux/gfp_types.h       |   7 -
->>  include/linux/slab.h            |  14 +-
->>  include/trace/events/mmflags.h  |  10 +-
->>  lib/alloc_tag.c                 |   2 +-
->>  mm/kfence/core.c                |   6 +-
->>  mm/memcontrol.c                 |   5 +-
->>  mm/slab.h                       |  16 +-
->>  mm/slub.c                       | 423 ++++++++++++++++++++++++----------------
->>  tools/include/linux/gfp_types.h |   7 -
->>  9 files changed, 288 insertions(+), 202 deletions(-)
->> ---
->> base-commit: 500b2c9755301742bdbb61249511ac11a4665dae
->> change-id: 20260601-slab_alloc_flags-25c782b0c57c
->> 
->> Best regards,
->> --  
->> Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> 
+But yeah it would be simpler.
+I can try exposing this to -next ASAP and plan to send a second PR
+separately from the series already there in the second merge window week, if
+no issues arise, and see if Linus is benevolent.
 
 
