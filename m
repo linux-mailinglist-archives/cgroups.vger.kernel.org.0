@@ -1,217 +1,169 @@
-Return-Path: <cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16793-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +ok+KZGoKGriHQMAu9opvQ
-	(envelope-from <cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:58:09 +0200
+	id 7hSaMqetKGqEIAMAu9opvQ
+	(envelope-from <cgroups+bounces-16793-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 02:19:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 423AA664DD2
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 01:58:08 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40122664EEE
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 02:19:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=berkeley.edu header.s=google header.b=XkfutodT;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16792-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=berkeley.edu;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=nJP47KD1;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16793-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16793-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A013530177AC
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jun 2026 23:57:47 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7EFEE302291A
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 00:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B9543EFFCB;
-	Tue,  9 Jun 2026 23:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4C871A3029;
+	Wed, 10 Jun 2026 00:19:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 829983E4C87
-	for <cgroups@vger.kernel.org>; Tue,  9 Jun 2026 23:57:44 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781049466; cv=pass; b=ZOw4vMVuA6yy3tuUWGL2zpkUcKuLxe1k0WicSMc1KUcts4IOgIhq5fIzZvHMmf2ypasrqumWlYwsDlvUKeJSC4LiQPLHBH0hlrcr84jlLuYAiLBdXtLVTVrTfhjFVTmoXapZAFj4IyBRxswc7P8SllMDIURa1yTf3Wg0NlnC8Bw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781049466; c=relaxed/simple;
-	bh=6o2xFZURyWP+tObe4cjpPDsfyvJKRP0tCizMlSF5sH8=;
-	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gxug8G3VaV/+CYRpWIg06ra08Hz+YAJrIMPYb3WWFMylxjQPdAEJLPIPCPzu2IbXCS25us+beU5a7Zr90F6JDQJl6juRTiXGw8SqytaRKANNtEm4e7UwCcr5SNEyXeuQiXVKxHShVwRSicDCcWKcAmy/uBe3KIXZsHrT150L/AA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=berkeley.edu; spf=pass smtp.mailfrom=berkeley.edu; dkim=pass (2048-bit key) header.d=berkeley.edu header.i=@berkeley.edu header.b=XkfutodT; arc=pass smtp.client-ip=74.125.224.51
-Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-660456349d9so5965432d50.3
-        for <cgroups@vger.kernel.org>; Tue, 09 Jun 2026 16:57:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781049463; cv=none;
-        d=google.com; s=arc-20240605;
-        b=UFtlUvswRh3lL7KQeCPkSYxD3jfPlEvFKov1WIQq5rBORvuhgIqN64QJ7Q9z320Pb8
-         DDipFBxNXpKycdHisSN7MJjAvn1q0P9Swz/TUZdVU1ThK62QcbhsbCmsT+Oi9R+CKa14
-         Hv4ps4xlFwabjKwB5WVv0AgKi/6d2L4pLkafDnmr2HJ3HWWgaaGYhkgQIn5VS2PBCOmQ
-         4fBJSqs1tvdSuCyv+MENkjgVQG0gXrI3zuemI0IyENFTuETVNrz9wpqPuIjh7j+HgPhQ
-         xn0FUvfv7H9zFemc4g8Hg1gpPrupwoISI6vlGIyrbAN4sIwZ3kvIgfisrkx2iqfb8BZF
-         deUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:dkim-signature;
-        bh=JsLwA10csQX3mPa70cbCrNe5YAZmOcAQoD0WQz/1mlc=;
-        fh=Eq3s3L/EU4MmDrq1L7ByeUSrATEswuf3B6LeiQmYiiM=;
-        b=Ss0bFNhDPMKlnQdqtcwiZ1GpW9sizrjW3o4x/oCwKVTOORnzmiFe94ob63lCA6DAhs
-         giMPW5v4HXTcTTzJ52mCJeiJmBcVRufZf+5dloHmAbYZ1CflLwJmijSsU0PiT8zAiehW
-         FmG+kNrUCHFRHoZBAMtyLnISUiEELve7mkC4kdWHgOCQ4ybG/E+wX4Ulj0Y0rIAC949y
-         CifHykW9oQI7X996Em+VWX0KOFWiiQ2HSoQgFjtQm17hZVjQ8TCRHLsBtyeTA+9/oZBM
-         yLF5N+SjTTldRzgRpesFhVyDRl1qncT73SzWZCfEjRAgB+C3iPlNv4nWDFktj6ayecuw
-         v7AQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=berkeley.edu; s=google; t=1781049463; x=1781654263; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JsLwA10csQX3mPa70cbCrNe5YAZmOcAQoD0WQz/1mlc=;
-        b=XkfutodTdC3aWFewu//ZtfbOXEP8PT/+JXGIH2EK+v3USw+hg623JDXIagiWJjV9+z
-         qIwFHvEWF4lszgEHh/eFJfxSHDoXHlXRX799qyjokf+BXr8jEraQuiRhdXJ3qsuhVyc8
-         CZvV8faGpk2SHfvMUoDaSK5Vmkz4LFHipNl4CmacHz+/7Aj/D6ANtoztAnqCg0qysTqo
-         ASQ8yC5CDwDbTcHcxkow2X+yAWm6d72oyuxgfezfMQhLdspPpc2kSpYp4PncrbuoXi9a
-         4IITgy+W6/Sx+IN3uiptKMmn7CBq253mvGubffw1lX+GNHWQ5hy7v2QZy/2Cecqggifz
-         +JMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781049463; x=1781654263;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JsLwA10csQX3mPa70cbCrNe5YAZmOcAQoD0WQz/1mlc=;
-        b=hOEkO+KHIW3AblCfpP0hobA8/kI51lPJlUauY1nWyztRBNILkiWSyx6Xjvxvi9CaxE
-         DzjQGRcnS2NI4H5H4waUw7BJwpFg5LhIrXBpn6aT0qfPIR+b3UQ7o29+MGZCn6i5t/Oh
-         /iyH9ceW+G0kn4xA0U+JkI4AqPOskDstxl3h460KCKZVeqRNb+nAPXUTYtsrLwB6YROA
-         sR+6WsgPFsd9JaO3rWfziDjH5v2FQGM6fALTxxLS1fTY+ZJDH8B0NuD344OPt5w27Ije
-         Kt2pKKpX2pGvHpqdTWp9xvDad8Ti+59t3gFdTIXXOHf6hTpEIaqDevOj95t7+9sjvLyW
-         rpCA==
-X-Forwarded-Encrypted: i=1; AFNElJ9/fOM/UDSP/LXRXoVZwpjXEWAcW8isEojZPsGEzjCtVnqoANyc5G3ULSoz0vjk9+/ixNWQ0LMH@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw7IrOF4LdbwDyZm9TsGn2RCPd29qFx1ARKf+LCcjVitw0Ym6qk
-	JLUXxM48coC6OPnYCojuJcZ41fQtOusZ9MlnO7zIGK4j3HN5qG1AlUJmzx3G0oobR19YrzAcoMR
-	MK9wsXPgDzeVJDtEeHSSSHUt25/ENd+LH5++kknzL
-X-Gm-Gg: Acq92OHv0hP6Mtr8rt9+JNQJ2/R4D2CpDyIyC+JwnvIDSooGD01Y86eKHf/jmiPTqh5
-	4hk6//b0iVrvGJiMV20yJdy4xEvWCTgxKF1CCNimfR44g5ZkA0QQxXBUw2KcJ4XvWmfBSDYXC16
-	q/clw/xTwkMvg60aKHg+khUO2Yd+cDvqTAyYrvnMSHpZjknlsse41pYdVTJRR1mzhd87RJpLxgl
-	Gi53ErztCu9GJ5mGn8FUnctA6FmlHfgaWHMSTtHQvm71ZNekoDWcikkUMDVJOm0Pfwt+Ej2zJ/e
-	u9hljyDKY9vgiOSmaXVG
-X-Received: by 2002:a05:690c:e3ca:b0:7bd:5c77:1aa9 with SMTP id
- 00721157ae682-7ed09935207mr231089217b3.0.1781049462534; Tue, 09 Jun 2026
- 16:57:42 -0700 (PDT)
-Received: from 474444807712 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 9 Jun 2026 19:57:41 -0400
-Received: from 474444807712 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 9 Jun 2026 19:57:41 -0400
-From: Farhad Alemi <farhad.alemi@berkeley.edu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <25c4bc47-b65d-4c04-8a8f-18eef2b5566a@kernel.org>
-References: <25c4bc47-b65d-4c04-8a8f-18eef2b5566a@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A93D14BF92;
+	Wed, 10 Jun 2026 00:19:46 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781050787; cv=none; b=oL4fS4sX+dCrzGMY0uUOS/7V/ns3E0JXC2EV4wkZ1xwJbbX61HUNwKeOYgs/y39KichsziG5xSH94oOP4aTlvaCqs9wnLsUPFUofe8Vqi5WoHWbNBTeBgtW6t8Ni1E541+ZBT60bweeLQ7lie5WLC7tIaKZuLVnTLW5qswvhl9A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781050787; c=relaxed/simple;
+	bh=rcnhI1gz6rGDI3MpjmQm1cY9tN+OOLMVWD2/8jEkC2Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ch7F5YWSfwDRz+QYhh2EK6kkRKG6aON1XQt3MkVbjOtqWf9Gy8bGhvqKeUVBbOVjXCp+AI8yz1kTP3nBwXwBOUh3rhpIbm+7e84J3Q2G0X7GEmoZsgqB6jZ8nZkDRF3tGmSriLDqov91rLX4FxNRQCNMWOGit4TCGWD2Z8U0jeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nJP47KD1; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C647E1F00893;
+	Wed, 10 Jun 2026 00:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781050786;
+	bh=J6Qec06ssPjZ8KBpX5bHjrDWkBPXABIpPVj+yD4nsUw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=nJP47KD1xmj0+wbmArvRXxtJ0OtvRFbtwrAedhff3E+nr1a58A3hIDqqqkqDT2JbT
+	 nWpaYSf9JEt9lRb/4xCqkqelm5WcHsEteiw26d3UAo1recuw6shcpx07tO9Z9S5GON
+	 0gGNmsfODaPOMYQlArenuEs02ePfW4TfUIbQgekopwCiYj/XodVIsLDtRD3j3CprW3
+	 MwoSH997YlEx00d1lBpFzB0Bwg9uLHA/awmtrFqI4880OSAET7y07GguP9dERmkPxb
+	 wJWeR0mSFBFH89RYA8exc1D2TGfjGwpWtL+5pnJVKw6YQKOy+/HweqsNih5bK2wnBm
+	 cx0VK6Rk5KnjQ==
+From: SeongJae Park <sj@kernel.org>
+To: Gregory Price <gourry@gourry.net>
+Cc: SeongJae Park <sj@kernel.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	kernel-team@meta.com,
+	longman@redhat.com,
+	chenridong@huaweicloud.com,
+	akpm@linux-foundation.org,
+	david@kernel.org,
+	ljs@kernel.org,
+	liam@infradead.org,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	kasong@tencent.com,
+	qi.zheng@linux.dev,
+	shakeel.butt@linux.dev,
+	baohua@kernel.org,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	rientjes@google.com,
+	chrisl@kernel.org,
+	shikemeng@huaweicloud.com,
+	nphamcs@gmail.com,
+	baoquan.he@linux.dev,
+	youngjun.park@lge.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	jackmanb@google.com,
+	ziy@nvidia.com
+Subject: Re: [PATCH] mm: constify oom_control, scan_control, and alloc_context nodemask
+Date: Tue,  9 Jun 2026 17:19:36 -0700
+Message-ID: <20260610001937.77371-1-sj@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260609002919.3967782-1-gourry@gourry.net>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 9 Jun 2026 19:57:41 -0400
-X-Gm-Features: AVVi8CdwZwsROR8QvBcPRl0TTYKS3lybsjC7VZyFrbO3L3H_GqOslrHHbiWZhF0
-Message-ID: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
-Subject: [PATCH] cgroup/cpuset: rebind mm mempolicy to effective_mems, not mems_allowed
-To: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	Gregory Price <gourry@gourry.net>
-Cc: Farhad Alemi <falemi@asu.edu>, Yury Norov <ynorov@nvidia.com>, 
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>, 
-	Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>, 
-	Byungchul Park <byungchul@sk.com>, Ying Huang <ying.huang@linux.alibaba.com>, 
-	Alistair Popple <apopple@nvidia.com>, Waiman Long <longman@redhat.com>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[berkeley.edu,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[berkeley.edu:s=google];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16792-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@kernel.org,m:gourry@gourry.net,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:longman@redhat.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16793-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[34];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:sj@kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:kernel-team@meta.com,m:longman@redhat.com,m:chenridong@huaweicloud.com,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:baohua@kernel.org,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:rientjes@google.com,m:chrisl@kernel.org,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:youngjun.park@lge.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:ziy@nvidia.com,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[sj@kernel.org,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[asu.edu,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,redhat.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,kvack.org,vger.kernel.org,meta.com,redhat.com,huaweicloud.com,linux-foundation.org,infradead.org,google.com,suse.com,tencent.com,linux.dev,gmail.com,lge.com,cmpxchg.org,nvidia.com];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[berkeley.edu:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sj@kernel.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid,gourry.net:email]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,gourry.net:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 423AA664DD2
+X-Rspamd-Queue-Id: 40122664EEE
 
-cpuset_update_tasks_nodemask() rebinds a task's own mempolicy to the
-cpuset's effective, online mems (newmems, from guarantee_online_mems()),
-but rebinds that task's VMA mempolicies to the *configured* mask instead:
+On Mon,  8 Jun 2026 20:29:19 -0400 Gregory Price <gourry@gourry.net> wrote:
 
-	cpuset_change_task_nodemask(task, &newmems);
-	...
-	mpol_rebind_mm(mm, &cs->mems_allowed);
+> The nodemasks in these structures may come from a variety of sources,
+> including tasks and cpusets - and should never be modified by any code
+> when being passed around inside another context.
 
-On the default (v2) hierarchy a cpuset that has never had cpuset.mems
-written keeps mems_allowed empty while effective_mems is inherited
-non-empty from the parent, and tasks may be attached to it (the
-empty-mems attach check is v1-only).  A subsequent rebind -- e.g. from a
-CPU hotplug event walking the cpuset -- then calls mpol_rebind_mm() with
-an empty mask.  For a VMA policy created with MPOL_F_RELATIVE_NODES this
-reaches mpol_relative_nodemask() ->
-nodes_fold(..., nodes_weight(cs->mems_allowed) == 0) -> bitmap_fold(),
-whose set_bit(oldbit % sz, dst) divides by zero:
+Nice work, I also confirmed I can built the kernel with this patch.
 
-  Oops: divide error: 0000 [#1] SMP KASAN NOPTI
-  RIP: 0010:bitmap_fold+0x5e/0xb0
-   mpol_rebind_nodemask
-   mpol_rebind_mm
-   cpuset_update_tasks_nodemask
-   cpuset_handle_hotplug
-   sched_cpu_deactivate
-   cpuhp_thread_fun
+> 
+> Signed-off-by: Gregory Price <gourry@gourry.net>
 
-cs->mems_allowed is the only nodemask in this function that is not the
-effective set: the task-policy rebind, the page-migration target and
-cs->old_mems_allowed all use newmems.  The sibling cpuset_attach() path
-already rebinds VMA policies against the effective mems
-(cpuset_attach_nodemask_to = cs->effective_mems) and explicitly notes
-that mems_allowed can be empty under hotplug.  Rebind the VMA policies to
-newmems too: it is guaranteed non-empty by guarantee_online_mems(), which
-fixes the divide-by-zero, and it makes the VMA policies consistent with
-the task policy and with the nodes the task is actually allowed to use.
+Tested-by: SeongJae Park <sj@kernel.org>
+Acked-by: SeongJae Park <sj@kernel.org>
 
-Fixes: ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}")
-Suggested-by: Gregory Price <gourry@gourry.net>
-Signed-off-by: Farhad Alemi <farhad.alemi@berkeley.edu>
-Cc: stable@vger.kernel.org
----
- kernel/cgroup/cpuset.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
+>  	/*
+>  	 * The memory cgroup that hit its limit and as a result is the
+> @@ -6599,7 +6599,7 @@ static bool allow_direct_reclaim(pg_data_t *pgdat)
+>   * happens, the page allocator should not consider triggering the OOM killer.
+>   */
+>  static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
+> -					nodemask_t *nodemask)
+> +				    const nodemask_t *nodemask)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2649,7 +2649,7 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
+Seems the above indentation has changed for a rason that I have no clue, and
+also introduced a line having both spaces and tabs.
 
- 		migrate = is_memory_migrate(cs);
+Just thinking loud.
 
--		mpol_rebind_mm(mm, &cs->mems_allowed);
-+		mpol_rebind_mm(mm, &newmems);
- 		if (migrate)
- 			cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
- 		else
--- 
-2.43.0
+
+Thanks,
+SJ
+
+[...]
 
