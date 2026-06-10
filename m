@@ -1,318 +1,274 @@
-Return-Path: <cgroups+bounces-16797-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id QH8kH90OKWo5PgMAu9opvQ
-	(envelope-from <cgroups+bounces-16797-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 09:14:37 +0200
+	id o7lSG8IgKWqBRAMAu9opvQ
+	(envelope-from <cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 10:30:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75247666867
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 09:14:36 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF8BD6672E2
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 10:30:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=ZCvLnEJw;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16797-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16797-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=linux.dev header.s=key1 header.b=V5VqP0g0;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16798-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id CF962302E5DD
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 07:11:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F15353014680
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 08:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C7538655D;
-	Wed, 10 Jun 2026 07:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741A83ACF1D;
+	Wed, 10 Jun 2026 08:30:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f66.google.com (mail-qv1-f66.google.com [209.85.219.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F358E386575
-	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 07:11:52 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781075514; cv=pass; b=h7J1SbCSb9vNNwfetZ9BPprZ7V0i8oKDenQTRX0Q/WhqTFxouAKXhPbRX47Kt43bJxde6pcpTfnClej5U8f4gZ5V0QxDTLMRbiZwEre+v7fxgKh9NuAlRtGSjsQ1P9FujXn/BJn9fJLoHZj18kb8H1wsgcETmuWsi3Ccfxth7V8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781075514; c=relaxed/simple;
-	bh=OOBl4r2K+H5MCU+kqmD8fkEkBhXTvYhkdVbUONu3i3k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bO/VUvlB9ZHe5G2o51hAm4BTkl4kjjiGdsNImxe/kw3xrxXneUKKqm7IWkxXzMcPQJMuFrlfXVMldxY/DvgrYHwNxKXFZw0IYaESy5OxP+J625If3SabAWwITLLrZcpMf21yBezTZYBO+p8+iUeg4FFjcNgd8OW4hH1bbJLhlkE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZCvLnEJw; arc=pass smtp.client-ip=209.85.219.66
-Received: by mail-qv1-f66.google.com with SMTP id 6a1803df08f44-8ccda0ac4fcso65273646d6.2
-        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 00:11:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781075512; cv=none;
-        d=google.com; s=arc-20240605;
-        b=GN2OJMYoeZmINQ8cyz7ESnOAXExldcqoARG0W2NhnyxFCd2bs3+ute1it0cjJK5Nfu
-         sF8oPtbta5PyiVJVQsk2xScxD9JLGyFjFoNDOgz0eUJnPGFn2z0bZJvNQ7ns05sMTvJx
-         8X/IESRz3pmmVGwjPaWiIGwFdyrayUg+irjm4NniUVuFhHPfx5dSu4hGk5UW3UZvZPht
-         oJvCJ+4YI5zj0QiCCWkRRIDyywIskSoJRhhOIA0ZoKQbyBqtetGF6qHMheZr1SpwEO6R
-         f6khSNKgjiEHp/G6xMiR2khxP1yoeFizNw9ujosz4gYxWbcM8La94eGWsGNVpyDMsh5L
-         BKnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=+Wq1Eb2Bd1DGovO0OKoTQZ3mhvX7ezknz00wtb7hve8=;
-        fh=RKOm85blgSQEJ21eLAQStxOSFFjX6BS2sLExxApiWRk=;
-        b=MFCMzQ0V2V1YY+ydSzKoNUnLyB0p5WvpRBBVu2qxJL3hX1nYuBnCuUX/4Gl4faros3
-         G2T8TYOVXKLbI+7gpnCegncN0YoD9VKpVM3agMQIfUR09h4Nox8tOZrqsCbHnZSq5hqA
-         505SmdnN4vNEoULS1rs8ferzn4uYAND0hIVz1UgtmE0WQX9Cln6rseI9aVVOjTwDFDS7
-         KZ2CfKms9csby+BK0V2viqv+kMReE8fxeUS/skOaGFLtyMjdIip2KKvYAPHB+Zpe1rBh
-         aYkBbQPyTajsP38aPDfjuZvZA1Uvi04/pP3hHi9khxl8YUETKbfSRjELPJgdZHfTe95Z
-         guCg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781075512; x=1781680312; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Wq1Eb2Bd1DGovO0OKoTQZ3mhvX7ezknz00wtb7hve8=;
-        b=ZCvLnEJwc/xtpSSQnFMpnwlca2aF5Z3nMqblW4r5o9HA5hh5mKQXgh1YRmqkPls4Pr
-         c63WO22L1D+WXqH+LuU4hgx4zyyZX5PFBZjpXTXeYkVJJEKb+TFjXtmLb15wNlSWOGmw
-         t8pyjFq+2STp4BrbhlfG1pCtKaxtomgP9z46SgZuSI18jP6VA2CYqXs46W8H9+rt1hl3
-         3p4IIvH4K+K6UGBAGhxzgAb53PEDwHlu+UgGS0uQlN+o/WY0xcepS07vgSn3Up9ARL2s
-         yDhsmK8qqtpyqnXUxNQP2f4lXaOJlBQSkIjxeDfIQhGBWUa5Cxf0am47rfuEy8yt3NQf
-         Jncg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781075512; x=1781680312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=+Wq1Eb2Bd1DGovO0OKoTQZ3mhvX7ezknz00wtb7hve8=;
-        b=Oqz6ucXqgZkUe3ImFm+Wlh0qIn3TWQFf+izWd5xT6qvpPKuiQICEyxKDBsaf+jqA6w
-         ogF9OVa0oEu26FmlVytLP3S1IBd5kAbIg1Ddyt+hdRliyJoX2xwk+cS4mfoZNWmQwKD0
-         +UU3cq/gz2vmjrLncQW+bf3zOIyykpanvzlR65/q2tiT1HN88s7wdeddP3DwqqVJMyDF
-         BDeK/SOVBZPMJEyRGC1PbLmhCNRoo6WXv/KjhGR5ZwOBFpyETsuYwr6JVxdcs7YJOC78
-         XVoJMex0r6Po7YGDRiys7csgk9jRaIkR1IHd8WaqnExm343zrJY+HxkXNaSezy689vHJ
-         AlZg==
-X-Forwarded-Encrypted: i=1; AFNElJ9drstMOyAZBSjDgD/A/uAcEpZDRjdcMqSNbT3E9IhGXWQyKBMHFNeRHB9HpnpBT1pxY7d6h153@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxh1pPBloS5eN3g3w7vnubl3DbCgQaS+TQ5qv+Cwaw3U8o2d+XZ
-	s90xgbM96Qih3jj31zSh5PCJd5i8ShAFfDZ+ickH0TchVJ+3sVJhLzHF9ZKPs7NAssTzXKKaogi
-	BwT4RO1MXhlZxx/ln/Zr0JwgK05QEF8E=
-X-Gm-Gg: Acq92OFCPq4JXPT4O6eLbVeiJron9Ae2Se2BrMMNkWpIJoPr46zPuFmLBZQNHozi14u
-	IYra/2rBDWjxICZKuz8BruQn/jLV37xLHFO74nc73rLV0SWvKc2+fP6tWsZ9BUqBZU3x37HMiAy
-	gf0ueuBEKcuze2DE1HYoAcKVRzUDmqro8P0nSDnnAOJ5lPBQuoNslpJaxTHwpvW5zA5iOVnAlhO
-	IqcHcEJTeWnboRrXxSjeh1HOVDJPc/JyodtxQFKrRn/lV8ZPXxd8VwR/6BZMdmM8cHrqErJT3Bp
-	zDQLCBOLKIkN2KTNBqVUec3+lVV7aKU=
-X-Received: by 2002:a05:6214:212b:b0:8ce:3868:6700 with SMTP id
- 6a1803df08f44-8cf1d82f62amr93944196d6.34.1781075511820; Wed, 10 Jun 2026
- 00:11:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD26A3ACEE0
+	for <cgroups@vger.kernel.org>; Wed, 10 Jun 2026 08:30:39 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781080242; cv=none; b=BjNE8Tf+gwtPzSuttPCtynadA9cDUQmF7e1kCVimg7ErNyddG77y8tcqWBg39XHTf7UJDzN/H0h6r0eqDw9zPBdHc1A6wqh3WWrw1oF8t3TaCgCzuzCT5nfsLA7XXH0FBxPSQ3jxp3ytbfINkIxFTLLFDD33w0F3XagXSi2Pl28=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781080242; c=relaxed/simple;
+	bh=cu42RRbLiM8L0VLdlcCAQdo8B2+vi35iBa5fbg6t6o8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bhm/hhnlLx1tQAEZR+xhdowHFGLWiJr3Eyw91sCp9nQewqI/XwXuQy0kmT2KwqtWLBOag/DoC0Wzc1DhctICZ7kucIg5vaesHefbvetskdbxjP4L2LjcpCZ9j11Cr21JWhHSdgMW9ugO7gERSZFliOouc/lJPzHRh9uDUC9mPI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V5VqP0g0; arc=none smtp.client-ip=91.218.175.183
+Message-ID: <104171fa-6a1c-43b0-a6c4-f71f54129d88@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1781080237;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UyYAKG2WDoLAbE1LWkheGa6RjXvXcPLoe7XXaMCnGK8=;
+	b=V5VqP0g0/2QVtPLYQCSiV719xuD7bOb3CpvhN+0IMKIh/j5Y/g3qYhAVH2bW/olN69GYBR
+	EJuAtb1QASKglqFL4XeS/eWvX0P+oCQWoqP2kbIJVGWzUcxp7YJYLzyTuWA//bCOuiJwNU
+	3qIkjmrDd9VEF33VtktPcvQCTv2VPks=
+Date: Wed, 10 Jun 2026 16:29:53 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHPqNmxGfjsKGEJJaSCrJqoU9WHY3q8CX1oTA7GV5BBHvDzgpg@mail.gmail.com>
- <aigMzVNsQpz_J0oQ@localhost.localdomain>
-In-Reply-To: <aigMzVNsQpz_J0oQ@localhost.localdomain>
-From: Longxing Li <coregee2000@gmail.com>
-Date: Wed, 10 Jun 2026 15:11:41 +0800
-X-Gm-Features: AVVi8CdlwSvysGvLTy7U1sBQE0nHSzuWKq1GX3gujI1BZFdLHAaa7v3OIgRex-o
-Message-ID: <CAHPqNmwdh5Je=hrvEVzK90j91h2kOqXDmF1vz9UTtfcn1LUO1A@mail.gmail.com>
-Subject: Re: [Kernel Bug] INFO: task hung in cgroup_drain_dying
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: syzkaller@googlegroups.com, tj@kernel.org, hannes@cmpxchg.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH RFC 00/15] mm/slab: introduce alloc_flags and
+ slab_alloc_context
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Usama Arif <usama.arif@linux.dev>
+Cc: Harry Yoo <harry@kernel.org>, Hao Li <hao.li@linux.dev>,
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Shakeel Butt <shakeel.butt@linux.dev>,
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20260609133534.3548059-1-usama.arif@linux.dev>
+ <fe1bd73b-d956-442f-8c4f-f5f62587346e@kernel.org>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Ge <hao.ge@linux.dev>
+In-Reply-To: <fe1bd73b-d956-442f-8c4f-f5f62587346e@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:mkoutny@suse.com,m:syzkaller@googlegroups.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:usama.arif@linux.dev,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[hao.ge@linux.dev,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16797-lists,cgroups=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER(0.00)[coregee2000@gmail.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	TAGGED_FROM(0.00)[bounces-16798-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[coregee2000@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[hao.ge@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,mail.gmail.com:mid,vger.kernel.org:from_smtp]
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 75247666867
+X-Rspamd-Queue-Id: AF8BD6672E2
 
-sorry for not containing full information in last email. the config[1]
-and report[2] are as follows. CONFIG_PROVE_LOCKING is not enabled in
-our config.
+Hi Vlastimil and Usama
 
-[1] https://drive.google.com/file/d/1Bx2unEf-QntjVi8g6Zw7QNO6OP4cjGO_/view?=
-usp=3Ddrive_link
+On 2026/6/9 22:28, Vlastimil Babka (SUSE) wrote:
+> On 6/9/26 15:35, Usama Arif wrote:
+>> On Tue, 09 Jun 2026 11:17:45 +0200 "Vlastimil Babka (SUSE)"<vbabka@kernel.org>  wrote:
+>>
+>>> This series is based on slab/for-next. If all goes well, it would
+>>> hopefully go to slab/for-next soon after the 7.2 merge window, so any
+>>> other work can be based on it to avoid conflicts, as it touches a lot
+>>> parts of slab.
+>>>
+>>> Git:https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slab_alloc_flags
+>>>
+>>> The slab implementation currently relies on gfp flags to convey
+>>> some context information internally:
+>>>
+>>> - The absence of both __GFP_RECLAIM flags is interpreted as "cannot spin
+>>>    on locks", and intended to be used by kmalloc_nolock(). But false
+>>>    positives are possible e.g. during early boot where gfp_allowed_mask
+>>>    clears __GFP_RECLAIM from all allocations. This leads to unnecessary
+>>>    allocation failures and workarounds such as fd3634312a04 ("debugobject:
+>>>    Make it work with deferred page initialization - again").
+>>>
+>>> - __GFP_NO_OBJ_EXT exists and takes up valuable bit in the gfp flags
+>>>    space, only to prevent recursive kmalloc() allocations for obj_ext
+>>>    arrays and sheaves.
+>>>
+>> Hello Valstimil!
+>>
+>> I think memory allocation profiling uses __GFP_NO_OBJ_EXT, and I dont see
+>> it being removed in the series (hopefully I didnt miss it).
+>>
+>> Adding Hao Ge in CC who did this in the commit:
+>> mm/alloc_tag: replace fixed-size early PFN array with dynamic linked list
 
-[2] https://drive.google.com/file/d/1riFUIPWojkYVZu0B5BW8uVPocUWwibqN/view?=
-usp=3Dsharing
 
-and report plain text is as follows:
+Thanks for the CC. I'm now aware of this.
 
-INFO: task systemd:1 blocked for more than 143 seconds.
-      Not tainted 7.0.6 #1
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:systemd         state:D stack:20616 pid:1     tgid:1     ppid:0
-   task_flags:0x400100 flags:0x00080001
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5298 [inline]
- __schedule+0x1006/0x5f00 kernel/sched/core.c:6911
- __schedule_loop kernel/sched/core.c:6993 [inline]
- schedule+0xe7/0x3a0 kernel/sched/core.c:7008
- cgroup_drain_dying+0x1ed/0x360 kernel/cgroup/cgroup.c:6294
- cgroup_rmdir+0x38/0x300 kernel/cgroup/cgroup.c:6309
- kernfs_iop_rmdir+0x10a/0x180 fs/kernfs/dir.c:1311
- vfs_rmdir fs/namei.c:5344 [inline]
- vfs_rmdir+0x340/0x860 fs/namei.c:5317
- filename_rmdir+0x3be/0x510 fs/namei.c:5399
- __do_sys_rmdir fs/namei.c:5422 [inline]
- __se_sys_rmdir fs/namei.c:5419 [inline]
- __x64_sys_rmdir+0x47/0x90 fs/namei.c:5419
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x11b/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fb6c32a61c7
-RSP: 002b:00007fff90d2bc98 EFLAGS: 00000202 ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 000055c177d80fb0 RCX: 00007fb6c32a61c7
-RDX: 00007fb6c3387be0 RSI: 0000000000000000 RDI: 000055c177eb1300
-RBP: 00007fb6c35eb2da R08: 0000000000000000 R09: 0000000000000001
-R10: 0000000000000100 R11: 0000000000000202 R12: 0000000000000000
-R13: 00007fb6c2ddb6c8 R14: 0000000000000001 R15: 0000000000000000
- </TASK>
 
-Showing all locks held in the system:
-3 locks held by systemd/1:
- #0: ffff8880294f8420 (sb_writers#10){.+.+}-{0:0}, at:
-filename_rmdir+0x2cc/0x510 fs/namei.c:5388
- #1: ffff888034d16e98 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at:
-inode_lock_nested include/linux/fs.h:1073 [inline]
- #1: ffff888034d16e98 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at:
-__start_dirop fs/namei.c:2929 [inline]
- #1: ffff888034d16e98 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at:
-start_dirop fs/namei.c:2940 [inline]
- #1: ffff888034d16e98 (&type->i_mutex_dir_key#6/1){+.+.}-{4:4}, at:
-filename_rmdir+0x318/0x510 fs/namei.c:5392
- #2: ffff8880386d7888 (&type->i_mutex_dir_key#6){++++}-{4:4}, at:
-inode_lock include/linux/fs.h:1028 [inline]
- #2: ffff8880386d7888 (&type->i_mutex_dir_key#6){++++}-{4:4}, at:
-vfs_rmdir fs/namei.c:5329 [inline]
- #2: ffff8880386d7888 (&type->i_mutex_dir_key#6){++++}-{4:4}, at:
-vfs_rmdir+0xef/0x860 fs/namei.c:5317
-6 locks held by kworker/u4:0/12:
-3 locks held by kworker/u4:1/13:
-1 lock held by khungtaskd/25:
- #0: ffffffff8e5e6ce0 (rcu_read_lock){....}-{1:3}, at:
-rcu_lock_acquire include/linux/rcupdate.h:312 [inline]
- #0: ffffffff8e5e6ce0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock
-include/linux/rcupdate.h:850 [inline]
- #0: ffffffff8e5e6ce0 (rcu_read_lock){....}-{1:3}, at:
-debug_show_all_locks+0x36/0x1c0 kernel/locking/lockdep.c:6775
-1 lock held by kcompactd0/28:
-3 locks held by kworker/u4:3/45:
-2 locks held by kworker/0:2/49:
-3 locks held by kworker/u4:6/597:
-3 locks held by kworker/u4:8/3491:
-2 locks held by systemd-journal/5166:
-2 locks held by systemd-udevd/5178:
-1 lock held by in:imklog/9177:
-4 locks held by sshd/9696:
-2 locks held by syz-fuzzer/32911:
-2 locks held by syz-executor.6/9754:
-2 locks held by syz-executor.7/9774:
-1 lock held by syz-executor.2/9812:
-1 lock held by syz-executor.1/9902:
-2 locks held by syz-executor.14/10080:
-2 locks held by syz-executor.9/10842:
-1 lock held by syz-executor.15/11893:
- #0: ffffffff8e5f25f8 (rcu_state.exp_mutex){+.+.}-{4:4}, at:
-exp_funnel_lock+0x1a3/0x3b0 kernel/rcu/tree_exp.h:343
-3 locks held by kworker/0:8/13140:
- #0: ffff88801b8a6948 ((wq_completion)events){+.+.}-{0:0}, at:
-process_one_work+0x139e/0x1c60 kernel/workqueue.c:3263
- #1: ffffc9000cd37d08 (free_ipc_work){+.+.}-{0:0}, at:
-process_one_work+0x938/0x1c60 kernel/workqueue.c:3264
- #2: ffffffff8e5f25f8 (rcu_state.exp_mutex){+.+.}-{4:4}, at:
-exp_funnel_lock+0x1a3/0x3b0 kernel/rcu/tree_exp.h:343
-2 locks held by kworker/0:10/13232:
-3 locks held by kworker/u4:10/13343:
-3 locks held by kworker/u4:12/14656:
-1 lock held by syz-executor.13/24672:
-3 locks held by kworker/u4:5/45131:
-3 locks held by kworker/u4:9/46406:
-3 locks held by kworker/u4:13/46990:
-3 locks held by kworker/u4:16/46993:
-2 locks held by syz-executor.8/48198:
-3 locks held by kworker/u4:17/53143:
-4 locks held by kworker/u4:18/53144:
-2 locks held by systemd-rfkill/53174:
-2 locks held by syz-executor.7/53471:
-2 locks held by kworker/u4:20/53472:
-3 locks held by kworker/u4:21/53476:
-3 locks held by kworker/u4:22/53479:
-3 locks held by kworker/u4:24/53484:
-3 locks held by kworker/u4:25/53488:
-2 locks held by kworker/0:19/53491:
-2 locks held by systemd-udevd/53495:
+> Thanks for the heads up. I missed it because my series is based on
+> slab/for-next and that commit is in mm-unstable. My patch 15 actually
+> modifies the TODO comment that is meanwhile resolved by Hao Ge's patch.
+>
+> Which means my patch 15/15 can't be used as-is, and at worst I will drop it.
+> But I'd encourage Hao Ge with Suren to find some way to avoid the gfp flag
+> usage too, because it's now quite a niche use case (preventing false
+> positive CONFIG_MEM_ALLOC_PROFILING_DEBUG warnings, IIUC?) to take a
+> valuable gfp flag bit, IMHO.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 25 Comm: khungtaskd Not tainted 7.0.6 #1 PREEMPT(full)
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/=
-2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x116/0x1b0 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x2a0/0x350 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x29c/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:161 [inline]
- __sys_info lib/sys_info.c:157 [inline]
- sys_info+0x133/0x180 lib/sys_info.c:165
- check_hung_uninterruptible_tasks kernel/hung_task.c:346 [inline]
- watchdog+0xeac/0x11e0 kernel/hung_task.c:515
- kthread+0x38d/0x4a0 kernel/kthread.c:436
- ret_from_fork+0x942/0xe50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
+I previously used __GFP_NO_OBJ_EXT because it serves the same purpose as 
+in slab.
 
-Michal Koutn=C3=BD <mkoutny@suse.com> =E4=BA=8E2026=E5=B9=B46=E6=9C=889=E6=
-=97=A5=E5=91=A8=E4=BA=8C 20:58=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hello Longxing.
->
-> On Tue, Jun 09, 2026 at 07:42:06PM +0800, Longxing Li <coregee2000@gmail.=
-com> wrote:
-> > We would like to report a new kernel bug found by our tool. INFO: task
-> > hung in cgroup_drain_dying. Details are as follows.
->
-> Thanks but I see no attachment.
->
-> (Greater if you could add description as plaintext [1])
->
-> > Kernel commit: v7.0.6
-> > Kernel config: see attachment
->
-> Do you have lockdep enabled (CONFIG_PROVE_LOCKING)? That may help
-> debugging here.
->
-> Thanks,
-> Michal
->
-> [1] https://docs.kernel.org/process/email-clients.html#general-preference=
-s
->
+We use it here to prevent recursion within the page allocator.
+
+I hadn't anticipated that __GFP_NO_OBJ_EXT would be removed so soon.
+
+I agree with you. Since slab no longer uses it, retaining this GFP flag 
+solely for debug is indeed costly.
+
+I've also been thinking about possible solutions today. Since we are 
+working in the page allocation path,
+
+we need to take various race conditions into consideration.
+
+For instance, what if an interrupt is triggered inside page_alloc, which 
+then invokes page_alloc again?
+
+I'm not sure if such a scenario exists in practice, but I believe we 
+still need to account for it.
+
+I would highly appreciate it if anyone could share their ideas.
+
+I've made a note of this.
+
+Would it make sense to hold off on merging patch 15/15 for now?
+
+We can always include it in a later cycle once we have a proper 
+replacement for the
+
+memory allocation profilingside. Thanks Best Regards Hao
+
+>>> The page allocator uses its internal alloc_flags to convey various
+>>> context information, including ALLOC_TRYLOCK (meaning "cannot spin").
+>>> This series copies that concept for the slab allocator, with its own
+>>> slab-specific internal flags:
+>>>
+>>> - SLAB_ALLOC_DEFAULT - no extra flags (the value is 0), but explicit
+>>> - SLAB_ALLOC_TRYLOCK - do not spin on locks (used by kmalloc_nolock())
+>>> - SLAB_ALLOC_NEW_SLAB - replacing existing 'bool new_slab' parameter
+>>> 			for allocating obj_ext arrays
+>>> - SLAB_ALLOC_NO_RECURSE - replacing usage of __GFP_NO_OBJ_EXT
+>>>
+>>> To reduce the amount of parameters in various internal functions, we
+>>> additionally introduce slab_alloc_context (also inspired by page
+>>> allocator's alloc_context) for passing a number of existing arguments
+>>> and the new alloc_flags:
+>>>
+>>> /* Structure holding extra parameters for slab allocations */
+>>> struct slab_alloc_context {
+>>> 	unsigned long caller_addr;
+>>> 	unsigned long orig_size;
+>>> 	unsigned int alloc_flags;
+>>> 	struct list_lru *lru;
+>>> };
+>>>
+>>> This also replaces the existing struct partial_context.
+>>>
+>>> The last necessary piece is kmalloc_flags() which can take the
+>>> alloc_flags in addition to gfp flags and is intended for the recursive
+>>> allocations of sheaves and obj_ext arrays, so that both
+>>> SLAB_ALLOC_TRYLOCK and SLAB_ALLOC_NO_RECURSE can be communicated.
+>>> Internally it decides between kmalloc_nolock() and normal kmalloc()
+>>> depending SLAB_ALLOC_TRYLOCK.
+>>>
+>>> The rest of the series is gradually expanding the usage of both
+>>> alloc_flags and slab_alloc_context as necessary, with bits of
+>>> refactoring. Then, __GFP_NO_OBJ_EXT is removed completely.
+>>>
+>>> Note that some usage of gfpflags_allow_spinning() relying on absence of
+>>> __GFP_RECLAIM remains outside of slab (and page allocator) in memcg,
+>>> page_owner and stackdepot code. These can thus yield false-positive
+>>> decisions that spinning is not allowed, but should not result in
+>>> important allocations failing anymore.
+>>>
+>>> Signed-off-by: Vlastimil Babka (SUSE)<vbabka@kernel.org>
+>>> ---
+>>> Vlastimil Babka (SUSE) (15):
+>>>        mm/slab: always zero only requested size on alloc
+>>>        mm/slab: stop inlining __slab_alloc_node()
+>>>        mm/slab: introduce slab_alloc_context
+>>>        mm/slab: introduce alloc_flags and SLAB_ALLOC_TRYLOCK
+>>>        mm/slab: add alloc_flags to slab_alloc_context
+>>>        mm/slab: replace struct partial_context with slab_alloc_context
+>>>        mm/slab: pass alloc_flags to new slab allocation
+>>>        mm/slab: pass alloc_flags through slab_post_alloc_hook() chain
+>>>        mm/slab: replace slab_alloc_node() parameters with slab_alloc_context
+>>>        mm/slab: allow kmem_cache_alloc_bulk() with any gfp flags
+>>>        mm/slab: pass slab_alloc_context to __do_kmalloc_node()
+>>>        mm/slab: introduce kmalloc_flags()
+>>>        mm/slab: remove __GFP_NO_OBJ_EXT usage from alloc_slab_obj_exts()
+>>>        mm/slab: replace __GFP_NO_OBJ_EXT with SLAB_ALLOC_NO_RECURSE for sheaves
+>>>        mm: remove the __GFP_NO_OBJ_EXT flag
+>>>
+>>>   include/linux/gfp_types.h       |   7 -
+>>>   include/linux/slab.h            |  14 +-
+>>>   include/trace/events/mmflags.h  |  10 +-
+>>>   lib/alloc_tag.c                 |   2 +-
+>>>   mm/kfence/core.c                |   6 +-
+>>>   mm/memcontrol.c                 |   5 +-
+>>>   mm/slab.h                       |  16 +-
+>>>   mm/slub.c                       | 423 ++++++++++++++++++++++++----------------
+>>>   tools/include/linux/gfp_types.h |   7 -
+>>>   9 files changed, 288 insertions(+), 202 deletions(-)
+>>> ---
+>>> base-commit: 500b2c9755301742bdbb61249511ac11a4665dae
+>>> change-id: 20260601-slab_alloc_flags-25c782b0c57c
+>>>
+>>> Best regards,
+>>> --
+>>> Vlastimil Babka (SUSE)<vbabka@kernel.org>
 
