@@ -1,54 +1,55 @@
-Return-Path: <cgroups+bounces-16815-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16816-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id OSKoN86HKWo+YwMAu9opvQ
-	(envelope-from <cgroups+bounces-16815-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 17:50:38 +0200
+	id r2MYMMiIKWqEYwMAu9opvQ
+	(envelope-from <cgroups+bounces-16816-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 17:54:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5E066B087
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 17:50:38 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13BA466B11D
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 17:54:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=jUeN5ldg;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16815-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16815-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=aCXPhkm8;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16816-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16816-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 45F123083AEA
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 15:42:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4387F34A5C6B
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2026 15:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C3641360C;
-	Wed, 10 Jun 2026 15:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2EDD42848C;
+	Wed, 10 Jun 2026 15:40:58 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8DA423A87;
-	Wed, 10 Jun 2026 15:40:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB9F416D1D;
+	Wed, 10 Jun 2026 15:40:57 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781106050; cv=none; b=RfQb+OpZ5LzIPyxVasqddRd7uwumaU1xwS4UAaeedrNDtK1TTxBGHJVr4RyKWJnN9IMO/egafaY7o85roUmiR7Z3mI5fXqJW2q8J82qpZXeObeHax+PCftWfE1cfEgQmb25Pxehuw/WzbuZDr0g0AZcRtY+IZtI46gylv8pySU4=
+	t=1781106058; cv=none; b=YK8DoxNz36LcyZvOsHHlpaoZwWz9K3QKOIbmxgUwAjoerbRRM0xuZpnFXdWl/nAJsNCyEVuDyORszj3qSX60uNTQS1mS+ydSNQ2Q/NRv/H598x+1I2K6jA/EAtR8yHCACE8PvetISoms3UwTHRPBI+lC1ibpIZ+utd5CxQSyuFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781106050; c=relaxed/simple;
-	bh=s1yowScB1ntirOUCy3Wtmx0vbJut96iEqxBRVLZcDDQ=;
+	s=arc-20240116; t=1781106058; c=relaxed/simple;
+	bh=e+XV3AZqAoAC7RIKgePG4YKkJSPPEI10nmOB2NUI12c=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=YJI/ygSs5nCkO0UagpCODq717UbVTC3k2XXudZV7JtcXxX2FWU/B9fvWy1O6/Tuvsgfj5ZREAveXCf0vQCidc92pkNHSjHgvOG4VxhbQbxA456fM3+iXwNf5roXZfhCgq4W2bbOA6AlZfoTH62IrGrx5xV3FDV0vdTPNP+lalPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jUeN5ldg; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F611F00893;
-	Wed, 10 Jun 2026 15:40:43 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=c4xFqkGGQtfEEO9jDCoHsuQiWbu4Z4H2MGZMMj0GbsYUawj8paEQlloZMETjBNIjCBk4ckxzdE60hBbVFYf8fERSyBbm+zdJV49F3KwqBAwqpIyYmdoB6YeXUBP5GdBRQvoFbalG99j8KMlACWjeKMnxQfcketAjcPeV/ht9aec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCXPhkm8; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C19E11F00898;
+	Wed, 10 Jun 2026 15:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781106049;
-	bh=mHBDdnCc4cC9GbIMocm8Cn9JTTYjMC8IGCXXWTdvkjE=;
+	s=k20260515; t=1781106057;
+	bh=uzrQqVr+7rwNnJX12Vdm6hcXiPQHxl3cGwRGRVjeEkE=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=jUeN5ldgu0oUbTa5L0Rh2Xs6xUZN85uN8eqoJddnNtETxIYIaYEjtvAclPhIiGfLP
-	 6CKzpo+NURrzjE+t11zkSW1RfAET41uBPnJAMdPKqdzic0fC8w9/MEX+i05ImnNnAj
-	 d6FZwXd2dtz813RH/EuCbqLdr/MGPXkcD59zh+tkdgwlajUw9Fsj5rdrR5+jLU83nH
-	 e0AaWzPDx+rQJ+9mARcEaN3Cma8Z5XJG1qdJ/j2+CHi/WJ79Dy4QKlq/BvKMgXb/Ys
-	 jMeQECQQgGZd4a4CFHHPtAfZiXlfl7fEXdOxySu6Ay3Ot1WNKlZ+CHVk0+eJ8Ut7Mh
-	 QY7Yg5fjK4xYw==
+	b=aCXPhkm8nAkdUVhcPCJUTOjkUtEJISo7BfGZrCD7i28tiCbagbHjNon8sAPgrzyYc
+	 2RkRNiVBG+fSPgFQixWt62WNno7HDDOpVLkxlbVAOff0N2BRYxkY26fOCMQgqnxIQg
+	 Vo6/+wKzhCMrPVUUkdYBvEko/zuKCyMmAc5ejtIHc93n94xPW9QfEejrYaYkqazkc0
+	 TZ+dRNAy1COnYajg+g3r+nMP1/8JHCUZ3ShqlSynY7NQKWfgT6lUPu/5jED69sEsyf
+	 rTxnFxgtwHqzh6qGp2iD7D9WVL1dU3WYdmEvzAnc8FubCtBIY8M6+XDQ9jNguIIFzo
+	 OR6jq3M1atcFA==
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Wed, 10 Jun 2026 17:40:06 +0200
-Subject: [PATCH v2 04/16] mm/slab: introduce slab_alloc_context
+Date: Wed, 10 Jun 2026 17:40:07 +0200
+Subject: [PATCH v2 05/16] mm/slab: introduce alloc_flags and
+ SLAB_ALLOC_TRYLOCK
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,7 +58,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
+Message-Id: <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
 In-Reply-To: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
 To: Harry Yoo <harry@kernel.org>
@@ -78,7 +79,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -89,7 +90,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16815-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16816-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -103,168 +104,139 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7E5E066B087
+X-Rspamd-Queue-Id: 13BA466B11D
 
-Similarly to page allocator's struct alloc_context, introduce a helper
-struct to hold a part of the allocation arguments. This will allow
-reducing the number of parameters in many functions of the
-implementation, and extend them easily if needed.
+Similarly to the page allocators, introduce slab-allocator specific
+alloc flags that internally control allocation behavior in addition to
+gfp_flags, without occupying the limited gfp flags space.
 
-For now, make it hold the caller address and the originally requested
-allocation size.
+Introduce the first flag SLAB_ALLOC_TRYLOCK that behaves similarly to
+page allocator's ALLOC_TRYLOCK and will be used to reimplement
+kmalloc_nolock()'s "!allow_spin" behavior. That currently relies on
+gfpflags_allow_spinning() and thus the lack of both __GFP_RECLAIM flags,
+importantly __GFP_KSWAPD_RECLAIM. This can give false-positive results
+e.g. in early boot with a restricted gfp_allowed_mask.
 
-Convert alloc_single_from_new_slab(), __slab_alloc_node() and
-___slab_alloc(). No functional change intended.
+Also introduce alloc_flags_allow_spinning() to replace the usage of
+gfpflags_allow_spinning().
+
+Start using alloc_flags and the new check first in alloc_from_pcs() and
+__pcs_replace_empty_main(). This means some slab allocations that were
+falsely treated as kmalloc_nolock() due to their gfp flags will now have
+higher chances of succeed, and this will further increase with followup
+changes.
+
+Remove a WARN_ON_ONCE() from refill_objects() as it's now legitimate to
+reach it from a slab allocation that's not _nolock() and yet lacks
+__GFP_KSWAPD_RECLAIM for other reasons.
 
 Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 ---
- mm/slub.c | 46 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 33 insertions(+), 13 deletions(-)
+ mm/slab.h |  9 +++++++++
+ mm/slub.c | 17 ++++++++---------
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
+diff --git a/mm/slab.h b/mm/slab.h
+index 1bf9c3021ae3..96f65b625600 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -16,6 +16,15 @@
+  * Internal slab definitions
+  */
+ 
++/* slab's alloc_flags definitions */
++#define SLAB_ALLOC_DEFAULT	0x00 /* no flags */
++#define SLAB_ALLOC_TRYLOCK	0x01 /* a kmalloc_nolock() allocation */
++
++static inline bool alloc_flags_allow_spinning(const unsigned int alloc_flags)
++{
++	return !(alloc_flags & SLAB_ALLOC_TRYLOCK);
++}
++
+ #ifdef CONFIG_64BIT
+ # ifdef system_has_cmpxchg128
+ # define system_has_freelist_aba()	system_has_cmpxchg128()
 diff --git a/mm/slub.c b/mm/slub.c
-index 7b48c0d38404..a3cac7281cc6 100644
+index a3cac7281cc6..e79fbca11bc0 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -213,6 +213,12 @@ DEFINE_STATIC_KEY_FALSE(slub_debug_enabled);
- static DEFINE_STATIC_KEY_FALSE(strict_numa);
- #endif
- 
-+/* Structure holding extra parameters for slab allocations */
-+struct slab_alloc_context {
-+	unsigned long caller_addr;
-+	unsigned long orig_size;
-+};
-+
- /* Structure holding parameters for get_from_partial() call chain */
- struct partial_context {
- 	gfp_t flags;
-@@ -3687,7 +3693,8 @@ static inline void init_slab_obj_iter(struct kmem_cache *s, struct slab *slab,
-  * and put the slab to the partial (or full) list.
+@@ -4638,7 +4638,8 @@ bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+  * unlocked.
   */
- static void *alloc_single_from_new_slab(struct kmem_cache *s, struct slab *slab,
--					int orig_size, bool allow_spin)
-+					struct slab_alloc_context *ac,
-+					bool allow_spin)
+ static struct slub_percpu_sheaves *
+-__pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs, gfp_t gfp)
++__pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
++			 gfp_t gfp, unsigned int alloc_flags)
  {
- 	struct kmem_cache_node *n;
- 	struct slab_obj_iter iter;
-@@ -3705,7 +3712,7 @@ static void *alloc_single_from_new_slab(struct kmem_cache *s, struct slab *slab,
- 	/* alloc_debug_processing() always expects a valid freepointer */
- 	set_freepointer(s, object, slab->freelist);
- 
--	if (!alloc_debug_processing(s, slab, object, orig_size)) {
-+	if (!alloc_debug_processing(s, slab, object, ac->orig_size)) {
- 		/*
- 		 * It's not really expected that this would fail on a
- 		 * freshly allocated slab, but a concurrent memory
-@@ -4443,7 +4450,7 @@ static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
-  * slab.
-  */
- static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
--			   unsigned long addr, unsigned int orig_size)
-+			   struct slab_alloc_context *ac)
- {
- 	bool allow_spin = gfpflags_allow_spinning(gfpflags);
- 	void *object;
-@@ -4476,7 +4483,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 			pc.flags = GFP_NOWAIT | __GFP_THISNODE;
+ 	struct slab_sheaf *empty = NULL;
+ 	struct slab_sheaf *full;
+@@ -4664,7 +4665,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
+ 		return NULL;
  	}
  
--	pc.orig_size = orig_size;
-+	pc.orig_size = ac->orig_size;
- 	object = get_from_partial(s, node, &pc);
- 	if (object)
- 		goto success;
-@@ -4496,7 +4503,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	stat(s, ALLOC_SLAB);
+-	allow_spin = gfpflags_allow_spinning(gfp);
++	allow_spin = alloc_flags_allow_spinning(alloc_flags);
  
- 	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
--		object = alloc_single_from_new_slab(s, slab, orig_size, allow_spin);
-+		object = alloc_single_from_new_slab(s, slab, ac, allow_spin);
+ 	full = barn_replace_empty_sheaf(barn, pcs->main, allow_spin);
  
- 		if (likely(object))
- 			goto success;
-@@ -4514,13 +4521,13 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 
- success:
- 	if (kmem_cache_debug_flags(s, SLAB_STORE_USER))
--		set_track(s, object, TRACK_ALLOC, addr, gfpflags);
-+		set_track(s, object, TRACK_ALLOC, ac->caller_addr, gfpflags);
- 
- 	return object;
+@@ -4750,7 +4751,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
  }
  
- static void *__slab_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int node,
--			       unsigned long addr, size_t orig_size)
-+			       struct slab_alloc_context *ac)
+ static __fastpath_inline
+-void *alloc_from_pcs(struct kmem_cache *s, gfp_t gfp, int node)
++void *alloc_from_pcs(struct kmem_cache *s, gfp_t gfp, unsigned int alloc_flags, int node)
  {
- 	void *object;
+ 	struct slub_percpu_sheaves *pcs;
+ 	bool node_requested;
+@@ -4795,7 +4796,7 @@ void *alloc_from_pcs(struct kmem_cache *s, gfp_t gfp, int node)
+ 	pcs = this_cpu_ptr(s->cpu_sheaves);
  
-@@ -4545,7 +4552,7 @@ static void *__slab_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	if (unlikely(pcs->main->size == 0)) {
+-		pcs = __pcs_replace_empty_main(s, pcs, gfp);
++		pcs = __pcs_replace_empty_main(s, pcs, gfp, alloc_flags);
+ 		if (unlikely(!pcs))
+ 			return NULL;
  	}
- #endif
+@@ -4928,7 +4929,7 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 	if (unlikely(object))
+ 		goto out;
  
--	object = ___slab_alloc(s, gfpflags, node, addr, orig_size);
-+	object = ___slab_alloc(s, gfpflags, node, ac);
+-	object = alloc_from_pcs(s, gfpflags, node);
++	object = alloc_from_pcs(s, gfpflags, SLAB_ALLOC_DEFAULT, node);
  
- 	return object;
- }
-@@ -4923,8 +4930,13 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 	if (unlikely(!object)) {
+ 		struct slab_alloc_context ac = {
+@@ -5359,6 +5360,7 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
+ {
+ 	gfp_t alloc_gfp = __GFP_NOWARN | __GFP_NOMEMALLOC | gfp_flags;
+ 	size_t orig_size = size;
++	unsigned int alloc_flags = SLAB_ALLOC_TRYLOCK;
+ 	struct kmem_cache *s;
+ 	bool can_retry = true;
+ 	void *ret;
+@@ -5397,7 +5399,7 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
+ 		 */
+ 		return NULL;
  
- 	object = alloc_from_pcs(s, gfpflags, node);
- 
--	if (unlikely(!object))
--		object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
-+	if (unlikely(!object)) {
-+		struct slab_alloc_context ac = {
-+			.caller_addr = addr,
-+			.orig_size = orig_size,
-+		};
-+		object = __slab_alloc_node(s, gfpflags, node, &ac);
-+	}
- 
- 	maybe_wipe_obj_freeptr(s, object);
- 
-@@ -5389,13 +5401,18 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
+-	ret = alloc_from_pcs(s, alloc_gfp, node);
++	ret = alloc_from_pcs(s, alloc_gfp, alloc_flags, node);
  	if (ret)
  		goto success;
  
-+	struct slab_alloc_context ac = {
-+		.caller_addr = _RET_IP_,
-+		.orig_size = orig_size,
-+	};
-+
- 	/*
- 	 * Do not call slab_alloc_node(), since trylock mode isn't
- 	 * compatible with slab_pre_alloc_hook/should_failslab and
- 	 * kfence_alloc. Hence call __slab_alloc_node() (at most twice)
- 	 * and slab_post_alloc_hook() directly.
- 	 */
--	ret = __slab_alloc_node(s, alloc_gfp, node, _RET_IP_, orig_size);
-+	ret = __slab_alloc_node(s, alloc_gfp, node, &ac);
+@@ -7216,9 +7218,6 @@ refill_objects(struct kmem_cache *s, void **p, gfp_t gfp, unsigned int min,
+ 	unsigned int refilled;
+ 	struct slab *slab;
  
- 	/*
- 	 * It's possible we failed due to trylock as we preempted someone with
-@@ -7237,10 +7254,13 @@ static bool __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
- 	int i;
- 
- 	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
-+		struct slab_alloc_context ac = {
-+			.caller_addr = _RET_IP_,
-+			.orig_size = s->object_size,
-+		};
- 		for (i = 0; i < size; i++) {
- 
--			p[i] = ___slab_alloc(s, flags, NUMA_NO_NODE, _RET_IP_,
--					     s->object_size);
-+			p[i] = ___slab_alloc(s, flags, NUMA_NO_NODE, &ac);
- 			if (unlikely(!p[i]))
- 				goto error;
- 
+-	if (WARN_ON_ONCE(!gfpflags_allow_spinning(gfp)))
+-		return 0;
+-
+ 	refilled = __refill_objects_node(s, p, gfp, min, max,
+ 					 get_node(s, local_node),
+ 					 /* allow_spin = */ true);
 
 -- 
 2.54.0
