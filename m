@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16840-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id DwdWK18/Kmq3lAMAu9opvQ
-	(envelope-from <cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 06:53:51 +0200
+	id PaLfBtlBKmoklQMAu9opvQ
+	(envelope-from <cgroups+bounces-16840-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 07:04:25 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0177266E504
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 06:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D341C66E5C4
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 07:04:23 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=N5CpSLPp;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ovoH7RXY;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16840-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16840-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CA0D831C7C4D
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 04:49:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3EE693050F41
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 04:57:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5346034BA20;
-	Thu, 11 Jun 2026 04:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D9F3537C8;
+	Thu, 11 Jun 2026 04:57:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D81E343884;
-	Thu, 11 Jun 2026 04:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E08BB238171;
+	Thu, 11 Jun 2026 04:57:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781153397; cv=none; b=MtIzCY1BAXxEn8qJDXHJ7DeYWRIBiF3qDlm3yto6Q4PZUtTL+31ATYc8Sw3DtbxuiCr4fwssvVwlgcuPCi011VdOdrxJrOqd2OV+Zdg+89kWoyRZCfpHdNhhcN3sSBYsrlePivtAj1HNYPFE+nHcm169iYygorWBWW5Z1wP+vBc=
+	t=1781153871; cv=none; b=H5cF+j5z3tbclik90Qo9f1I+zy1EHobwICkCaM66EGatAG+WtIMjhbeB45rYVguQZWcyaxF7ZSTS8XvFDirHEAj2OYiMu3Yc54fCAcknYHUW09t0uuUEvWUpUR3xb+wCOWidudwRnpB0QTI60sGKhnIQFme5QeYjLWP/U49Gxjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781153397; c=relaxed/simple;
-	bh=WNQdVwOEOxeCyvRTasmqrIIyEOikW/27X0E0Tz9+AWY=;
+	s=arc-20240116; t=1781153871; c=relaxed/simple;
+	bh=rPXbXmseReDxlfFLMEq1wKW5R0sBDfdHAGp/dzQ6skg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JnJtRpyBrezAaDSuqLtjwUPpIVPqVRfpSb7S6YRyfvGXUENZAY8uxMFvG5MWH9chzSL++SQFiC8EUh+KEG2nH4iUjBMH9PmHwS8cnCPWyzaALKYZXwszlnsa1mVbmmDhDevyy6cjHY8md2iSSgQAVL9cac+n2nubeGeRNP79sEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N5CpSLPp; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509F11F00893;
-	Thu, 11 Jun 2026 04:49:52 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=U3WG1M5lyKSW1hS6bKNpM6KcFnDCncCuGGWGh6x4MiSo7R6da4ZkYEv9aM48x/XLveP+VU/MkVUHq7yCr7l6kM/MUcATu1iNpBMYGafAHgmCRfRqypWjSgCJCe9Kg53gMSppEJie+2AnBhLi2gwExKkefS9Sd9iQE84LG6DPVPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ovoH7RXY; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9780A1F00893;
+	Thu, 11 Jun 2026 04:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781153395;
-	bh=WNQdVwOEOxeCyvRTasmqrIIyEOikW/27X0E0Tz9+AWY=;
+	s=k20260515; t=1781153861;
+	bh=rPXbXmseReDxlfFLMEq1wKW5R0sBDfdHAGp/dzQ6skg=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=N5CpSLPpw35rjgyCRj5g3Idik/9lkQPRLsBBrkJdY+yNG8r6KCnB+VtI4cGHIVw9F
-	 q+4fhjsda4gJuPbp5UJsyriDv9ESO62GadS2+MRzVYfD1/eKJuOApBaB0lnDoHziMv
-	 rlCUbWTXIMqDyiRWIf2tCuq4TXZuIiGSAADu5K+M1SJhWpGOEHKGRz4nj47U1Sl50P
-	 tWsWIn2b92e/EYQChSyuRCScQ6VlgrzXMett2OdUvxz90gfqpeNk5SU8VkEUSrz9vB
-	 jybrIjxn6fGlGdoCAt9YvXjm2BEWxhEbn4cTGeIBs6PEnffTwsleFuQj+rtKkLIG0e
-	 H3XFaAsHfYtOg==
-Message-ID: <81e13eed-2029-42a3-8e1c-4e92249a26d4@kernel.org>
-Date: Thu, 11 Jun 2026 13:49:50 +0900
+	b=ovoH7RXYEpV1zAeJEinykeprmqVgXdFWDCWcpQLn6fgXzXhY3UlUqtf4JtXqz2cLS
+	 FJo4v0tTeZSl3vT990E1U7UFovkIirYQ91CSoD03B/BMvpc4AmrLiOd69kN7d9oYcY
+	 q7PCes77Wwa/1snwRzYun4Ui4XCOGC7hNu4UnjqgXFiAbQxhMUCPgPfemHYbm0Ebix
+	 jIWqIYNM/4KH8zIc8aLMZ70l55Nk2PlSmlrx9/u3GL25Z5EORRnyKUOLQKfObPmhZw
+	 rw54uozu9lDajgan0qRSkHYZzpAXoKR7+M4Dp7fahnMc87fpr91QBFuaxx5/g5XiQz
+	 Np+FVrD/wtYIQ==
+Message-ID: <80afa9ac-ed48-438e-a18d-87aa8dff23c4@kernel.org>
+Date: Thu, 11 Jun 2026 13:57:35 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/16] mm/slab: introduce slab_alloc_context
+Subject: Re: [PATCH v2 05/16] mm/slab: introduce alloc_flags and
+ SLAB_ALLOC_TRYLOCK
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  David Rientjes <rientjes@google.com>,
@@ -68,13 +69,13 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
 Content-Language: en-US
 From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
+In-Reply-To: <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------c4VlE0FE0HgTrGzQd9oZjEzB"
+ boundary="------------zrehXDAjlbhFhdK5H063TW73"
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-7.26 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
@@ -86,13 +87,13 @@ X-Spamd-Result: default: False [-7.26 / 15.00];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16839-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16840-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -111,11 +112,11 @@ X-Spamd-Result: default: False [-7.26 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0177266E504
+X-Rspamd-Queue-Id: D341C66E5C4
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------c4VlE0FE0HgTrGzQd9oZjEzB
-Content-Type: multipart/mixed; boundary="------------YSxo34ALkfgVy406qadRCbTw";
+--------------zrehXDAjlbhFhdK5H063TW73
+Content-Type: multipart/mixed; boundary="------------lp6v3Rt10tV79iXTePM8CevI";
  protected-headers="v1"
 From: Harry Yoo <harry@kernel.org>
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
@@ -129,30 +130,49 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Message-ID: <81e13eed-2029-42a3-8e1c-4e92249a26d4@kernel.org>
-Subject: Re: [PATCH v2 04/16] mm/slab: introduce slab_alloc_context
+Message-ID: <80afa9ac-ed48-438e-a18d-87aa8dff23c4@kernel.org>
+Subject: Re: [PATCH v2 05/16] mm/slab: introduce alloc_flags and
+ SLAB_ALLOC_TRYLOCK
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
-In-Reply-To: <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
+In-Reply-To: <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
 
---------------YSxo34ALkfgVy406qadRCbTw
+--------------lp6v3Rt10tV79iXTePM8CevI
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
 
 
 On 6/11/26 12:40 AM, Vlastimil Babka (SUSE) wrote:
-> Similarly to page allocator's struct alloc_context, introduce a helper
-> struct to hold a part of the allocation arguments. This will allow
-> reducing the number of parameters in many functions of the
-> implementation, and extend them easily if needed.
+> Similarly to the page allocators, introduce slab-allocator specific
+> alloc flags that internally control allocation behavior in addition to
+> gfp_flags, without occupying the limited gfp flags space.
 >=20
-> For now, make it hold the caller address and the originally requested
-> allocation size.
+> Introduce the first flag SLAB_ALLOC_TRYLOCK that behaves similarly to
+> page allocator's ALLOC_TRYLOCK and will be used to reimplement
+> kmalloc_nolock()'s "!allow_spin" behavior. That currently relies on
+> gfpflags_allow_spinning() and thus the lack of both __GFP_RECLAIM flags=
+,
+> importantly __GFP_KSWAPD_RECLAIM. This can give false-positive results
+> e.g. in early boot with a restricted gfp_allowed_mask.
 >=20
-> Convert alloc_single_from_new_slab(), __slab_alloc_node() and
-> ___slab_alloc(). No functional change intended.
+> Also introduce alloc_flags_allow_spinning() to replace the usage of
+> gfpflags_allow_spinning().
 >=20
+> Start using alloc_flags and the new check first in alloc_from_pcs() and=
+
+> __pcs_replace_empty_main(). This means some slab allocations that were
+> falsely treated as kmalloc_nolock() due to their gfp flags will now hav=
+e
+> higher chances of succeed, and this will further increase with followup=
+
+> changes.
+>=20
+> Remove a WARN_ON_ONCE() from refill_objects() as it's now legitimate to=
+
+> reach it from a slab allocation that's not _nolock() and yet lacks
+> __GFP_KSWAPD_RECLAIM for other reasons.
+>
 > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > ---
 
@@ -162,20 +182,20 @@ Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
 Cheers,
 Harry / Hyeonggon
 
---------------YSxo34ALkfgVy406qadRCbTw--
+--------------lp6v3Rt10tV79iXTePM8CevI--
 
---------------c4VlE0FE0HgTrGzQd9oZjEzB
+--------------zrehXDAjlbhFhdK5H063TW73
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCaio+bgAKCRCGXBN6rc5S
-1oRGAQD1EG3lihk4VxLBIfWhXMef3vycxH4hVNES5+D1LcnTRQD+K6suBBuTPviO
-6IhThfc/STOwiw4VJWaHaH39OQDDxAA=
-=ZBkf
+iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCaipAQAAKCRCGXBN6rc5S
+1liHAP93IfCcefH4oC5NqVaMFx2nH2a1RYl/VCXiuzTBFVHwygEAzw865aRaoheL
+3Yd7pXejrNcoaV9GzniJGj0nDB+/Xgk=
+=IIMK
 -----END PGP SIGNATURE-----
 
---------------c4VlE0FE0HgTrGzQd9oZjEzB--
+--------------zrehXDAjlbhFhdK5H063TW73--
 
