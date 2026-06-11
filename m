@@ -1,289 +1,169 @@
-Return-Path: <cgroups+bounces-16876-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16877-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XVaNBMkPK2oz2AMAu9opvQ
-	(envelope-from <cgroups+bounces-16876-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 21:43:05 +0200
+	id sOQfIj8hK2o33AMAu9opvQ
+	(envelope-from <cgroups+bounces-16877-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 22:57:35 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 704C5674D33
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 21:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDEA8675557
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 22:57:34 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=KO5G2tCE;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16876-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16876-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=bIB09NDg;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16877-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16877-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D2DCE3137AC8
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 19:42:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6DAA6312B20B
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 20:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F9ED37F8B3;
-	Thu, 11 Jun 2026 19:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E41344CAC9;
+	Thu, 11 Jun 2026 20:57:32 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F074036CE1E;
-	Thu, 11 Jun 2026 19:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF4636F437
+	for <cgroups@vger.kernel.org>; Thu, 11 Jun 2026 20:57:30 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781206901; cv=none; b=XVAynPn1X6rx7sDhNNlPkVEyVZNjnaEmKzWEQnZRNL02LmonDoDbn2qoet6SfWsOYbuAkbY/h3Hgvr0YW8MfIa+VNkK4bz0R+6slbvLqPmgMlWakrC6q+pUlb/AysybXDor1NDleXRB8eaVUviDq3PRRCcTq7q8R5conrqJGa3s=
+	t=1781211451; cv=none; b=H4in/hXNI75BooQ3cW5va34eGTCp4tfTsdIFbeihnuuO+Y2qESXuY7slitOGC0YlwnS9csVagNEDJyiNHKFzIgZnT0UL1KPLqD8WXg++zYpW+t3FR07fTtnACM0v/ra2VYUAt3dsbLLi7Xq0KKLyfe5r9FwyhnoLqisBbDUmXYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781206901; c=relaxed/simple;
-	bh=XGA8XvGhar3Z1r6Oh+DGdi0DMjCB5+1+8ldPsokTHIE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rLUkubp1JfPsPLQBd4O8RcdZ2oT1j7axa6J9UW+98UsubXwskd7W7psEkOVd+SIrXfdN7Kl/JLkxKkG/LZZesbnD/3iRLzmHFPvVLYs6WTxCjmxnbomBZqJyZiNs1hgJBICdVOh5qk6QpunKFisqbQH+bTbwxFpW7/4YRSRaPFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KO5G2tCE; arc=none smtp.client-ip=198.175.65.12
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781206897; x=1812742897;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=XGA8XvGhar3Z1r6Oh+DGdi0DMjCB5+1+8ldPsokTHIE=;
-  b=KO5G2tCE96w4Na6uToqh1+gUtdxWoPHX1fjFG2wThAnn/9swpN4kweCI
-   XoSCSJX3hT7irJ14MZGZuD272QLlADhJnzDd1lJ/O3/FRo++DT2cqj4ir
-   jSBl+aTzAyxuhk+KRvwaizMMoi059H8KnLX+aCVHEyqE655W+K2YRNLym
-   f7M5Sp/qGy7uD8yhST7KAM1VZuw5WAfHpBwqCEPXSuRL1rM+Ih35Yl6ji
-   MCh3WOOvpx7dOlArcF8XKn1Qg5+NAin/V9J1++73uzidfcw3PcdsGvIIE
-   CRrOD4Iy/CgW0plUaSJw2P/HvGvK3h3HDkBlwKp0u24m7oHhIeeyA+inA
-   w==;
-X-CSE-ConnectionGUID: y5bBTs6QQfegVI1DH+9I+w==
-X-CSE-MsgGUID: E60/WcdxSPyrM6v6iL1/rw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11813"; a="93520571"
-X-IronPort-AV: E=Sophos;i="6.24,199,1774335600"; 
-   d="scan'208";a="93520571"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2026 12:41:36 -0700
-X-CSE-ConnectionGUID: vvwdwSeZRd228JgWLwt3IQ==
-X-CSE-MsgGUID: NS0KcAVJTj2pqMYozOfh6Q==
-X-ExtLoop1: 1
-Received: from amilburn-desk.amilburn-desk (HELO [10.245.244.169]) ([10.245.244.169])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2026 12:41:31 -0700
-Message-ID: <c4dec5fa460cdbeb3706410c6fb3375ab36012ab.camel@linux.intel.com>
-Subject: Re: [PATCH v6 6/6] drm/amdgpu: Wire up dmem cgroup reclaim for VRAM
- manager
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: intel-xe@lists.freedesktop.org
-Cc: Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner
- <hannes@cmpxchg.org>,  Tejun Heo <tj@kernel.org>, Michal
- =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, 	cgroups@vger.kernel.org,
- Huang Rui <ray.huang@amd.com>, Matthew Brost	 <matthew.brost@intel.com>,
- Matthew Auld <matthew.auld@intel.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann	 <tzimmermann@suse.de>, Simona Vetter <simona@ffwll.ch>,
- David Airlie	 <airlied@gmail.com>, Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
- Rodrigo Vivi <rodrigo.vivi@intel.com>, dri-devel@lists.freedesktop.org,
- amd-gfx@lists.freedesktop.org, 	linux-kernel@vger.kernel.org
-Date: Thu, 11 Jun 2026 21:41:28 +0200
-In-Reply-To: <20260611173301.17473-7-thomas.hellstrom@linux.intel.com>
-References: <20260611173301.17473-1-thomas.hellstrom@linux.intel.com>
-	 <20260611173301.17473-7-thomas.hellstrom@linux.intel.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	s=arc-20240116; t=1781211451; c=relaxed/simple;
+	bh=UlA7E7NbDSnbp6daveohZX66tA+tlaAGsgHpQP8n1DI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rAU4oRVYMqG04OVq0hNPVISdF722uWVgUYtBaf8LlVLmhQCeAeTbXKXIGPefyarCBOHZr+gELI4QoeDHxyH5i4/Dud9jjqba/Qf1WQbnmoeI5H8ATmgapiIPKLjQY7n+yizenl+cKaQNwQxMQbpiDK+P4kRjZqjFJsRJPqX5whM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bIB09NDg; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1781211449;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m+QAUPgzRX/aZ+sMnzyXeZCn4csLtyPznM7PH7Z1STA=;
+	b=bIB09NDgCSuA8DQpecWCKHpA/9p330anumR+p3Mj8vSY3MhsS/VbIOv3TPhaBTJoOBL/1d
+	8J12HzDvm32DbLe0YoPwKkiX8T48iE2YXsORRyRbq4r0XjyVLJzpSGjyhuyByoOd7gq/ul
+	/8cYvvtab3pMnOG8VazG3O/7gLW+pIY=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-481-vd5UOKKrMTyLLmt_Nc_w4w-1; Thu,
+ 11 Jun 2026 16:57:26 -0400
+X-MC-Unique: vd5UOKKrMTyLLmt_Nc_w4w-1
+X-Mimecast-MFC-AGG-ID: vd5UOKKrMTyLLmt_Nc_w4w_1781211444
+Received: from mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.95])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6050618004D8;
+	Thu, 11 Jun 2026 20:57:23 +0000 (UTC)
+Received: from [10.22.88.176] (unknown [10.22.88.176])
+	by mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 56EB930A8;
+	Thu, 11 Jun 2026 20:57:19 +0000 (UTC)
+Message-ID: <72602b83-9053-4f19-8b87-2516bf23ea03@redhat.com>
+Date: Thu, 11 Jun 2026 16:57:18 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/7] sched/fair: Add cgroup_mode: max
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: mingo@kernel.org, chenridong@huaweicloud.com, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jstultz@google.com, kprateek.nayak@amd.com,
+ qyousef@layalina.io
+References: <20260605105513.354837583@infradead.org>
+ <20260605124051.589618504@infradead.org>
+ <d4ca5fe7-fd76-47c8-949a-a69916bfcbd4@redhat.com>
+ <20260611134724.GK48970@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20260611134724.GK48970@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.6 on 10.30.177.95
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16876-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:intel-xe@lists.freedesktop.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:tj@kernel.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:christian.koenig@amd.com,m:alexander.deucher@amd.com,m:rodrigo.vivi@intel.com,m:dri-devel@lists.freedesktop.org,m:amd-gfx@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_CC(0.00)[gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,linux.intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org];
-	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	FORGED_SENDER(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16877-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:peterz@infradead.org,m:mingo@kernel.org,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,intel.com:dkim,intel.com:email,linux.intel.com:mid,linux.intel.com:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 704C5674D33
+X-Rspamd-Queue-Id: EDEA8675557
 
-On Thu, 2026-06-11 at 19:33 +0200, Thomas Hellstr=C3=B6m wrote:
-> Register the VRAM manager with the dmem cgroup reclaim infrastructure
-> so that lowering dmem.max below current VRAM usage triggers TTM
-> eviction rather than failing with -EBUSY.
->=20
-> Guard place->flags in amdgpu_ttm_bo_eviction_valuable() against NULL,
-> as the TTM reclaim path passes a NULL place in cgroup drain mode.
->=20
-> v3:
-> - Rebased on fix for uninitialized list and buddy allocator on the
-> =C2=A0 drmm_cgroup_register_region() error path.
->=20
-> v5:
-> - Rebased on the introduction of struct dmem_cgroup_init.
-> - Clear the reclaim callback in amdgpu_vram_mgr_fini() to prevent
-> =C2=A0 use-after-free if cgroup reclaim is triggered after driver unbind
-> =C2=A0 while userspace holds an open DRM file descriptor. (Sashiko-bot)
-> - Switch from drmm_cgroup_register_region() to the raw
-> =C2=A0 dmem_cgroup_register_region() and store the region in
-> =C2=A0 amdgpu_vram_mgr.cg_region. Call dmem_cgroup_unregister_region()
-> =C2=A0 in amdgpu_vram_mgr_fini() after ttm_resource_manager_evict_all()
-> =C2=A0 to drain in-flight reclaim callbacks, and clear man->cg afterwards=
-.
-> =C2=A0 This is required because amdgpu's vram manager fini is called
-> =C2=A0 explicitly during driver unbind, which may precede the DRM device
-> =C2=A0 release and thus precede any drmm-based cleanup. (Sashiko-bot)
->=20
-> v6:
-> - Fix mgr->cg_region never being assigned, so
-> =C2=A0 dmem_cgroup_unregister_region() in fini silently no-ops on NULL
-> =C2=A0 and leaks the region. (Sashiko-bot)
-> - Reorder fini to call set_used(false) and evict_all() before
-> =C2=A0 dmem_cgroup_unregister_region(), so ttm_resource_free() can
-> =C2=A0 uncharge via man->cg during eviction; clear man->cg after
-> =C2=A0 unregister. (Sashiko-bot)
->=20
-> Assisted-by: GitHub_Copilot:claude-sonnet-4.6
-> Signed-off-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
-> ---
-> =C2=A0drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 2 +-
-> =C2=A0drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 31 ++++++++++++++++-=
--
-> --
-> =C2=A0drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.h |=C2=A0 2 ++
-> =C2=A03 files changed, 28 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> index 2740de94e93c..8cbcd33f51a5 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
-> @@ -1488,7 +1488,7 @@ static bool
-> amdgpu_ttm_bo_eviction_valuable(struct ttm_buffer_object *bo,
-> =C2=A0	dma_resv_for_each_fence(&resv_cursor, bo->base.resv,
-> =C2=A0				DMA_RESV_USAGE_BOOKKEEP, f) {
-> =C2=A0		if (amdkfd_fence_check_mm(f, current->mm) &&
-> -		=C2=A0=C2=A0=C2=A0 !(place->flags & TTM_PL_FLAG_CONTIGUOUS))
-> +		=C2=A0=C2=A0=C2=A0 !(place && (place->flags &
-> TTM_PL_FLAG_CONTIGUOUS)))
-> =C2=A0			return false;
-> =C2=A0	}
-> =C2=A0
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> index 08f05c3aed1d..2250bab0970d 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> @@ -906,6 +906,10 @@ static const struct ttm_resource_manager_func
-> amdgpu_vram_mgr_func =3D {
-> =C2=A0	.debug	=3D amdgpu_vram_mgr_debug
-> =C2=A0};
-> =C2=A0
-> +static const struct dmem_cgroup_ops amdgpu_vram_mgr_dmem_ops =3D {
-> +	.reclaim =3D ttm_resource_manager_dmem_reclaim,
-> +};
+On 6/11/26 9:47 AM, Peter Zijlstra wrote:
+> On Wed, Jun 10, 2026 at 11:09:59AM -0400, Waiman Long wrote:
+>
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -4116,6 +4116,21 @@ bool cpuset_cpus_allowed_fallback(struct
+>>>    	return changed;
+>>>    }
+>>> +int cpuset_num_cpus(struct cgroup *cgrp)
+>>> +{
+>>> +	int nr = num_online_cpus();
+>>> +	struct cpuset *cs;
+>>> +
+>>> +	if (is_in_v2_mode()) {
+>>> +		guard(rcu)();
+>>> +		cs = css_cs(cgroup_e_css(cgrp, &cpuset_cgrp_subsys));
+>>> +		if (cs)
+>>> +			nr = cpumask_weight(cs->effective_cpus);
+>>> +	}
+>>> +
+>>> +	return nr;
+>>> +}
+>> I just have a question about cgroup v1 support. I am assuming that cgroup v1
+>> without the cpuset_v2_mode mount option is not supported.
+> Correct.
+>
+>> To fully support
+>> cgroup v1, you may have to use guarantee_active_cpus() to return the actual
+>> set of CPUs that the task can run on.
+> Except this is group based, we'd need an iteration of all tasks in the
+> group and compute a union of guarantee_active_cpus(). Which all seems
+> far too expensive and not worth the effort.
+I thought so.
+>
+>> Also there is a caveat about the arm64 specific
+>> task_cpu_possible_mask() for certain arm64 CPUs. That is for 32-bit
+>> binary running on 64-bit core which are allowed only on a selected
+>> subset of cores within the CPU.
+>>
+>> This is probably not what you want to focus on right now, but it will be
+>> good to have a comment to list items that are not fully supported here.
+> Will add a comment!
+Thanks,
+Longman
 
-Probably might want to block reclaim after device unbind, just like xe.
-I'll look at that for v7.
-
-> +
-> =C2=A0/**
-> =C2=A0 * amdgpu_vram_mgr_init - init VRAM manager and DRM MM
-> =C2=A0 *
-> @@ -917,6 +921,7 @@ int amdgpu_vram_mgr_init(struct amdgpu_device
-> *adev)
-> =C2=A0{
-> =C2=A0	struct amdgpu_vram_mgr *mgr =3D &adev->mman.vram_mgr;
-> =C2=A0	struct ttm_resource_manager *man =3D &mgr->manager;
-> +	struct dmem_cgroup_region *cg;
-> =C2=A0	int err;
-> =C2=A0
-> =C2=A0	ttm_resource_manager_init(man, &adev->mman.bdev,
-> @@ -933,12 +938,16 @@ int amdgpu_vram_mgr_init(struct amdgpu_device
-> *adev)
-> =C2=A0	if (err)
-> =C2=A0		return err;
-> =C2=A0
-> -	man->cg =3D drmm_cgroup_register_region(adev_to_drm(adev),
-> "vram",
-> -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &(struct
-> dmem_cgroup_init){
-> -						.size =3D adev-
-> >gmc.real_vram_size,
-> -					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 });
-> -	if (IS_ERR(man->cg))
-> -		return PTR_ERR(man->cg);
-> +	cg =3D dmem_cgroup_register_region(&(struct dmem_cgroup_init){
-> +					=C2=A0=C2=A0=C2=A0=C2=A0 .size =3D adev-
-> >gmc.real_vram_size,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0 .ops =3D
-> &amdgpu_vram_mgr_dmem_ops,
-> +					=C2=A0=C2=A0=C2=A0=C2=A0 .reclaim_priv =3D man,
-> +					 }, "vram");
-> +	if (IS_ERR(cg))
-> +		return PTR_ERR(cg);
-> +
-> +	mgr->cg_region =3D cg;
-> +	ttm_resource_manager_set_dmem_region(man, cg);
-> =C2=A0
-> =C2=A0	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_VRAM, &mgr-
-> >manager);
-> =C2=A0	ttm_resource_manager_set_used(man, true);
-> @@ -966,6 +975,16 @@ void amdgpu_vram_mgr_fini(struct amdgpu_device
-> *adev)
-> =C2=A0	if (ret)
-> =C2=A0		return;
-> =C2=A0
-> +	/*
-> +	 * Drain any in-flight dmem cgroup reclaim callbacks and
-> remove the
-> +	 * region from the global list.=C2=A0 This must happen after
-> evict_all()
-> +	 * so that ttm_resource_free() can still uncharge via man-
-> >cg while
-> +	 * BOs are being evicted.
-> +	 */
-> +	dmem_cgroup_unregister_region(mgr->cg_region);
-> +	mgr->cg_region =3D NULL;
-> +	man->cg =3D NULL;
-> +
-> =C2=A0	mutex_lock(&mgr->lock);
-> =C2=A0	list_for_each_entry_safe(rsv, temp, &mgr-
-> >reservations_pending, blocks)
-> =C2=A0		kfree(rsv);
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.h
-> b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.h
-> index 429a21a2e9b2..07103cddb335 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.h
-> @@ -36,6 +36,8 @@ struct amdgpu_vram_mgr {
-> =C2=A0	atomic64_t vis_usage;
-> =C2=A0	u64 default_page_size;
-> =C2=A0	struct list_head allocated_vres_list;
-> +	/** @cg_region: dmem cgroup region for VRAM; unregistered in
-> fini. */
-> +	struct dmem_cgroup_region *cg_region;
-> =C2=A0};
-> =C2=A0
-> =C2=A0struct amdgpu_vres_task {
 
