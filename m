@@ -1,303 +1,298 @@
-Return-Path: <cgroups+bounces-16847-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16848-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id m6ASJjxzKmoSpgMAu9opvQ
-	(envelope-from <cgroups+bounces-16847-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 10:35:08 +0200
+	id JuTMMr11Kmq0pgMAu9opvQ
+	(envelope-from <cgroups+bounces-16848-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 10:45:49 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C3B166FE8A
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 10:35:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2357E66FFB3
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 10:45:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=VI3BnmI5;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16847-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16847-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=DRiGWwQ6;
+	dkim=pass header.d=redhat.com header.s=google header.b=Nd9Id4w+;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16848-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16848-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1B8DF3028E9A
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 08:35:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B330F31EE3F7
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 08:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC85134750D;
-	Thu, 11 Jun 2026 08:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14CAF3911B6;
+	Thu, 11 Jun 2026 08:43:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92391309F09;
-	Thu, 11 Jun 2026 08:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2E3372B50
+	for <cgroups@vger.kernel.org>; Thu, 11 Jun 2026 08:43:02 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781166903; cv=none; b=G2kYQ5H85peu1+FlVyf5ISY/9ROm2xmBXgDsHgriv7gxIyhCU2awb5klIKA3j/xU9Od3sr6CLbWmzLM7rXCWxWI6NwJcU7f+wSkion1YEi+GEis7/rq+2FKhNfnS4/Pycvqops/qHoPHWHLxJCQHcx9V8J8aY0HcMzAPHJjFUoY=
+	t=1781167383; cv=none; b=qWRcbyoZKhv4ggYtDJvW56v2XFwUxs7/jUUzlbcN7O/ISmMmHcJHbnlB0JnnpLBFZCmxBSgVN9AA7whsfnUalajnnLgiOIe/gahQeovHRVh5XoB5JPyfo1zgQVEad4Py+wfEdD+k7uTMTQXMugQSFru/1K9+Jll/4omYCuB57Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781166903; c=relaxed/simple;
-	bh=/XPD+QDcACn8hpJwQv5JEJW7ZgupK0+YQWQwy7xrO9I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lwTJQYL3/5FAmHHhauPMy/rK4lXA7onooU7QoS0TpYLCDHRIAYwSjhILCtCSzwgZ7L5pc7ABGC8D5CYbSvAtZwV2yW2KFE7+aRNI61jouw0Dc3u7BJIlWNRgAzDS/Z+1thNqxQyE/IaT1A5zXwA3M0Jqpzbrj6jGweNTQ3uUSyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VI3BnmI5; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 196E71F00893;
-	Thu, 11 Jun 2026 08:34:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781166902;
-	bh=BIdrkYCaRKHtO0F3ILNakuhWS7z2U2qtXW4LOAf0juo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=VI3BnmI5yKVWZcu3g5JVCB4QJzql4j5YoLCWDGgOMGEToCuY/c8Kw3mMMUvPiaCZY
-	 C7oxjRkBj4ETyRNEEp2r0VDtRc19tJ/itH4miv3jkmpZLEhsaRxwG4f8geCj23bRyv
-	 xXAiCPnlLG6EJDBkzxVLhd8EHG27Zs78BmLVADeKHE3nso+m19DdoElpxvx7XZsbYe
-	 JAKmh4Jw9O0uFeEPFVutzliZMrpai0IXVKnjaNrcvJh3v5x+0PBrEukgcSvpvosM5N
-	 0fo2NRHDCwjwlUlYBy+F8FNIWaEeItUV3KgaWMHavwOVsthnGIl4RN8KA2ajJ+JxTP
-	 6AEi2ra2tAhAA==
-Message-ID: <159d1e20-5b21-4329-ac9a-f7a5cb0fd56a@kernel.org>
-Date: Thu, 11 Jun 2026 10:34:55 +0200
+	s=arc-20240116; t=1781167383; c=relaxed/simple;
+	bh=5kEugBllbOr9R1CSEvKxlF21Q03x528w9hHM2AMXfgk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I9OmxlRINDL7SJoJML8yHi9eQmnTKLP3VeumRgq1DAdTbPLTOAk0W9M27XzxFCKO934m0HCPIiu0Jn+eCf+ovXk1VdPKrfD/+sp11UJ4hlZgHV42w4ltvb6WnaM/fpf1kK5jrpADtNJXM4xYl7edqaP2JipjYS/DJpFn7Q18NZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DRiGWwQ6; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Nd9Id4w+; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1781167381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ajL9Euat9wcoKLrUzak1GVazOOJHvH1s4ex9MFY1kDA=;
+	b=DRiGWwQ6KkujmDJZgsHVM8Ww3+5yrMLTG2smkCXk5ZsoHfao3QCmwXDpPKByge5jl+p16o
+	EDv3EcP+rkEsf2UHGv0S2wY8Y0XTgU2t7jAE96T7cIzeA31sjqWxSMlCjaqEVhtJaMUfPA
+	MX6wCltiXPMGECFRI5cT55aqi7jQxT4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-149-YD7haxUxNA2YZyyuYwnaIw-1; Thu, 11 Jun 2026 04:42:59 -0400
+X-MC-Unique: YD7haxUxNA2YZyyuYwnaIw-1
+X-Mimecast-MFC-AGG-ID: YD7haxUxNA2YZyyuYwnaIw_1781167378
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-45f3d008865so456455f8f.0
+        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2026 01:42:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1781167378; x=1781772178; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ajL9Euat9wcoKLrUzak1GVazOOJHvH1s4ex9MFY1kDA=;
+        b=Nd9Id4w+wTIYaVwRl306SE+2n1vg2SBj4KkJwjTl0M9Q7owDmVL0OKMw5P7YZvXpU1
+         IKXrocFdxIIignU8xXCsj+v5t0paXU2j6Jmf/WtEcmDwFU6i9zFuVBBblCTlir+7pefT
+         KSSv8y0KuMZJumChQ1Pj4GCnV2pgnU8HlNRG7qPo7VqH3JVYtf4qXwIiFIlNr/mXk6et
+         PhJyYV+hfzcMSKnzyl1OhEWWG+EkS3BLkXbNP8kqyo5M0ph75bmNOwMKXpuHvF53Y+jd
+         POw+xr/+4y8LZ85CRsZYVjl7rO6ta9elgUiawgQO/Cw0YDDVrN56x0L5N9WEjIxnP0Gu
+         sAHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781167378; x=1781772178;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ajL9Euat9wcoKLrUzak1GVazOOJHvH1s4ex9MFY1kDA=;
+        b=KicGeARt4Xq2E1PdKi0qMafji7tkMreLghluLqPYdx2yKh1vO2zpXTaU83QYJHgcKV
+         /dpKRemAJ/KCIXVGtO7KTeRXDHNLR68f97YymUOmMJ+RLP97u5opLvn+qThX1kCZoHTH
+         OZj98FtTT1tTMQOsfFQwCBp9Eprl/np1WciovoiVqv6ykimKgVywmpnM9rHAGL0uS8jY
+         Im+sn13PN0sJogsuXh1Xy1PnFRKoXJrQS9VwhnUvHYNujpRuFYYuBebOwp2MeVzuna2I
+         A9JxWwHGWJERR6QZLSFdCluTeX9cyIfA6qRvGbiLo3+BGJBle6RNNfn0qAb+bC1zup1r
+         NmWQ==
+X-Forwarded-Encrypted: i=1; AFNElJ++6pY4fW+d9Ba7snxzYS7mJKQj983EWZxxIR6PdE4fKAdN4Jy1beT2o6CKMsY3+UcE1anXB9X2@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7mhkH7fZBXZC/EB/0Lu62O7lwQ+0f5GGzXXbavKBevu7+d6Am
+	t37nnNYZ7XmqXQm2dOx7H3WnOnq9rD1+nqVUZG/XDkmvLqnZggeruoZMkJEznliNHI3+fQ0Dx4+
+	9wdtH3OnPSKGkQb7VC+f2m2QiTDRS2DFZK35RXNcmv7aq7EsM0qc+TaSBGMQ=
+X-Gm-Gg: Acq92OGOl6ZfPxkLCwXd0BpLvif4T1QtTlbWRhEzVcXkalYT116NklZQvFSat6K40ug
+	aP88etaxoabRbrXGLCKpAZCPLktzJ1nYlSB/Rcx3FLdDmJ+uDQN0be63BBDMmqgHPBjg745ReoA
+	euxmMVe38AQKV7V5xNwevwv4qzFRWYqTXxFt1ucjnd5XQAit8Ib7yDs3yMFyex4fa8zIe7bEtdv
+	WmEy110Nc7M2nQF0BuISO/AxDx9IBMVCEFLvoewUkPqaUNceEDDpyWue+oCGSgEygb5Wxv7YuWR
+	L5PA1Wcbl8jTVwmvwB/KCOMN3G+C/CwsG9LmQJzZtTzA5RkBZm8SYvLt3WQGcW3ABCGWOS8bOX0
+	Dl3oItbQEgHim7jZ7d5S7B5qaxkET3C+bi9e/GKHjQ31MuaDYRe62kbYfeSWPyOE=
+X-Received: by 2002:a05:6000:2085:b0:460:1c93:6eb6 with SMTP id ffacd0b85a97d-46067c21fa4mr2083256f8f.20.1781167378150;
+        Thu, 11 Jun 2026 01:42:58 -0700 (PDT)
+X-Received: by 2002:a05:6000:2085:b0:460:1c93:6eb6 with SMTP id ffacd0b85a97d-46067c21fa4mr2083211f8f.20.1781167377778;
+        Thu, 11 Jun 2026 01:42:57 -0700 (PDT)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.95.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f2f5612sm77250977f8f.15.2026.06.11.01.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2026 01:42:57 -0700 (PDT)
+Date: Thu, 11 Jun 2026 10:42:55 +0200
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Yuri Andriaccio <yurand2000@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Luca Abeni <luca.abeni@santannapisa.it>,
+	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
+Subject: Re: [RFC PATCH v6 12/25] sched/rt: Add
+ {alloc/unregister/free}_rt_sched_group
+Message-ID: <aip1DyMmTDjbB6Kp@jlelli-thinkpadt14gen4.remote.csb>
+References: <20260608121546.69910-1-yurand2000@gmail.com>
+ <20260608121546.69910-13-yurand2000@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/16] mm/slab: do not init any kfence objects on
- allocation
-Content-Language: en-US
-To: Harry Yoo <harry@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-2-7190909db118@kernel.org>
- <b6530e92-d648-4028-9e77-0df8c3ab166d@kernel.org>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Autocrypt: addr=vbabka@kernel.org; keydata=
- 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
-In-Reply-To: <b6530e92-d648-4028-9e77-0df8c3ab166d@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260608121546.69910-13-yurand2000@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16847-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:andreyknvl@gmail.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16848-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:yurand2000@gmail.com,m:mingo@redhat.com,m:peterz@infradead.org,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:luca.abeni@santannapisa.it,m:yuri.andriaccio@santannapisa.it,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[linux.dev,gentwo.org,google.com,kernel.org,linux-foundation.org,cmpxchg.org,gmail.com,googlegroups.com,kvack.org,vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[santannapisa.it:email,jlelli-thinkpadt14gen4.remote.csb:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,sssup.it:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0C3B166FE8A
+X-Rspamd-Queue-Id: 2357E66FFB3
 
-On 6/11/26 05:19, Harry Yoo wrote:
+Hello,
+
+On 08/06/26 14:15, Yuri Andriaccio wrote:
+> Add allocation and deallocation code for rt-cgroups.
 > 
->> This potentially adds overhead of the is_kfence_address() check to
->> allocation hotpath, but that one is designed to be as small as possible,
->> and it's only evaluated if zeroing is about to happen. This means (aside
->> from init_on_alloc hardening) only for __GFP_ZERO allocations, and the
->> zeroing itself comes with an overhead likely larger than the added
->> check.
->> 
->> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
->> ---
->>  mm/kfence/core.c |  2 +-
->>  mm/slub.c        | 23 ++++++++---------------
->>  2 files changed, 9 insertions(+), 16 deletions(-)
->> 
->> diff --git a/mm/slub.c b/mm/slub.c
->> index e2ee8f1aaccf..8e5264d3ddbf 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -4565,9 +4565,10 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
->>  
->>  static __fastpath_inline
->>  bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->> -			  gfp_t flags, size_t size, void **p, bool init,
->> +			  gfp_t flags, size_t size, void **p,
->>  			  unsigned int orig_size)
->>  {
->> +	bool init = slab_want_init_on_alloc(flags, s);
->>  	unsigned int zero_size = s->object_size;
->>  	bool kasan_init = init;
->>  	size_t i;
->> @@ -4608,7 +4609,8 @@ bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->>  	for (i = 0; i < size; i++) {
->>  		p[i] = kasan_slab_alloc(s, p[i], init_flags, kasan_init);
->>  		if (p[i] && init && (!kasan_init ||
->> -				     !kasan_has_integrated_init()))
->> +				     !kasan_has_integrated_init())
->> +				 && !is_kfence_address(p[i]))
+> Declare dl_server specific functions (only skeleton, but no
+> implementation yet), needed by the deadline servers to be called when
+> trying to schedule.
 > 
-> I hope we could make it bit more verbose and straightforward,
-> something like:
+> Initialize a cgroup's active context to that of its parent.
 > 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 5d7ea72ebebd..29cf4590f9d9 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4573,7 +4573,6 @@ bool slab_post_alloc_hook(struct kmem_cache *s,
-> gfp_t flags, size_t size,
+> Co-developed-by: Alessio Balsini <a.balsini@sssup.it>
+> Signed-off-by: Alessio Balsini <a.balsini@sssup.it>
+> Co-developed-by: Andrea Parri <parri.andrea@gmail.com>
+> Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+> Co-developed-by: luca abeni <luca.abeni@santannapisa.it>
+> Signed-off-by: luca abeni <luca.abeni@santannapisa.it>
+> Signed-off-by: Yuri Andriaccio <yurand2000@gmail.com>
+> ---
+
+...
+
+>  void free_rt_sched_group(struct task_group *tg)
 >  {
->  	bool init = slab_want_init_on_alloc(flags, s);
->  	unsigned int zero_size = s->object_size;
-> -	bool kasan_init = init;
->  	size_t i;
->  	gfp_t init_flags = flags & gfp_allowed_mask;
-> 
-> @@ -4591,29 +4590,37 @@ bool slab_post_alloc_hook(struct kmem_cache *s,
-> gfp_t flags, size_t size,
->  	if (slub_debug_orig_size(s))
->  		zero_size = ac->orig_size;
-> 
-> -	/*
-> -	 * When slab_debug is enabled, avoid memory initialization integrated
-> -	 * into KASAN and instead zero out the memory via the memset below with
-> -	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
-> -	 * cause false-positive reports. This does not lead to a performance
-> -	 * penalty on production builds, as slab_debug is not intended to be
-> -	 * enabled there.
-> -	 */
-> -	if (__slub_debug_enabled())
-> -		kasan_init = false;
-> -
-> -	/*
-> -	 * As memory initialization might be integrated into KASAN,
-> -	 * kasan_slab_alloc and initialization memset must be
-> -	 * kept together to avoid discrepancies in behavior.
-> -	 *
-> -	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> -	 */
->  	for (i = 0; i < size; i++) {
-> -		p[i] = kasan_slab_alloc(s, p[i], init_flags, kasan_init);
-> -		if (p[i] && init && (!kasan_init ||
-> -				     !kasan_has_integrated_init())
-> -				 && !is_kfence_address(p[i]))
-> +		bool skip_init = false;
+> +	int i;
+> +	unsigned long flags;
 > +
-> +		if (is_kfence_address(p[i])) {
-> +			/*
-> +			 * kfence zeroes the object instead of SLUB to avoid
-> +			 * overwriting its own redzone, and zeroing of
-> +			 * s->object_size will corrupt it.
-> +			 */
-> +			skip_init = true;
+>  	if (!rt_group_sched_enabled())
+>  		return;
+> +
+> +	if (!tg->dl_se || !tg->rt_rq)
+> +		return;
+> +
+> +	for_each_possible_cpu(i) {
+> +		if (!tg->dl_se[i] || !tg->rt_rq[i])
+> +			continue;
+> +
+> +		/*
+> +		 * Shutdown the dl_server and free it
+> +		 *
+> +		 * Since the dl timer is going to be cancelled,
+> +		 * we risk to never decrease the running bw...
+> +		 * Fix this issue by changing the group runtime
+> +		 * to 0 immediately before freeing it.
+> +		 */
+> +		if (tg->dl_se[i]->dl_runtime)
+> +			dl_init_tg(tg->dl_se[i], 0, tg->dl_se[i]->dl_period);
+> +
+> +		raw_spin_rq_lock_irqsave(cpu_rq(i), flags);
+> +		hrtimer_cancel(&tg->dl_se[i]->dl_timer);
+> +		raw_spin_rq_unlock_irqrestore(cpu_rq(i), flags);
 
-But now we perform this check even if init is false, making it more hot.
+Why do we need to grab rq lock here? I actually fear this can deadlock
+with the timer callback.
 
-> +		} else if (__slub_debug_enabled()) {
-> +			/*
-> +			 * KASAN never zeroes memory when slab_debug is enabled
-> +			 * to avoid overwriting SLUB redzones. This does not
-> +			 * lead to a performance penalty on production builds,
-> +			 * as slab_debug is not intended to be enabled there.
-> +			 */
-> +			skip_init = false;
-> +		} else if (kasan_has_integrated_init()) {
-> +			/*
-> +			 * ARM64 can set memory tags and zero the memory using
-> +			 * a single instruction. Since HW_TAGS KASAN uses that
-> +			 * while tagging the object, a separate zeroing is
-> +			 * unnecessary unless slab_debug is enabled.
-> +			 */
-
-(I like the new/updated comments)
-
-> +			skip_init = true;
-> +		}>
-
-And these two are now done in every loop iteration even though they don't
-depend on the object. Yeah it's a static key and build-time constant but still.
-
-But maybe there's some middle ground?
-
-Above the loop do (with your comments).
-
-bool init;
-
-/* ARM64 can ...
- * ...
- * But KASAN never zeroes ...
- */
-if (kasan_has_integrated_init() && !__slub_debug_enabled())
-	init = false;
-else
-	init = slab_want_init_on_alloc(flags, s);
-
-In the loop:
-
-		if (p[i] && init && !is_kfence_address(p[i]))
-			memset(p[i], 0, zero_size);
-
-> +		p[i] = kasan_slab_alloc(s, p[i], init_flags, init && skip_init);
-> +		/* memset and hooks come after KASAN as p[i] might get tagged */
-> +		if (p[i] && init && !skip_init)
->  			memset(p[i], 0, zero_size);
->  		if (alloc_flags_allow_spinning(ac->alloc_flags))
->  			kmemleak_alloc_recursive(p[i], s->object_size, 1,
+> +		kfree(tg->dl_se[i]);
+> +
+> +		/* Free the local per-cpu runqueue */
+> +		kfree(rq_of_rt_rq(tg->rt_rq[i]));
+> +	}
+> +
+> +	kfree(tg->rt_rq);
+> +	kfree(tg->dl_se);
+>  }
 > 
+> +static inline void __rt_rq_free(struct rt_rq **rt_rq)
+> +{
+> +	int i;
+> +
+> +	for_each_possible_cpu(i) {
+> +		kfree(rq_of_rt_rq(rt_rq[i]));
+                            ^^
+Can this result in NULL pointer deref if __alloc_rt_sched_group_data()
+fails for some reason midway in the CPU loop?
+
+> +	}
+> +
+> +	kfree(rt_rq);
+> +}
+> +
+> +DEFINE_FREE(rt_rq_free, struct rt_rq **, if (_T) __rt_rq_free(_T))
+> +
+> +static inline void __dl_se_free(struct sched_dl_entity **dl_se)
+> +{
+> +	int i;
+> +
+> +	for_each_possible_cpu(i) {
+> +		kfree(dl_se[i]);
+> +	}
+> +
+> +	kfree(dl_se);
+> +}
+> +
+> +DEFINE_FREE(dl_se_free, struct sched_dl_entity **, if (_T) __dl_se_free(_T))
+> +
+> +static int __alloc_rt_sched_group_data(struct task_group *tg) {
+> +	/* Instantiate automatic cleanup in event of kalloc fail */
+> +	struct rt_rq **tg_rt_rq __free(rt_rq_free) = NULL;
+> +	struct sched_dl_entity **tg_dl_se __free(dl_se_free) = NULL;
+> +	struct sched_dl_entity *dl_se __free(kfree) = NULL;
+> +	struct rq *s_rq __free(kfree) = NULL;
+> +	int i;
+> +
+> +	tg_rt_rq = kcalloc(nr_cpu_ids, sizeof(struct rt_rq *), GFP_KERNEL);
+> +	if (!tg_rt_rq)
+> +		return 0;
+> +
+> +	tg_dl_se = kcalloc(nr_cpu_ids,
+> +			   sizeof(struct sched_dl_entity *), GFP_KERNEL);
+> +	if (!tg_dl_se)
+> +		return 0;
+> +
+> +	for_each_possible_cpu(i) {
+> +		s_rq = kzalloc_node(sizeof(struct rq),
+> +				    GFP_KERNEL, cpu_to_node(i));
+> +		if (!s_rq)
+> +			return 0;
+> +
+> +		dl_se = kzalloc_node(sizeof(struct sched_dl_entity),
+> +				     GFP_KERNEL, cpu_to_node(i));
+> +		if (!dl_se)
+> +			return 0;
+> +
+> +		tg_rt_rq[i] = &no_free_ptr(s_rq)->rt;
+> +		tg_dl_se[i] = no_free_ptr(dl_se);
+> +	}
+> +
+> +	tg->rt_rq = no_free_ptr(tg_rt_rq);
+> +	tg->dl_se = no_free_ptr(tg_dl_se);
+> +
+> +	return 1;
+> +}
+
+...
+
+Thanks,
+Juri
 
 
