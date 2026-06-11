@@ -1,197 +1,224 @@
-Return-Path: <cgroups+bounces-16849-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id UclOJxh3KmqFpwMAu9opvQ
-	(envelope-from <cgroups+bounces-16849-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 10:51:36 +0200
+	id l1CiMRKdKmqPtgMAu9opvQ
+	(envelope-from <cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 13:33:38 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19254670064
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 10:51:36 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F71C6715E3
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 13:33:38 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=VLSc6bFy;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16849-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-16849-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=infradead.org header.s=desiato.20200630 header.b=XvV+UjyZ;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=infradead.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3E3E1303AF83
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 08:51:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4C73530CF191
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 11:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EF937700A;
-	Thu, 11 Jun 2026 08:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3C63E451A;
+	Thu, 11 Jun 2026 11:32:59 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01A5036212D;
-	Thu, 11 Jun 2026 08:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF20242D67;
+	Thu, 11 Jun 2026 11:32:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781167886; cv=none; b=TdEHnC9XqZKrBp3dlzxsvebPpaAUIRiOKAIp+Z7sUtKGqFXJ5MuTk068YO4gMiAW8QX45lw6c3TBR161h0loYhQV8/Vw+/cJHSIWRjezey7k2yjTwpPqivBBLxXwwbT+qWnIqFWNBw3SZfOkYleg0WzOAduSNhdoamRY6ZijKfc=
+	t=1781177579; cv=none; b=a3vqfVXLkoWxtz723Tfub7LUq68VeWV8qeW8eVDAfYTu6tIarE2MlP5oW9S1Q5LcW+xI+xMdISdggNoBFHzwcSsPO9roxgtU6h/oA3im8+aDZ3BagmhT9dRs11R3xD1Um/ujv3RIdLBCkwaHGJ9OUtHB+WWcm00qfIrN8bZbzX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781167886; c=relaxed/simple;
-	bh=m7ppkDDqCpZgZEYGPw1fKZ1D6F2/FkNGWTH8OlV4Els=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R8h7ccfb3tdcX42omAVbNEOOyC32HbuBUavnHf/oOCEigI/fcgyrp8VlApv7U3ivrep3gG0AMzEtVtcUVatpURADL5FtY5tANDqRjRkH0BmAxC2rOmboMLEBvvB/8JN0JV1mjAFTFSthn39IhmiOu48dEI8p/GpliYZh3jg/twk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLSc6bFy; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4DDA1F00893;
-	Thu, 11 Jun 2026 08:51:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781167885;
-	bh=tKQY3q8LRG8SYeUWFL/Ai08b37v/C5UOx3jw/kl3HVc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=VLSc6bFy8Nf4LrmeiH/AXvTLCsV4NmbpcD+RqmKowxdCB1XJ6GSorOidWsAd4Uc5T
-	 cseJqJ1r5/e3+o02SKnJt8sUffKyjuanvLaH/EHDaUBaQaIdx+11MPWKFNU54d+pJr
-	 eUnRU5ZW3nhYTCiK5cq6v0onacSYnkHWChRIcX/73nFH8qqhno503WbUOZwd5UxmyE
-	 0nAlFbjS6CX0CfGZfd+aV+S83PbRSLb1lyVM/skhZY72WX3YAHAWmwmYSVIjAiYmST
-	 v9nTzgZbn48/SHfr/DDBNCgFZg3dCsAED04OD3TI6YTfAgfPIYnQMhDcN9IjKSEKOw
-	 QJ1/z6NJyo72Q==
-Message-ID: <3d6e1e47-efea-4f4f-889e-ce5a89cf808a@kernel.org>
-Date: Thu, 11 Jun 2026 10:51:20 +0200
+	s=arc-20240116; t=1781177579; c=relaxed/simple;
+	bh=JnCub/wPXxOc+l3B7e0zn/JahGylm17eGn665Awp8xw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=riKORVtJJOfdzon/vc9Z10DbCOMxnGXukovBlyxFImO0oXLJBuACXsAJSsShy3uzMSDSycMu+TaT4O0J24G5TJHAYSzkwCFdozTcfq3aiLZm+Wx6R2V/mr2mkzFqaT36a5POmOn+04K3CynxaGG1qeNmdEczFDEviiOl0NbeyZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XvV+UjyZ; arc=none smtp.client-ip=90.155.92.199
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=zRU4ZE38yKLjcbcoPL7tdFV8bZE0iAIGaY9qks/tkzM=; b=XvV+UjyZxdi3/ZkayE2h0iSmpv
+	GqW1ZtnPI4PAc+/Zy6F1STpzVnUxUPMYIMW3MZlWD/hiJVuOvX6qPjfcJsEE3kNX/yQDBtmvQZTu4
+	7mNncviNE7vF6BgEhcoT9x0CkRvQ9ilwIEJ8Xs5tbO0598gSrvNSFfq/ubtURJAzvt8Ky0l9e4q7l
+	Ev5ZqF8Qj763OH1iZTu46rDLmU3dJrkZC/khGNp0rBsHVGk3163x6sdnKh9Vu8Gh73AiHPPnR6Is+
+	FnpcQPgpW5qe2vdMxdCjer9KhrjuCFkPSMCIRnfFZQZ3hLyoRsoF1OK3tmmXFlmc50FVi/C8PJ8MW
+	gWUE1qZg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.99.2 #2 (Red Hat Linux))
+	id 1wXde1-000000058P6-0qSd;
+	Thu, 11 Jun 2026 11:32:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 7DBC03002F0; Thu, 11 Jun 2026 13:32:19 +0200 (CEST)
+Date: Thu, 11 Jun 2026 13:32:19 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Aaron Lu <ziqianlu@bytedance.com>
+Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jstultz@google.com,
+	kprateek.nayak@amd.com, qyousef@layalina.io, svens@linux.ibm.com
+Subject: Re: [PATCH v2 08/10] sched/fair: Add newidle balance to
+ pick_task_fair()
+Message-ID: <20260611113219.GG187714@noisy.programming.kicks-ass.net>
+References: <20260511113104.563854162@infradead.org>
+ <20260511120627.944705718@infradead.org>
+ <20260603095108.GA1684319@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/16] mm/slab: introduce alloc_flags and
- SLAB_ALLOC_TRYLOCK
-Content-Language: en-US
-To: Harry Yoo <harry@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
- <7064a90e-4bf5-4be7-8b7f-a5a11dcee66f@kernel.org>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Autocrypt: addr=vbabka@kernel.org; keydata=
- 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
-In-Reply-To: <7064a90e-4bf5-4be7-8b7f-a5a11dcee66f@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260603095108.GA1684319@bytedance.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16850-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16849-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:ziqianlu@bytedance.com,m:mingo@kernel.org,m:longman@redhat.com,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,m:svens@linux.ibm.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 19254670064
+X-Rspamd-Queue-Id: 1F71C6715E3
 
-On 6/11/26 08:40, Harry Yoo wrote:
-> Sashiko wrote [1]:
->> Does this bypass the caller's gfp constraints for standard allocations?
->> Looking at slab_alloc_node(), standard allocations now pass
->> SLAB_ALLOC_DEFAULT into alloc_from_pcs():
->> -	object = alloc_from_pcs(s, gfpflags, node);
->> +	object = alloc_from_pcs(s, gfpflags, SLAB_ALLOC_DEFAULT, node);
->> This default flag means alloc_flags_allow_spinning() will unconditionally
->> return true regardless of the gfp flags provided.
+
+Aaron,
+
+Sorry I failed to notice this email earlier.
+
+On Wed, Jun 03, 2026 at 05:51:08PM +0800, Aaron Lu wrote:
+
+> I applied below diff and the problem is gone:
 > 
-> Yes, but that's not used in _nolock path
-> as mentioned in patch 6 description :)
-> 
->> If a caller allocating under a raw spinlock intentionally strips
->> __GFP_KSWAPD_RECLAIM (for example, by using __GFP_NOWARN) to prevent
->> sleeping,
-> 
-> That's a horrible hack (and hypothetical. Nobody should be stripping
-> __GFP_KSWAP_RECLAIM instead of using kmalloc_nolock(). That's purely
-> broken).
-
-Indeed this was never intended to work, and was just an unfortunate
-sideffect of the gfp flag reuse to implement kmalloc_nolock().
-
->> won't this allow the allocator to execute spin_lock_irqsave()
->> on barn->lock or n->list_lock?
->>
->> On systems with preempt-rt enabled, a standard spinlock maps to a sleeping
->> lock, so taking these locks in an atomic context could cause a scheduling
->> while atomic panic.
->>
->> Since there is no nolock variant available for custom caches, do callers
->> currently have any alternative mitigation?
-> 
-> Well, RT kernels are not supposed to allocate meomry under a raw
-> spinlock (at least w/ allow_spin = true)
-
-Yep.
-
-> [1]
-> https://sashiko.dev/#/patchset/20260610-slab_alloc_flags-v2-0-7190909db118%40kernel.org
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 5f48af700fd44..942a543af3e54 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9897,6 +9897,9 @@ static struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
+>  	return p;
+>  
+>  idle:
+> +	if (sched_core_enabled(rq))
+> +		return NULL;
+> +
+>  	new_tasks = sched_balance_newidle(rq, rf);
+>  	if (new_tasks < 0)
+>  		return RETRY_TASK;
 > 
 
+Right, this is the safe patch and restores pick_task_fair() to its
+previous status (for core-sched).
+
+Since people are hitting this problem, I'm going to merge it as below.
+I've presumed your SoB, please let me know if that's a problem.
+
+I think I'm going to try and move newidle into sched_class::balance /
+balance_fair(), but I'll do that next cycle.
+
+Thanks!
+
+---
+Subject: sched/fair: Fix newidle vs core-sched
+From: "Aaron Lu" <ziqianlu@bytedance.com>
+Date: Wed, 3 Jun 2026 17:51:08 +0800
+
+From: "Aaron Lu" <ziqianlu@bytedance.com>
+
+While testing Prateek's throttle series, I noticed a panic issue when
+coresched is enabled and bisected to this patch.
+
+I fed the panic log and this patch to an agent and its analysis looks
+correct to me(cpu56 and cpu57 are siblings in a VM):
+
+       cpu57 (holds core-wide lock)
+
+     pick_next_task() [core scheduling]
+     for_each_cpu_wrap(i, smt_mask, 57):
+       i=57: pick_task(rq_57)
+             pick_task_fair(rq_57)
+             -> picks task A
+       rq_57->core_pick = task A
+       // task_rq(A) == rq_57
+
+       i=56: pick_task(rq_56)
+             pick_task_fair(rq_56)
+             cfs_rq->nr_queued == 0
+             goto idle
+             sched_balance_newidle(rq_56)
+             raw_spin_rq_unlock(rq_56)
+             // core-wide lock released
+             newidle_balance() pulls
+               task A: rq_57 -> rq_56
+             // task_rq(A) == rq_56 now
+             raw_spin_rq_lock(rq_56)
+             // core-wide lock re-acquired
+             return > 0
+             goto again
+             pick_task_fair(rq_56)
+             -> picks task A
+       rq_56->core_pick = task A
+
+     // first loop done
+     // rq_57->core_pick is still task A (set before lock release)
+     // but task_rq(A) == rq_56 now
+     next = rq_57->core_pick  // = task A
+
+     put_prev_set_next_task(rq_57, prev, task A)
+     __set_next_task_fair(rq_57, task A)
+     hrtick_start_fair(rq_57, task A)
+     WARN_ON_ONCE(task_rq(task A) != rq_57)
+     // task_rq(A) == rq_56
+
+IOW: by allowing pick_task_fair() to do newidle_balance and not returning
+RETRY_TASK, it can end up selecting the same task on two CPUs. Restore the
+previous state by never doing newidle when core scheduling is enabled.
+
+Tested-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: "Aaron Lu" <ziqianlu@bytedance.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://patch.msgid.link/20260603095108.GA1684319@bytedance.com
+---
+ kernel/sched/fair.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9942,6 +9942,9 @@ struct task_struct *pick_task_fair(struc
+ 	return p;
+ 
+ idle:
++	if (sched_core_enabled(rq))
++		return NULL;
++
+ 	new_tasks = sched_balance_newidle(rq, rf);
+ 	if (new_tasks < 0)
+ 		return RETRY_TASK;
 
