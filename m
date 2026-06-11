@@ -1,71 +1,70 @@
-Return-Path: <cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16852-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id l1CiMRKdKmqPtgMAu9opvQ
-	(envelope-from <cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 13:33:38 +0200
+	id LU0lGa69KmodwAMAu9opvQ
+	(envelope-from <cgroups+bounces-16852-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 15:52:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F71C6715E3
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 13:33:38 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E61F96727A2
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 15:52:45 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=infradead.org header.s=desiato.20200630 header.b=XvV+UjyZ;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16850-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=infradead.org header.s=desiato.20200630 header.b=qI7xfvfo;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16852-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16852-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=infradead.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4C73530CF191
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 11:33:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1EE373015872
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 13:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A3C63E451A;
-	Thu, 11 Jun 2026 11:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA943F99FB;
+	Thu, 11 Jun 2026 13:52:44 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF20242D67;
-	Thu, 11 Jun 2026 11:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A296A1FCFFC;
+	Thu, 11 Jun 2026 13:52:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781177579; cv=none; b=a3vqfVXLkoWxtz723Tfub7LUq68VeWV8qeW8eVDAfYTu6tIarE2MlP5oW9S1Q5LcW+xI+xMdISdggNoBFHzwcSsPO9roxgtU6h/oA3im8+aDZ3BagmhT9dRs11R3xD1Um/ujv3RIdLBCkwaHGJ9OUtHB+WWcm00qfIrN8bZbzX0=
+	t=1781185963; cv=none; b=IAw5A3ljT3RqprMIGyIdvmFEDtEfm50ngFdbadf06cP+Cq8Fv825/ZYWvTZj3Y2qVd0BoA+VjaNEs62zyADmZbVt9nhCmgjxt3nlLcVC5kah3rJu3QXXAgK3CzZPCqavU9hwZj2Inh4BxlI+KZk5ctKLuzucSCnfX2oCIm+z/as=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781177579; c=relaxed/simple;
-	bh=JnCub/wPXxOc+l3B7e0zn/JahGylm17eGn665Awp8xw=;
+	s=arc-20240116; t=1781185963; c=relaxed/simple;
+	bh=ClUeRIlwxtKCGlKO/QfS7Pui8jOoNo0Exev2CdMiWy0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=riKORVtJJOfdzon/vc9Z10DbCOMxnGXukovBlyxFImO0oXLJBuACXsAJSsShy3uzMSDSycMu+TaT4O0J24G5TJHAYSzkwCFdozTcfq3aiLZm+Wx6R2V/mr2mkzFqaT36a5POmOn+04K3CynxaGG1qeNmdEczFDEviiOl0NbeyZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XvV+UjyZ; arc=none smtp.client-ip=90.155.92.199
+	 Content-Type:Content-Disposition:In-Reply-To; b=H1O7Pp50xnrTvVkIMLedTm1GqSaWM553tL8JRpNY9q1SKC0/tINPV/g44HtYf/WnvXiKHSNeoN3+r/ZwtumPPcE6RU1nTHZCTEYovo+Pql18+ciOQHN0FD40fri21cfJqL9rsOFs6ox1f61kTd66jOl2aw+Dyai53k1U1F6cTqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=qI7xfvfo; arc=none smtp.client-ip=90.155.92.199
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=zRU4ZE38yKLjcbcoPL7tdFV8bZE0iAIGaY9qks/tkzM=; b=XvV+UjyZxdi3/ZkayE2h0iSmpv
-	GqW1ZtnPI4PAc+/Zy6F1STpzVnUxUPMYIMW3MZlWD/hiJVuOvX6qPjfcJsEE3kNX/yQDBtmvQZTu4
-	7mNncviNE7vF6BgEhcoT9x0CkRvQ9ilwIEJ8Xs5tbO0598gSrvNSFfq/ubtURJAzvt8Ky0l9e4q7l
-	Ev5ZqF8Qj763OH1iZTu46rDLmU3dJrkZC/khGNp0rBsHVGk3163x6sdnKh9Vu8Gh73AiHPPnR6Is+
-	FnpcQPgpW5qe2vdMxdCjer9KhrjuCFkPSMCIRnfFZQZ3hLyoRsoF1OK3tmmXFlmc50FVi/C8PJ8MW
-	gWUE1qZg==;
+	bh=593ksplQiT5Bh1hNgP+899YJ2glOv9xxnrZFl5JotAY=; b=qI7xfvfoUJvBsLw1RUkb9i7yv5
+	+8WXWB0rUl/m3xIwwU4OqbOF+Go+BmUwhA1mQqS10VpOGFigHtcpr8mxGTjXmeF52b9Eneneyn2U8
+	RR9i1/mPeKlb0OIvjG0+e4+nQVP8LR8WOvgwbUrwULkEeTXyaVw0rg8vFUX2Awnwr33KWuQDNiCvw
+	emnQNc5o0V4mDK8JkRQubl1TopkE297kdJc0TY9NgxWx41Ti3q4imdK59PMmZY67p4C68KZu4yTj5
+	2OlwRu0EzOXnzhYeISHZdaBsceLhs5PkxRn1rWkKus9QoB6Ul9gPfV6/20UMRMejgjm/B6STHsib9
+	Y8AiQpZQ==;
 Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
 	by desiato.infradead.org with esmtpsa (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wXde1-000000058P6-0qSd;
-	Thu, 11 Jun 2026 11:32:21 +0000
+	id 1wXfkk-00000005HBP-2cc0;
+	Thu, 11 Jun 2026 13:47:26 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 7DBC03002F0; Thu, 11 Jun 2026 13:32:19 +0200 (CEST)
-Date: Thu, 11 Jun 2026 13:32:19 +0200
+	id C58CC3002F0; Thu, 11 Jun 2026 15:47:24 +0200 (CEST)
+Date: Thu, 11 Jun 2026 15:47:24 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-To: Aaron Lu <ziqianlu@bytedance.com>
-Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+To: Waiman Long <longman@redhat.com>
+Cc: mingo@kernel.org, chenridong@huaweicloud.com, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org, jstultz@google.com,
-	kprateek.nayak@amd.com, qyousef@layalina.io, svens@linux.ibm.com
-Subject: Re: [PATCH v2 08/10] sched/fair: Add newidle balance to
- pick_task_fair()
-Message-ID: <20260611113219.GG187714@noisy.programming.kicks-ass.net>
-References: <20260511113104.563854162@infradead.org>
- <20260511120627.944705718@infradead.org>
- <20260603095108.GA1684319@bytedance.com>
+	kprateek.nayak@amd.com, qyousef@layalina.io
+Subject: Re: [PATCH v3 3/7] sched/fair: Add cgroup_mode: max
+Message-ID: <20260611134724.GK48970@noisy.programming.kicks-ass.net>
+References: <20260605105513.354837583@infradead.org>
+ <20260605124051.589618504@infradead.org>
+ <d4ca5fe7-fd76-47c8-949a-a69916bfcbd4@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -74,151 +73,84 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260603095108.GA1684319@bytedance.com>
+In-Reply-To: <d4ca5fe7-fd76-47c8-949a-a69916bfcbd4@redhat.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16850-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16852-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:mingo@kernel.org,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:ziqianlu@bytedance.com,m:mingo@kernel.org,m:longman@redhat.com,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,m:svens@linux.ibm.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[20];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_SENDER(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:from_mime,noisy.programming.kicks-ass.net:mid,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1F71C6715E3
+X-Rspamd-Queue-Id: E61F96727A2
 
+On Wed, Jun 10, 2026 at 11:09:59AM -0400, Waiman Long wrote:
 
-Aaron,
-
-Sorry I failed to notice this email earlier.
-
-On Wed, Jun 03, 2026 at 05:51:08PM +0800, Aaron Lu wrote:
-
-> I applied below diff and the problem is gone:
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -4116,6 +4116,21 @@ bool cpuset_cpus_allowed_fallback(struct
+> >   	return changed;
+> >   }
+> > +int cpuset_num_cpus(struct cgroup *cgrp)
+> > +{
+> > +	int nr = num_online_cpus();
+> > +	struct cpuset *cs;
+> > +
+> > +	if (is_in_v2_mode()) {
+> > +		guard(rcu)();
+> > +		cs = css_cs(cgroup_e_css(cgrp, &cpuset_cgrp_subsys));
+> > +		if (cs)
+> > +			nr = cpumask_weight(cs->effective_cpus);
+> > +	}
+> > +
+> > +	return nr;
+> > +}
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5f48af700fd44..942a543af3e54 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9897,6 +9897,9 @@ static struct task_struct *pick_task_fair(struct rq *rq, struct rq_flags *rf)
->  	return p;
->  
->  idle:
-> +	if (sched_core_enabled(rq))
-> +		return NULL;
-> +
->  	new_tasks = sched_balance_newidle(rq, rf);
->  	if (new_tasks < 0)
->  		return RETRY_TASK;
+> I just have a question about cgroup v1 support. I am assuming that cgroup v1
+> without the cpuset_v2_mode mount option is not supported. 
+
+Correct.
+
+> To fully support
+> cgroup v1, you may have to use guarantee_active_cpus() to return the actual
+> set of CPUs that the task can run on.
+
+Except this is group based, we'd need an iteration of all tasks in the
+group and compute a union of guarantee_active_cpus(). Which all seems
+far too expensive and not worth the effort.
+
+> Also there is a caveat about the arm64 specific
+> task_cpu_possible_mask() for certain arm64 CPUs. That is for 32-bit
+> binary running on 64-bit core which are allowed only on a selected
+> subset of cores within the CPU.
 > 
+> This is probably not what you want to focus on right now, but it will be
+> good to have a comment to list items that are not fully supported here.
 
-Right, this is the safe patch and restores pick_task_fair() to its
-previous status (for core-sched).
-
-Since people are hitting this problem, I'm going to merge it as below.
-I've presumed your SoB, please let me know if that's a problem.
-
-I think I'm going to try and move newidle into sched_class::balance /
-balance_fair(), but I'll do that next cycle.
-
-Thanks!
-
----
-Subject: sched/fair: Fix newidle vs core-sched
-From: "Aaron Lu" <ziqianlu@bytedance.com>
-Date: Wed, 3 Jun 2026 17:51:08 +0800
-
-From: "Aaron Lu" <ziqianlu@bytedance.com>
-
-While testing Prateek's throttle series, I noticed a panic issue when
-coresched is enabled and bisected to this patch.
-
-I fed the panic log and this patch to an agent and its analysis looks
-correct to me(cpu56 and cpu57 are siblings in a VM):
-
-       cpu57 (holds core-wide lock)
-
-     pick_next_task() [core scheduling]
-     for_each_cpu_wrap(i, smt_mask, 57):
-       i=57: pick_task(rq_57)
-             pick_task_fair(rq_57)
-             -> picks task A
-       rq_57->core_pick = task A
-       // task_rq(A) == rq_57
-
-       i=56: pick_task(rq_56)
-             pick_task_fair(rq_56)
-             cfs_rq->nr_queued == 0
-             goto idle
-             sched_balance_newidle(rq_56)
-             raw_spin_rq_unlock(rq_56)
-             // core-wide lock released
-             newidle_balance() pulls
-               task A: rq_57 -> rq_56
-             // task_rq(A) == rq_56 now
-             raw_spin_rq_lock(rq_56)
-             // core-wide lock re-acquired
-             return > 0
-             goto again
-             pick_task_fair(rq_56)
-             -> picks task A
-       rq_56->core_pick = task A
-
-     // first loop done
-     // rq_57->core_pick is still task A (set before lock release)
-     // but task_rq(A) == rq_56 now
-     next = rq_57->core_pick  // = task A
-
-     put_prev_set_next_task(rq_57, prev, task A)
-     __set_next_task_fair(rq_57, task A)
-     hrtick_start_fair(rq_57, task A)
-     WARN_ON_ONCE(task_rq(task A) != rq_57)
-     // task_rq(A) == rq_56
-
-IOW: by allowing pick_task_fair() to do newidle_balance and not returning
-RETRY_TASK, it can end up selecting the same task on two CPUs. Restore the
-previous state by never doing newidle when core scheduling is enabled.
-
-Tested-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: "Aaron Lu" <ziqianlu@bytedance.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://patch.msgid.link/20260603095108.GA1684319@bytedance.com
----
- kernel/sched/fair.c |    3 +++
- 1 file changed, 3 insertions(+)
-
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9942,6 +9942,9 @@ struct task_struct *pick_task_fair(struc
- 	return p;
- 
- idle:
-+	if (sched_core_enabled(rq))
-+		return NULL;
-+
- 	new_tasks = sched_balance_newidle(rq, rf);
- 	if (new_tasks < 0)
- 		return RETRY_TASK;
+Will add a comment!
 
