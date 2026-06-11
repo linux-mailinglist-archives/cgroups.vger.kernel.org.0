@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16838-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id YurBBW05KmqtkgMAu9opvQ
-	(envelope-from <cgroups+bounces-16838-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 06:28:29 +0200
+	id DwdWK18/Kmq3lAMAu9opvQ
+	(envelope-from <cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 06:53:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0A166E2EE
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 06:28:28 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0177266E504
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 06:53:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=R8PazR6j;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16838-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16838-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=N5CpSLPp;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16839-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 40D7930A91F4
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 04:28:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CA0D831C7C4D
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2026 04:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEB3345740;
-	Thu, 11 Jun 2026 04:28:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5346034BA20;
+	Thu, 11 Jun 2026 04:49:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B8F272816;
-	Thu, 11 Jun 2026 04:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D81E343884;
+	Thu, 11 Jun 2026 04:49:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781152104; cv=none; b=rATFSzLHYN7YPZakXRO2Fm7bmhGd8S0s+xa7FJ9TNzwwQfAmq7JCzBlrzG9aX8y/z/A5FGdkRjbU2AZVk0soVXETCDyUCkSeMkZOeNhVoya+3sSm46qC/K5k4lLocf9d82rOjt0dYd4U6SC/8wYKPMKcKf/s7ZDQOCusFgmFO5o=
+	t=1781153397; cv=none; b=MtIzCY1BAXxEn8qJDXHJ7DeYWRIBiF3qDlm3yto6Q4PZUtTL+31ATYc8Sw3DtbxuiCr4fwssvVwlgcuPCi011VdOdrxJrOqd2OV+Zdg+89kWoyRZCfpHdNhhcN3sSBYsrlePivtAj1HNYPFE+nHcm169iYygorWBWW5Z1wP+vBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781152104; c=relaxed/simple;
-	bh=8ebuoNn8zdrqOpxqpNoXGy+JFde83KobHja3rzwz4bg=;
+	s=arc-20240116; t=1781153397; c=relaxed/simple;
+	bh=WNQdVwOEOxeCyvRTasmqrIIyEOikW/27X0E0Tz9+AWY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GbPQdm/CiE0zlAZ6IDj9/DNV1tR4ApsrjgvNrWCmSCG9gWzmpSSTJJD33b+6ArTVZ+vV3p3ALaD8FFKHmyZMJLxLm1u2PhnHAWXrSbMxRyy1aY8xdnybeg/ofwytYwsbtvlCe230ZVcs7yHMDsevcn1czbUaWgndcfGCPk3lxwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8PazR6j; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0E2C1F00893;
-	Thu, 11 Jun 2026 04:28:19 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=JnJtRpyBrezAaDSuqLtjwUPpIVPqVRfpSb7S6YRyfvGXUENZAY8uxMFvG5MWH9chzSL++SQFiC8EUh+KEG2nH4iUjBMH9PmHwS8cnCPWyzaALKYZXwszlnsa1mVbmmDhDevyy6cjHY8md2iSSgQAVL9cac+n2nubeGeRNP79sEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N5CpSLPp; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509F11F00893;
+	Thu, 11 Jun 2026 04:49:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781152102;
-	bh=8ebuoNn8zdrqOpxqpNoXGy+JFde83KobHja3rzwz4bg=;
+	s=k20260515; t=1781153395;
+	bh=WNQdVwOEOxeCyvRTasmqrIIyEOikW/27X0E0Tz9+AWY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=R8PazR6jVPYyf7+wFXw1X07UgYA1ez4bgnqAF61ddxjFVJS5h8D5QtzyK7zw/G971
-	 HaMTOwnjh77Cw9Kkonln4915X4fMjR0tiz4JUB5RktFGKTL2tPSgjyGh489k+u440R
-	 n4QyqIY04sQHH9r6jYfgBlwWA1vRoxQko/hAAQ6ploD/y+5C2sL3MhyFynIq38j5+9
-	 G59bUR+8i6BF9unVvOi20zvvkAJfKf8CnktZPj8hXtTPkygc2A1Tg3hA8c5nwjMEyR
-	 Qa+sf2ZxBY1DFLzcn5h21YblZCGXDCAFAvCf+iuvEJsSChwcpHDcC9Co/U+opZZBak
-	 p9Ul/D30pCdeA==
-Message-ID: <df75999f-e96e-4a9b-8930-1b6c6c7c17cb@kernel.org>
-Date: Thu, 11 Jun 2026 13:28:14 +0900
+	b=N5CpSLPpw35rjgyCRj5g3Idik/9lkQPRLsBBrkJdY+yNG8r6KCnB+VtI4cGHIVw9F
+	 q+4fhjsda4gJuPbp5UJsyriDv9ESO62GadS2+MRzVYfD1/eKJuOApBaB0lnDoHziMv
+	 rlCUbWTXIMqDyiRWIf2tCuq4TXZuIiGSAADu5K+M1SJhWpGOEHKGRz4nj47U1Sl50P
+	 tWsWIn2b92e/EYQChSyuRCScQ6VlgrzXMett2OdUvxz90gfqpeNk5SU8VkEUSrz9vB
+	 jybrIjxn6fGlGdoCAt9YvXjm2BEWxhEbn4cTGeIBs6PEnffTwsleFuQj+rtKkLIG0e
+	 H3XFaAsHfYtOg==
+Message-ID: <81e13eed-2029-42a3-8e1c-4e92249a26d4@kernel.org>
+Date: Thu, 11 Jun 2026 13:49:50 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,8 +55,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/16] mm/slab: do not limit zeroing to orig_size when
- only red zoning is enabled
+Subject: Re: [PATCH v2 04/16] mm/slab: introduce slab_alloc_context
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  David Rientjes <rientjes@google.com>,
@@ -67,16 +66,15 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  Shakeel Butt <shakeel.butt@linux.dev>,
  Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- stable@vger.kernel.org
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-1-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
 Content-Language: en-US
 From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260610-slab_alloc_flags-v2-1-7190909db118@kernel.org>
+In-Reply-To: <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------9nrmmelZmALRVRtPX4TWPfgk"
+ boundary="------------c4VlE0FE0HgTrGzQd9oZjEzB"
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-7.26 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
@@ -84,17 +82,17 @@ X-Spamd-Result: default: False [-7.26 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16838-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-16839-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -109,15 +107,15 @@ X-Spamd-Result: default: False [-7.26 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6E0A166E2EE
+X-Rspamd-Queue-Id: 0177266E504
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------9nrmmelZmALRVRtPX4TWPfgk
-Content-Type: multipart/mixed; boundary="------------ErL0jxv071rjUQMi0aMrpEeW";
+--------------c4VlE0FE0HgTrGzQd9oZjEzB
+Content-Type: multipart/mixed; boundary="------------YSxo34ALkfgVy406qadRCbTw";
  protected-headers="v1"
 From: Harry Yoo <harry@kernel.org>
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
@@ -130,43 +128,31 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  Shakeel Butt <shakeel.butt@linux.dev>,
  Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- stable@vger.kernel.org
-Message-ID: <df75999f-e96e-4a9b-8930-1b6c6c7c17cb@kernel.org>
-Subject: Re: [PATCH v2 01/16] mm/slab: do not limit zeroing to orig_size when
- only red zoning is enabled
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Message-ID: <81e13eed-2029-42a3-8e1c-4e92249a26d4@kernel.org>
+Subject: Re: [PATCH v2 04/16] mm/slab: introduce slab_alloc_context
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-1-7190909db118@kernel.org>
-In-Reply-To: <20260610-slab_alloc_flags-v2-1-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
+In-Reply-To: <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
 
---------------ErL0jxv071rjUQMi0aMrpEeW
+--------------YSxo34ALkfgVy406qadRCbTw
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
 
 
 On 6/11/26 12:40 AM, Vlastimil Babka (SUSE) wrote:
-> When init (zeroing) on allocation is requested, for kmalloc() we
-> generally have to zero the full object size even if a smaller size is
-> requested, in order to provide krealloc()'s __GFP_ZERO guarantees.
+> Similarly to page allocator's struct alloc_context, introduce a helper
+> struct to hold a part of the allocation arguments. This will allow
+> reducing the number of parameters in many functions of the
+> implementation, and extend them easily if needed.
 >=20
-> But if we track the requested size, krealloc() uses that information to=
-
-> do the right thing. With red zoning also enabled, any unused size
-> became part of the red zone, so it must not be zeroed.
+> For now, make it hold the caller address and the originally requested
+> allocation size.
 >=20
-> However the check is imprecise, and will trigger also when only
-> SLAB_RED_ZONE is enabled without SLAB_STORE_USER. This means enabling
-> red zoning alone can compromise krealloc()'s __GFP_ZERO contract.
+> Convert alloc_single_from_new_slab(), __slab_alloc_node() and
+> ___slab_alloc(). No functional change intended.
 >=20
-> Fix this by using slub_debug_orig_size() instead, which is the exact
-> check for whether the requested size is tracked. We don't need to care
-> if red zoning is also enabled or not. Also update and expand the
-> comment accordingly.
->=20
-> Fixes: 9ce67395f5a0 ("mm/slub: only zero requested size of buffer for k=
-zalloc when debug enabled")
-> Cc: <stable@vger.kernel.org>
 > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > ---
 
@@ -176,20 +162,20 @@ Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
 Cheers,
 Harry / Hyeonggon
 
---------------ErL0jxv071rjUQMi0aMrpEeW--
+--------------YSxo34ALkfgVy406qadRCbTw--
 
---------------9nrmmelZmALRVRtPX4TWPfgk
+--------------c4VlE0FE0HgTrGzQd9oZjEzB
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCaio5XgAKCRCGXBN6rc5S
-1sfjAQDJjxqdD8sQENhgXIPO4U/wPF/HiD82CcmCL/ATkiFhdwEA10COEVT9AbpI
-m0HnlYsxgxDFh2+UgTL2jf7cbIWfNwo=
-=AcAR
+iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCaio+bgAKCRCGXBN6rc5S
+1oRGAQD1EG3lihk4VxLBIfWhXMef3vycxH4hVNES5+D1LcnTRQD+K6suBBuTPviO
+6IhThfc/STOwiw4VJWaHaH39OQDDxAA=
+=ZBkf
 -----END PGP SIGNATURE-----
 
---------------9nrmmelZmALRVRtPX4TWPfgk--
+--------------c4VlE0FE0HgTrGzQd9oZjEzB--
 
