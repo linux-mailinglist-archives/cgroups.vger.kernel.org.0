@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16900-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id I7xbDMDaK2raGQQAu9opvQ
-	(envelope-from <cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 12:09:04 +0200
+	id NigsEArdK2qBGgQAu9opvQ
+	(envelope-from <cgroups+bounces-16900-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 12:18:50 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78EED678991
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 12:09:03 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FE4E678A69
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 12:18:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=nT8uaQMO;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="aa/uH/j8";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16900-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16900-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 47AC6310AFF2
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 10:05:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AF03E309157E
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 10:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B66375F62;
-	Fri, 12 Jun 2026 10:05:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6450E383304;
+	Fri, 12 Jun 2026 10:17:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CF931F98D;
-	Fri, 12 Jun 2026 10:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B809369203;
+	Fri, 12 Jun 2026 10:17:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781258734; cv=none; b=lUFkJAp18KJ4Wr4L7kvprOp4xCVe8cAFnIMGGpeW4JOlsA98gGvoNzOVBsKrKbthtmXsW3hh26jhJeh2XG9okfW6NjIjTHgEUgSfPcxuwN4ackPNbu0YdA02Dd9eZqA/iXh46f5RnOchSdmxibmG7uJY0R/MkjR3AJR1ffa6Mfw=
+	t=1781259472; cv=none; b=f3jkWxK3rhQ6wN1vP7KRHuGY1LUqdeHO4s6iAOvgDfMOz0YPQBVcWvbN7TKWAZnYYeERIjYjMLccmuL3ibrxMw9QxjlpRdvjWwbBf/5f4Bj34Zl9UCKelNPQzDcR1Bl/y1C853IQ4VSj8juFtFcTwOGHa1H8azgE1UEKL/XFZjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781258734; c=relaxed/simple;
-	bh=z1e+0fsDyx0gid730KgPyhAxRxv42nQreD4mTP/vUcw=;
+	s=arc-20240116; t=1781259472; c=relaxed/simple;
+	bh=/ZOrOJvrNi8D8+JUB2DX43FTNP9lmnqBSeZPeMuCxzc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AZynTdpT2h5BbSIDfEiW3TP0LgUA+oaq3H05QQZ+49naURBfyIMkHBbXMs0tWhiwz2sierh8MgovIXdgPbj8LSYeS6Q+jeBOZCve73276hOJWOyhQpLxciV05jfffCIq/sTDLLpoAeM1EhNTA1A6QU+vPnKBZ2jt1Au+HDIL3rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nT8uaQMO; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D81541F000E9;
-	Fri, 12 Jun 2026 10:05:29 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=lCyI1a8hpr1L6yqDNJhNyCYb51tvAO3SO0SgTaV4iXlwmew5hvZAj/NdMPbxlW/evsbhNSoExvhWph1ux/WBiNUipKUr89xB1zNlCk4l6xFcsvMGK8dziWXJoyA6XMOpGSI5f2HIbsgJnuRvtHqGL+yJ6ZV/OTZnw8iy15MZtG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aa/uH/j8; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C0A61F000E9;
+	Fri, 12 Jun 2026 10:17:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781258733;
-	bh=yb+VaCQXF02BSPuZ+ctVy3j3cdU9RPguQO6IfgOy60Q=;
+	s=k20260515; t=1781259470;
+	bh=UdZmqyMl3QrZhAhovfmaOPCU7HRmnWwDMXzjqRKD3Ng=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=nT8uaQMODLhBUxROHjXuRd0ltnQkV8xcMmqUgop177jA4Q+qzhzcb7muBVmGixoTP
-	 8p5MM0H4e5+w0xuRc4XmqqID7AuqsXZfUSVh5EXViPm/AAGN08YTt4BXKo01vjLqap
-	 y1VHj3PBkZgrrEqAX3vB5we/5Ky0EAj6c94Tly7tR4rCUT9TbNDw/P84YpJ0h7KysQ
-	 sg2dDeozJRAbzXf50kjbC8Fp6Q/LuT3OyA+NFO118CfUAPNnbUNKIKON2Kv9Kh6DuN
-	 Cow79yOO6yBznJkQotV4LDWWuVTuYqQIHy/HSG1+ag4iVFBOZ/RCPougGXdiQpdFm7
-	 aGVyn4nbo9I+g==
-Message-ID: <3f53fc18-838f-44ab-acad-4323daa0fbcc@kernel.org>
-Date: Fri, 12 Jun 2026 12:05:28 +0200
+	b=aa/uH/j8yoTA9QHwv89Cwnpv1fGtzSTdAeaOE2m9NXMfvE9J+bJsN9SMQMuVp7prn
+	 BMWOF9qOcsosAfn3gAwd3w6dsukfXwH2kLVgjNp3dpQsu1+/j2oXltPrumvH80aOO/
+	 1e0eaG4jvxqfJHpnCZWP/nUIL7yfjFIY2Z1C6OsIuUYx3TywhkQfKL0z7EpZzAi18q
+	 eVwrs2mbLfg1UWKFTqpxTyA2PLablNW1PHY0mTAEniXOpQSuPWtxzZLKfa6I4vQ1QB
+	 PgavmWaN+uZA6bAPY2JbXd0gaUcrKuvZo0cEqyc8oxjS9wO7+nYCAx15hZvcIE66h6
+	 NtAsSGfqmYIvA==
+Message-ID: <49f1bf1e-fcaf-48fa-a7b1-f8ee78b19762@kernel.org>
+Date: Fri, 12 Jun 2026 12:17:45 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,8 +55,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/16] mm/slab: allow kmem_cache_alloc_bulk() with any
- gfp flags
+Subject: Re: [PATCH v2 15/16] mm/slab: remove __GFP_NO_OBJ_EXT usage from
+ alloc_slab_obj_exts()
 Content-Language: en-US
 To: Hao Li <hao.li@linux.dev>
 Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
@@ -70,8 +70,8 @@ Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-11-7190909db118@kernel.org>
- <ait6ojueVi38-s85@fedora>
+ <20260610-slab_alloc_flags-v2-15-7190909db118@kernel.org>
+ <aiurbPx1SISBarBy@fedora>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -112,7 +112,7 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <ait6ojueVi38-s85@fedora>
+In-Reply-To: <aiurbPx1SISBarBy@fedora>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
@@ -120,18 +120,18 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:hao.li@linux.dev,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:hao.li@linux.dev,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16899-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16900-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -145,61 +145,115 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 78EED678991
+X-Rspamd-Queue-Id: 8FE4E678A69
 
-On 6/12/26 05:21, Hao Li wrote:
-> On Wed, Jun 10, 2026 at 05:40:13PM +0200, Vlastimil Babka (SUSE) wrote:
->> The last user of gfpflags_allow_spinning() in slab is
->> alloc_from_pcs_bulk(), which is only called from
->> kmem_cache_alloc_bulk().
+On 6/12/26 08:54, Hao Li wrote:
+> On Wed, Jun 10, 2026 at 05:40:17PM +0200, Vlastimil Babka (SUSE) wrote:
+>> __GFP_NO_OBJ_EXT has limited scope within the slab allocator itself and
+>> gfp flags are a scarce resource, unlike slab's alloc_flags.
 >> 
->> It turns out that gfpflags_allow_spinning() is not necessary, because
->> kmem_cache_alloc_bulk() is only expected to be called from context that
->> does allow spinning, so simply replace it with 'true'.
+>> Introduce SLAB_ALLOC_NO_RECURSE alloc flag that has the same intent as
+>> __GFP_NO_OBJ_EXT but a more generic name, meaning that a kmalloc()
+>> family function should not recurse into another kmalloc*() for the
+>> purposes of allocating auxiliary structures (obj_ext arrays or sheaves).
 >> 
->> With that, we can remove the "@flags must allow spinning" part of the
->> kernel doc, as there is no more connection to the gfp flags in the slab
->> implementation.
+>> First, replace the __GFP_NO_OBJ_EXT for allocating obj_ext arrays in
+>> alloc_slab_obj_exts(). Make use of the newly added kmalloc_flags()
+>> function, where we can pass alloc_flags with SLAB_ALLOC_NO_RECURSE
+>> added. This will also pass through SLAB_ALLOC_TRYLOCK so we don't need
+>> to special case kmalloc_nolock() anymore.
 >> 
->> Also remove a comment in alloc_slab_obj_exts() because there should be
->> no more false positives possible due to gfp_allowed_mask during early
->> boot.
+>> Note that until now the kmalloc_nolock() ignored the incoming gfp flags
+>> and hardcoded __GFP_ZERO | __GFP_NO_OBJ_EXT. But it's correct to pass on
+>> the incoming gfp flags (only augmented with __GFP_ZERO), because if
+>> alloc_flags contain SLAB_ALLOC_TRYLOCK, the incoming gfp flags have to
+>> be also compatible with it.
 >> 
 >> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 >> ---
->>  mm/slub.c | 11 ++---------
->>  1 file changed, 2 insertions(+), 9 deletions(-)
+>>  mm/slab.h |  1 +
+>>  mm/slub.c | 13 +++++--------
+>>  2 files changed, 6 insertions(+), 8 deletions(-)
 >> 
+>> diff --git a/mm/slab.h b/mm/slab.h
+>> index 45bfcfb35a9c..509f330654b8 100644
+>> --- a/mm/slab.h
+>> +++ b/mm/slab.h
+>> @@ -21,6 +21,7 @@
+>>  #define SLAB_ALLOC_DEFAULT	0x00 /* no flags */
+>>  #define SLAB_ALLOC_TRYLOCK	0x01 /* a kmalloc_nolock() allocation */
+>>  #define SLAB_ALLOC_NEW_SLAB	0x02 /* a flag for alloc_slab_obj_exts() */
+>> +#define SLAB_ALLOC_NO_RECURSE	0x04 /* prevent kmalloc() recursion */
+>>  
+>>  static inline bool alloc_flags_allow_spinning(const unsigned int alloc_flags)
+>>  {
 >> diff --git a/mm/slub.c b/mm/slub.c
->> index 0b9974bfcb24..ef457e07db83 100644
+>> index cbb38bd01e46..7dfbd0251aa2 100644
 >> --- a/mm/slub.c
 >> +++ b/mm/slub.c
->> @@ -2171,12 +2171,6 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+>> @@ -2167,15 +2167,12 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+>>  
+>>  	gfp &= ~OBJCGS_CLEAR_MASK;
+>>  	/* Prevent recursive extension vector allocation */
+>> -	gfp |= __GFP_NO_OBJ_EXT;
+>> +	alloc_flags |= SLAB_ALLOC_NO_RECURSE;
 >>  
 >>  	sz = obj_exts_alloc_size(s, slab, gfp);
 >>  
->> -	/*
->> -	 * Note that allow_spin may be false during early boot and its
->> -	 * restricted GFP_BOOT_MASK. Due to kmalloc_nolock() only supporting
->> -	 * architectures with cmpxchg16b, early obj_exts will be missing for
->> -	 * very early allocations on those.
->> -	 */
->>  	if (unlikely(!allow_spin))
->>  		vec = kmalloc_nolock(sz, __GFP_ZERO | __GFP_NO_OBJ_EXT,
->>  				     slab_nid(slab));
->> @@ -4867,7 +4861,7 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, gfp_t gfp, size_t size,
->>  		}
->>  
->>  		full = barn_replace_empty_sheaf(barn, pcs->main,
->> -						gfpflags_allow_spinning(gfp));
->> +						/* allow_spin = */ true);
 > 
-> we can remove the `gfp` arg as this function no longer use it.
+> For the original calls to kmalloc_nolock and kmalloc_node, I notice a difference:
+> 
+>> -	if (unlikely(!allow_spin))
+>> -		vec = kmalloc_nolock(sz, __GFP_ZERO | __GFP_NO_OBJ_EXT,
+>> -				     slab_nid(slab));
+> 
+> kmalloc_nolock completely discarded `gfp` flags.
+> 
+>> -	else
+>> -		vec = kmalloc_node(sz, gfp | __GFP_ZERO, slab_nid(slab));
+> 
+> while kmalloc_node preserved and passed it along.
+> 
+>> +	/* This will use kmalloc_nolock() if alloc_flags say so */
+>> +	vec = kmalloc_flags(sz, gfp | __GFP_ZERO, alloc_flags, slab_nid(slab));
+> 
+> Now both paths are merged into kmalloc_flags, the gfp flags are
+> unconditionally carried through. It seems this might carry some unwanted flags.
+> 
+> I traced the call path and found that ___slab_alloc sets the __GFP_THISNODE
+> for trynode_flags. If this flag propagates all the way into
+> kmalloc_flags->...->__kmalloc_nolock_noprof, it will trigger the
+> VM_WARN_ON_ONCE warning. Maybe we need to strip the original gfp if
+> `!allow_spin`.
+ 
+Thanks. This should do the job in a more generic way I hope?
 
-True, done!
+diff --git a/mm/slub.c b/mm/slub.c
+index f9b8dc56bb57..0bf53f70c9be 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2047,12 +2047,15 @@ static inline void dec_slabs_node(struct kmem_cache *s, int node,
+ #endif /* CONFIG_SLUB_DEBUG */
+ 
+ /*
+- * The allocated objcg pointers array is not accounted directly.
++ * The allocated objcg pointers array or sheaf is not accounted directly.
+  * Moreover, it should not come from DMA buffer and is not readily
+- * reclaimable. So those GFP bits should be masked off.
++ * reclaimable. Node restriction for the parent allocation also should
++ * not apply to the slab's internal objects.
++ * So those GFP bits should be masked off.
+  */
+ #define OBJCGS_CLEAR_MASK      (__GFP_DMA | __GFP_RECLAIMABLE | \
+-                               __GFP_ACCOUNT | __GFP_NOFAIL)
++                               __GFP_ACCOUNT | __GFP_NOFAIL |
++                               __GFP_THISNODE )
+ 
+ #ifdef CONFIG_SLAB_OBJ_EXT
+ 
 
 
