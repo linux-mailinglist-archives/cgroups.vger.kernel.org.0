@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-16882-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16883-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4nEFLFOBK2oG+wMAu9opvQ
-	(envelope-from <cgroups+bounces-16882-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 05:47:31 +0200
+	id NJYPDoaBK2oR+wMAu9opvQ
+	(envelope-from <cgroups+bounces-16883-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 05:48:22 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDBBB67679A
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 05:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75EA66767AB
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 05:48:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=mYQDZ7X9;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16882-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16882-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=X64yesLt;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16883-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16883-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6FC4D3107AFB
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 03:47:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 26027310D1EE
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 03:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA923324B33;
-	Fri, 12 Jun 2026 03:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D592337BBD;
+	Fri, 12 Jun 2026 03:48:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2761D2E2DF2
-	for <cgroups@vger.kernel.org>; Fri, 12 Jun 2026 03:47:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D86F2E2DF2
+	for <cgroups@vger.kernel.org>; Fri, 12 Jun 2026 03:48:18 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781236048; cv=none; b=Evsbh9UykF1KAX6ifyoGW9yL+1/Ii+X8m6fd+I/jGwkRobwY1hTN9kPYBxtOn7wvSOcQR1KcCx9SjKdzcTFWcQkUGkb2YnBbN4tDM4fAObAY/+i13IcMK99KlYueBuwuuUwo1E0ABTe2657fzF8HhtheSzuiaNds7+U434A9N8k=
+	t=1781236099; cv=none; b=KrxIamOa6EXLky2olD7tUoY25RBvrCQa7y60f+cLPF8dXy1jp8+AuK3wIb04TMYHw4GXf8bp6AtDaeEHcnsYwrgrYr1iW5uiiYZxK3Ce/Td2GLAtU+r59vAiipJQiTL+zXhoh6ol4FahmJskSw/cWOxa4GCRIr+7crf/ppzFMkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781236048; c=relaxed/simple;
-	bh=H97jfEEYQhCuSJ4c7swSHPYmSzdA+8b/wp5bds66LCc=;
+	s=arc-20240116; t=1781236099; c=relaxed/simple;
+	bh=OuLUiybnuD4mbTuiO39TaMRL1NG9vYPp6uUs4xKIAN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FmjNzSM7hda0X3COU3w0ZGn55CQK9YXRwhgMQiBFrqXeFjqmcHE1sfZ96WC5G0MlkHjh8PGx2YK9+07IsnZgK30MB9NQtz/Pu6cMOX097fr0sb8oZf7J/GdCvLSJVB9yKsAXS/5kvWS3Rhpgv7pKvZdKTg9MBxX6GwGSxCQX3UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mYQDZ7X9; arc=none smtp.client-ip=91.218.175.188
-Date: Fri, 12 Jun 2026 11:47:10 +0800
+	 Content-Type:Content-Disposition:In-Reply-To; b=VNyA5HFO8fFoxBf/E5A4sSaiWBkdimfCg4wbhv4cRbGLsdpRkQlD1Qkv/hjecQhtpKzgzOQa8tsGqlZLbOenf9nAQPUxUe/N8O6PQ5P7Cmo7iGxpPNi27gcI1+o9egeYcumfDm6QvG2ibPiXKreGTNd3GbSVVW/Lw/aUg1OK7FM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X64yesLt; arc=none smtp.client-ip=91.218.175.177
+Date: Fri, 12 Jun 2026 11:48:04 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1781236045;
+	t=1781236096;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3vlsXwbdv4YLsjOvBE7ppjfwl98GoswDXJt/chitc04=;
-	b=mYQDZ7X9hjPoIXj3GM2UvtX4VuTFvaVx9H8Va2kBNqeVRS+KhX8YbfQWTKX6CKUSn/JbsR
-	Q/HbJRrr7Bx+6xwbxAWOn7dj5Me/RWlWWZBXtGRUGNchUT/9Ep+78HAik1d+0j+SlaRAX5
-	zKxzweN8o+wR+3NAcFL5PD8rlrEooYc=
+	bh=M4acUcN5cewJBmGpl3WpO5aKCvDT+7GaPC8r+f7iGxU=;
+	b=X64yesLtOC7VbaPN8dpYre1uzI5cHOBiNSM9VJh4CDBD7FO0tzhTA7DmzzyhqknI4rADra
+	lWe+NbZpB4CSHevsAVgJg2T/aiD438EaEneqIMDDPTVQQhdqPTbvWkJVWF/y1h0dzASrrp
+	faoX9kIfCeBVGwAvx9kNvUW8DDUyYz4=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Hao Li <hao.li@linux.dev>
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
@@ -54,12 +54,11 @@ Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
 	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
 	Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
 	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 01/16] mm/slab: do not limit zeroing to orig_size when
- only red zoning is enabled
-Message-ID: <aiuArH73S7k_jQ5L@fedora>
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 03/16] mm/slab: stop inlining __slab_alloc_node()
+Message-ID: <aiuBW_xY6x5IBQfE@fedora>
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-1-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-3-7190909db118@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -68,7 +67,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260610-slab_alloc_flags-v2-1-7190909db118@kernel.org>
+In-Reply-To: <20260610-slab_alloc_flags-v2-3-7190909db118@kernel.org>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-1.66 / 15.00];
@@ -80,16 +79,16 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[hao.li@linux.dev,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-16882-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16883-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
@@ -103,28 +102,14 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[fedora:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:from_mime,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: BDBBB67679A
+X-Rspamd-Queue-Id: 75EA66767AB
 
-On Wed, Jun 10, 2026 at 05:40:03PM +0200, Vlastimil Babka (SUSE) wrote:
-> When init (zeroing) on allocation is requested, for kmalloc() we
-> generally have to zero the full object size even if a smaller size is
-> requested, in order to provide krealloc()'s __GFP_ZERO guarantees.
+On Wed, Jun 10, 2026 at 05:40:05PM +0200, Vlastimil Babka (SUSE) wrote:
+> With sheaves, this is no longer part of the allocation fastpath.  For
+> the same reason, also mark the call to it from slab_alloc_node() as
+> unlikely().
 > 
-> But if we track the requested size, krealloc() uses that information to
-> do the right thing. With red zoning also enabled, any unused size
-> became part of the red zone, so it must not be zeroed.
-> 
-> However the check is imprecise, and will trigger also when only
-> SLAB_RED_ZONE is enabled without SLAB_STORE_USER. This means enabling
-> red zoning alone can compromise krealloc()'s __GFP_ZERO contract.
-> 
-> Fix this by using slub_debug_orig_size() instead, which is the exact
-> check for whether the requested size is tracked. We don't need to care
-> if red zoning is also enabled or not. Also update and expand the
-> comment accordingly.
-> 
-> Fixes: 9ce67395f5a0 ("mm/slub: only zero requested size of buffer for kzalloc when debug enabled")
-> Cc: <stable@vger.kernel.org>
+> Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
 > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > ---
 
