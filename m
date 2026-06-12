@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16896-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16897-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id tLosK7rWK2pJGAQAu9opvQ
-	(envelope-from <cgroups+bounces-16896-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 11:51:54 +0200
+	id GCwtJc/XK2qzGAQAu9opvQ
+	(envelope-from <cgroups+bounces-16897-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 11:56:31 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05DE66786E2
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 11:51:54 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13D506787AB
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 11:56:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="PLzsp3J/";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16896-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16896-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=QTXgxiEE;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16897-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16897-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4DC9E30EF5D3
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 09:51:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EC92E3166F29
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 09:56:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB1553A6EEC;
-	Fri, 12 Jun 2026 09:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C131DF748;
+	Fri, 12 Jun 2026 09:56:17 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89841399001;
-	Fri, 12 Jun 2026 09:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E593939BD;
+	Fri, 12 Jun 2026 09:56:14 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781257895; cv=none; b=qYY+OLYetzAvfZ2iSMw0aFeR/zi0oVu001PxFbaHZAWeKD86ZQ3rt/CZHHoP3QXTc3QglQUtImwrWdB8NLfU550fPLBRq9g9pZOccogrUftK+NPojfuIdvFsWspDU+AP/KZhl2Io24tDivyJFl/HdP4VIJsu5hG6zP5EdqAAxTc=
+	t=1781258176; cv=none; b=EWNEWRe65hPSwftcFa7cO/E0qJ9HvDKKzputUuV+VUPG7Dwp6qkiWtwD32hCab1JVYvqYVDR8pdWuksOja1nYaNzTXVSkTXJFEfzJrtrf0TDQv/J8le63sR4+Xgs4Y8c660svQfRCbRUTuC0IbyR9A2Okei/C/eWyC+FuyU3kOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781257895; c=relaxed/simple;
-	bh=SC8+BuRfLL72sDgPpZKzIahjGY5vZ2aHOZ1TedAtSuQ=;
+	s=arc-20240116; t=1781258176; c=relaxed/simple;
+	bh=l6jlVZrTMp9LTygLVsRPuYIo4sYNTWWXIWJqAK8CgDc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a/N+ZXHI9ZsSlcaJVxBIs0eclP4Uq4NviCz7SMhsy80qcD/lF1tH6GaVu/Md12JbBDHWFpVGxsftOqW8f8B1yEFt9wVn9G51WobGoof+ptM7ZWwIfbNNgHusSJeH5OXDexrBiVBzj1EECidVk//GAhTBcV4ABOdM5pZyJXUC9fY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PLzsp3J/; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E4D1F000E9;
-	Fri, 12 Jun 2026 09:51:30 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=CV7HJfxXUcXJ1k2yesfyCCivLBKFCXKiG9lOJkMrvJpOBA6IwpwOTDCYEVR8gcy9X/OzT+WGV9ayR7JmShBfJz6Vqlh+HFO+ZpXGd+92AlSn6Snc4SQHtjm8hAGlLfWcFIKe3FfTzc7BsUKU5BZkY7yG9EFdZUTMFYGiXra9HdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QTXgxiEE; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 960A11F000E9;
+	Fri, 12 Jun 2026 09:56:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781257894;
-	bh=MR3Nw8sjwScRIdSTl9Z/KiQVTF3BEU9DliRE8cEHbyA=;
+	s=k20260515; t=1781258174;
+	bh=l6jlVZrTMp9LTygLVsRPuYIo4sYNTWWXIWJqAK8CgDc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=PLzsp3J/jZEh7s1xzkHzNuZh73Vi+B+RWXOOMdRE+vnrjxJzJi0PBhL76SbhSsYzV
-	 kj/eyaTEJhqh6ZcV45gV/okAX5GnGhorSCFTLNKLRMQLc+4rBPydiA0Ajd02vPvfkv
-	 dAbq5IJUoJ2YZDHzyooImVsVgj8RZOFIfFWuXBhyrQjrWHxDv4rnBAZ1Z/BaBgSneH
-	 ff0PjhqswJ6SGyu+mzYCjhmr+bpvxvTZXO7N6zPfgXsSVrV4Xre7OLh2CsKgl0+CxS
-	 LMCHHhyj1EwHxA+tF8cmR630TXZLtFzBju2KJBod9zORxcrdMSmEZgOBzTQ2Q+B0Nf
-	 PpVhpgvVsruQg==
-Message-ID: <3914c31f-c97e-4943-9f4f-630b05785014@kernel.org>
-Date: Fri, 12 Jun 2026 11:51:28 +0200
+	b=QTXgxiEEC9QGJWYpS0Z9cwaz1rtLdzbQ0fpUyZng1u68HugBNa2NEwfLuqiZnKGKZ
+	 cNl7io1VPRSEnsQkN9bp62xX7SXyBksBKi/w7N80y0U8MkD37s2QdZb8ppf/2yKFKQ
+	 nCfHUJgFDOIZWUZW6Ka4x1oAl+nPyn9/kvhGWfXCEF90qZLHBUUN8p5YA7qX/3cPO5
+	 p4OTjdbTz2i3b7fUplvPwFuWk8m0N9IOebB2kC3HfFK58eailvNao1AEb3ezWyxzM7
+	 UOcypfufLVWwA8QrH6/k7mroDWe0gf4YsgkYNHnAa2bxtDOZoQ8/K2RUVIW1eUomv6
+	 PI8tKy2MOyw0Q==
+Message-ID: <aca6aedd-d6dc-46fe-8d7f-7b5c1d7bad40@kernel.org>
+Date: Fri, 12 Jun 2026 11:56:09 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 04/16] mm/slab: introduce slab_alloc_context
+Subject: Re: [PATCH v2 07/16] mm/slab: replace struct partial_context with
+ slab_alloc_context
 Content-Language: en-US
 To: Hao Li <hao.li@linux.dev>
 Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
@@ -69,8 +70,8 @@ Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-4-7190909db118@kernel.org>
- <ait21B7kqfT9XhOs@fedora>
+ <20260610-slab_alloc_flags-v2-7-7190909db118@kernel.org>
+ <aiuCiXBBB64AfPjI@fedora>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -111,7 +112,7 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <ait21B7kqfT9XhOs@fedora>
+In-Reply-To: <aiuCiXBBB64AfPjI@fedora>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
@@ -119,18 +120,18 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:hao.li@linux.dev,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16896-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16897-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -144,60 +145,21 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 05DE66786E2
+X-Rspamd-Queue-Id: 13D506787AB
 
-On 6/12/26 05:10, Hao Li wrote:
-> On Wed, Jun 10, 2026 at 05:40:06PM +0200, Vlastimil Babka (SUSE) wrote:
->> @@ -5389,13 +5401,18 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
->>  	if (ret)
->>  		goto success;
->>  
->> +	struct slab_alloc_context ac = {
->> +		.caller_addr = _RET_IP_,
->> +		.orig_size = orig_size,
->> +	};
-> 
-> It might be better to move this to the beginning of the function, to avoid
-> patch09 jump to `success` before ac is initialized.
+On 6/12/26 06:04, Hao Li wrote:
+> On Wed, Jun 10, 2026 at 05:40:09PM +0200, Vlastimil Babka (SUSE) wrote:
+> nit: the comment "__GFP_THISNODE in pc.flags" also needs to be updated to "trynode_flags"
 
-Hm right, didn't compilers actually complain about goto skipping over
-declarations? But neither gcc nor clang do for me, hm. Will move, thanks.
+Done.
 
->> +
->>  	/*
->>  	 * Do not call slab_alloc_node(), since trylock mode isn't
->>  	 * compatible with slab_pre_alloc_hook/should_failslab and
->>  	 * kfence_alloc. Hence call __slab_alloc_node() (at most twice)
->>  	 * and slab_post_alloc_hook() directly.
->>  	 */
->> -	ret = __slab_alloc_node(s, alloc_gfp, node, _RET_IP_, orig_size);
->> +	ret = __slab_alloc_node(s, alloc_gfp, node, &ac);
->>  
->>  	/*
->>  	 * It's possible we failed due to trylock as we preempted someone with
->> @@ -7237,10 +7254,13 @@ static bool __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
->>  	int i;
->>  
->>  	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
->> +		struct slab_alloc_context ac = {
->> +			.caller_addr = _RET_IP_,
->> +			.orig_size = s->object_size,
->> +		};
->>  		for (i = 0; i < size; i++) {
->>  
->> -			p[i] = ___slab_alloc(s, flags, NUMA_NO_NODE, _RET_IP_,
->> -					     s->object_size);
->> +			p[i] = ___slab_alloc(s, flags, NUMA_NO_NODE, &ac);
->>  			if (unlikely(!p[i]))
->>  				goto error;
->>  
->> 
->> -- 
->> 2.54.0
->> 
+> otherwise, looks good to me.
+> Reviewed-by: Hao Li <hao.li@linux.dev>
+
+Thanks!
 
 
