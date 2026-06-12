@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16898-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id GFVjI4LYK2r9GAQAu9opvQ
-	(envelope-from <cgroups+bounces-16898-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 11:59:30 +0200
+	id I7xbDMDaK2raGQQAu9opvQ
+	(envelope-from <cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 12:09:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29335678836
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 11:59:30 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78EED678991
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 12:09:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=STdivhBR;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16898-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-16898-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=nT8uaQMO;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16899-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 786DB3017E71
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 09:59:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 47AC6310AFF2
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2026 10:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0AE380FC1;
-	Fri, 12 Jun 2026 09:59:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B66375F62;
+	Fri, 12 Jun 2026 10:05:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BE52DC76A;
-	Fri, 12 Jun 2026 09:59:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CF931F98D;
+	Fri, 12 Jun 2026 10:05:33 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781258367; cv=none; b=Nkw6VJLJi01QLffJ34uctfAtfRmHZji3NjjMhiObb4Xcn7NnLtaCHdaPOOXXCUzlgLHP311te3KajnRlYBQHp9siwWSKm13IX8msQ9y8oClfmh4Rgj83phU1Bvgpqx1uO1V+sZkmTXdHraPyIHnjox09xhQlbLGTCfp7XWD3OIA=
+	t=1781258734; cv=none; b=lUFkJAp18KJ4Wr4L7kvprOp4xCVe8cAFnIMGGpeW4JOlsA98gGvoNzOVBsKrKbthtmXsW3hh26jhJeh2XG9okfW6NjIjTHgEUgSfPcxuwN4ackPNbu0YdA02Dd9eZqA/iXh46f5RnOchSdmxibmG7uJY0R/MkjR3AJR1ffa6Mfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781258367; c=relaxed/simple;
-	bh=YeAlGMbDsW31JPgnYONoXxICGKWKJA3O91ZZGzWoIm4=;
+	s=arc-20240116; t=1781258734; c=relaxed/simple;
+	bh=z1e+0fsDyx0gid730KgPyhAxRxv42nQreD4mTP/vUcw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q35ehrC/Nc306IeEYEqcalpWqwa7AFLdB8B7IzY829OA1hu8xJi8PMDa4Xx90y966mHEu/YXliWnCnuKLH+LI2bNbgR6S3LfoQ/aI8GLXKsZiEcdfwAJa4113SdHczbTEvKUPLq6qiNS+bWoimcmJ0UxUF0HXyVseoGn6BjB2Rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=STdivhBR; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 162581F000E9;
-	Fri, 12 Jun 2026 09:59:22 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=AZynTdpT2h5BbSIDfEiW3TP0LgUA+oaq3H05QQZ+49naURBfyIMkHBbXMs0tWhiwz2sierh8MgovIXdgPbj8LSYeS6Q+jeBOZCve73276hOJWOyhQpLxciV05jfffCIq/sTDLLpoAeM1EhNTA1A6QU+vPnKBZ2jt1Au+HDIL3rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nT8uaQMO; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D81541F000E9;
+	Fri, 12 Jun 2026 10:05:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781258366;
-	bh=FyfQhJDr0ZUeHVCkGcfPOj7+bIdM3McE9qOrpu4jQqY=;
+	s=k20260515; t=1781258733;
+	bh=yb+VaCQXF02BSPuZ+ctVy3j3cdU9RPguQO6IfgOy60Q=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=STdivhBRretl36rmEOAV6Bqo7gg/u3Q9MHcGjma8Tt/VRgGPo5waxl/z1/QcjN4l4
-	 RqQGQVWHLcagbNQIBX46mdyK5M+3TPq7GnsAADq/XomCJ2smU7MTp1EP7/6YLMdcsv
-	 amxAVvF9tI5fifQeK+wB6LaYoGmP2K95gxavkts73LGK8f9n/gr+9h5m+m1fl/r8eE
-	 RguJ3C8I1pbTeplwHL0o3MLxXLnoDhTvRMEIs9JZSCFNwSJKJnXFkUPFSKldba6kBI
-	 A6YPaaw0fZALQ1vug6Y0Vv2RwN+TmWnS1rWz+z34PIkJu006/TEY6UE0HZOU3YG/Kr
-	 jpJ/s88dNz65g==
-Message-ID: <0546df1f-616c-44b5-8a1c-f96d5f33d8e6@kernel.org>
-Date: Fri, 12 Jun 2026 11:59:21 +0200
+	b=nT8uaQMODLhBUxROHjXuRd0ltnQkV8xcMmqUgop177jA4Q+qzhzcb7muBVmGixoTP
+	 8p5MM0H4e5+w0xuRc4XmqqID7AuqsXZfUSVh5EXViPm/AAGN08YTt4BXKo01vjLqap
+	 y1VHj3PBkZgrrEqAX3vB5we/5Ky0EAj6c94Tly7tR4rCUT9TbNDw/P84YpJ0h7KysQ
+	 sg2dDeozJRAbzXf50kjbC8Fp6Q/LuT3OyA+NFO118CfUAPNnbUNKIKON2Kv9Kh6DuN
+	 Cow79yOO6yBznJkQotV4LDWWuVTuYqQIHy/HSG1+ag4iVFBOZ/RCPougGXdiQpdFm7
+	 aGVyn4nbo9I+g==
+Message-ID: <3f53fc18-838f-44ab-acad-4323daa0fbcc@kernel.org>
+Date: Fri, 12 Jun 2026 12:05:28 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 08/16] mm/slab: pass alloc_flags to new slab allocation
+Subject: Re: [PATCH v2 11/16] mm/slab: allow kmem_cache_alloc_bulk() with any
+ gfp flags
 Content-Language: en-US
 To: Hao Li <hao.li@linux.dev>
 Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
@@ -69,8 +70,8 @@ Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-8-7190909db118@kernel.org>
- <aiuX6SRATJoaq-jH@fedora>
+ <20260610-slab_alloc_flags-v2-11-7190909db118@kernel.org>
+ <ait6ojueVi38-s85@fedora>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -111,7 +112,7 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <aiuX6SRATJoaq-jH@fedora>
+In-Reply-To: <ait6ojueVi38-s85@fedora>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
@@ -119,7 +120,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -130,7 +131,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16898-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16899-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -144,40 +145,61 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 29335678836
+X-Rspamd-Queue-Id: 78EED678991
 
-On 6/12/26 07:26, Hao Li wrote:
-> On Wed, Jun 10, 2026 at 05:40:10PM +0200, Vlastimil Babka (SUSE) wrote:
+On 6/12/26 05:21, Hao Li wrote:
+> On Wed, Jun 10, 2026 at 05:40:13PM +0200, Vlastimil Babka (SUSE) wrote:
+>> The last user of gfpflags_allow_spinning() in slab is
+>> alloc_from_pcs_bulk(), which is only called from
+>> kmem_cache_alloc_bulk().
+>> 
+>> It turns out that gfpflags_allow_spinning() is not necessary, because
+>> kmem_cache_alloc_bulk() is only expected to be called from context that
+>> does allow spinning, so simply replace it with 'true'.
+>> 
+>> With that, we can remove the "@flags must allow spinning" part of the
+>> kernel doc, as there is no more connection to the gfp flags in the slab
+>> implementation.
+>> 
+>> Also remove a comment in alloc_slab_obj_exts() because there should be
+>> no more false positives possible due to gfp_allowed_mask during early
+>> boot.
+>> 
+>> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+>> ---
+>>  mm/slub.c | 11 ++---------
+>>  1 file changed, 2 insertions(+), 9 deletions(-)
+>> 
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 0b9974bfcb24..ef457e07db83 100644
 >> --- a/mm/slub.c
 >> +++ b/mm/slub.c
->> @@ -3378,9 +3378,10 @@ static __always_inline void unaccount_slab(struct slab *slab, int order,
->>  }
+>> @@ -2171,12 +2171,6 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
 >>  
->>  /* Allocate and initialize a slab without building its freelist. */
->> -static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
->> +static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags,
->> +				  unsigned int alloc_flags, int node)
->>  {
->> -	bool allow_spin = gfpflags_allow_spinning(flags);
->> +	bool allow_spin = alloc_flags_allow_spinning(alloc_flags);
+>>  	sz = obj_exts_alloc_size(s, slab, gfp);
+>>  
+>> -	/*
+>> -	 * Note that allow_spin may be false during early boot and its
+>> -	 * restricted GFP_BOOT_MASK. Due to kmalloc_nolock() only supporting
+>> -	 * architectures with cmpxchg16b, early obj_exts will be missing for
+>> -	 * very early allocations on those.
+>> -	 */
+>>  	if (unlikely(!allow_spin))
+>>  		vec = kmalloc_nolock(sz, __GFP_ZERO | __GFP_NO_OBJ_EXT,
+>>  				     slab_nid(slab));
+>> @@ -4867,7 +4861,7 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, gfp_t gfp, size_t size,
+>>  		}
+>>  
+>>  		full = barn_replace_empty_sheaf(barn, pcs->main,
+>> -						gfpflags_allow_spinning(gfp));
+>> +						/* allow_spin = */ true);
 > 
-> nit: allow_spin doesn't depend on `flags` now, so it seems we can delete the
-> comments:
-> 
-> /*
->  * __GFP_RECLAIM could be cleared on the first allocation attempt,
->  * so pass allow_spin flag directly.
->  */
+> we can remove the `gfp` arg as this function no longer use it.
 
-Right, deleted.
-
-> Otherwise, looks good to me.
-> Reviewed-by: Hao Li <hao.li@linux.dev>
-
-Thanks!
+True, done!
 
 
