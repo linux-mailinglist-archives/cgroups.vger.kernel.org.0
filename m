@@ -1,225 +1,202 @@
-Return-Path: <cgroups+bounces-16918-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cxF2JglzLmqIwAQAu9opvQ
-	(envelope-from <cgroups+bounces-16918-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 11:23:21 +0200
+	id ZeGbJPGrLmoQ1wQAu9opvQ
+	(envelope-from <cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 15:26:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199E5680BBF
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 11:23:21 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9329868129E
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 15:26:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lge.com (policy=none);
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16918-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16918-lists+cgroups=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=berkeley.edu header.s=google header.b=s3ZdgQ0j;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=berkeley.edu;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0F5533001B43
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 09:23:19 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9E1393001FBC
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 13:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B0338AC99;
-	Sun, 14 Jun 2026 09:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C763A6EE6;
+	Sun, 14 Jun 2026 13:26:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86EA03955E0
-	for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 09:23:11 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781428996; cv=none; b=Q8X/9kaSwvhHAYLItg6dUU2Z2HeK4W8jV13EXx0dlA1JTz+Ydl3JKcqUI9R/oHVnHDt5KY/gwPZ0WRG1bRQjHqUEIFCb1YkpIfR8+xr/NA/fVl+KLTBpkPPSMjG8WoA+/zG3j/S35PY38S3yxz5A6CgYurjyL56CQhPEHNTEwBQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781428996; c=relaxed/simple;
-	bh=ld+wVFU2oJQmVv/sNSfBsHnWdT8YxnJkps1+6Uwbkzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N0yGPl4IuKM+geVWHlcjpJf+Kd7WJQjq9IeLMmK97jDApZBYhueBTgFlXh6Q5kfuzkcpYIjy/KH+suerRtatNVHE4AGCJgf9fJgiRWKBob7PUpGJFe2Ob71atRbeE8RLZl3/sE5YJO1VUrC8uzknJrYOV1LELqEjECypzgY3DQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 14 Jun 2026 18:23:03 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Sun, 14 Jun 2026 18:23:03 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Yosry Ahmed <yosry@kernel.org>, Hao Jia <jiahao.kernel@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, mhocko@kernel.org,
-	tj@kernel.org, mkoutny@suse.com, roman.gushchin@linux.dev,
-	Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-	chengming.zhou@linux.dev, muchun.song@linux.dev,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	Hao Jia <jiahao1@lixiang.com>, chrisl@kernel.org,
-	kasong@tencent.com, baoquan.he@linux.dev, joshua.hahnjy@gmail.com
-Subject: Re: [swap tier discussion] Re: [PATCH v3 2/4] mm/zswap: Implement
- proactive writeback
-Message-ID: <ai5y923elCSZp41j@yjaykim-PowerEdge-T330>
-References: <aicJBVT4pBvmyooT@linux.dev>
- <aicZ-5GX9De3MAU7@linux.dev>
- <CAO9r8zNBJ-BsXyKFveA92jbwMu63uFVTY5CuT4fRHTBVcOjhPw@mail.gmail.com>
- <aictKA0XWMWbxFdN@linux.dev>
- <CAO9r8zPvCaCqvoUhPdAN5Oi_Sj0mK-t7DJhOOz3Xf1DT-Wrgcw@mail.gmail.com>
- <aieUQUBHI+E3uNPW@yjaykim-PowerEdge-T330>
- <airzE7jD9UtyR17J@google.com>
- <aisEWnb3pzmVC4dl@linux.dev>
- <aiu06fbV7rWqY0Bm@yjaykim-PowerEdge-T330>
- <aiw2p5ANjsQUCIHA@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AF0390C84
+	for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 13:25:57 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781443561; cv=pass; b=CU9BkjvRzfxE6oD2JNjlWm5gfSQMU2lYlbyFKNqDyYqnGd8UwIp66SU2Eg61jxiRKF9QvAFN2Kq7exluVR+GXxnjhmIMx9FvnuJXG0ZCCqVQ1Dbgvn7erA8mrR7DeI3qlKVjyUd7dsBMmDxPLF9c3qDdoUx4JJhI54N7IHxgl1E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781443561; c=relaxed/simple;
+	bh=8a8z9o8uhQwn072Nwdwrsu8F50f0ae0l8EpJfnSe8Zs=;
+	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ig4ivp7wc/suYqmj3+ObkCu7UYCqdeenFe6JZBrG1jeaiOgYYaU3tpvJNAGVFijAT3v1gte9K3TRibIV9Tvg5NcnZmFmSYhAlxjhvUnu7jURx5DkCLitUqbSNdZBufMcl0GH09PLhVKJ0nSdReBASTUrUl8FHBsdR0R1+2ffwh4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=berkeley.edu; spf=pass smtp.mailfrom=berkeley.edu; dkim=pass (2048-bit key) header.d=berkeley.edu header.i=@berkeley.edu header.b=s3ZdgQ0j; arc=pass smtp.client-ip=209.85.128.169
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-7e1916922b9so26214017b3.1
+        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 06:25:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781443557; cv=none;
+        d=google.com; s=arc-20240605;
+        b=OD8XfHGkIwFpBP4Yx5A6cH/gUQhYReTkP8hbBp7K/3K/O4gUbGrJFKqVUb5gEomPc6
+         OG4jgzhrL1QC2FDi8qx52R6YITxfP2DrEInqyW3eBy4vkAMIsZfj3/8ex0qMHWmh3w2q
+         KX+cGYerjd/EoPlp8qosZysA/GioNSXjl+z8eaaKVveCYSz946jGdY9Xl93K0dhkJCGX
+         omWsRnxMxPOpvgMuVsHFfFv5RV+oBYBzirCaOayUdhu0uUGnuXVBDAIA9ZIhXMNVVTsv
+         xwY16mq7Z5RIQ/uGIBqVJOVpoohXMDNnMRZBw6QP6nwjYuhX4r2/HKIXPG0oSqhRjwsb
+         xLbg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:dkim-signature;
+        bh=my7WznhvuaINq07i0eln+93EnzFiKa95Z+VUna30ulc=;
+        fh=NNmFGhn8sABE8vRv6eA71kLTHbkXS1ZBq5/mbohCMHg=;
+        b=HF6PkV8OzMTsMkulOp5JBQ53Nrp4HscGkii/L0JpHmdb2Tj98ickbDOqEFC0iYHgpm
+         KdlAdGCz+N2EWIFS2BD25syqTkk2OeV24IgdIFEex2jQC+uWdcLjfg7czPidxvGpD/Di
+         9qyiTp/wQ5zCBwUwTtw9Ls4GRLObIW1HOPljIIet3BWUUBGU/MMjUwsOvjDiICZQWhOW
+         ga6njrwlTOhIFdXhA0VGoGnWPOSNIxw++AKgGC0U/ysiPTclgiliwjTJlGKhJmjCsGyE
+         NBjGKTC9OfoSUwJ3C910bO8dgEk2/E8E2NdCJOHDBfbfYoJpBG7EIES0hXbz0N+ZkGwt
+         O3pQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=berkeley.edu; s=google; t=1781443557; x=1782048357; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=my7WznhvuaINq07i0eln+93EnzFiKa95Z+VUna30ulc=;
+        b=s3ZdgQ0j6wdDyJK+1d22+jBZLt2LhR2Mi8jqPQ3z/isAwctf3ViXA56e3N8khKKhww
+         vmnVZeVAW1wDeL+KZtU2URDcwHYxTdvDKj7dQAg2rIz9I+oy4ubfKlsNI32QZ+LDw4Oe
+         qW7GQAFqe+cJvP/0VHfPgrO58FSi8UglgtTFX9H9cSpSqkzpIwpgD4WzFLBDKHVkuTAe
+         bKPdX19pyf2uEXOILG62k3EUQwNZ+3JbH4EA72HLdrw6dba8fYV0Vaemkuy56hwM0oWI
+         FG1mbyrtkMB8CbtPKlmsvp7y845jcXXgqpVuTaB9qMLiIVdu5T9KBNz8Tat5V81a9/KG
+         LwOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781443557; x=1782048357;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=my7WznhvuaINq07i0eln+93EnzFiKa95Z+VUna30ulc=;
+        b=W7eA4UsiUmWFHVMr+Vz4jySyF8kJ/w1cYLfO4KRzrKW7TlVjgs6rS30CkU69fnInfH
+         ocwywMrFTBpUc8qZgbCHKlhSU+9hPx1TI3cfGmUdd3KAXuzqcffUbmMK98UmyRfrhqaf
+         5BSp9mgc2BMO5FIbtTeZ9w/Pr7FHdleLlvC/j4K3bG8HrlNcy0sXtBkC3UjFGli6iOlB
+         MjT/5he/2fDEOLdNY6JKFoRhX83UYi83vLuR57+/LeufNtndDuwfdND6ML1DPsy3/wJe
+         E1Ye/MGEIxgycSb7eq/IYJwhbP7Lql0HYDazjrIFXTve5kP62nFVKSRP7XdDv6gZMbZf
+         7Dqw==
+X-Forwarded-Encrypted: i=1; AFNElJ/n2x8jORgiJpY9+fbELVObMmoH2C5lHTyZagLmXGsRfTl8y7Hxmet6T2ESPepMq+XsPfrqW/5o@vger.kernel.org
+X-Gm-Message-State: AOJu0YwCHn6uEudJLRhLlmTL2Dek6bh5IzGKL0FqILPmvIO0ZlGRUb1H
+	silYw+Ixr+x4bpsVHaC6ID+xZpu9BfdvPTDWRu2WBfdSJRSxInXhb37NYtUuT+jq2Rcj1fnTaa1
+	awSUqC1AM5jxXoSsNhefg+Lwm0j9l6HgHpe+cOfY2
+X-Gm-Gg: Acq92OEpqD44pFbA0tp3qFzKDOTK/n1FU1HZ4DtAXdrJealDMn70TWalw9bDpKTikuK
+	gxmEA3jTOau16xSS6XX6zhPr/Qvyh441CW7/FsbNcXWtvrtw+7enFdMFOqxQUwC/skwqK2WVCjS
+	GXrcBk1hqRl9jxuWS8EpAOhSEZEfTju5K4Nfr1ntjTlZz/Y9IcXK+UddhPw7gzAYgaXzaXwdQ3d
+	CNjvogPg1wLMND0047Bs8M+otNSIvb0+NL69Ol5T18qIAuGo81C16EPLAyKtvaU2apBQd1BVPrR
+	Gg9mI4IAlQ==
+X-Received: by 2002:a05:690c:3745:b0:7e2:a956:4083 with SMTP id
+ 00721157ae682-7f8c1f15742mr70603597b3.20.1781443555816; Sun, 14 Jun 2026
+ 06:25:55 -0700 (PDT)
+Received: from 474444807712 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 14 Jun 2026 06:25:55 -0700
+Received: from 474444807712 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 14 Jun 2026 06:25:55 -0700
+From: Farhad Alemi <farhad.alemi@berkeley.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
+References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aiw2p5ANjsQUCIHA@linux.dev>
+Date: Sun, 14 Jun 2026 06:25:55 -0700
+X-Gm-Features: AVVi8CdOyddTc0VCwydJ03Yt1oOOOGpiCzbsY_HpVqvtkDz1Xj3Bl7yujHIBV_M
+Message-ID: <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
+Subject: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems, not mems_allowed
+To: Andrew Morton <akpm@linux-foundation.org>, Waiman Long <longman@redhat.com>
+Cc: Farhad Alemi <falemi@asu.edu>, David Hildenbrand <david@kernel.org>, Gregory Price <gourry@gourry.net>, 
+	Yury Norov <ynorov@nvidia.com>, Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>, 
+	Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>, 
+	Byungchul Park <byungchul@sk.com>, Ying Huang <ying.huang@linux.alibaba.com>, 
+	Alistair Popple <apopple@nvidia.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.64 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[berkeley.edu,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[berkeley.edu:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:shakeel.butt@linux.dev,m:yosry@kernel.org,m:jiahao.kernel@gmail.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:tj@kernel.org,m:mkoutny@suse.com,m:roman.gushchin@linux.dev,m:nphamcs@gmail.com,m:akpm@linux-foundation.org,m:chengming.zhou@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:jiahao1@lixiang.com,m:chrisl@kernel.org,m:kasong@tencent.com,m:baoquan.he@linux.dev,m:joshua.hahnjy@gmail.com,m:jiahaokernel@gmail.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	TAGGED_FROM(0.00)[bounces-16919-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:longman@redhat.com,m:falemi@asu.edu,m:david@kernel.org,m:gourry@gourry.net,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-16918-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[asu.edu,kernel.org,gourry.net,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,cmpxchg.org,suse.com,linux.dev,linux-foundation.org,vger.kernel.org,kvack.org,lixiang.com,tencent.com];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[berkeley.edu:+];
+	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 199E5680BBF
+X-Rspamd-Queue-Id: 9329868129E
 
-....
-> >Based on the memcg interface currently proposed in swap_tier
-> > (memory.swap.tiers, memory.swap.tiers.effective), I think it aligns well
-> > with the current direction. It provides a foundation for selectively
-> > targeting devices in tier order.
-> 
-> Here instead of cpuset like interface, we may want more zswap like interface
-> where you can put limit on the usage i.e. memory.swap.tier*.max. We can start
-> with allowing only two values i.e. 0 and max which effectively will be the
-> same as what you need.
->
+Creating a child cpuset where cpuset.mems is never set leads to a div/0
+when a VMA mempolicy with MPOL_F_RELATIVE_NODES rebinds in response to a
+CPU hotplug event.
 
-Good idea, and it's certainly feasible. When I considered this a while
-ago, the reasons I didn't take this direction were:
+Reproduction steps:
+ 1) Create a cgroup w/ cpuset controls (do not set cpuset.mems)
+ 2) Move the task into the child cpuset
+ 3) Create a VMA mempolicy for that task with MPOL_F_RELATIVE_NODES
+ 4) unplug and hotplug a cpu
+      echo 0 > /sys/devices/system/cpu/cpu1/online
+      echo 1 > /sys/devices/system/cpu/cpu1/online
+ 5) mempolicy rebind does a div/0 in mpol_relative_nodemask on the
+    call to __nodes_fold()
 
-1. There's no real-world usage for adjusting the swap tier amount (it's
-   either 0 or MAX). That said, your suggestion to initially allow only
-   0 and max is the killing point, and it's making me reconsider.
+The cpuset code passes (cs->mems_allowed) which is not guaranteed to have
+nodes to the rebind routine.  Use cs->effective_mems instead, which is
+guaranteed to have a non-empty nodemask.
 
-2. The implementation cost seems high. The current implementation
-   handles this at runtime via simple masking.
+Link: https://lore.kernel.org/linux-mm/CA+0ovCgxbZkXa+OU8w3s84R3KNPNxxRfmsNR-udh+afQBbGNmw@mail.gmail.com/
+Link: https://lore.kernel.org/all/CA+0ovCiEz6SP_sn3kN4Tb+_oC=eHMXy_Ffj=usV3wREdQrUtww@mail.gmail.com/
+Fixes: ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}")
+Suggested-by: Gregory Price <gourry@gourry.net>
+Suggested-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Farhad Alemi <farhad.alemi@berkeley.edu>
+Cc: stable@vger.kernel.org
+---
+v2: rebind to cs->effective_mems instead of newmems (Waiman Long);
+    condense the changelog.
 
-3. Relationship with swap.max:
-   - If we tie it to the current interface, wouldn't limiting the swap
-     amount within a selected tier already be possible? I wonder if
-     that alone is enough.
-   - If we add tier.max, it would need to be a subset of swap.max.
-     (Any other complexities here?)
+ kernel/cgroup/cpuset.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-4. vswap enable/disable: vswap doesn't seem to have an amount-control
-   aspect, so an on/off semantic would be clearer.
-   https://lore.kernel.org/linux-mm/ai5kOOmR1LPTWs1J@yjaykim-PowerEdge-T330/T/#m8831ec057bf9387978d3bd698f51920600e09a04
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2649,7 +2649,7 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
 
-In that case, the internal logic could stay roughly the same rather
-than counting via a page counter. Something like:
+ 		migrate = is_memory_migrate(cs);
 
-1. Change the interface shell: tier.*.max — allow only 0 ~ max.
-2. Keep the internal logic as is: 0 disables the mask (child memcgs
-   off too), max enables it (child memcgs on too).
-3. memory.zswap.max integrates naturally (it's memory."tier_name".max).
-4. Extend later if use cases arise.
-
-On balance I still lean toward the current interface, but if a per-tier
-max is the better fit for memcg's direction and others feel the same,
-I'm happy to switch. I'd like to hear Shakeel's thoughts again, and I'm
-curious about others' opinions too.
-
-A few more perspectives on the points below.
-
-> I will respond to your other points later when I have time.
-
-> > 
-> > To summarize the discussions so far, the following points align well.
-> > 
-> > - Per-cgroup swap control, as I suggested.
-> > - Proactive zswap writeback (Hao's usecase)
-> > - Swap device target demotion(if it wants selective, then it is more better), as you mentioned:
-> >   https://lore.kernel.org/linux-mm/aicZ-5GX9De3MAU7@linux.dev/
-> > - Virtual Swap on/off in the future, as Nhat mentioned:
-> >   https://lore.kernel.org/linux-mm/20260528212955.1912856-1-nphamcs@gmail.com/
-> > - The memory.zswap.writeback alternative (no hierarchy model conflict)
-> > - zswap is first swap tier.
-> > - Promotion. (Also better for selectve usage)
-> > - tier based swap policy (e.g round-robin...)
-> > 
-> > To accelerate this work, I believe we should reach a consensus and
-> > merge the currently proposed swap_tier interface :)
-> > 
-> > If the above approach is difficult, I would like to suggest an
-> > alternative for progress with the memcg interfaces removed:
-> > 
-> > 1) We could make zswap the first tier and create
-> > a use case where memory.zswap.writeback internally is handled by tier logic.
-> > 
-> > 2) Or simply merge the swap_tier infrastructure itself first.
-> > 
-> > This would allow the swap_tier infrastructure to be merged and discussed
-> > more easily.
-> > 
-> > If it takes longer to adopt swap_tier anyway, by doing so we progress next step
-> > as a experimental feature.
-> > 
-> > - Apply per-cgroup swap as an experimental (debugfs) feature.
-> > - Apply Hao's use case experimentally or as it is as Yosry suggested.
-> > (future migration to swap tier)
-> > 
-> > How do you think?
-> > 
-> > (FYI: My emails to kernel.org are failing due to internal server issues.)
-> > 
-> > Thank you 
-> > Youngjun Park
-
-Let me clarify a part I wrote confusingly. Handling
-memory.zswap.writeback via tiers is possible, but I don't think the
-interface itself would be replaced even if memory.swap.tiers is adopted.
-
-Selecting only zswap in memory.swap.tiers would not just disable
-writeback.it would also block regular swap entirely, which differs
-slightly from the current semantic. (... "Per the cgroup v2 docs: a
-zswap-only tier setting is subtly different from setting
-memory.swap.max to 0, since it still allows pages to be written to the
-zswap pool; this has no effect if zswap is disabled, and swapping is
-allowed unless memory.swap.max is set to 0.")
-
-So the interface itself needs to be retained, and it could be extended
-toward selective writeback — e.g., passing a desired tier into
-memory.zswap.writeback so writeback targets only that tier. Currently
-it only controls on/off. Other tiers probably don't need this. demotion
-based on the selected tier should be enough.
-
-Thanks,
-Youngjun Park
+-		mpol_rebind_mm(mm, &cs->mems_allowed);
++		mpol_rebind_mm(mm, &cs->effective_mems);
+ 		if (migrate)
+ 			cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
+ 		else
+-- 
+2.43.0
 
