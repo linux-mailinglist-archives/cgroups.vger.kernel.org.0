@@ -1,164 +1,145 @@
-Return-Path: <cgroups+bounces-16916-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16917-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Ga6VE67fLWq3lwQAu9opvQ
-	(envelope-from <cgroups+bounces-16916-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 00:54:38 +0200
+	id FtuNO0lkLmrbvAQAu9opvQ
+	(envelope-from <cgroups+bounces-16917-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 10:20:26 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99C5F67FF86
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 00:54:37 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF47680A34
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 10:20:25 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=EPtYAaVb;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16916-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16916-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lge.com (policy=none);
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16917-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16917-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49389301CA75
-	for <lists+cgroups@lfdr.de>; Sat, 13 Jun 2026 22:54:36 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D98D8300B578
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 08:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D7C735200A;
-	Sat, 13 Jun 2026 22:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E6702F25F4;
+	Sun, 14 Jun 2026 08:20:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dy1-f194.google.com (mail-dy1-f194.google.com [74.125.82.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3F1131E49
-	for <cgroups@vger.kernel.org>; Sat, 13 Jun 2026 22:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9864F265621
+	for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 08:20:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781391275; cv=none; b=HHkiiSRW5ZxOgPb8PVhKKCKp9k98ykKQc1U4nY8Ri0qkmIMYgsFm1oU1Fu/dy1yBUZKK/EtsPIKEjqiCNN4aY9AzEPIHJOtPg6lTUWbfBrhQ2gW38yT52tN9iaRrn8Ro/mClYtTZ4tElf9myzwijRBXNtXkUgaMB5qOJpy3t6ik=
+	t=1781425220; cv=none; b=GTkhlzs3OhsZtGrKR2OVzygoQqAv1LSIfz9RwTQUxf4gZK3/mDF9XOteTIKV8JA5x/ZEi8IMWD1T6AvzZdwA/mktArf5gNRnb3X3LlzZyMfj0LAypcdrKVdIX5hWL6lb1wP7HwJ5dP5anX8CdJ/1Ep9HkN6RkMblL1xs/FU46ZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781391275; c=relaxed/simple;
-	bh=iZbJHDSwm/+M/O7W6upSMl4Wv69MZ6HERedebOMSJkQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DpCNLEtWpO0lHg9aw3n06ZXRr0aJ11BmtZfhYnxRKUnyKSJYQjKUZ7Y1i2yJlfOBUO1SG4wEHmj2L10r8L60Kperj3j0VHbbnFnlWn46lHPRVG3Yd5OJQB1ND7iGdCRIeXwPoAveehzJgmCSXvqJMVcTXi0b55IKk+PX7IqYTbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPtYAaVb; arc=none smtp.client-ip=74.125.82.194
-Received: by mail-dy1-f194.google.com with SMTP id 5a478bee46e88-304c520fe9aso4784930eec.0
-        for <cgroups@vger.kernel.org>; Sat, 13 Jun 2026 15:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781391273; x=1781996073; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aGN41lJJpUoPArkrSVIPW84Lj0UWsceBpbacK1PPJMQ=;
-        b=EPtYAaVbdb7OMtts5QCZZjsrTny0h4X5jVsH+EtnJ13sSdXRfy3owCyVshZ5rVuCbf
-         eg/O+6o2vWS2giZowymf6/LrUwEIXSdHpO39wQ0e9kaLZFWTvyGjqYOieJLc65HUDMoT
-         ndRyVxX/hpXD+Ky9sEBNnsOKJxJOndx82F63GebSz+xqdEAcc6wb7ZTqAYsFAWSUbsfv
-         iRuomQ0vkvwa7mRD0M7Bsky1riywd90nskZFDO0t3cDhdNQlQMu9u6oiyc+UjvvsyMKy
-         vXFce/eQm1rdHk7sGgw5bnLv/fGGty8H3XT21zvIGrF26aQUtQ6fH6uC8g0XyN3EqYng
-         aJ4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781391273; x=1781996073;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aGN41lJJpUoPArkrSVIPW84Lj0UWsceBpbacK1PPJMQ=;
-        b=YZrXoQdoiKkZU+oDkG1nEHboiZmyuuLUvdzSiXAQ8a62Zxyyg/oNfSnX+aHZx5kOm6
-         gWd0WdzOJBW0TrmmZxTmi9mg82IW+6EGgYL/4dSJ4t2zT6gPKQYQ9mgmsRW59dx+NR9k
-         YIS0XhrjB/hMwJ+Aqi5DW8RmIlTI4ETgWDhe8A/5P0DrXwSVkBzAVcaTFRVpjqyVfMkw
-         2KOvruvI1jDenR9fzQ/RsfmAljz1MgyZGyyHI5x3qY9IoDNyqL5ixrUKhQIKZwm53bUK
-         JEjsySH1YVIiCqJpkHT3/VnRKhidiv4TTCJq/QQOxqXNqxk1KPeb9uibdX5jWfZ5Yc/b
-         vMow==
-X-Gm-Message-State: AOJu0YwouGdsnZbM10Nb5wVqq3CDvU0q9GpHDXF9ueld6AfZ23tmGUKb
-	ytKgVhbNqexEELdQN16GE6BYXzsT/WR+l76OJD8Mfgw2oEnmatvLxQ1Qf9u7i9AZ
-X-Gm-Gg: Acq92OE2Co/fGFx3BW/u5ZDkZzkba9pKrwfGIR23VCVc8LzZspxszfpaJQ63YzWBG9Y
-	PnzHwnGnOpaXtBLETsrwvx/MDVVUrpgXQr53TmwNA/VsPXW0zwAJKfNqSBtlO1dW9aO9B+p+Dx+
-	AcFwnTZ4jMkdMcrBQ8JV9v2cFXs/c/QoKjqf8yKsijQeQMUGbTNEwVamU8H9Bb2sveuPK3Zh601
-	caT9yaYToptgVs0zhrYENlL/UB+M17ai1JOQaZbzKBnq/+LWocouee6spR3mVc090waG+akg8Bm
-	xI7GPOJXqTqYQZQ/PyyV+FRVJY+XoTbc7KkDp4pQqPjDCnZerk+f1kjUyC9kqWlXndPTjp/aEU2
-	4ONg8oOSppGsIulCjn+z/SkhRBovRCAEwdZvVwovSbcj6+QcoGDkaGDjguCqz4MVb+fViug0HOw
-	XjQ+KOH9lqMsh7svMo8Eb1z/VhnvabD4GMs5v2UuBhHgKQ78Aft9d0AErwXgOPZC39L++qJ+XWP
-	MJXXrjfhvKi9PynGRd5mWn7Y+X+u+Eu9d8CO5HX9SLjARXDvS/PWeHjbkV4EW+C1nUaBRg1QdnZ
-	6UHazTxZKKrKO3oMtg==
-X-Received: by 2002:a05:7300:4347:b0:304:2af3:5ffa with SMTP id 5a478bee46e88-3093ec3e363mr2952961eec.19.1781391273082;
-        Sat, 13 Jun 2026 15:54:33 -0700 (PDT)
-Received: from ethan-latitude5420.. (host-127-24.cafrjco.fresno.ca.us.clients.pavlovmedia.net. [68.180.127.24])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3081ea43f69sm8413333eec.20.2026.06.13.15.54.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jun 2026 15:54:32 -0700 (PDT)
-From: Ethan Nelson-Moore <enelsonmoore@gmail.com>
-To: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org
-Cc: Ethan Nelson-Moore <enelsonmoore@gmail.com>,
-	Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] blk-iocost: correct CONFIG_TRACEPOINTS macro name in comments
-Date: Sat, 13 Jun 2026 15:54:26 -0700
-Message-ID: <20260613225427.139129-1-enelsonmoore@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1781425220; c=relaxed/simple;
+	bh=gewyEdyEhtdyYxG+SRF/EqpHzJVs6wnsL55nkCPli0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nVvqDqCv+SattjcL9QQCPSm/G48ByvAHUVXzWogio0nL/Bzh9ji2Z6HRyBhxpJqIg0/XkthjUP0W9BRJEGx36lDohTGsDDsCk1KH8k4FYeSRgDpZ1ORPcQGbuKkzFavaEmTGxJLIXBvDhHWQW60/eRBDb+DNVobJEOsdvIqpyd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.103 with ESMTP; 14 Jun 2026 17:20:09 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Sun, 14 Jun 2026 17:20:08 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: akpm@linux-foundation.org, chrisl@kernel.org, kasong@tencent.com,
+	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, yosry@kernel.org, david@kernel.org,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com,
+	baoquan.he@linux.dev, baohua@kernel.org, chengming.zhou@linux.dev,
+	ljs@kernel.org, liam@infradead.org, vbabka@kernel.org,
+	rppt@kernel.org, surenb@google.com, qi.zheng@linux.dev,
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+	riel@surriel.com, gourry@gourry.net, haowenchao22@gmail.com,
+	kernel-team@meta.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/7] mm, swap: Virtual Swap Space (Swap Table
+ Edition)
+Message-ID: <ai5kOOmR1LPTWs1J@yjaykim-PowerEdge-T330>
+References: <20260612193738.2183968-1-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260612193738.2183968-1-nphamcs@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.86 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,toxicpanda.com,kernel.dk];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-16916-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:enelsonmoore@gmail.com,m:tj@kernel.org,m:josef@toxicpanda.com,m:axboe@kernel.dk,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER(0.00)[enelsonmoore@gmail.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[enelsonmoore@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:nphamcs@gmail.com,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:yosry@kernel.org,m:david@kernel.org,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:chengming.zhou@linux.dev,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:qi.zheng@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:riel@surriel.com,m:gourry@gourry.net,m:haowenchao22@gmail.com,m:kernel-team@meta.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[31];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16917-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,infradead.org,google.com,surriel.com,gourry.net,gmail.com,meta.com,kvack.org,vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,yjaykim-PowerEdge-T330:mid,lge.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 99C5F67FF86
+X-Rspamd-Queue-Id: 1AF47680A34
 
-Comments in block/blk-iocost.c incorrectly refer to
-CONFIG_TRACE_POINTS instead of CONFIG_TRACEPOINTS. Correct them.
+...
+> * Integration with swap.tier by Youngjun (see [12]). For now, I'm
+>   leaning towards opting out the vswap device from swap.tier entirely, and
+>   treat it as a special device. Integrating it with swap.tiers will
+>   benefit the cases where you want some cgroups to skip vswap for fast
+>   swap devices (pmem), whereas other should go through zswap first. But
+>   most other use cases, either the overhead of vswap will be acceptable
+>   (or not the bottleneck), or we can just disable CONFIG_VSWAP entirely :)
+> 
+>   Youngjun, may I ask for your thoughts on this?
 
-Discovered while searching for CONFIG_* symbols referenced in code but
-not defined in any Kconfig file.
+Hi Nhat,
 
-Signed-off-by: Ethan Nelson-Moore <enelsonmoore@gmail.com>
----
- block/blk-iocost.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Tier 1: VSWAP, Tier 2: ZSWAP ...
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 0cca88a366dc..04630c36b737 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -205,9 +205,9 @@ static char trace_iocg_path[TRACE_IOCG_PATH_LEN];
- 		}								\
- 	} while (0)
- 
--#else	/* CONFIG_TRACE_POINTS */
-+#else	/* CONFIG_TRACEPOINTS */
- #define TRACE_IOCG_PATH(type, iocg, ...)	do { } while (0)
--#endif	/* CONFIG_TRACE_POINTS */
-+#endif	/* CONFIG_TRACEPOINTS */
- 
- enum {
- 	MILLION			= 1000000,
--- 
-2.43.0
+I don't see any problem applying the desired functionality with the
+currently proposed mechanism and interface. With this, a user would be
+assigned the default Virtual -> RAM swap tier, and the overall picture
+becomes one where swap tiers are composed according to the priority
+setting.
 
+A few more thoughts came to mind.
+
+Shakeel also proposed a per-tier max for the swap tier interface.
+
+https://lore.kernel.org/linux-mm/aiw2p5ANjsQUCIHA@linux.dev/
+
+However, for vswap, rather than treating it as a case for limiting the
+amount via such a per-tier max, I think the current interface is the
+better fit. (But, as Shakeel mentioned, if we only allow the limit
+to be set to 0 or max, the usage could end up being the same. I'm still
+thinking this part through.)
+
+I have a few other thoughts as well, but I plan to raise those points in
+the swap tier discussion thread instead. Please take a look at the
+related thread, and let me know if you have any opinions. :)
+
+And I'll share more if other thoughts come to mind
+
+Thanks,
+Youngjun Park
 
