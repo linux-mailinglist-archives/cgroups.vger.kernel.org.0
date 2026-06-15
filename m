@@ -1,236 +1,320 @@
-Return-Path: <cgroups+bounces-16975-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16976-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id QLikKzMhMGowOgUAu9opvQ
-	(envelope-from <cgroups+bounces-16975-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 17:58:43 +0200
+	id DFQfBoEpMGoPPQUAu9opvQ
+	(envelope-from <cgroups+bounces-16976-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 18:34:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2223F687FFB
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 17:58:43 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 688206886C3
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 18:34:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=AJnFbIKx;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16975-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16975-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=fnnas-com.20200927.dkim.feishu.cn header.s=s1 header.b="OeckO5/9";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16976-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16976-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 61DF030A20AD
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 15:50:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 00B2F307ED9A
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 16:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02762408639;
-	Mon, 15 Jun 2026 15:49:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A1E409E16;
+	Mon, 15 Jun 2026 16:28:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+Received: from sg-3-28.ptr.tlmpb.com (sg-3-28.ptr.tlmpb.com [101.45.255.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F6333AB27D
-	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 15:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87D640B393
+	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 16:28:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781538576; cv=none; b=dAmjlx4BG8ayXMAkfClie+rlYAVBqgfy2PCrGJZxaaEmij9Zzs42P5ztg4UJVH7xVLGSQOThsprxMrJYRzhlZGE4qUjOIcouclcBlfCccOzOHjKEaWC3GjWmOarpjifwm84L9LkeQhc6FufsYn3ax3HBgJ4dxfVgL+qBIyW77+0=
+	t=1781540900; cv=none; b=OKh3pY8Wdpk0dlW1TH+O2EWGD5etU+IwHxSyv7ZKiuTHcq7dXXY9wrNmMQ/fposnbabOXfjEOIWj8owcAV/jjPH2FerD+o3+aerr4WG7f18WOhxk2ChrDugcwm2sg2PaI4OW2cfI0jxwDa91cPmbFSDrDYMGqLbFUoCbI0R/RF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781538576; c=relaxed/simple;
-	bh=KFKCs1EbAVFNbQGjzuPE2K8eZReAhob/Cx5uFNdpI3o=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=aBj9lv30NxrgV/H0W5PicGehdWprjAWECT9mhE1pLUSFy869VTPcl8onAT4ynaExuDUHkv46EI0B5HGmmVj/88tPrZKkM94U7QOHJgsKRyHS/4By56LuF0JLPSHoKs1mXSWSu1lYh5wQfsMv/c5W8pDuroxwQklOiqgMiR4UX4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AJnFbIKx; arc=none smtp.client-ip=209.85.210.49
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-7e6e21c47e6so1797420a34.1
-        for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 08:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781538574; x=1782143374; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KFKCs1EbAVFNbQGjzuPE2K8eZReAhob/Cx5uFNdpI3o=;
-        b=AJnFbIKxs8kVWDY7xV3fuiwF+wCb/9XIICrwa7SFtjw3k/hBj4ncO42hEZrfFi16Mc
-         +CO6xhx1FhXZj77/f85YNmPVqdt+zNVJcT/gltO+khyadbwT+8hhMxRJPwfZveQuDLqv
-         GJwMBCqoLXLwDX1oq86gFq6Atgkdptrv5eHoMElz5kBtgetHiyp7+vNVhQ+3+0v+aNaQ
-         H4yNkCY6axhjHtkQ5Q13A/c0hYOcTSlK6ZH90Xx8jbhcJWQn0YWPjkQBadXkk7iRTYYD
-         cayf8XBuYqH9QM2tdUcncH2Ltm0THlVTVCKDDtOiVtG3IH40Jj+UD9mqJq3g618VpsrJ
-         Rl0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781538574; x=1782143374;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KFKCs1EbAVFNbQGjzuPE2K8eZReAhob/Cx5uFNdpI3o=;
-        b=j7u6iPZAZGI+i37X5Qnkmx4PjWoOlN8nKZAoKjwRPijRi+BRKZR91n3wXlvNOBy76w
-         sPTvYdZ6jipVLe5MJwzgBymsizV4c6R0IPsOSM5Pl7fkQCqMnaSW+Vc4Y4eubGG17qk6
-         0o/N6NiI6GKo4hFilKuiZxA918aPYxluCmRFXSk0FkSgm1+22vgxXPFkG7deVSx8g1Uy
-         vCODOXYUzmQLuhCSa8MyECpVUVNI17b6k1GxQXbTYOO4lOtE7JK0UxrDQEv6bupLF3Id
-         wT5EcMxarwdiwB2SrToTwLFFkADO7wg6izD/VOLV4NeUKnDUXHvOtDFatFhbJZGhobMF
-         TppQ==
-X-Forwarded-Encrypted: i=1; AFNElJ9VE9IjhFWE0JSzUnUDRwk+WqzF11arAzX63rAw9DTkLtTeWha8lxjBQd8/vyDftXu5PKfrBGve@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfuPqSwQPbP1skEvhBGUwofYXFZm/qkkjCX/ZKCNyzSgPkS454
-	MY6tF0XlF0QxsiIvHC1steSenq0awHoDAKuWbCnpXU5nGoys8X01z35n
-X-Gm-Gg: Acq92OFhbehUtpXY6zNYQAz1xNqEhNqIWG+ybETt69S59hEDWsy4pvOf2Nk+QXOR+6e
-	CJcbf11yiwU/INjzjUz/ZFVkj73TZxbxi8mA0jp4gEAw7EmqEuq1ijh0tZ4oiKjTao1WPQq06oe
-	r1zz/vDyf6NdZ0Rx4VCkrziR4r9Mu4VBP3Xx4CkHJv4lk/dwFWzqTMVUC88YrdNCRNhhBt/shqd
-	aZNBxKfRqK64AFQGy0wp1RzIc7zRgbsIPsZbAevLdvfDu2Lnl6+xOLRGYbZEKI/gXNclgJJRKn/
-	YuGyKVVcgTTK5/Nt0X6cRqCDGUNUz/hfQEr0gm+lqYhjR1nPcMXidXXw+U8vezFKIjGNIxWP3EQ
-	kP+9sAWMbPOT3d2WNXMG5zWSItsi9r4/df/Pjk2/cpopWtew3AEk1rB/8P7AykEVG7LHUwe+r8n
-	xYU0fvL/Dn5AX8n0Nxr/IF9DSF0Iz+AbfN/dl1dMC3NxjLgUJPokMLR/nRuifngAZ8Dg5WPgnuw
-	mpZj+Lmz3RJ6Uj06w==
-X-Received: by 2002:a05:6808:c146:b0:485:43ed:bd4d with SMTP id 5614622812f47-48741b97bdfmr8360469b6e.33.1781538574387;
-        Mon, 15 Jun 2026 08:49:34 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:5c::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7e79f6b7e6csm4153341a34.17.2026.06.15.08.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Jun 2026 08:49:33 -0700 (PDT)
+	s=arc-20240116; t=1781540900; c=relaxed/simple;
+	bh=4PeMgbEmobFrdGDlwf+b58+vlVlWUUifnljuI6GZ+CA=;
+	h=From:Mime-Version:Content-Type:Subject:References:In-Reply-To:To:
+	 Message-Id:Cc:Date; b=I6ViyFGTs/ypTsMMcBWANFuDC9bDKlmjqv1+i4oIz01DZp2wk5XR3+jQ3VI2faZ7FaZC9ntoctNbMnA/PjQVGHoJZMARQZghFPkszomtGbbSceCmksi2wTgApRdZ6pTv0MypQyxoSdHXPpFMjRk0IEnHvD8oe8r+p08i0/aJ38c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com; spf=pass smtp.mailfrom=fnnas.com; dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b=OeckO5/9; arc=none smtp.client-ip=101.45.255.28
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=s1; d=fnnas-com.20200927.dkim.feishu.cn; t=1781540166;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=xNteM8cvm64RoqWOvtAwKvU/xR4tQhb/JI2DiVJ/Ki8=;
+ b=OeckO5/97BDQ0ImBNRXaRd/eYxFJJh6FF7nrUt+nPi3/pN4yJe4zvB2SU4F45sXoWI+wGM
+ Wyr+oEuNXO4Wi3AUoPLtqt589aEzIYCYIGlowqbXRwYF1q5wKlj3sbp7UjCPUuJR7i2ZYt
+ 91JPJDZ6oAPvOF9K3GqtCQ6+p1F7vFTmLEceohI1hIPxGp24CgfceLXvdooVffHfQs3pGb
+ dNG/2f53+cnadF+idIxCBAzCBRdFKliVhokvVZdUVPceOL1wBvFssnTuADI4QFg4VadvJP
+ Pzrt6cdYtAWzbRMvOB5rHmiIfn/KuTTSI851qhVKJdXrsZabx8V/kmWfoQfc5g==
+From: "Yu Kuai" <yukuai@fnnas.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 15 Jun 2026 08:49:32 -0700
-Message-Id: <DJ9QPTO2WXNB.10E88ZHWRDHB0@gmail.com>
-Cc: "Hao Li" <hao.li@linux.dev>, "Harry Yoo" <harry@kernel.org>, "Christoph
- Lameter" <cl@gentwo.org>, "David Rientjes" <rientjes@google.com>, "Roman
- Gushchin" <roman.gushchin@linux.dev>, "Alexei Starovoitov"
- <ast@kernel.org>, "Andrew Morton" <akpm@linux-foundation.org>, "Johannes
- Weiner" <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Shakeel
- Butt" <shakeel.butt@linux.dev>, "Alexander Potapenko" <glider@google.com>,
- "Marco Elver" <elver@google.com>, "Dmitry Vyukov" <dvyukov@google.com>,
- "kasan-dev" <kasan-dev@googlegroups.com>, "linux-mm" <linux-mm@kvack.org>,
- "LKML" <linux-kernel@vger.kernel.org>, "open list:CONTROL GROUP (CGROUP)"
- <cgroups@vger.kernel.org>
-Subject: Re: [PATCH v2 05/16] mm/slab: introduce alloc_flags and
- SLAB_ALLOC_TRYLOCK
-From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, "Suren Baghdasaryan"
- <surenb@google.com>
-X-Mailer: aerc
-References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
- <aiuBoDbQc0N-l7e-@fedora>
- <CAJuCfpGSHfNUvL9AzbftSg=uGRW4cJLbO6iB15keyN6A_eSWEw@mail.gmail.com>
- <CAADnVQJPETYAOd9R9Bg2JuuF1q7grg8VtEnvdvr0fDFhxb9O6A@mail.gmail.com>
- <f927f1b4-3f60-471e-b42b-8d098c1ce5dd@kernel.org>
-In-Reply-To: <f927f1b4-3f60-471e-b42b-8d098c1ce5dd@kernel.org>
+Received: from [192.168.1.104] ([39.182.0.180]) by smtp.feishu.cn with ESMTPS; Tue, 16 Jun 2026 00:16:03 +0800
+X-Original-From: Yu Kuai <yukuai@fnnas.com>
+Reply-To: yukuai@fygo.io
+Subject: Re: [PATCH V2] blk-cgroup: defer blkcg css_put until blkg is unlinked from queue
+References: <20260615115556.1225472-1-wozizhi@huaweicloud.com>
+In-Reply-To: <20260615115556.1225472-1-wozizhi@huaweicloud.com>
+To: "Zizhi Wo" <wozizhi@huaweicloud.com>, <axboe@kernel.dk>, <tj@kernel.org>, 
+	<josef@toxicpanda.com>, <linux-block@vger.kernel.org>
+Message-Id: <70642ddf-9ed9-45cb-bf40-891a07247c97@fnnas.com>
+X-Lms-Return-Path: <lba+26a302544+5a7ac8+vger.kernel.org+yukuai@fnnas.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: <cgroups@vger.kernel.org>, <yangerkun@huawei.com>, 
+	<chengzhihao1@huawei.com>, <houtao1@huawei.com>, <yukuai@fygo.io>
+Date: Tue, 16 Jun 2026 00:16:01 +0800
+User-Agent: Mozilla Thunderbird
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.65 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_DKIM_ALLOW(-0.20)[fnnas-com.20200927.dkim.feishu.cn:s=s1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TO_DN_ALL(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16975-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:hao.li@linux.dev,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:vbabka@kernel.org,m:surenb@google.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:wozizhi@huaweicloud.com,m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:yangerkun@huawei.com,m:chengzhihao1@huawei.com,m:houtao1@huawei.com,m:yukuai@fygo.io,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[yukuai@fnnas.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-16976-lists,cgroups=lfdr.de];
+	TO_DN_SOME(0.00)[];
+	DMARC_NA(0.00)[fnnas.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yukuai@fnnas.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[fnnas-com.20200927.dkim.feishu.cn:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:email,vger.kernel.org:from_smtp]
+	HAS_REPLYTO(0.00)[yukuai@fygo.io];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[fygo.io:replyto,fygo.io:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,fnnas-com.20200927.dkim.feishu.cn:dkim,fnnas.com:mid,fnnas.com:from_mime,huawei.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2223F687FFB
+X-Rspamd-Queue-Id: 688206886C3
 
-On Mon Jun 15, 2026 at 2:02 AM PDT, Vlastimil Babka (SUSE) wrote:
-> On 6/15/26 04:16, Alexei Starovoitov wrote:
->> On Sun, Jun 14, 2026 at 7:01=E2=80=AFPM Suren Baghdasaryan <surenb@googl=
-e.com> wrote:
->>>
->>> On Thu, Jun 11, 2026 at 8:50=E2=80=AFPM Hao Li <hao.li@linux.dev> wrote=
-:
->>> >
->>> > On Wed, Jun 10, 2026 at 05:40:07PM +0200, Vlastimil Babka (SUSE) wrot=
-e:
->>> > > Similarly to the page allocators, introduce slab-allocator specific
->>> > > alloc flags that internally control allocation behavior in addition=
- to
->>> > > gfp_flags, without occupying the limited gfp flags space.
->>> > >
->>> > > Introduce the first flag SLAB_ALLOC_TRYLOCK that behaves similarly =
-to
->>> > > page allocator's ALLOC_TRYLOCK and will be used to reimplement
->>> > > kmalloc_nolock()'s "!allow_spin" behavior. That currently relies on
->>> > > gfpflags_allow_spinning() and thus the lack of both __GFP_RECLAIM f=
-lags,
->>> > > importantly __GFP_KSWAPD_RECLAIM. This can give false-positive resu=
-lts
->>> > > e.g. in early boot with a restricted gfp_allowed_mask.
->>> > >
->>> > > Also introduce alloc_flags_allow_spinning() to replace the usage of
->>> > > gfpflags_allow_spinning().
->>> > >
->>> > > Start using alloc_flags and the new check first in alloc_from_pcs()=
- and
->>> > > __pcs_replace_empty_main(). This means some slab allocations that w=
-ere
->>> > > falsely treated as kmalloc_nolock() due to their gfp flags will now=
- have
->>> > > higher chances of succeed, and this will further increase with foll=
-owup
->>>
->>> nit: I think it should be either "higher chances of succeess" or
->>> "higher chances to succeed".
->
-> success it is
->
->>>
->>> > > changes.
->>> > >
->>> > > Remove a WARN_ON_ONCE() from refill_objects() as it's now legitimat=
-e to
->>> > > reach it from a slab allocation that's not _nolock() and yet lacks
->>> > > __GFP_KSWAPD_RECLAIM for other reasons.
->>> > >
->>> > > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
->>> > > ---
->>> >
->>> > Reviewed-by: Hao Li <hao.li@linux.dev>
->>>
->>> I would call SLAB_ALLOC_TRYLOCK something like SLAB_ALLOC_NOSPIN or
->>> SLAB_ALLOC_NOLOCK but naming is hard and I don't claim myself to be
->>> good at it. So, feel free to adopt my suggestion if you like it or
->>> ignore it otherwise.
->>>
->>> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
->>=20
->> Just noticed "trylock" in the #define SLAB_ALLOC_TRYLOCK
->>=20
->> Please call it SLAB_ALLOC_NOLOCK.
->>=20
->> Initial api was using 'trylock' name and it was a mistake,
->> since people assumed normal spin_trylock() like semantics.
->> "trylock" implies that it fails under contention
->> and retry is a normal next step. It's not the case.
->> No one should be retrying. That's why the final api was kmalloc_nolock()=
-.
->> So please keep this important distinction in the name.
->> SLAB_ALLOC_NOLOCK should mean that spinning locks
->> should not be taken. It should not mean "just go to trylock everywhere".
->
-> Eh, ok then, will change to SLAB_ALLOC_NOLOCK. Even though it's mostly in=
-ternal.
->
-> So next thing we change page allocator's ALLOC_TRYLOCK to ALLOC_NOLOCK to=
-o?
+Hi=EF=BC=8C
 
-yeah. Would be good to align as well.
+=E5=9C=A8 2026/6/15 19:55, Zizhi Wo =E5=86=99=E9=81=93:
+> From: Zizhi Wo <wozizhi@huawei.com>
+>
+> [BUG]
+> Our fuzz testing triggered a blkcg use-after-free issue:
+>
+>    BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
+>    Call Trace:
+>    ...
+>    blkcg_deactivate_policy+0x244/0x4d0
+>    ioc_rqos_exit+0x44/0xe0
+>    rq_qos_exit+0xba/0x120
+>    __del_gendisk+0x50b/0x800
+>    del_gendisk+0xff/0x190
+>    ...
+>
+> [CAUSE]
+> process1						process2
+> cgroup_rmdir
+> ...
+>    css_killed_work_fn
+>      offline_css
+>      ...
+>        blkcg_destroy_blkgs
+>        ...
+>          __blkg_release
+> 	  css_put(&blkg->blkcg->css)
+>            blkg_free
+> 	    INIT_WORK(xxx, blkg_free_workfn)
+> 	    schedule_work
+>      css_put
+>      ...
+>        blkcg_css_free
+>          kfree(blkcg)--------blkcg has been freed!!!
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3Dschedule_work
+>                blkg_free_workfn
+> 							__del_gendisk
+> 							  rq_qos_exit
+> 							    ioc_rqos_exit
+> 							      blkcg_deactivate_policy
+> 							        mutex_lock(&q->blkcg_mutex)
+> 								spin_lock_irq(&q->queue_lock)
+> 							        list_for_each_entry(blkg, xxx)
+> 								  blkcg =3D blkg->blkcg
+> 								  spin_lock(&blkcg->lock)-------UAF!!!
+> 	        mutex_lock(&q->blkcg_mutex)
+> 	        spin_lock_irq(&q->queue_lock)
+> 	        /* Only then is the blkg removed from the list */
+> 	        list_del_init(&blkg->q_node)
+>
+> As a result, a blkg can still be reachable through q->blkg_list while
+> its ->blkcg has already been freed.
+>
+> [Fix]
+> Fix this by deferring the blkcg css_put() until after the blkg has been
+> unlinked from q->blkg_list in blkg_free_workfn(). This ensures that the
+> blkcg outlives every blkg still reachable through q->blkg_list, so any
+> iterator holding q->queue_lock is guaranteed to observe a valid
+> blkg->blkcg.
+>
+> While at it, move css_tryget_online() from blkg_create() into blkg_alloc(=
+)
+> so that the css reference is owned by the alloc/free pair rather than
+> straddling layers:
+> blkg_alloc()  <-> blkg_free()
+> blkg_create() <-> blkg_destroy()
+>
+> Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free=
+_workfn() and blkcg_deactivate_policy()")
+> Suggested-by: Hou Tao <houtao1@huawei.com>
+> Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
+> ---
+> v2:
+>   - Move css_tryget_online() from blkg_create() into blkg_alloc() so the
+>     css reference follows the blkg's own lifetime, making the put in
+>     blkg_free_workfn() symmetric with the get in blkg_alloc().
+>
+> v1: https://lore.kernel.org/all/20260518010932.633707-1-wozizhi@huaweiclo=
+ud.com/
+>
+>   block/blk-cgroup.c | 24 ++++++++++++------------
+>   1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index bc63bd220865..27414c291e49 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -132,10 +132,15 @@ static void blkg_free_workfn(struct work_struct *wo=
+rk)
+>   	if (blkg->parent)
+>   		blkg_put(blkg->parent);
+>   	spin_lock_irq(&q->queue_lock);
+>   	list_del_init(&blkg->q_node);
+>   	spin_unlock_irq(&q->queue_lock);
+> +	/*
+> +	 * Release blkcg css ref only after blkg is removed from q->blkg_list,
+> +	 * so concurrent iterators won't see a blkg with a freed blkcg.
+> +	 */
+> +	css_put(&blkg->blkcg->css);
+>   	mutex_unlock(&q->blkcg_mutex);
 
+Please move css_put after mutex_unlock, unless there is a strong reason.
+
+With above change, feel free to add:
+
+Reviewed-by: Yu Kuai <yukuai@fygo.io>
+
+>  =20
+>   	blk_put_queue(q);
+>   	free_percpu(blkg->iostat_cpu);
+>   	percpu_ref_exit(&blkg->refcnt);
+> @@ -177,12 +182,10 @@ static void __blkg_release(struct rcu_head *rcu)
+>   	 * blkg_stat_lock is for serializing blkg stat update
+>   	 */
+>   	for_each_possible_cpu(cpu)
+>   		__blkcg_rstat_flush(blkcg, cpu);
+>  =20
+> -	/* release the blkcg and parent blkg refs this blkg has been holding */
+> -	css_put(&blkg->blkcg->css);
+>   	blkg_free(blkg);
+>   }
+>  =20
+>   /*
+>    * A group is RCU protected, but having an rcu lock does not mean that =
+one
+> @@ -311,10 +314,13 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *bl=
+kcg, struct gendisk *disk,
+>   	blkg->iostat_cpu =3D alloc_percpu_gfp(struct blkg_iostat_set, gfp_mask=
+);
+>   	if (!blkg->iostat_cpu)
+>   		goto out_exit_refcnt;
+>   	if (!blk_get_queue(disk->queue))
+>   		goto out_free_iostat;
+> +	/* blkg holds a reference to blkcg */
+> +	if (!css_tryget_online(&blkcg->css))
+> +		goto out_put_queue;
+>  =20
+>   	blkg->q =3D disk->queue;
+>   	INIT_LIST_HEAD(&blkg->q_node);
+>   	blkg->blkcg =3D blkcg;
+>   	blkg->iostat.blkg =3D blkg;
+> @@ -351,10 +357,12 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *bl=
+kcg, struct gendisk *disk,
+>  =20
+>   out_free_pds:
+>   	while (--i >=3D 0)
+>   		if (blkg->pd[i])
+>   			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
+> +	css_put(&blkcg->css);
+> +out_put_queue:
+>   	blk_put_queue(disk->queue);
+>   out_free_iostat:
+>   	free_percpu(blkg->iostat_cpu);
+>   out_exit_refcnt:
+>   	percpu_ref_exit(&blkg->refcnt);
+> @@ -379,32 +387,26 @@ static struct blkcg_gq *blkg_create(struct blkcg *b=
+lkcg, struct gendisk *disk,
+>   	if (blk_queue_dying(disk->queue)) {
+>   		ret =3D -ENODEV;
+>   		goto err_free_blkg;
+>   	}
+>  =20
+> -	/* blkg holds a reference to blkcg */
+> -	if (!css_tryget_online(&blkcg->css)) {
+> -		ret =3D -ENODEV;
+> -		goto err_free_blkg;
+> -	}
+> -
+>   	/* allocate */
+>   	if (!new_blkg) {
+>   		new_blkg =3D blkg_alloc(blkcg, disk, GFP_NOWAIT);
+>   		if (unlikely(!new_blkg)) {
+>   			ret =3D -ENOMEM;
+> -			goto err_put_css;
+> +			goto err_free_blkg;
+>   		}
+>   	}
+>   	blkg =3D new_blkg;
+>  =20
+>   	/* link parent */
+>   	if (blkcg_parent(blkcg)) {
+>   		blkg->parent =3D blkg_lookup(blkcg_parent(blkcg), disk->queue);
+>   		if (WARN_ON_ONCE(!blkg->parent)) {
+>   			ret =3D -ENODEV;
+> -			goto err_put_css;
+> +			goto err_free_blkg;
+>   		}
+>   		blkg_get(blkg->parent);
+>   	}
+>  =20
+>   	/* invoke per-policy init */
+> @@ -440,12 +442,10 @@ static struct blkcg_gq *blkg_create(struct blkcg *b=
+lkcg, struct gendisk *disk,
+>  =20
+>   	/* @blkg failed fully initialized, use the usual release path */
+>   	blkg_put(blkg);
+>   	return ERR_PTR(ret);
+>  =20
+> -err_put_css:
+> -	css_put(&blkcg->css);
+>   err_free_blkg:
+>   	if (new_blkg)
+>   		blkg_free(new_blkg);
+>   	return ERR_PTR(ret);
+>   }
+
+--=20
+Thanks,
+Kuai
 
