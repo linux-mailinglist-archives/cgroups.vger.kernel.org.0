@@ -1,55 +1,54 @@
-Return-Path: <cgroups+bounces-16956-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16957-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ousjBFLoL2piIwUAu9opvQ
-	(envelope-from <cgroups+bounces-16956-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:56:02 +0200
+	id viEaCL/oL2p+IwUAu9opvQ
+	(envelope-from <cgroups+bounces-16957-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:57:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3223A685E15
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 83150685E53
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:57:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=XZorzDkk;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16956-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16956-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=AWC46ogu;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16957-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16957-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 545DF301F171
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:55:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1CD8A304A661
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452583E557C;
-	Mon, 15 Jun 2026 11:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078F63E92B7;
+	Mon, 15 Jun 2026 11:55:10 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0863E5A07;
-	Mon, 15 Jun 2026 11:55:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB593E558A;
+	Mon, 15 Jun 2026 11:55:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781524506; cv=none; b=ujn20vZfD1vhzyyQkQz3KGjPbK4sP+pkHCt7qIE4mavMjki/Zm8Dp+QVnpRmOGv9re9KlNIexc1c4JpI85kSRsomKbChNBloPfnnyQnkSkkVRBpx+Uak8XzkVdLPdpLXxsnBSG4dPS3DRgRqHKFnzUDttSArcSo2Shrrr9dYwjo=
+	t=1781524509; cv=none; b=ntytDFlT5CP1ChGjJPHVZmcr4a8KGEugeEKr7JJluy46+3an2vtZTF7mqbcP2Rc6fZfvDhB4t3bv/QNM8Q/n5IAQCMv3I3VOOVL8NUsBKeGwF3nwIEcT9BHv+QCCwOD7ZBgH6afAyZvw7Yz/EnRjN38Wd+sbGu5LGguOfjveM14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781524506; c=relaxed/simple;
-	bh=TuSzE3BnQ2jNTKA38wXJsn6m6BKDQ2QbbiBnxQUKg9o=;
+	s=arc-20240116; t=1781524509; c=relaxed/simple;
+	bh=kUhMlsSWxtf42zaZR9a3XQ6yvqG+mZDCBSFmfErTTno=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ROEtKr9zaairreKTXqU5iCCoNAmPNUdBAWa1HvtwfdnMOrvzp+3EXV5QmWrk4zl0MD+hg0qTCStGT7lwVvE3MYj1lL5cmMSEzw/mhHL3zcYKgLADCLwlYe0iywnDbopFRkkSRHWEWReAEFGDkoqGFWmPMjU5darte7yXqkK4emQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XZorzDkk; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB061F00A3D;
-	Mon, 15 Jun 2026 11:55:00 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Eczq+gEcFb4OQv7sDIJfHvxYhv67uaMHZocwmy4lzRvx/eLG8NMprh6rM9I9dKlyZ7ZAXR5cq9ue/SGknRLgQ59OlVPufUx/ESjI8URcJRthTAbwCmXCznwCHLaaCKIgAsiDM6rnT600sg69wOu1asTz4qhZ3nmNxMvkcol8l2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AWC46ogu; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 985AC1F000E9;
+	Mon, 15 Jun 2026 11:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781524504;
-	bh=G2X5hpGdNDsHWaRqNjT3IegqGlojYoq+qbTKUu2hAO8=;
+	s=k20260515; t=1781524508;
+	bh=KsQDkH3NB7HMKXjyEodAbkV9bHFoqveFAU9ferOkqko=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=XZorzDkkFgRxREpwnq3eFbrbpYQYTpiJWBwxZnQwQjk+kpFhkW4uaZhIK6NqK9xXu
-	 7afxpkHkrRZ4AXcaqxeP43g02XWkA/5VSygjZ7GALMY37ygbDa9IOns+SN9govHI2W
-	 zXDg/OIkrTnROlKylHQugR+pE5iI+79y81OsOTVy7ukRJu5M35REaKmzgAezB6IwER
-	 4axtdXNQNXDQAAmzJslrkMf8hqrzgIbEI1ZjxobJ5rcjr9gp8pxx8GMl/8Y9hbLH+x
-	 2T80ZwSM5JFBEiCzDxmuJt7c4Xa6Ye9CASgdtuqtipFKi1Di4x91MA41HDJl9mJBuN
-	 PngPS6ACMz9Fw==
+	b=AWC46ogu0sYJ/Rr7SWenD+Jg+OOXx0c6mLS2CDXgfEIr8g3KbNy6gcXh5Ku1FkLjd
+	 rxY037pOgmf6k9WiSYcPfWopQf6SEBcES52i0ROrfcEUCp0HGXJnlcEgMcyp7jXs/2
+	 8L+v9q9p7FMIx8ts1KJOe77SQezoNySATrCwoIVE4X5moiLl5DDbWI0i/i0NuBAWcW
+	 YLmX4m6/BuXw5xFNUu6NjlmFVT4BLCamUu2EXKR2lY59/GYr8Vm+ZsBlKk6IiSeV7q
+	 zAyz7k8tk3jpRyFRDsTpVqq/uoVpimEUSBS3VscwvaTYsXO/2jg4a0Oou1CbY7JeyE
+	 5LPoY/V5e4B4Q==
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Mon, 15 Jun 2026 13:54:38 +0200
-Subject: [PATCH v3 05/15] mm/slab: replace struct partial_context with
- slab_alloc_context
+Date: Mon, 15 Jun 2026 13:54:39 +0200
+Subject: [PATCH v3 06/15] mm/slab: add alloc_flags to slab_alloc_context
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,7 +57,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260615-slab_alloc_flags-v3-5-ce1146d140fb@kernel.org>
+Message-Id: <20260615-slab_alloc_flags-v3-6-ce1146d140fb@kernel.org>
 References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
 In-Reply-To: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
 To: Harry Yoo <harry@kernel.org>
@@ -90,7 +89,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16956-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16957-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -106,195 +105,169 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:email,msgid.link:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,linux.dev:email,msgid.link:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3223A685E15
+X-Rspamd-Queue-Id: 83150685E53
 
-Refactor get_from_partial_node(), get_from_any_partial(),
-get_from_partial() and ___slab_alloc().
+Add alloc_flags as a new field to the slab_alloc_context helper struct,
+so we can pass it to more functions in the slab implementation without
+adding another function parameter.
 
-Remove struct partial_context, which used to be more substantial but
-shrank as part of the sheaves conversion. Instead pass gfp_flags and
-pointer to the new slab_alloc_context, which together is a superset of
-partial_context, and alloc_flags are about to be added to
-slab_alloc_context as well.
+Start checking them via alloc_flags_allow_spinning() in
+alloc_single_from_new_slab() (where we can drop the allow_spin
+parameter), ___slab_alloc(), get_from_partial_node() and
+get_from_any_partial(). This further reduces false-positive
+spinning-not-allowed from allocations that are not kmalloc_nolock() but
+lack __GFP_RECLAIM flags.
 
-No functional change intended.
+_kmalloc_nolock_noprof() initializes ac.alloc_flags using its flags that
+are SLAB_ALLOC_NOLOCK. slab_alloc_node() and __kmem_cache_alloc_bulk()
+are not reachable from kmalloc_nolock() and all their callers expect
+spinning to be allowed, so they can use SLAB_ALLOC_DEFAULT. This is
+temporary as the scope of slab_alloc_context will further move to the
+callers, making the alloc_flags usage more obvious.
 
-Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-7-7190909db118@kernel.org
+Also change how trynode_flags are constructed in ___slab_alloc() to
+achieve the same "do not upgrade to GFP_NOWAIT" by using masking instead
+of checking allow_spin. We need to do that because we now determine
+allow_spin from alloc_flags, and would otherwise start to upgrade e.g.
+kmalloc() allocations without __GFP_KSWAPD_RECLAIM (that however do
+allow spinning) to GFP_NOWAIT, thus including __GFP_KSWAPD_RECLAIM.
+
+During the masking keep also existing __GFP_NOMEMALLOC (pointed out by
+Sashiko) and __GFP_ACCOUNT. Previously the hardcoded GFP_NOWAIT would
+eliminate them, but it's not a big problem that would need a separate
+fix.
+
+Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-6-7190909db118@kernel.org
 Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
 Reviewed-by: Hao Li <hao.li@linux.dev>
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 ---
- mm/slub.c | 54 +++++++++++++++++++++++++-----------------------------
- 1 file changed, 25 insertions(+), 29 deletions(-)
+ mm/slub.c | 28 +++++++++++++++-------------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index c53592baa027..6f6c15d796e1 100644
+index 6f6c15d796e1..3a34907b881b 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -219,12 +219,6 @@ struct slab_alloc_context {
+@@ -217,6 +217,7 @@ static DEFINE_STATIC_KEY_FALSE(strict_numa);
+ struct slab_alloc_context {
+ 	unsigned long caller_addr;
  	size_t orig_size;
++	unsigned int alloc_flags;
  };
  
--/* Structure holding parameters for get_from_partial() call chain */
--struct partial_context {
--	gfp_t flags;
--	unsigned int orig_size;
--};
--
  /* Structure holding parameters for get_partial_node_bulk() */
- struct partial_bulk_context {
- 	gfp_t flags;
-@@ -3825,7 +3819,8 @@ static bool get_partial_node_bulk(struct kmem_cache *s,
+@@ -3687,9 +3688,9 @@ static inline void init_slab_obj_iter(struct kmem_cache *s, struct slab *slab,
+  * and put the slab to the partial (or full) list.
   */
- static void *get_from_partial_node(struct kmem_cache *s,
- 				   struct kmem_cache_node *n,
--				   struct partial_context *pc)
-+				   gfp_t gfp_flags,
-+				   const struct slab_alloc_context *ac)
+ static void *alloc_single_from_new_slab(struct kmem_cache *s, struct slab *slab,
+-					const struct slab_alloc_context *ac,
+-					bool allow_spin)
++					const struct slab_alloc_context *ac)
  {
- 	struct slab *slab, *slab2;
- 	unsigned long flags;
-@@ -3840,7 +3835,7 @@ static void *get_from_partial_node(struct kmem_cache *s,
++	bool allow_spin = alloc_flags_allow_spinning(ac->alloc_flags);
+ 	struct kmem_cache_node *n;
+ 	struct slab_obj_iter iter;
+ 	bool needs_add_partial;
+@@ -3835,7 +3836,7 @@ static void *get_from_partial_node(struct kmem_cache *s,
  	if (!n || !n->nr_partial)
  		return NULL;
  
--	if (gfpflags_allow_spinning(pc->flags))
-+	if (gfpflags_allow_spinning(gfp_flags))
+-	if (gfpflags_allow_spinning(gfp_flags))
++	if (alloc_flags_allow_spinning(ac->alloc_flags))
  		spin_lock_irqsave(&n->list_lock, flags);
  	else if (!spin_trylock_irqsave(&n->list_lock, flags))
  		return NULL;
-@@ -3848,12 +3843,12 @@ static void *get_from_partial_node(struct kmem_cache *s,
- 
- 		struct freelist_counters old, new;
- 
--		if (!pfmemalloc_match(slab, pc->flags))
-+		if (!pfmemalloc_match(slab, gfp_flags))
- 			continue;
- 
- 		if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
- 			object = alloc_single_from_partial(s, n, slab,
--							pc->orig_size);
-+							ac->orig_size);
- 			if (object)
- 				break;
- 			continue;
-@@ -3887,15 +3882,16 @@ static void *get_from_partial_node(struct kmem_cache *s,
- /*
-  * Get an object from somewhere. Search in increasing NUMA distances.
-  */
--static void *get_from_any_partial(struct kmem_cache *s, struct partial_context *pc)
-+static void *get_from_any_partial(struct kmem_cache *s, gfp_t gfp_flags,
-+				  const struct slab_alloc_context *ac)
- {
- #ifdef CONFIG_NUMA
- 	struct zonelist *zonelist;
- 	struct zoneref *z;
+@@ -3891,7 +3892,7 @@ static void *get_from_any_partial(struct kmem_cache *s, gfp_t gfp_flags,
  	struct zone *zone;
--	enum zone_type highest_zoneidx = gfp_zone(pc->flags);
-+	enum zone_type highest_zoneidx = gfp_zone(gfp_flags);
+ 	enum zone_type highest_zoneidx = gfp_zone(gfp_flags);
  	unsigned int cpuset_mems_cookie;
--	bool allow_spin = gfpflags_allow_spinning(pc->flags);
-+	bool allow_spin = gfpflags_allow_spinning(gfp_flags);
+-	bool allow_spin = gfpflags_allow_spinning(gfp_flags);
++	bool allow_spin = alloc_flags_allow_spinning(ac->alloc_flags);
  
  	/*
  	 * The defrag ratio allows a configuration of the tradeoffs between
-@@ -3929,16 +3925,17 @@ static void *get_from_any_partial(struct kmem_cache *s, struct partial_context *
- 		if (allow_spin)
- 			cpuset_mems_cookie = read_mems_allowed_begin();
- 
--		zonelist = node_zonelist(mempolicy_slab_node(), pc->flags);
-+		zonelist = node_zonelist(mempolicy_slab_node(), gfp_flags);
- 		for_each_zone_zonelist(zone, z, zonelist, highest_zoneidx) {
- 			struct kmem_cache_node *n;
- 
- 			n = get_node(s, zone_to_nid(zone));
- 
--			if (n && cpuset_zone_allowed(zone, pc->flags) &&
-+			if (n && cpuset_zone_allowed(zone, gfp_flags) &&
- 					n->nr_partial > s->min_partial) {
- 
--				void *object = get_from_partial_node(s, n, pc);
-+				void *object = get_from_partial_node(s, n,
-+								gfp_flags, ac);
- 
- 				if (object) {
- 					/*
-@@ -3960,8 +3957,8 @@ static void *get_from_any_partial(struct kmem_cache *s, struct partial_context *
- /*
-  * Get an object from a partial slab
-  */
--static void *get_from_partial(struct kmem_cache *s, int node,
--			      struct partial_context *pc)
-+static void *get_from_partial(struct kmem_cache *s, int node, gfp_t flags,
-+			      const struct slab_alloc_context *ac)
- {
- 	int searchnode = node;
- 	void *object;
-@@ -3969,11 +3966,11 @@ static void *get_from_partial(struct kmem_cache *s, int node,
- 	if (node == NUMA_NO_NODE)
- 		searchnode = numa_mem_id();
- 
--	object = get_from_partial_node(s, get_node(s, searchnode), pc);
--	if (object || (node != NUMA_NO_NODE && (pc->flags & __GFP_THISNODE)))
-+	object = get_from_partial_node(s, get_node(s, searchnode), flags, ac);
-+	if (object || (node != NUMA_NO_NODE && (flags & __GFP_THISNODE)))
- 		return object;
- 
--	return get_from_any_partial(s, pc);
-+	return get_from_any_partial(s, flags, ac);
- }
- 
- static bool has_pcs_used(int cpu, struct kmem_cache *s)
-@@ -4453,21 +4450,21 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+@@ -4449,7 +4450,7 @@ static unsigned int alloc_from_new_slab(struct kmem_cache *s, struct slab *slab,
+ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
  			   const struct slab_alloc_context *ac)
  {
- 	bool allow_spin = gfpflags_allow_spinning(gfpflags);
-+	gfp_t trynode_flags;
+-	bool allow_spin = gfpflags_allow_spinning(gfpflags);
++	bool allow_spin = alloc_flags_allow_spinning(ac->alloc_flags);
+ 	gfp_t trynode_flags;
  	void *object;
  	struct slab *slab;
--	struct partial_context pc;
- 	bool try_thisnode = true;
- 
- 	stat(s, ALLOC_SLOWPATH);
- 
- new_objects:
- 
--	pc.flags = gfpflags;
-+	trynode_flags = gfpflags;
- 	/*
- 	 * When a preferred node is indicated but no __GFP_THISNODE
- 	 *
+@@ -4466,18 +4467,15 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
  	 * 1) try to get a partial slab from target node only by having
--	 *    __GFP_THISNODE in pc.flags for get_from_partial()
-+	 *    __GFP_THISNODE in trynode_flags for get_from_partial()
+ 	 *    __GFP_THISNODE in trynode_flags for get_from_partial()
  	 * 2) if 1) failed, try to allocate a new slab from target node with
- 	 *    GPF_NOWAIT | __GFP_THISNODE opportunistically
+-	 *    GPF_NOWAIT | __GFP_THISNODE opportunistically
++	 *    (at most) GFP_NOWAIT | __GFP_THISNODE opportunistically
  	 * 3) if 2) failed, retry with original gfpflags which will allow
-@@ -4478,17 +4475,16 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	 *    get_from_partial() try partial lists of other nodes before
+ 	 *    potentially allocating new page from other nodes
+ 	 */
+ 	if (unlikely(node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE)
  		     && try_thisnode)) {
- 		if (unlikely(!allow_spin))
- 			/* Do not upgrade gfp to NOWAIT from more restrictive mode */
--			pc.flags = gfpflags | __GFP_THISNODE;
-+			trynode_flags = gfpflags | __GFP_THISNODE;
- 		else
--			pc.flags = GFP_NOWAIT | __GFP_THISNODE;
-+			trynode_flags = GFP_NOWAIT | __GFP_THISNODE;
+-		if (unlikely(!allow_spin))
+-			/* Do not upgrade gfp to NOWAIT from more restrictive mode */
+-			trynode_flags = gfpflags | __GFP_THISNODE;
+-		else
+-			trynode_flags = GFP_NOWAIT | __GFP_THISNODE;
++		trynode_flags &= GFP_NOWAIT | __GFP_NOMEMALLOC | __GFP_ACCOUNT;
++		trynode_flags |= __GFP_NOWARN | __GFP_THISNODE;
  	}
  
--	pc.orig_size = ac->orig_size;
--	object = get_from_partial(s, node, &pc);
-+	object = get_from_partial(s, node, trynode_flags, ac);
- 	if (object)
- 		goto success;
+ 	object = get_from_partial(s, node, trynode_flags, ac);
+@@ -4499,7 +4497,7 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+ 	stat(s, ALLOC_SLAB);
  
--	slab = new_slab(s, pc.flags, node);
-+	slab = new_slab(s, trynode_flags, node);
+ 	if (IS_ENABLED(CONFIG_SLUB_TINY) || kmem_cache_debug(s)) {
+-		object = alloc_single_from_new_slab(s, slab, ac, allow_spin);
++		object = alloc_single_from_new_slab(s, slab, ac);
  
- 	if (unlikely(!slab)) {
- 		if (node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE)
+ 		if (likely(object))
+ 			goto success;
+@@ -4918,6 +4916,7 @@ unsigned int alloc_from_pcs_bulk(struct kmem_cache *s, gfp_t gfp, size_t size,
+ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list_lru *lru,
+ 		gfp_t gfpflags, int node, unsigned long addr, size_t orig_size)
+ {
++	const unsigned int alloc_flags = SLAB_ALLOC_DEFAULT;
+ 	void *object;
+ 
+ 	s = slab_pre_alloc_hook(s, gfpflags);
+@@ -4928,12 +4927,13 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 	if (unlikely(object))
+ 		goto out;
+ 
+-	object = alloc_from_pcs(s, gfpflags, SLAB_ALLOC_DEFAULT, node);
++	object = alloc_from_pcs(s, gfpflags, alloc_flags, node);
+ 
+ 	if (unlikely(!object)) {
+ 		const struct slab_alloc_context ac = {
+ 			.caller_addr = addr,
+ 			.orig_size = orig_size,
++			.alloc_flags = alloc_flags,
+ 		};
+ 		object = __slab_alloc_node(s, gfpflags, node, &ac);
+ 	}
+@@ -5366,6 +5366,7 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
+ 	const struct slab_alloc_context ac = {
+ 		.caller_addr = _RET_IP_,
+ 		.orig_size = orig_size,
++		.alloc_flags = alloc_flags,
+ 	};
+ 
+ 	VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_ACCOUNT | __GFP_ZERO |
+@@ -7254,6 +7255,7 @@ static bool __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+ 		const struct slab_alloc_context ac = {
+ 			.caller_addr = _RET_IP_,
+ 			.orig_size = s->object_size,
++			.alloc_flags = SLAB_ALLOC_DEFAULT,
+ 		};
+ 		for (i = 0; i < size; i++) {
+ 
 
 -- 
 2.54.0
