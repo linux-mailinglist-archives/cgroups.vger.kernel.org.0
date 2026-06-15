@@ -1,296 +1,312 @@
-Return-Path: <cgroups+bounces-16966-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id nObWKuLpL2rNIwUAu9opvQ
-	(envelope-from <cgroups+bounces-16966-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:02:42 +0200
+	id XJ4kJEDtL2qsJAUAu9opvQ
+	(envelope-from <cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:17:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F039685F0A
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDBE686170
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:17:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="d8jmFUp/";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16966-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16966-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 259063208A93
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:56:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0068B3020EC7
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 12:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1503E9C33;
-	Mon, 15 Jun 2026 11:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3F03E4C6E;
+	Mon, 15 Jun 2026 12:02:35 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946FA3ECBC8;
-	Mon, 15 Jun 2026 11:55:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A060537DEA8;
+	Mon, 15 Jun 2026 12:02:30 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781524544; cv=none; b=cVxxtwoel+iedyySUfHr9eldYnZf0bfuEFk/O3iI8Y2r1PVHarvchSoWz+biv++IQPl9n2mXwNQIcjD2LMSaMhqG5l2gM1OqI8N0xz/vqpXhioJN6P767OMFGqcYOkM7wPgq1ladL81ZWirPwvIgYXwda85GHzOKoa5Hymompvw=
+	t=1781524955; cv=none; b=eFCu9I0PXZ043O+LEsXTwWQKKTUoBrgqWgiUhbto/KdfzPKNXi+Zsrk5sbNLKX9/+aw8WYku4O29QmX879zYI8AZUlCuOB47C5oZ4eKqx8BvavvLfVtwIeoIrR3atBPrB2t/ipLND3JVL4sBFNQQGZ81bB1aMLy+b4ROCbG0jp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781524544; c=relaxed/simple;
-	bh=lD8MW/Bb5H4hskOjqs2EfF7UNzsrjT3kZqJK/+VOMnw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rHa5e8sd+ItNhMGsrP0XZ7QsFbiC/SzJcKpyMS1Lilw0TqR3DkjVVXGvsgNwcQl2UAgF7RnGjxvtwg2dOrdGDSc76bFvJVGVM4QLC7wcgkgrJfnVenSsePnnkhQf1GPquYm1pYy2cdoiLAuOq8wVqpAWDdM2Hven8dKv4dJ1gyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d8jmFUp/; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB8C41F00A3D;
-	Mon, 15 Jun 2026 11:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781524543;
-	bh=zyqT9IUsAQbwcRrsuy0yQvWZuxd/DTadym+oabv6LFI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=d8jmFUp/F1i15NtYKHs1xEpmGn13xYRQw8UK76UBniN6VQQEsiS7EafW7XcA3wJrv
-	 LuOBwmr7LzNL81XvHPNQN/OUfRmBGS/cAfl+RArwqO1oBTK/ksbG8WbDJdMsHR68Tt
-	 0KNhFL0vu5fM63FbeMqNhalcPBuU+wJPyIv9wvmiSQ7EZjw+ZpIAlie3x0zWSCDyqZ
-	 u4O4+AmROtWI6lBI912OrObWnoWVpn96iZUM1RyXgd3qiOW0gwtq8xlMFPyujLf3uM
-	 fEqe3Z/ve8vlAD2aNR3LFcGtzR6BQ6GNbXR+KobjhRkWJQw8WS0iRcHEB4rQ+6WnLU
-	 Z/VsxlyDl8tzg==
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Mon, 15 Jun 2026 13:54:48 +0200
-Subject: [PATCH v3 15/15] mm/slab: replace __GFP_NO_OBJ_EXT with
- SLAB_ALLOC_NO_RECURSE for sheaves
+	s=arc-20240116; t=1781524955; c=relaxed/simple;
+	bh=hDXEzZqbtAzr/uSpgHSfGFAWMMKzIXHwxmJ+XLj8vr8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DaqEDKLJS8yLxKVjCfWAGxDbpGv91cZmO/VuebiKlSXSveBZTfXIXR6MenoNQ+pzyFUNlN66XxsQe4PpqV0V2/0w6PkOZ6/cWL2/1Xql0EbxxgU8OW4jZsrGoNxgmJejLfJexHVUVQAm/jlLE0HhfsQxk9Zvu8eO22s71ZOG28Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gf7yG35D8zKHMRX;
+	Mon, 15 Jun 2026 20:01:42 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8601F4058D;
+	Mon, 15 Jun 2026 20:02:27 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.50.85.155])
+	by APP1 (Coremail) with SMTP id cCh0CgA3hzzQ6S9qu2+JBw--.21839S4;
+	Mon, 15 Jun 2026 20:02:25 +0800 (CST)
+From: Zizhi Wo <wozizhi@huaweicloud.com>
+To: axboe@kernel.dk,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	linux-block@vger.kernel.org
+Cc: cgroups@vger.kernel.org,
+	yangerkun@huawei.com,
+	chengzhihao1@huawei.com,
+	yukuai@fnnas.com,
+	houtao1@huawei.com,
+	wozizhi@huaweicloud.com
+Subject: [PATCH V2] blk-cgroup: defer blkcg css_put until blkg is unlinked from queue
+Date: Mon, 15 Jun 2026 19:55:56 +0800
+Message-ID: <20260615115556.1225472-1-wozizhi@huaweicloud.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260615-slab_alloc_flags-v3-15-ce1146d140fb@kernel.org>
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
-In-Reply-To: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
-To: Harry Yoo <harry@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
- David Rientjes <rientjes@google.com>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
- Shakeel Butt <shakeel.butt@linux.dev>, 
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, 
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-X-Mailer: b4 0.15.2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgA3hzzQ6S9qu2+JBw--.21839S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxKrWfAr4DJF47Ww1fKFWrGrg_yoW7CFyDpF
+	ZxWrZay3yxKry2qa15Xr17X34Fvw48tr1rGrW8Gw4Y9F4ayr92qF1UurWkZFWxZFZ7Ar43
+	Ar4vqF1qyF48CwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: pzr2x6tkl6x35dzhxuhorxvhhfrp/
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+X-Spamd-Result: default: False [4.84 / 15.00];
+	SEM_URIBL(3.50)[huaweicloud.com:mid,huaweicloud.com:from_mime];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	MAILLIST(-0.15)[generic];
+	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:vbabka@kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16966-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16967-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FORGED_RECIPIENTS(0.00)[m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:yangerkun@huawei.com,m:chengzhihao1@huawei.com,m:yukuai@fnnas.com,m:houtao1@huawei.com,m:wozizhi@huaweicloud.com,s:lists@lfdr.de];
+	GREYLIST(0.00)[pass,body];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,msgid.link:url,linux.dev:email]
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	TO_DN_NONE(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MIME_TRACE(0.00)[0:+];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c04:e001:36c::/64:c];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,huawei.com:email,vger.kernel.org:from_smtp,huaweicloud.com:mid,huaweicloud.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1F039685F0A
+X-Rspamd-Queue-Id: DBDBE686170
 
-Finish the switch away from __GFP_NO_OBJ_EXT by replacing it with
-SLAB_ALLOC_NO_RECURSE when allocating empty sheaves. Pass alloc_flags to
-[__]alloc_empty_sheaf(). Callers that can't be part of a recursive
-kmalloc() chain simply pass SLAB_ALLOC_DEFAULT. Use kmalloc_flags()
-instead of kzalloc() for allocating the sheaf.
+From: Zizhi Wo <wozizhi@huawei.com>
 
-With that we can finalize the removal the __GFP_NO_OBJ_EXT handling from
-obj_ext allocations as well, leaving only SLAB_ALLOC_NO_RECURSE in
-place.
+[BUG]
+Our fuzz testing triggered a blkcg use-after-free issue:
 
-This leaves __GFP_NO_OBJ_EXT with no users in slab, so stop allowing the
-flag in kmalloc_nolock().
+  BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
+  Call Trace:
+  ...
+  blkcg_deactivate_policy+0x244/0x4d0
+  ioc_rqos_exit+0x44/0xe0
+  rq_qos_exit+0xba/0x120
+  __del_gendisk+0x50b/0x800
+  del_gendisk+0xff/0x190
+  ...
 
-Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-16-7190909db118@kernel.org
-Reviewed-by: Hao Li <hao.li@linux.dev>
-Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+[CAUSE]
+process1						process2
+cgroup_rmdir
+...
+  css_killed_work_fn
+    offline_css
+    ...
+      blkcg_destroy_blkgs
+      ...
+        __blkg_release
+	  css_put(&blkg->blkcg->css)
+          blkg_free
+	    INIT_WORK(xxx, blkg_free_workfn)
+	    schedule_work
+    css_put
+    ...
+      blkcg_css_free
+        kfree(blkcg)--------blkcg has been freed!!!
+====================================schedule_work
+              blkg_free_workfn
+							__del_gendisk
+							  rq_qos_exit
+							    ioc_rqos_exit
+							      blkcg_deactivate_policy
+							        mutex_lock(&q->blkcg_mutex)
+								spin_lock_irq(&q->queue_lock)
+							        list_for_each_entry(blkg, xxx)
+								  blkcg = blkg->blkcg
+								  spin_lock(&blkcg->lock)-------UAF!!!
+	        mutex_lock(&q->blkcg_mutex)
+	        spin_lock_irq(&q->queue_lock)
+	        /* Only then is the blkg removed from the list */
+	        list_del_init(&blkg->q_node)
+
+As a result, a blkg can still be reachable through q->blkg_list while
+its ->blkcg has already been freed.
+
+[Fix]
+Fix this by deferring the blkcg css_put() until after the blkg has been
+unlinked from q->blkg_list in blkg_free_workfn(). This ensures that the
+blkcg outlives every blkg still reachable through q->blkg_list, so any
+iterator holding q->queue_lock is guaranteed to observe a valid
+blkg->blkcg.
+
+While at it, move css_tryget_online() from blkg_create() into blkg_alloc()
+so that the css reference is owned by the alloc/free pair rather than
+straddling layers:
+blkg_alloc()  <-> blkg_free()
+blkg_create() <-> blkg_destroy()
+
+Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and blkcg_deactivate_policy()")
+Suggested-by: Hou Tao <houtao1@huawei.com>
+Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
 ---
- include/linux/slab.h |  6 +++---
- mm/slub.c            | 34 +++++++++++++++++-----------------
- 2 files changed, 20 insertions(+), 20 deletions(-)
+v2:
+ - Move css_tryget_online() from blkg_create() into blkg_alloc() so the
+   css reference follows the blkg's own lifetime, making the put in
+   blkg_free_workfn() symmetric with the get in blkg_alloc().
 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index b955f3cbb732..43c3d9b51107 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -1039,9 +1039,9 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
- /**
-  * kmalloc_nolock - Allocate an object of given size from any context.
-  * @size: size to allocate
-- * @gfp_flags: GFP flags. Only __GFP_ACCOUNT, __GFP_ZERO, __GFP_NO_OBJ_EXT
-- * allowed. Also __GFP_NOWARN and __GFP_NOMEMALLOC are allowed but added
-- * internally thus not necessary.
-+ * @gfp_flags: GFP flags. Only __GFP_ACCOUNT and __GFP_ZERO allowed.  Also
-+ * __GFP_NOWARN and __GFP_NOMEMALLOC are allowed but added internally thus not
-+ * necessary.
-  * @node: node number of the target node.
-  *
-  * Return: pointer to the new object or NULL in case of error.
-diff --git a/mm/slub.c b/mm/slub.c
-index fc5b8c85b690..62e9cd46916f 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2171,7 +2171,6 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+v1: https://lore.kernel.org/all/20260518010932.633707-1-wozizhi@huaweicloud.com/
+
+ block/blk-cgroup.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index bc63bd220865..27414c291e49 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -132,10 +132,15 @@ static void blkg_free_workfn(struct work_struct *work)
+ 	if (blkg->parent)
+ 		blkg_put(blkg->parent);
+ 	spin_lock_irq(&q->queue_lock);
+ 	list_del_init(&blkg->q_node);
+ 	spin_unlock_irq(&q->queue_lock);
++	/*
++	 * Release blkcg css ref only after blkg is removed from q->blkg_list,
++	 * so concurrent iterators won't see a blkg with a freed blkcg.
++	 */
++	css_put(&blkg->blkcg->css);
+ 	mutex_unlock(&q->blkcg_mutex);
  
- 	gfp &= ~OBJCGS_CLEAR_MASK;
- 	/* Prevent recursive extension vector allocation */
--	gfp |= __GFP_NO_OBJ_EXT;
- 	alloc_flags |= SLAB_ALLOC_NO_RECURSE;
- 
- 	sz = obj_exts_alloc_size(s, slab, gfp);
-@@ -2376,7 +2375,7 @@ __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags,
- 	if (s->flags & (SLAB_NO_OBJ_EXT | SLAB_NOLEAKTRACE))
- 		return;
- 
--	if (alloc_flags & SLAB_ALLOC_NO_RECURSE || flags & __GFP_NO_OBJ_EXT)
-+	if (alloc_flags & SLAB_ALLOC_NO_RECURSE)
- 		return;
- 
- 	slab = virt_to_slab(object);
-@@ -2761,7 +2760,7 @@ static inline void *setup_object(struct kmem_cache *s, void *object)
- }
- 
- static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
--					      unsigned int capacity)
-+				unsigned int alloc_flags, unsigned int capacity)
- {
- 	struct slab_sheaf *sheaf;
- 	size_t sheaf_size;
-@@ -2772,10 +2771,10 @@ static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
- 	 * bucket)
+ 	blk_put_queue(q);
+ 	free_percpu(blkg->iostat_cpu);
+ 	percpu_ref_exit(&blkg->refcnt);
+@@ -177,12 +182,10 @@ static void __blkg_release(struct rcu_head *rcu)
+ 	 * blkg_stat_lock is for serializing blkg stat update
  	 */
- 	if (s->flags & SLAB_KMALLOC)
--		gfp |= __GFP_NO_OBJ_EXT;
-+		alloc_flags |= SLAB_ALLOC_NO_RECURSE;
+ 	for_each_possible_cpu(cpu)
+ 		__blkcg_rstat_flush(blkcg, cpu);
  
- 	sheaf_size = struct_size(sheaf, objects, capacity);
--	sheaf = kzalloc(sheaf_size, gfp);
-+	sheaf = kmalloc_flags(sheaf_size, gfp | __GFP_ZERO, alloc_flags, NUMA_NO_NODE);
- 
- 	if (unlikely(!sheaf))
- 		return NULL;
-@@ -2788,20 +2787,20 @@ static struct slab_sheaf *__alloc_empty_sheaf(struct kmem_cache *s, gfp_t gfp,
+-	/* release the blkcg and parent blkg refs this blkg has been holding */
+-	css_put(&blkg->blkcg->css);
+ 	blkg_free(blkg);
  }
  
- static inline struct slab_sheaf *alloc_empty_sheaf(struct kmem_cache *s,
--						   gfp_t gfp)
-+				gfp_t gfp, unsigned int alloc_flags)
- {
--	if (gfp & __GFP_NO_OBJ_EXT)
-+	if (alloc_flags & SLAB_ALLOC_NO_RECURSE)
- 		return NULL;
+ /*
+  * A group is RCU protected, but having an rcu lock does not mean that one
+@@ -311,10 +314,13 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
+ 	blkg->iostat_cpu = alloc_percpu_gfp(struct blkg_iostat_set, gfp_mask);
+ 	if (!blkg->iostat_cpu)
+ 		goto out_exit_refcnt;
+ 	if (!blk_get_queue(disk->queue))
+ 		goto out_free_iostat;
++	/* blkg holds a reference to blkcg */
++	if (!css_tryget_online(&blkcg->css))
++		goto out_put_queue;
  
- 	gfp &= ~OBJCGS_CLEAR_MASK;
+ 	blkg->q = disk->queue;
+ 	INIT_LIST_HEAD(&blkg->q_node);
+ 	blkg->blkcg = blkcg;
+ 	blkg->iostat.blkg = blkg;
+@@ -351,10 +357,12 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
  
--	return __alloc_empty_sheaf(s, gfp, s->sheaf_capacity);
-+	return __alloc_empty_sheaf(s, gfp, alloc_flags, s->sheaf_capacity);
- }
- 
- static void free_empty_sheaf(struct kmem_cache *s, struct slab_sheaf *sheaf)
- {
- 	/*
--	 * If the sheaf was created with __GFP_NO_OBJ_EXT flag then its
-+	 * If the sheaf was created with SLAB_ALLOC_NO_RECURSE flag then its
- 	 * corresponding extension is NULL and alloc_tag_sub() will throw a
- 	 * warning, therefore replace NULL with CODETAG_EMPTY to indicate
- 	 * that the extension for this sheaf is expected to be NULL.
-@@ -4693,7 +4692,7 @@ __pcs_replace_empty_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
- 		return NULL;
- 
- 	if (!empty) {
--		empty = alloc_empty_sheaf(s, gfp);
-+		empty = alloc_empty_sheaf(s, gfp, alloc_flags);
- 		if (!empty)
- 			return NULL;
+ out_free_pds:
+ 	while (--i >= 0)
+ 		if (blkg->pd[i])
+ 			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
++	css_put(&blkcg->css);
++out_put_queue:
+ 	blk_put_queue(disk->queue);
+ out_free_iostat:
+ 	free_percpu(blkg->iostat_cpu);
+ out_exit_refcnt:
+ 	percpu_ref_exit(&blkg->refcnt);
+@@ -379,32 +387,26 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
+ 	if (blk_queue_dying(disk->queue)) {
+ 		ret = -ENODEV;
+ 		goto err_free_blkg;
  	}
-@@ -5066,7 +5065,7 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
  
- 	if (unlikely(size > s->sheaf_capacity)) {
+-	/* blkg holds a reference to blkcg */
+-	if (!css_tryget_online(&blkcg->css)) {
+-		ret = -ENODEV;
+-		goto err_free_blkg;
+-	}
+-
+ 	/* allocate */
+ 	if (!new_blkg) {
+ 		new_blkg = blkg_alloc(blkcg, disk, GFP_NOWAIT);
+ 		if (unlikely(!new_blkg)) {
+ 			ret = -ENOMEM;
+-			goto err_put_css;
++			goto err_free_blkg;
+ 		}
+ 	}
+ 	blkg = new_blkg;
  
--		sheaf = __alloc_empty_sheaf(s, gfp, size);
-+		sheaf = __alloc_empty_sheaf(s, gfp, SLAB_ALLOC_DEFAULT, size);
- 		if (!sheaf)
- 			return NULL;
+ 	/* link parent */
+ 	if (blkcg_parent(blkcg)) {
+ 		blkg->parent = blkg_lookup(blkcg_parent(blkcg), disk->queue);
+ 		if (WARN_ON_ONCE(!blkg->parent)) {
+ 			ret = -ENODEV;
+-			goto err_put_css;
++			goto err_free_blkg;
+ 		}
+ 		blkg_get(blkg->parent);
+ 	}
  
-@@ -5111,7 +5110,7 @@ kmem_cache_prefill_sheaf(struct kmem_cache *s, gfp_t gfp, unsigned int size)
+ 	/* invoke per-policy init */
+@@ -440,12 +442,10 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
  
+ 	/* @blkg failed fully initialized, use the usual release path */
+ 	blkg_put(blkg);
+ 	return ERR_PTR(ret);
  
- 	if (!sheaf)
--		sheaf = alloc_empty_sheaf(s, gfp);
-+		sheaf = alloc_empty_sheaf(s, gfp, SLAB_ALLOC_DEFAULT);
- 
- 	if (sheaf) {
- 		sheaf->capacity = s->sheaf_capacity;
-@@ -5396,7 +5395,7 @@ static void *__kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_f
- 
- 	VM_WARN_ON_ONCE(alloc_flags_allow_spinning(ac->alloc_flags));
- 	VM_WARN_ON_ONCE(gfp_flags & ~(__GFP_ACCOUNT | __GFP_ZERO |
--			__GFP_NO_OBJ_EXT | __GFP_NOWARN | __GFP_NOMEMALLOC));
-+				      __GFP_NOWARN | __GFP_NOMEMALLOC));
- 
- 	gfp_flags |= __GFP_NOWARN | __GFP_NOMEMALLOC;
- 
-@@ -5911,7 +5910,7 @@ __pcs_replace_full_main(struct kmem_cache *s, struct slub_percpu_sheaves *pcs,
- 	if (!allow_spin)
- 		return NULL;
- 
--	empty = alloc_empty_sheaf(s, GFP_NOWAIT);
-+	empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
- 	if (empty)
- 		goto got_empty;
- 
-@@ -6095,7 +6094,7 @@ bool __kfree_rcu_sheaf(struct kmem_cache *s, void *obj)
- 
- 		local_unlock(&s->cpu_sheaves->lock);
- 
--		empty = alloc_empty_sheaf(s, GFP_NOWAIT);
-+		empty = alloc_empty_sheaf(s, GFP_NOWAIT, SLAB_ALLOC_DEFAULT);
- 
- 		if (!empty)
- 			goto fail;
-@@ -7640,7 +7639,7 @@ static int init_percpu_sheaves(struct kmem_cache *s)
- 		if (!s->sheaf_capacity)
- 			pcs->main = &bootstrap_sheaf;
- 		else
--			pcs->main = alloc_empty_sheaf(s, GFP_KERNEL);
-+			pcs->main = alloc_empty_sheaf(s, GFP_KERNEL, SLAB_ALLOC_DEFAULT);
- 
- 		if (!pcs->main)
- 			return -ENOMEM;
-@@ -8506,7 +8505,8 @@ static void __init bootstrap_cache_sheaves(struct kmem_cache *s)
- 
- 		pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
- 
--		pcs->main = __alloc_empty_sheaf(s, GFP_KERNEL, capacity);
-+		pcs->main = __alloc_empty_sheaf(s, GFP_KERNEL,
-+				SLAB_ALLOC_DEFAULT, capacity);
- 
- 		if (!pcs->main) {
- 			failed = true;
-
+-err_put_css:
+-	css_put(&blkcg->css);
+ err_free_blkg:
+ 	if (new_blkg)
+ 		blkg_free(new_blkg);
+ 	return ERR_PTR(ret);
+ }
 -- 
-2.54.0
+2.52.0
 
 
