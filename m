@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16940-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16941-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hzGxJXi/L2reFgUAu9opvQ
-	(envelope-from <cgroups+bounces-16940-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:01:44 +0200
+	id BC0XKDvBL2poFwUAu9opvQ
+	(envelope-from <cgroups+bounces-16941-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:09:15 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10FE3684D3B
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 438ED684E8B
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:09:15 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ewQFWwyg;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16940-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16940-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=bpOCPu9c;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16941-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16941-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 79A4F30C5794
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 08:54:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CA8A93028ECF
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 09:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F693D75A9;
-	Mon, 15 Jun 2026 08:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46FD2DB7B4;
+	Mon, 15 Jun 2026 09:02:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8923AC0FB;
-	Mon, 15 Jun 2026 08:52:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CEE1A4F2F;
+	Mon, 15 Jun 2026 09:02:06 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781513576; cv=none; b=g6yIitJCNGTWn0w9+71lXpTfkRWd6RrrJ1ikEoLGmofJQPWn61DQHo03ISzNPqqDCKtJKw0VHtmHG+ZOMUyOHMI9wcwYL1/DNeb6HhQjjzZr+GwQHjQYokzKgLXf9gveFUDHQyjo1Q/cp+MwUqEDwVntSE9vOWf1YNaV9P4KUsA=
+	t=1781514127; cv=none; b=RBLhLDTzzkC4XZ36HMeVzmZAsacDboa+sc7cw5KbbZ/C+vWao2T09ughcXWdIOU+vGRWXShA2dM4kC8FteeSsoZadHGULHF0EA7YelG0rHLSVC8p2OWQFdrjhAGUkiIpqnjvQEz0/BDXnsnaZusWZ3YhZxmviPndwRDwAoX/z0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781513576; c=relaxed/simple;
-	bh=O+KV/Mks1/NllMkaRsK+dF8AqH4ei9BiYn9MpdooP1g=;
+	s=arc-20240116; t=1781514127; c=relaxed/simple;
+	bh=eYO33OZYyxYtKwg4xXi5walByUVR1rAPD3k36LxnZc8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fCylf4c7n55lbeLQAILznMCmqne43bBvzxzex2t1BuRzITNkryVZoUtqLKvaIYP01eBe3QK92JdrI5SS4jCquRNusaPuRvS43T5ihVZLrntF8FjI2uussPIAyxPFDtuGslHdPdCwNHuslEhWFxm6SBHpJKsdWm3fjlrnyjRCElg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewQFWwyg; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47ED61F000E9;
-	Mon, 15 Jun 2026 08:52:51 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=fXnpcjOMQvlTzHY72Ka+0V2UqykhrBXGSetbNc3wHF54y3y4AhL5xeaxrWm9hJi3vPxp9tyKfHizmdIxR6HJmiB83ncJzSK1ErOHVzIArzuGYumP4eHTZQ7BafLC7/4clg0IZ8wgFe6hFImSg7F7ICov4iJmOJZMU0p74yUBR30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bpOCPu9c; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D61E71F000E9;
+	Mon, 15 Jun 2026 09:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781513574;
-	bh=r0nmh4n8OK2kmhJCZ0gvPcKvVFFqmHfVbiE1li979bk=;
+	s=k20260515; t=1781514126;
+	bh=zejvIfX8d2dRdR2mAJ04OI+CXDIR6kMQOBHLrkrQTuY=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=ewQFWwygD+69bmRiisV0lUdrbdqTMDJF5t9OWjDl1tRpbBeUrUmkHa60LypyOvYF2
-	 hzvirLnXweCCqO5jHf2welYVGNntxwNNJRuJ+GrufjNY06LsXQ9+DKRgbPPXq+y0zL
-	 WUKiqTtCEVwZafLR4jmWA4TNcQCMqIyhsWLTopNEZOb7pzpIh0Lxcgdf8whvcu6GLA
-	 qy+Gid7McKKg4ztXJgO7sw6l5wahjcCiRbFloEhHDglDhPUdHOL4jimfmDEuC+KEIt
-	 A9lhM7FHSG7CexjXtIppyPaMw7IWGVhSAh3xV2SIDyqIRO2WVlIe3U0qM3rTislIBE
-	 eOwjFpmKgzPfQ==
-Message-ID: <e4496401-6529-4f64-ab5c-84f737cb6798@kernel.org>
-Date: Mon, 15 Jun 2026 10:52:50 +0200
+	b=bpOCPu9cAnQ49Uo92ymBgaDMsNNkCNFKwGJhICCG+otI4FMV/1oOM9BbFmEiw5Em4
+	 C8wyRuso85zHacKQClkoVbhC99Qsbm8cmYaHrJ49uXB1J/tYEK+rCvNXsvrecquD7J
+	 kVgQwxtFU+5aDWA/ytr87bu917cKElEi7bbwLi+D91RJgEQO4cmrM9yOVBM4Hfxx9P
+	 SG93yjMZJnEoUuUMlo4c6fyG1UZFJuLRJfx5bN00r2+sriy+T6V/7PrtSWCk7LGuwk
+	 KXVr9X83dNSbMhpQ+2NqtyD41/ZR7kSIQyPYaVUtRUYg9VfALr3666VqLlO3RG9MTk
+	 pVT8qdIw+QhdQ==
+Message-ID: <f927f1b4-3f60-471e-b42b-8d098c1ce5dd@kernel.org>
+Date: Mon, 15 Jun 2026 11:02:01 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,29 +55,27 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/16] mm/slab: do not init any kfence objects on
- allocation
+Subject: Re: [PATCH v2 05/16] mm/slab: introduce alloc_flags and
+ SLAB_ALLOC_TRYLOCK
 Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Harry Yoo <harry@kernel.org>, Hao Li <hao.li@linux.dev>,
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Suren Baghdasaryan <surenb@google.com>
+Cc: Hao Li <hao.li@linux.dev>, Harry Yoo <harry@kernel.org>,
  Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
  Roman Gushchin <roman.gushchin@linux.dev>,
  Alexei Starovoitov <ast@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
  Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
+ Dmitry Vyukov <dvyukov@google.com>, kasan-dev <kasan-dev@googlegroups.com>,
+ linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+ "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-2-7190909db118@kernel.org>
- <b6530e92-d648-4028-9e77-0df8c3ab166d@kernel.org>
- <159d1e20-5b21-4329-ac9a-f7a5cb0fd56a@kernel.org>
- <e71bfc13-c233-4f85-a6ec-76327d3c6510@kernel.org>
- <74adf668-78c2-4989-a6c6-c6ec7bd68855@kernel.org>
- <4cf98483-ae35-4ad0-8f77-5a46194eb65f@kernel.org>
- <CAJuCfpH8g9mNGV_ke-mhVZ=J9J05PZg-ozPTA=5WQrm_eViVpA@mail.gmail.com>
+ <20260610-slab_alloc_flags-v2-5-7190909db118@kernel.org>
+ <aiuBoDbQc0N-l7e-@fedora>
+ <CAJuCfpGSHfNUvL9AzbftSg=uGRW4cJLbO6iB15keyN6A_eSWEw@mail.gmail.com>
+ <CAADnVQJPETYAOd9R9Bg2JuuF1q7grg8VtEnvdvr0fDFhxb9O6A@mail.gmail.com>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -118,74 +116,111 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <CAJuCfpH8g9mNGV_ke-mhVZ=J9J05PZg-ozPTA=5WQrm_eViVpA@mail.gmail.com>
+In-Reply-To: <CAADnVQJPETYAOd9R9Bg2JuuF1q7grg8VtEnvdvr0fDFhxb9O6A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16940-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:surenb@google.com,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:andreyknvl@gmail.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_ALL(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:alexei.starovoitov@gmail.com,m:surenb@google.com,m:hao.li@linux.dev,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:alexeistarovoitov@gmail.com,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,google.com];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,linux.dev,gentwo.org,google.com,linux-foundation.org,cmpxchg.org,gmail.com,googlegroups.com,kvack.org,vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16941-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 10FE3684D3B
+X-Rspamd-Queue-Id: 438ED684E8B
 
-On 6/15/26 03:28, Suren Baghdasaryan wrote:
-> On Thu, Jun 11, 2026 at 9:37 AM Vlastimil Babka (SUSE)
-> <vbabka@kernel.org> wrote:
+On 6/15/26 04:16, Alexei Starovoitov wrote:
+> On Sun, Jun 14, 2026 at 7:01 PM Suren Baghdasaryan <surenb@google.com> wrote:
 >>
->> On 6/11/26 17:11, Harry Yoo wrote:
+>> On Thu, Jun 11, 2026 at 8:50 PM Hao Li <hao.li@linux.dev> wrote:
 >> >
->> >> From 3a1c4398ce9f361a4e6f4d9946eab6237eea89c2 Mon Sep 17 00:00:00 2001
->> >> From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
->> >> Date: Wed, 10 Jun 2026 17:40:04 +0200
->> >> Subject: [PATCH] mm/slab: do not init any kfence objects on allocation
->> >>
->> >> When init (zeroing) on allocation is requested, for kmalloc() we
->> >> generally have to zero the full object size even if a smaller size is
->> >> requested, in order to provide krealloc()'s __GFP_ZERO guarantees.
->> >>
->> >> When we end up allocating a kfence object, kfence perfoms the zeroing on
+>> > On Wed, Jun 10, 2026 at 05:40:07PM +0200, Vlastimil Babka (SUSE) wrote:
+>> > > Similarly to the page allocators, introduce slab-allocator specific
+>> > > alloc flags that internally control allocation behavior in addition to
+>> > > gfp_flags, without occupying the limited gfp flags space.
+>> > >
+>> > > Introduce the first flag SLAB_ALLOC_TRYLOCK that behaves similarly to
+>> > > page allocator's ALLOC_TRYLOCK and will be used to reimplement
+>> > > kmalloc_nolock()'s "!allow_spin" behavior. That currently relies on
+>> > > gfpflags_allow_spinning() and thus the lack of both __GFP_RECLAIM flags,
+>> > > importantly __GFP_KSWAPD_RECLAIM. This can give false-positive results
+>> > > e.g. in early boot with a restricted gfp_allowed_mask.
+>> > >
+>> > > Also introduce alloc_flags_allow_spinning() to replace the usage of
+>> > > gfpflags_allow_spinning().
+>> > >
+>> > > Start using alloc_flags and the new check first in alloc_from_pcs() and
+>> > > __pcs_replace_empty_main(). This means some slab allocations that were
+>> > > falsely treated as kmalloc_nolock() due to their gfp flags will now have
+>> > > higher chances of succeed, and this will further increase with followup
+>>
+>> nit: I think it should be either "higher chances of succeess" or
+>> "higher chances to succeed".
+
+success it is
+
+>>
+>> > > changes.
+>> > >
+>> > > Remove a WARN_ON_ONCE() from refill_objects() as it's now legitimate to
+>> > > reach it from a slab allocation that's not _nolock() and yet lacks
+>> > > __GFP_KSWAPD_RECLAIM for other reasons.
+>> > >
+>> > > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+>> > > ---
 >> >
->> > nit: perfoms -> performs
+>> > Reviewed-by: Hao Li <hao.li@linux.dev>
 >>
->> Fixed.
+>> I would call SLAB_ALLOC_TRYLOCK something like SLAB_ALLOC_NOSPIN or
+>> SLAB_ALLOC_NOLOCK but naming is hard and I don't claim myself to be
+>> good at it. So, feel free to adopt my suggestion if you like it or
+>> ignore it otherwise.
 >>
->> >> its own because has its own redzone beyond the requested size. Thus
+>> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 > 
-> nit: s/because has/because it has
+> Just noticed "trylock" in the #define SLAB_ALLOC_TRYLOCK
+> 
+> Please call it SLAB_ALLOC_NOLOCK.
+> 
+> Initial api was using 'trylock' name and it was a mistake,
+> since people assumed normal spin_trylock() like semantics.
+> "trylock" implies that it fails under contention
+> and retry is a normal next step. It's not the case.
+> No one should be retrying. That's why the final api was kmalloc_nolock().
+> So please keep this important distinction in the name.
+> SLAB_ALLOC_NOLOCK should mean that spinning locks
+> should not be taken. It should not mean "just go to trylock everywhere".
 
-Fixed.
+Eh, ok then, will change to SLAB_ALLOC_NOLOCK. Even though it's mostly internal.
 
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+So next thing we change page allocator's ALLOC_TRYLOCK to ALLOC_NOLOCK too?
 
-Thanks!
 
