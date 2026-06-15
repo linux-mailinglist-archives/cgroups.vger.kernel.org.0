@@ -1,52 +1,52 @@
-Return-Path: <cgroups+bounces-16977-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16978-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /dSfF1pJMGqVQwUAu9opvQ
-	(envelope-from <cgroups+bounces-16977-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 20:50:02 +0200
+	id 8P4cCT9LMGrpQwUAu9opvQ
+	(envelope-from <cgroups+bounces-16978-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 20:58:07 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0EA26894DC
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 20:50:01 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD5E689544
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 20:58:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=UzdfkPaW;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16977-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16977-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=i+44SHLS;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16978-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16978-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9D18F303E6D1
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 18:50:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 121B030F32B2
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 18:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F8E3AC0CB;
-	Mon, 15 Jun 2026 18:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2723AE184;
+	Mon, 15 Jun 2026 18:57:08 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 724C93AC0E7;
-	Mon, 15 Jun 2026 18:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02EAC3AD501;
+	Mon, 15 Jun 2026 18:57:07 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781549397; cv=none; b=dxA+HMenCZPbDwJM6rz6bxsKB3L1JZo2foEvYuDW2FbzEyOXfVdZIL6WE6wo4jVN6wKPYWyzJu+KMKw7JROMw3Yr9i9IutoH7gshacwzg1bYnw+FxB0QoSzzMnCwmyZbBXU/JspDkpVGV+41G+7bxTbZJ+C/QesGbAEFn/qXWjM=
+	t=1781549827; cv=none; b=IlaU86FBykpsj56cYxv0oPPt2lM/WfPQ3OW72hfgnvHeP8xe/GYesq9PnZD/Ow1w9TsRQzCef1sr9mW2C5LmJVsywC1jvWS0R4N99PjvRwrF9Zl/RCLYVeGjgb9N3z7GHDf/h/u5+5NIzgfJgTeR0kqFf8MMb3rkvMkRYOUCoTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781549397; c=relaxed/simple;
-	bh=G7WHo3ZJoTRhBp2x1U64prVWwhad0lyoilBWWty608w=;
+	s=arc-20240116; t=1781549827; c=relaxed/simple;
+	bh=ipTuWyEiQXg4CrHmekr0xKl3BUxx+ViO4QyjdDZgBOs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g2ESpAv0mwYMR8zzFpjDRt+yn0GryaH6TbOXEB7ngC5aFF37xs1xNx0xlXSLHnNCeCLrLosnUhmemDgpLfiGWLSgO8l8Pj333E4n9bDo+AvRWTa0dIaQh/aip1GrtijO4I91N1r6s2UKnrKzhDJq+gPyQ6+st6UEwthyOher7YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UzdfkPaW; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 066761F000E9;
-	Mon, 15 Jun 2026 18:49:55 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EUsbFgWnVh3B0vda0zqYklAZmUdd1QO2wKLOtz+wA0XzL4RRJnz/YdFauLU65FXFl4fZNrjH+h4LSuk6x99jpPXmAegZSHnMxfoXlL5YoMguQs37LsS9+ZZoumXWX1Y/YpDXZYa7mIPeBM3IV2bKZ6biPH6lrOnX+QmXOUXbfJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i+44SHLS; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B149D1F000E9;
+	Mon, 15 Jun 2026 18:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781549396;
-	bh=/E/EQUQWpDPjINhgmxIfofQL7z7fKAPRGJ0jdZ84qwY=;
+	s=k20260515; t=1781549826;
+	bh=ZkxUGDLSZMr0Dq+DdzIPtXTXVSaYiY2WHl9OHQk/HmE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=UzdfkPaWLxvN73MupLzIuTXup5jyw6VsrwSo4tTuTaiM7hsogCNZqzndjDaIZrGAj
-	 XoXxpx94/F3n9z6b+KuhnGumNwbqi82G3ufmdjQ/yCt28c9sUVnbSz4tDerk/MxZXZ
-	 o4pd8TG4rz/eGa5F03ajmSKeNNEkHyBBIOyLXLweZ7WXCgMwlpvNEd4zXTwFjSHRgg
-	 G08vsoOLFZJ44XnnAP4gR9Xd46FGicmp/ZzW8XUfGkYUz4BXQyQPvwJynn7r2yB39c
-	 PatIxKPfu5RaGxgoWMBdnoHdrIwXCpdnHLYNC02w4Qa6L+e2sTM4SJcLlXea2sA6Pt
-	 DTiqxYMlyMRyw==
-Date: Mon, 15 Jun 2026 08:49:55 -1000
+	b=i+44SHLSEjFboHQKldJvgVHf3fFqesutTGQKBKUoBaYf1PDwTRUkh2KCBbfiv/zxK
+	 AHpovUOYmMej8NestBeihJK5CrLS5z7Hbvwf2Of7QJjOK4OxZokXnmRA73OfXZFZAn
+	 zdKEoHoe6a87h8z8m5TuXlcVyhmvLeMTAqSWmn5NjhSpJnBXUR32tU15ovJ5Bj/OXc
+	 8g1oze2ON0nj84ddT6EiR8PjTYFECnDbTWQA60ql8B4kdR38mVdBh5ej7Kfj+/6GO8
+	 iVlzkdwBGzWKAGCJ4MeDNp2MKoqtAIWvXoY3pt6YTKAE3kd6Qlra7H+r4/Tu+eEHVg
+	 yjEBRjBz88cPQ==
+Date: Mon, 15 Jun 2026 08:57:06 -1000
 From: Tejun Heo <tj@kernel.org>
 To: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
 Cc: intel-xe@lists.freedesktop.org, Natalie Vock <natalie.vock@gmx.de>,
@@ -66,30 +66,30 @@ Cc: intel-xe@lists.freedesktop.org, Natalie Vock <natalie.vock@gmx.de>,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v6 0/6] [PATCH v6 0/6] Add reclaim to the dmem cgroup
  controller
-Message-ID: <ajBJU-Jp2QVy14qt@slm.duckdns.org>
+Message-ID: <ajBLAsNoKesXmFcs@slm.duckdns.org>
 References: <20260611173301.17473-1-thomas.hellstrom@linux.intel.com>
+ <ajBJU-Jp2QVy14qt@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260611173301.17473-1-thomas.hellstrom@linux.intel.com>
+In-Reply-To: <ajBJU-Jp2QVy14qt@slm.duckdns.org>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS(0.00)[m:thomas.hellstrom@linux.intel.com,m:intel-xe@lists.freedesktop.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:christian.koenig@amd.com,m:alexander.deucher@amd.com,m:rodrigo.vivi@intel.com,m:dri-devel@lists.freedesktop.org,m:amd-gfx@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-16977-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16978-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
@@ -110,26 +110,30 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,slm.duckdns.org:mid,vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,slm.duckdns.org:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E0EA26894DC
+X-Rspamd-Queue-Id: 6CD5E689544
 
-Hello,
+On Mon, Jun 15, 2026 at 08:49:55AM -1000, Tejun Heo wrote:
+> The canonical behavior for cgroup2 would be not failing the write at all
+> even when the usage can't be brought down below the new max. Updating the
+> target configuration and tracking the current usage are separate operations.
+> The former should just set max and trigger reclaim and a writer should not
+> assume that a successful write indicates that the usage is below the written
+> max value.
 
-On Thu, Jun 11, 2026 at 07:32:55PM +0200, Thomas Hellström wrote:
-> When writing a "max" limit lower than the current usage, the
-> existing code silently failed. This series aims to improve
-> on that by returning -EBUSY on failure and also attempt
-> to synchronously reclaim device memory to push the usage
-> under the new max limit to avoid the error.
+Sent too early. One of the reasons is that cgroup is hierarchical and there
+can be multiple delegation layers and if you tie application of configuration
+to immediate enforcement, some hierarchical control actions become racy and
+awkward.
 
-The canonical behavior for cgroup2 would be not failing the write at all
-even when the usage can't be brought down below the new max. Updating the
-target configuration and tracking the current usage are separate operations.
-The former should just set max and trigger reclaim and a writer should not
-assume that a successful write indicates that the usage is below the written
-max value.
+Here's an example: Imagine a system agent trying to lower usage in a subtree
+which contains multiple delegated containers. If max can be set below what
+reclaim can achieve immediately, it can just set the max and if the usage is
+still too high, can go around and e.g. kill some of the containers. If max
+write fails, it'd have to kill and then try again and inbetween someone else
+might push up the usage.
 
 Thanks.
 
