@@ -1,311 +1,357 @@
-Return-Path: <cgroups+bounces-16937-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16938-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id DElnAkCQL2pGCgUAu9opvQ
-	(envelope-from <cgroups+bounces-16937-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 07:40:16 +0200
+	id LitbJlGyL2qaEgUAu9opvQ
+	(envelope-from <cgroups+bounces-16938-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 10:05:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5929E6838BB
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 07:40:15 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CC63684664
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 10:05:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=XzJLuflZ;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16937-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16937-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=google.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=appspotmail.com (policy=none);
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16938-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16938-lists+cgroups=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A5C203014113
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 05:39:07 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B799E3002D1A
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 08:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A30036AB7C;
-	Mon, 15 Jun 2026 05:39:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02E33C10BE;
+	Mon, 15 Jun 2026 08:05:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC7037880B
-	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 05:38:56 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781501939; cv=pass; b=o8LOyeC06JWVc8IavsWgeriq4Efe4g6M6qQCzqmwfVwBNLoe02vklPrbcJE4eh/M+j8BGFtzzc3sCSFp4XT+A0JelTwMDkWJOF0GGQe16OGXVcfqrsksoBeWQHJV4sgWbq7Ysq36/erYNoD3LWEBKH5ui0tpU8jgtIgtiHB1tw0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781501939; c=relaxed/simple;
-	bh=1R8kc2wueoidF8V5TzS6mLiXl5zYKx0KeZfLbbzUC8I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e2tGNBoKetzYCcOd9MsxjIoI1Vby7wMqNIudDPCzZ0kFRsq6VYyDo8tkSxgvUNfSCDp6YHFjUtHX+6v4jO0VaWCZL/L2J84W60/V4ekwICdkAjXRMxtJyRVud6S5cn2CYFbVgSPuXenxi5h9S1aqmP/Wza2Xwv0gTwaOfuCTBkQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XzJLuflZ; arc=pass smtp.client-ip=209.85.160.175
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-5177d1ff061so744321cf.1
-        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 22:38:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781501935; cv=none;
-        d=google.com; s=arc-20240605;
-        b=U/xnTyheVAVPKBphhZ6Yywj3OBBxOSyrwM//ph2kNpbs97EJKtM9wkmac7zsupA7cw
-         p/mBymhKiN4tRXJcoLcLwDReC3MMGKK+kgogSByWAnCB6VI5onTLV2v3evJ9mwGabEDZ
-         qtyZ1+Y/+UQZ2Z3VnCka3PiSGuKjsg50jlu5Yx9QOAY+UAJz5+CMw/JRoC3w6hXvHB8r
-         8AoeFo/iKfJYnmz/86hzaQFfEI82k7oi/b2gt5WMENPeUzpazTgTpmlcpKy2vue0ta9j
-         Pdonihz0pVxE65A/cwBNsoqQxPskKR7rdzluWVGWCXZjqI3jQjqyVvql+rFTgKHAmUzl
-         VG0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=Z4bnIeDaNSPPrqMDBXyAFUZle3FRm0a9rX7dbKOylDo=;
-        fh=0ChNqxIDLLD3FOG6Du4KsPqvJ+IGcSEg7xadR/y5Oek=;
-        b=JKKFlX+2ERniLQhqFs8vcaJdKr+UoTiTxzg2ylq+5RGZUYt65dn+ogsMmPrjW97oXG
-         W+0k0f25E1YGtOb4STCUZ0URJbYYKvmDbz9GSYqHzsyFElgCZNnvs+hVNZ8vuNSJo4HS
-         ywHEEPWVLf4B+tgPiz3J8Mu0bQI7TIPit4k++EbaVWWzWu8qv167CKdVDhQYN/1ZFOX2
-         KGuUOjB2Ced8q2ydLm8Txp6RgqfzKiIEVjZoun45Ms8A4tDuzAvrcWNNy20e1aW9ZCi9
-         GQFc8WgICceOKvwFuNvLvGvUdQltUhBQqmNGJuM+cto4jUYCQwyRQm96oDKDtKT3OWtE
-         xtGQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1781501935; x=1782106735; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z4bnIeDaNSPPrqMDBXyAFUZle3FRm0a9rX7dbKOylDo=;
-        b=XzJLuflZBWIj3yT+77HdT6pz6412eknEWWj56PQUo6CztRSTEg+C3VxQ76AeJb93io
-         D1mtrQ+3uwmQK8WHgLpTmVpSWItosw3TPkNRP5YMJ6pHYlepJhM3J4SMNq4XTWg5qkON
-         BYFwdE66vAqePLnufsMw96V32/LP1jKQhnBVHPfWkk+zkvGwH0JDGXJY+yNXChDGT/At
-         9eZB+/etJLIZ46Fvc70fMtlK1g3eGqNX9ahG+7/7PpokPOieOWSQowbeXBbpplJ6bHFs
-         LrzYp91CpiqbkD1wZfVh071m2tZz2bHTtSult40xQ2RVZTpJG8qFt+auVrUdPEEfCb97
-         VNQQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9133C0A0D
+	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 08:05:29 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781510731; cv=none; b=Aw+28rU8Ntpjmazdcfds1HNEoZ8lXZ19ecvyRJsUcx3vnvH6JMqB6dH0NZWvutiRPj/B3ET+LUI3YVOSyonaan7ZHX+7+9CZHotdZ8AdyhVAJL5lYxLoqg7qApf9eY/NEyE1yD7bYQRi7dOppGDOPRJvwIj4/4/ErJGcQ30M8JY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781510731; c=relaxed/simple;
+	bh=kJKtkYCUSK6/7Ycyn5qaD5nFdvqce34jtbUjzHXOj28=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ON2aqgvSSnvoEGaN+bes5yH1JqpGyU2Hii2P2J7wIZ1XX3jqCdSzC9jBwjuM4ilybJdY3Poe75Dvst4eDGVm7BEL9OxCYKDCdzEvhaa8I0YsYa+3PhyduPbUUWDxpF/Lm7f+xOTNyiYWcQ9ShlKzUnuKb8ZXBBRgeaarRm+vNfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.79
+Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-440e6bdc127so4237461fac.2
+        for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 01:05:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781501935; x=1782106735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Z4bnIeDaNSPPrqMDBXyAFUZle3FRm0a9rX7dbKOylDo=;
-        b=RwoJn5cqb6Sex0F61QLFZZq64xtaJAuEbcZyugGSSlXujukKmz116wsnFFAFNQW9FX
-         KqHr0/VyLmFMmQ4pdBNqJGnokBhsV/A2umVD/eiqPNSOM/w7fntzFh+ZzJN0kSMOTxG9
-         Q0p2Orz0juUSedOnS7pZ0rhZJi0dA4aUlAg0E61bvSHWrEouV5zJfQLQ/LcuZPOdpR66
-         ipHp4og5APcXyWWEBjwSCQgSOeHqSxhq13N7wwYivlDeyFlvdRv7s5kbIzc6U9FJlG7Z
-         x/XdlDEnBOj5u0he/4LfjQ9BHdCIqJv+9Ie90HM4UIoZtann0ApQfD3VrVhSTUhcGvta
-         SfDA==
-X-Forwarded-Encrypted: i=1; AFNElJ/GXpyVXiaRaoVDC71U0+1X3GpNAHRudDVGh72x9S7zLtXiHL6gXVbg1+y6iZdukJsYNBUHfHMi@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywkz+c5v6kcWa6+VtYMM+5u1zHB8xdLzrOS66sScO26eN77q9Pv
-	5krFpA7paD5otzOKtTWFxTAitLV8qpAZ2H3y59/HjRwRM8jBdPbukgeYPhHiKWibwldmdpzok5n
-	m20GnNwoSkH7H340epiE1ncZkIw6zCPSd2wCAi6eY
-X-Gm-Gg: Acq92OFlcS0xLFWuOv1gLZ5h8kgMqDFegkVElVmjh3qscTECQPozi0L+VTduWAl1mAB
-	PgD7EIQlMV1kop490Sk58B0LNIYLlLMLyj6mkMIHPoQAZDt9DsHLjYvUYw+tfXAfzDmo8vFWDPg
-	7HISGZlThp7GayB8wmwfGPZRQx/3OGrPE3HOqNWqB8BQyw6L6a6+I/MRlsA3lxNFrRnl/nlYVzI
-	KmoKU9P1J4026Afs3SIldfvEpkB+9ySq491nBaYVmdG6YH55wP3a07z3h5rjBw6VHi39a1wTDvZ
-	y/jAME/8EcL35gs8
-X-Received: by 2002:a05:622a:164d:b0:516:4f62:85e6 with SMTP id
- d75a77b69052e-51955eb53cdmr13355061cf.17.1781501934662; Sun, 14 Jun 2026
- 22:38:54 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1781510729; x=1782115529;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tpIXCQzqfahWYhOAtNF5NHRLKpPfy5+DaDSfJ/OghqU=;
+        b=GQycgv6gick/DDDy2VKRAyVdE9xxvCxi5j6N79S7afUcMgNxIlxB0IorDXBtxMSr3m
+         ziTqkpPHkOvCkvYHJM+ySrltJ4eWiXyY6OgG7BIug/DW6rNpH867dDZnwfiiFhtms32x
+         pxirSHYo4eS8+lNSRuqcUjsRElodlf8hOCImHHtuCaHHRvpFQxliV08iCcwV39LS8dx5
+         wBO5pBsZFtV0ekttLJ9G23lojHXnKYxEtD35UKLOHEvHbu3hAF65arKK+xCeQ/aUfD6o
+         zXS8AU67+k3uU771/aK9wMzJGXfYQ9bwja+oBkRwlHyQIbJr6VUREd+dO7Yi4chk6pEj
+         cBRA==
+X-Gm-Message-State: AOJu0YzCopO33m4ZM+aeLnGYEqx0fLsxQ3fXVD1jplLjFh+AaSZ8HpQ6
+	9Wn2AJwwpDLKcxr//O7xgOWnUczf8YJpKX1yxEC3zwk8PIoucDTEkpjaY1EVv5+7bkUmAAYD5Jc
+	2Es8TnOMnPDyYbQwpkaUXsiddZmgUSxucGayfr9CR58kiBB5bgUCJasroDBnaBA==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-15-7190909db118@kernel.org> <aiurbPx1SISBarBy@fedora>
- <49f1bf1e-fcaf-48fa-a7b1-f8ee78b19762@kernel.org> <aivpob0Zgnbc4AG4@fedora>
-In-Reply-To: <aivpob0Zgnbc4AG4@fedora>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sun, 14 Jun 2026 22:38:43 -0700
-X-Gm-Features: AVVi8Cdhr2RooHXSlNvj28OLPacEXOJK306RRvpVNfECIcIuVo5lz4eM6C6SxwQ
-Message-ID: <CAJuCfpFNftMYw0XoHyN1QAWfm7NYmeuY1T_NGbYy8boGO48MOg@mail.gmail.com>
-Subject: Re: [PATCH v2 15/16] mm/slab: remove __GFP_NO_OBJ_EXT usage from alloc_slab_obj_exts()
-To: Hao Li <hao.li@linux.dev>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, Harry Yoo <harry@kernel.org>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
-	kasan-dev@googlegroups.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Hao Ge <hao.ge@linux.dev>
+X-Received: by 2002:a05:6820:221f:b0:69d:f0e8:3223 with SMTP id
+ 006d021491bc7-69edc5e7d8emr8428026eaf.7.1781510728847; Mon, 15 Jun 2026
+ 01:05:28 -0700 (PDT)
+Date: Mon, 15 Jun 2026 01:05:28 -0700
+In-Reply-To: <6a23a4b4.e4db5ad2.3b7dfb.0000.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6a2fb248.8812e0fc.3c3fa4.001a.GAE@google.com>
+Subject: Re: [syzbot] [cgroups?] INFO: task hung in cgroup_subtree_control_write
+ (2)
+From: syzbot <syzbot+bb2e19a1190a556c01b1@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=d0d1fa2afcbce17c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:hao.li@linux.dev,m:vbabka@kernel.org,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:hao.ge@linux.dev,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16938-lists,cgroups=lfdr.de,bb2e19a1190a556c01b1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,storage.googleapis.com:url,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[surenb@google.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16937-lists,cgroups=lfdr.de];
+	FORGED_SENDER(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:cgroups@vger.kernel.org,m:hannes@cmpxchg.org,m:linux-kernel@vger.kernel.org,m:mkoutny@suse.com,m:syzkaller-bugs@googlegroups.com,m:tj@kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[surenb@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:email,mail.gmail.com:mid,vger.kernel.org:from_smtp]
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[cgroups];
+	SUBJECT_HAS_QUESTION(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5929E6838BB
+X-Rspamd-Queue-Id: 8CC63684664
 
-On Fri, Jun 12, 2026 at 4:30=E2=80=AFAM Hao Li <hao.li@linux.dev> wrote:
->
-> On Fri, Jun 12, 2026 at 12:17:45PM +0200, Vlastimil Babka (SUSE) wrote:
-> > On 6/12/26 08:54, Hao Li wrote:
-> > > On Wed, Jun 10, 2026 at 05:40:17PM +0200, Vlastimil Babka (SUSE) wrot=
-e:
-> > >> __GFP_NO_OBJ_EXT has limited scope within the slab allocator itself =
-and
-> > >> gfp flags are a scarce resource, unlike slab's alloc_flags.
-> > >>
-> > >> Introduce SLAB_ALLOC_NO_RECURSE alloc flag that has the same intent =
-as
-> > >> __GFP_NO_OBJ_EXT but a more generic name, meaning that a kmalloc()
-> > >> family function should not recurse into another kmalloc*() for the
-> > >> purposes of allocating auxiliary structures (obj_ext arrays or sheav=
-es).
-> > >>
-> > >> First, replace the __GFP_NO_OBJ_EXT for allocating obj_ext arrays in
-> > >> alloc_slab_obj_exts(). Make use of the newly added kmalloc_flags()
-> > >> function, where we can pass alloc_flags with SLAB_ALLOC_NO_RECURSE
-> > >> added. This will also pass through SLAB_ALLOC_TRYLOCK so we don't ne=
-ed
-> > >> to special case kmalloc_nolock() anymore.
-> > >>
-> > >> Note that until now the kmalloc_nolock() ignored the incoming gfp fl=
-ags
-> > >> and hardcoded __GFP_ZERO | __GFP_NO_OBJ_EXT. But it's correct to pas=
-s on
-> > >> the incoming gfp flags (only augmented with __GFP_ZERO), because if
-> > >> alloc_flags contain SLAB_ALLOC_TRYLOCK, the incoming gfp flags have =
-to
-> > >> be also compatible with it.
-> > >>
-> > >> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> > >> ---
-> > >>  mm/slab.h |  1 +
-> > >>  mm/slub.c | 13 +++++--------
-> > >>  2 files changed, 6 insertions(+), 8 deletions(-)
-> > >>
-> > >> diff --git a/mm/slab.h b/mm/slab.h
-> > >> index 45bfcfb35a9c..509f330654b8 100644
-> > >> --- a/mm/slab.h
-> > >> +++ b/mm/slab.h
-> > >> @@ -21,6 +21,7 @@
-> > >>  #define SLAB_ALLOC_DEFAULT        0x00 /* no flags */
-> > >>  #define SLAB_ALLOC_TRYLOCK        0x01 /* a kmalloc_nolock() alloca=
-tion */
-> > >>  #define SLAB_ALLOC_NEW_SLAB       0x02 /* a flag for alloc_slab_obj=
-_exts() */
-> > >> +#define SLAB_ALLOC_NO_RECURSE     0x04 /* prevent kmalloc() recursi=
-on */
-> > >>
-> > >>  static inline bool alloc_flags_allow_spinning(const unsigned int al=
-loc_flags)
-> > >>  {
-> > >> diff --git a/mm/slub.c b/mm/slub.c
-> > >> index cbb38bd01e46..7dfbd0251aa2 100644
-> > >> --- a/mm/slub.c
-> > >> +++ b/mm/slub.c
-> > >> @@ -2167,15 +2167,12 @@ int alloc_slab_obj_exts(struct slab *slab, s=
-truct kmem_cache *s,
-> > >>
-> > >>    gfp &=3D ~OBJCGS_CLEAR_MASK;
-> > >>    /* Prevent recursive extension vector allocation */
-> > >> -  gfp |=3D __GFP_NO_OBJ_EXT;
-> > >> +  alloc_flags |=3D SLAB_ALLOC_NO_RECURSE;
-> > >>
-> > >>    sz =3D obj_exts_alloc_size(s, slab, gfp);
-> > >>
-> > >
-> > > For the original calls to kmalloc_nolock and kmalloc_node, I notice a=
- difference:
-> > >
-> > >> -  if (unlikely(!allow_spin))
-> > >> -          vec =3D kmalloc_nolock(sz, __GFP_ZERO | __GFP_NO_OBJ_EXT,
-> > >> -                               slab_nid(slab));
-> > >
-> > > kmalloc_nolock completely discarded `gfp` flags.
-> > >
-> > >> -  else
-> > >> -          vec =3D kmalloc_node(sz, gfp | __GFP_ZERO, slab_nid(slab)=
-);
-> > >
-> > > while kmalloc_node preserved and passed it along.
-> > >
-> > >> +  /* This will use kmalloc_nolock() if alloc_flags say so */
-> > >> +  vec =3D kmalloc_flags(sz, gfp | __GFP_ZERO, alloc_flags, slab_nid=
-(slab));
-> > >
-> > > Now both paths are merged into kmalloc_flags, the gfp flags are
-> > > unconditionally carried through. It seems this might carry some unwan=
-ted flags.
-> > >
-> > > I traced the call path and found that ___slab_alloc sets the __GFP_TH=
-ISNODE
-> > > for trynode_flags. If this flag propagates all the way into
-> > > kmalloc_flags->...->__kmalloc_nolock_noprof, it will trigger the
-> > > VM_WARN_ON_ONCE warning. Maybe we need to strip the original gfp if
-> > > `!allow_spin`.
-> >
-> > Thanks. This should do the job in a more generic way I hope?
-> >
->
-> Yeah, this is more elegant.
->
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index f9b8dc56bb57..0bf53f70c9be 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -2047,12 +2047,15 @@ static inline void dec_slabs_node(struct kmem_c=
-ache *s, int node,
-> >  #endif /* CONFIG_SLUB_DEBUG */
-> >
-> >  /*
-> > - * The allocated objcg pointers array is not accounted directly.
-> > + * The allocated objcg pointers array or sheaf is not accounted direct=
-ly.
-> >   * Moreover, it should not come from DMA buffer and is not readily
-> > - * reclaimable. So those GFP bits should be masked off.
-> > + * reclaimable. Node restriction for the parent allocation also should
-> > + * not apply to the slab's internal objects.
-> > + * So those GFP bits should be masked off.
-> >   */
-> >  #define OBJCGS_CLEAR_MASK      (__GFP_DMA | __GFP_RECLAIMABLE | \
-> > -                               __GFP_ACCOUNT | __GFP_NOFAIL)
-> > +                               __GFP_ACCOUNT | __GFP_NOFAIL |
-> > +                               __GFP_THISNODE )
->
-> Good idea! Both code and comments make sense to me.
+syzbot has found a reproducer for the following issue on:
 
-Makes sense. I see
-https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=3Dsl=
-ab/for-next
-already implementing this and also keeping __GFP_NO_OBJ_EXT and
-SLAB_ALLOC_NO_RECURSE both used. That version looks good to me, so
-I'll wait for v3.
+HEAD commit:    ec039126b7fa Add linux-next specific files for 20260611
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=178e637a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d0d1fa2afcbce17c
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb2e19a1190a556c01b1
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b0d4ae580000
 
-At the end of this series, we end up with no users of __GFP_NO_OBJ_EXT
-but we still keep it defined. I'm guessing you leave it because of the
-new patch [1] which aliases __GFP_NO_OBJ_EXT? I will have to make that
-mechanism work without a GFP flag, possibly using a similar approach.
-CC'ing Hao Ge to be in the loop of these changes. I'll work with him
-on aliminating that __GFP_NO_OBJ_EXT alias.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/be809c32a471/disk-ec039126.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/13ea1053e3b5/vmlinux-ec039126.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1bcdab47ddc8/bzImage-ec039126.xz
 
-[1] https://lore.kernel.org/all/20260604024008.46592-1-hao.ge@linux.dev/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb2e19a1190a556c01b1@syzkaller.appspotmail.com
 
->
-> >
-> >  #ifdef CONFIG_SLAB_OBJ_EXT
-> >
-> >
->
-> --
-> Thanks,
-> Hao
+INFO: task syz.1.18:6037 blocked for more than 143 seconds.
+      Not[  392.048269][   T39]       Not tainted syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.1.18        state:D stack:27936 pid:6037  tgid:6035  ppid:6000   task_flags:0x400140 flags:0x00080002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5504 [inline]
+ __schedule+0x172b/0x5550 kernel/sched/core.c:7228
+ __schedule_loop kernel/sched/core.c:7307 [inline]
+ schedule+0x164/0x360 kernel/sched/core.c:7322
+ cgroup_lock_and_drain_offline+0x516/0x650 kernel/cgroup/cgroup.c:3275
+ cgroup_kn_lock_live+0x120/0x230 kernel/cgroup/cgroup.c:1715
+ cgroup_subtree_control_write+0x4b3/0x10a0 kernel/cgroup/cgroup.c:3577
+ cgroup_file_write+0x331/0x8f0 kernel/cgroup/cgroup.c:4316
+ kernfs_fop_write_iter+0x3b0/0x540 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x629/0xba0 fs/read_write.c:687
+ ksys_write+0x156/0x270 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f3fb3b0ce59
+RSP: 002b:00007f3fb3145028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f3fb3d86090 RCX: 00007f3fb3b0ce59
+RDX: 0000000000000005 RSI: 0000200000000040 RDI: 0000000000000006
+RBP: 00007f3fb3ba2d6f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f3fb3d86128 R14: 00007f3fb3d86090 R15: 00007ffe868740f8
+ </TASK>
+INFO: task syz.2.19:6081 blocked for more than 143 seconds.
+      Not tainted syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.19        state:D stack:28344 pid:6081  tgid:6079  ppid:6045   task_flags:0x400140 flags:0x00080002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5504 [inline]
+ __schedule+0x172b/0x5550 kernel/sched/core.c:7228
+ __schedule_loop kernel/sched/core.c:7307 [inline]
+ schedule+0x164/0x360 kernel/sched/core.c:7322
+ cgroup_lock_and_drain_offline+0x516/0x650 kernel/cgroup/cgroup.c:3275
+ cgroup_kn_lock_live+0x120/0x230 kernel/cgroup/cgroup.c:1715
+ cgroup_subtree_control_write+0x4b3/0x10a0 kernel/cgroup/cgroup.c:3577
+ cgroup_file_write+0x331/0x8f0 kernel/cgroup/cgroup.c:4316
+ kernfs_fop_write_iter+0x3b0/0x540 fs/kernfs/file.c:345
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x629/0xba0 fs/read_write.c:687
+ ksys_write+0x156/0x270 fs/read_write.c:739
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fcd96f6ce59
+RSP: 002b:00007fcd965ad028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fcd971e6090 RCX: 00007fcd96f6ce59
+RDX: 0000000000000005 RSI: 0000200000000300 RDI: 0000000000000006
+RBP: 00007fcd97002d6f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fcd971e6128 R14: 00007fcd971e6090 R15: 00007ffc255c33a8
+ </TASK>
+INFO: task syz.2.19:6082 blocked for more than 143 seconds.
+      Not tainted syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz.2.19        state:D stack:28920 pid:6082  tgid:6079  ppid:6045   task_flags:0x400040 flags:0x00080002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5504 [inline]
+ __schedule+0x172b/0x5550 kernel/sched/core.c:7228
+ __schedule_loop kernel/sched/core.c:7307 [inline]
+ rt_mutex_schedule+0x76/0xf0 kernel/sched/core.c:7603
+ rt_mutex_slowlock_block+0x505/0x670 kernel/locking/rtmutex.c:1669
+ __rt_mutex_slowlock kernel/locking/rtmutex.c:1746 [inline]
+ __rt_mutex_slowlock_locked kernel/locking/rtmutex.c:1786 [inline]
+ rt_mutex_slowlock+0x2dc/0x780 kernel/locking/rtmutex.c:1826
+ __rt_mutex_lock kernel/locking/rtmutex.c:1841 [inline]
+ __mutex_lock_common kernel/locking/rtmutex_api.c:560 [inline]
+ mutex_lock_nested+0x168/0x1d0 kernel/locking/rtmutex_api.c:578
+ fdget_pos+0x252/0x320 fs/file.c:1259
+ class_fd_pos_constructor include/linux/file.h:85 [inline]
+ ksys_write+0x79/0x270 fs/read_write.c:730
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fcd96f6ce59
+RSP: 002b:00007fcd9658c028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fcd971e6180 RCX: 00007fcd96f6ce59
+RDX: 0000000000000005 RSI: 0000200000000040 RDI: 0000000000000006
+RBP: 00007fcd97002d6f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fcd971e6218 R14: 00007fcd971e6180 R15: 00007ffc255c33a8
+ </TASK>
+
+Showing all locks held in the system:
+3 locks held by kworker/1:0/32:
+ #0: ffff88813fe57938 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x897/0x1630 kernel/workqueue.c:3301
+ #1: ffffc90000a6fc40 (deferred_process_work){+.+.}-{0:0}, at: process_one_work+0x8be/0x1630 kernel/workqueue.c:3302
+ #2: ffffffff8f7b0bb8 (rtnl_mutex){+.+.}-{4:4}, at: switchdev_deferred_process_work+0xe/0x20 net/switchdev/switchdev.c:104
+1 lock held by khungtaskd/39:
+ #0: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:300 [inline]
+ #0: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:840 [inline]
+ #0: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x2e/0x180 kernel/locking/lockdep.c:6777
+2 locks held by getty/5366:
+ #0: ffff88802940e0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90003cbe2e0 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x465/0x1490 drivers/tty/n_tty.c:2211
+3 locks held by kworker/u8:18/5822:
+ #0: ffff888032abd938 ((wq_completion)bat_events){+.+.}-{0:0}, at: process_one_work+0x897/0x1630 kernel/workqueue.c:3301
+ #1: ffffc90003db7c40 ((work_completion)(&(&bat_priv->dat.work)->work)){+.+.}-{0:0}, at: process_one_work+0x8be/0x1630 kernel/workqueue.c:3302
+ #2: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: __local_bh_disable_ip+0x3c/0x420 kernel/softirq.c:163
+3 locks held by syz.1.18/6037:
+ #0: ffff88803a43f128 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff8880436a3c78 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+3 locks held by syz.2.19/6081:
+ #0: ffff88803b865f28 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff88803697fc78 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.2.19/6082:
+ #0: ffff88803b865f28 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.3.20/6122:
+ #0: ffff888037837f28 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff888036d05878 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.3.20/6123:
+ #0: ffff888037837f28 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.4.21/6167:
+ #0: ffff88803bb00d28 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff888033038478 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.4.21/6168:
+ #0: ffff88803bb00d28 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.5.22/6214:
+ #0: ffff88803a467328 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff8880408bb078 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.5.22/6216:
+ #0: ffff88803a467328 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.6.23/6264:
+ #0: ffff888028ed0328 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff88803c173c78 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.6.23/6265:
+ #0: ffff888028ed0328 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.7.24/6310:
+ #0: ffff8880296e8328 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff88803e05a878 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.7.24/6311:
+ #0: ffff8880296e8328 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.8.25/6356:
+ #0: ffff8880257b2728 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff888031468078 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.8.25/6357:
+ #0: ffff8880257b2728 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz.9.26/6407:
+ #0: ffff888028ea4528 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2728 [inline]
+ #1: ffff8880344f2500 (sb_writers#9){.+.+}-{0:0}, at: vfs_write+0x22d/0xba0 fs/read_write.c:683
+ #2: ffff888032e47078 (&of->mutex){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x1df/0x540 fs/kernfs/file.c:336
+1 lock held by syz.9.26/6408:
+ #0: ffff888028ea4528 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x252/0x320 fs/file.c:1259
+3 locks held by syz-executor/6411:
+ #0: ffffffff8f7b0bb8 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_lock net/core/rtnetlink.c:80 [inline]
+ #0: ffffffff8f7b0bb8 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_nets_lock net/core/rtnetlink.c:341 [inline]
+ #0: ffffffff8f7b0bb8 (rtnl_mutex){+.+.}-{4:4}, at: rtnl_newlink+0x883/0x1bb0 net/core/rtnetlink.c:4150
+ #1: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:300 [inline]
+ #1: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:840 [inline]
+ #1: ffffffff8e3cb2a0 (rcu_read_lock){....}-{1:3}, at: ib_device_get_by_netdev+0x81/0x4f0 drivers/infiniband/core/device.c:2357
+ #2: ffff8880b8724540 (psi_seq){-...}-{0:0}, at: psi_task_change+0xd4/0x340 kernel/sched/psi.c:919
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 UID: 0 PID: 39 Comm: khungtaskd Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/09/2026
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ nmi_cpu_backtrace+0x274/0x2d0 lib/nmi_backtrace.c:122
+ nmi_trigger_cpumask_backtrace+0x17a/0x380 lib/nmi_backtrace.c:65
+ trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
+ __sys_info lib/sys_info.c:157 [inline]
+ sys_info+0x135/0x170 lib/sys_info.c:165
+ check_hung_uninterruptible_tasks kernel/hung_task.c:353 [inline]
+ watchdog+0xfd3/0x1030 kernel/hung_task.c:561
+ kthread+0x388/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 UID: 0 PID: 29 Comm: rcuc/1 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/09/2026
+RIP: 0010:mark_lock+0x9a/0x190 kernel/locking/lockdep.c:4776
+Code: 0e 00 75 13 48 8d 3d e5 1a 31 0e 48 c7 c6 51 2b a9 8d 67 48 0f b9 3a 90 31 c9 4c 89 fe 4c 89 f7 b8 01 00 00 00 85 69 60 74 10 <5b> 41 5c 41 5d 41 5e 41 5f 5d c3 cc cc cc cc cc 49 89 fe 49 89 f7
+RSP: 0018:ffffc90000a3f970 EFLAGS: 00000006
+RAX: 0000000000000001 RBX: 0000000000000009 RCX: ffffffff93640d68
+RDX: 0000000000000008 RSI: ffff88801e694a30 RDI: ffff88801e693e00
+RBP: 0000000000000200 R08: ffffffff81883dac R09: ffffffff8e3cb2a0
+R10: dffffc0000000000 R11: fffffbfff1f9e71f R12: 0000000000000003
+R13: ffff88801e694a30 R14: ffff88801e693e00 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff888125b6b000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f2e59a3b6b0 CR3: 000000003ef78000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ mark_usage kernel/locking/lockdep.c:4676 [inline]
+ __lock_acquire+0x6b5/0x2d10 kernel/locking/lockdep.c:5193
+ lock_acquire+0x106/0x350 kernel/locking/lockdep.c:5870
+ rcu_lock_acquire include/linux/rcupdate.h:300 [inline]
+ rcu_read_lock include/linux/rcupdate.h:840 [inline]
+ __local_bh_disable_ip+0x205/0x420 kernel/softirq.c:174
+ local_bh_disable include/linux/bottom_half.h:20 [inline]
+ rcu_cpu_kthread+0x214/0x1470 kernel/rcu/tree.c:2978
+ smpboot_thread_fn+0x541/0xa50 kernel/smpboot.c:160
+ kthread+0x388/0x470 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
