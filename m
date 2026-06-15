@@ -1,202 +1,244 @@
-Return-Path: <cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16920-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ZeGbJPGrLmoQ1wQAu9opvQ
-	(envelope-from <cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 15:26:09 +0200
+	id ndQwKFpVL2ps+gQAu9opvQ
+	(envelope-from <cgroups+bounces-16920-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 03:28:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9329868129E
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 15:26:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1F46682BF9
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 03:28:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=berkeley.edu header.s=google header.b=s3ZdgQ0j;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16919-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=berkeley.edu;
+	dkim=pass header.d=google.com header.s=20251104 header.b=koJCR0uL;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16920-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16920-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9E1393001FBC
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2026 13:26:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ADC833007378
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 01:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C763A6EE6;
-	Sun, 14 Jun 2026 13:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236EF239E80;
+	Mon, 15 Jun 2026 01:28:43 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AF0390C84
-	for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 13:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAE4223DFB
+	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 01:28:41 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781443561; cv=pass; b=CU9BkjvRzfxE6oD2JNjlWm5gfSQMU2lYlbyFKNqDyYqnGd8UwIp66SU2Eg61jxiRKF9QvAFN2Kq7exluVR+GXxnjhmIMx9FvnuJXG0ZCCqVQ1Dbgvn7erA8mrR7DeI3qlKVjyUd7dsBMmDxPLF9c3qDdoUx4JJhI54N7IHxgl1E=
+	t=1781486922; cv=pass; b=kJy5KN98NFMiF4EkO3KjTpSXxm/JQC9d9YqhrnY9E9Dv7jYuSNy0GYoGgvcS7WA0oIKTs9ZjPU7wg1JjRmryOl/lP4Yk5Mp7eHdxtlT5EOgxTvk42Nzl06xvyiWVx+EWqiTBQPkeyFNTVkznQ9fcPZgGmsoIcxQk21vrGtTrtMI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781443561; c=relaxed/simple;
-	bh=8a8z9o8uhQwn072Nwdwrsu8F50f0ae0l8EpJfnSe8Zs=;
-	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ig4ivp7wc/suYqmj3+ObkCu7UYCqdeenFe6JZBrG1jeaiOgYYaU3tpvJNAGVFijAT3v1gte9K3TRibIV9Tvg5NcnZmFmSYhAlxjhvUnu7jURx5DkCLitUqbSNdZBufMcl0GH09PLhVKJ0nSdReBASTUrUl8FHBsdR0R1+2ffwh4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=berkeley.edu; spf=pass smtp.mailfrom=berkeley.edu; dkim=pass (2048-bit key) header.d=berkeley.edu header.i=@berkeley.edu header.b=s3ZdgQ0j; arc=pass smtp.client-ip=209.85.128.169
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-7e1916922b9so26214017b3.1
-        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 06:25:57 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781443557; cv=none;
+	s=arc-20240116; t=1781486922; c=relaxed/simple;
+	bh=ULCiQmh3Fr57rxfPWnrO4oKZXSzYPIWseb5cOe0Q/Q0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rr4M+u5BSKSkFgc6+KbmURUDcEZU4rX3RJCHvKMigJS+yROuLo4mey5s26ESRm+/HM7HU5y+mAbj79po0RpQlfMnXoyB8UqBNLsQPUlBd/HTeDGYZGPQ0fyYCL7mIIvvAmx7B4W2XWgF+xAR7iOv5W6j7BE7xXlPqFddv7+y6CI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=koJCR0uL; arc=pass smtp.client-ip=209.85.160.173
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-5177d1ff061so658341cf.1
+        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 18:28:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781486920; cv=none;
         d=google.com; s=arc-20240605;
-        b=OD8XfHGkIwFpBP4Yx5A6cH/gUQhYReTkP8hbBp7K/3K/O4gUbGrJFKqVUb5gEomPc6
-         OG4jgzhrL1QC2FDi8qx52R6YITxfP2DrEInqyW3eBy4vkAMIsZfj3/8ex0qMHWmh3w2q
-         KX+cGYerjd/EoPlp8qosZysA/GioNSXjl+z8eaaKVveCYSz946jGdY9Xl93K0dhkJCGX
-         omWsRnxMxPOpvgMuVsHFfFv5RV+oBYBzirCaOayUdhu0uUGnuXVBDAIA9ZIhXMNVVTsv
-         xwY16mq7Z5RIQ/uGIBqVJOVpoohXMDNnMRZBw6QP6nwjYuhX4r2/HKIXPG0oSqhRjwsb
-         xLbg==
+        b=NcayNI9/bzlTXLVkL00Ay4e7tPvxOM15WAW0pGEMg4/Pl8eC13MseCB4EvypTJVp0u
+         IyEMbrGS3oxvM4EcELD++d4KOg38Y8GZ22yG/tKoUTvVNbnLnOgPtZxSiWSnnnPgkkNi
+         igcBUiM06gwSIPswhRoS/B6VenHec0QTmPP4le0NSziZlk9/wuZgciZP8UKN+QSziw/k
+         8ckUBccSVC7vk+FwYXiiy8RLvEF+Dw36zBR2qoonpqmgEytA481ceICBddV+qW1d25WB
+         9+gGVF3UIKs4tt/X3Tli3iImTepJ9QRnezqOowOVNGCZSiShxJvfJKDsclIbsc8UwQ70
+         BUpw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:dkim-signature;
-        bh=my7WznhvuaINq07i0eln+93EnzFiKa95Z+VUna30ulc=;
-        fh=NNmFGhn8sABE8vRv6eA71kLTHbkXS1ZBq5/mbohCMHg=;
-        b=HF6PkV8OzMTsMkulOp5JBQ53Nrp4HscGkii/L0JpHmdb2Tj98ickbDOqEFC0iYHgpm
-         KdlAdGCz+N2EWIFS2BD25syqTkk2OeV24IgdIFEex2jQC+uWdcLjfg7czPidxvGpD/Di
-         9qyiTp/wQ5zCBwUwTtw9Ls4GRLObIW1HOPljIIet3BWUUBGU/MMjUwsOvjDiICZQWhOW
-         ga6njrwlTOhIFdXhA0VGoGnWPOSNIxw++AKgGC0U/ysiPTclgiliwjTJlGKhJmjCsGyE
-         NBjGKTC9OfoSUwJ3C910bO8dgEk2/E8E2NdCJOHDBfbfYoJpBG7EIES0hXbz0N+ZkGwt
-         O3pQ==;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=ULCiQmh3Fr57rxfPWnrO4oKZXSzYPIWseb5cOe0Q/Q0=;
+        fh=qrst8mZ/All+yTcurb6M1/QRLvXZaBbYUgNV0Y7mS0Y=;
+        b=Jymlfd0hf+neBfECnNotCuah9354DBHOHhyZSSCBO5/Oc82sRrFMFYN7icsUF0/Tx5
+         e2joSTRaIFv5KYKb0z4OAHSv1PZ6/BY+co+V1hdDQGMpQZrPurzRcdluNTk6kcehqsBU
+         OCGscU7fgAIdZ9FaQW6RsWnUcRphxD51JO+cxqBcosn4SZu1CpKoHlNSUtmIOkjlNiQZ
+         lisadjZgmamJZvGbzehD2GHiQ9/N70JYPs02/ONwTLO3V1a4izYQVxYr7g/LvGWspiRZ
+         wuZc2hwc9w1ID1ofLtsv/UdEnVUroZyvpjmW0lGJOTSadUmvanrgceH0Hf2mOU0L1qsp
+         kgvQ==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=berkeley.edu; s=google; t=1781443557; x=1782048357; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=my7WznhvuaINq07i0eln+93EnzFiKa95Z+VUna30ulc=;
-        b=s3ZdgQ0j6wdDyJK+1d22+jBZLt2LhR2Mi8jqPQ3z/isAwctf3ViXA56e3N8khKKhww
-         vmnVZeVAW1wDeL+KZtU2URDcwHYxTdvDKj7dQAg2rIz9I+oy4ubfKlsNI32QZ+LDw4Oe
-         qW7GQAFqe+cJvP/0VHfPgrO58FSi8UglgtTFX9H9cSpSqkzpIwpgD4WzFLBDKHVkuTAe
-         bKPdX19pyf2uEXOILG62k3EUQwNZ+3JbH4EA72HLdrw6dba8fYV0Vaemkuy56hwM0oWI
-         FG1mbyrtkMB8CbtPKlmsvp7y845jcXXgqpVuTaB9qMLiIVdu5T9KBNz8Tat5V81a9/KG
-         LwOg==
+        d=google.com; s=20251104; t=1781486920; x=1782091720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ULCiQmh3Fr57rxfPWnrO4oKZXSzYPIWseb5cOe0Q/Q0=;
+        b=koJCR0uLfDG7hX7njhpieGWG76eCmvfUQLzatSCzVW1sVHAto19bgjV3Vp+5R25+ke
+         Ub5pB8q+o0o/frHossnrTar3lsxZJmcMIu1SuQacJ3ktJoCpdBvvG8Jaq9iJgZqQO86s
+         MUMtGoxDD8NIU2ZzdTjHW4n8oj/RJz50C1RMVNp64v9O4i0jzDD9O15Pjr8AbXRX1/lK
+         1dSLmzfxbKlPFVonFuwLOnrNHkE7dvLVHlRBrqHNPHBL7oUQo0uU5+fRHEmaX7fXOIAT
+         j8lk37c7/6/NZDqRJj9pAUljUiyzLSjcWjQf/Jd4YTwKxCdox6oI7ktTszf3xtdWKtHs
+         XR7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781443557; x=1782048357;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=my7WznhvuaINq07i0eln+93EnzFiKa95Z+VUna30ulc=;
-        b=W7eA4UsiUmWFHVMr+Vz4jySyF8kJ/w1cYLfO4KRzrKW7TlVjgs6rS30CkU69fnInfH
-         ocwywMrFTBpUc8qZgbCHKlhSU+9hPx1TI3cfGmUdd3KAXuzqcffUbmMK98UmyRfrhqaf
-         5BSp9mgc2BMO5FIbtTeZ9w/Pr7FHdleLlvC/j4K3bG8HrlNcy0sXtBkC3UjFGli6iOlB
-         MjT/5he/2fDEOLdNY6JKFoRhX83UYi83vLuR57+/LeufNtndDuwfdND6ML1DPsy3/wJe
-         E1Ye/MGEIxgycSb7eq/IYJwhbP7Lql0HYDazjrIFXTve5kP62nFVKSRP7XdDv6gZMbZf
-         7Dqw==
-X-Forwarded-Encrypted: i=1; AFNElJ/n2x8jORgiJpY9+fbELVObMmoH2C5lHTyZagLmXGsRfTl8y7Hxmet6T2ESPepMq+XsPfrqW/5o@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCHn6uEudJLRhLlmTL2Dek6bh5IzGKL0FqILPmvIO0ZlGRUb1H
-	silYw+Ixr+x4bpsVHaC6ID+xZpu9BfdvPTDWRu2WBfdSJRSxInXhb37NYtUuT+jq2Rcj1fnTaa1
-	awSUqC1AM5jxXoSsNhefg+Lwm0j9l6HgHpe+cOfY2
-X-Gm-Gg: Acq92OEpqD44pFbA0tp3qFzKDOTK/n1FU1HZ4DtAXdrJealDMn70TWalw9bDpKTikuK
-	gxmEA3jTOau16xSS6XX6zhPr/Qvyh441CW7/FsbNcXWtvrtw+7enFdMFOqxQUwC/skwqK2WVCjS
-	GXrcBk1hqRl9jxuWS8EpAOhSEZEfTju5K4Nfr1ntjTlZz/Y9IcXK+UddhPw7gzAYgaXzaXwdQ3d
-	CNjvogPg1wLMND0047Bs8M+otNSIvb0+NL69Ol5T18qIAuGo81C16EPLAyKtvaU2apBQd1BVPrR
-	Gg9mI4IAlQ==
-X-Received: by 2002:a05:690c:3745:b0:7e2:a956:4083 with SMTP id
- 00721157ae682-7f8c1f15742mr70603597b3.20.1781443555816; Sun, 14 Jun 2026
- 06:25:55 -0700 (PDT)
-Received: from 474444807712 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 14 Jun 2026 06:25:55 -0700
-Received: from 474444807712 named unknown by gmailapi.google.com with
- HTTPREST; Sun, 14 Jun 2026 06:25:55 -0700
-From: Farhad Alemi <farhad.alemi@berkeley.edu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
-References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
+        d=1e100.net; s=20251104; t=1781486920; x=1782091720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ULCiQmh3Fr57rxfPWnrO4oKZXSzYPIWseb5cOe0Q/Q0=;
+        b=ERquhvcGi/j5n6ZTEn+C3IMjwM0ZtmENKHsd/STmT+v0axG/bYnORiMHU+35vk1hUj
+         lrTiR1V4jPIH+vm9dzbL+PjGy1NHicv9ASXJOjdlzh+dreXy/SXMoPbNBGcRN0WPSD1M
+         ueEv4p3vMAxlLxEYJpSTsACMiloHnllrxjqRmLCgz2kOZxaG1rfJe5oZPmAti3dR+UTe
+         oLnQWkMMR2WzHNxi+EX0TwL3/8cPdW4EN7KPk+vYllsZueDLSXyhPw2xbMfUxCnkGK/W
+         57DFZE4WJRkOMm2WC+rbOO+ygLXtiDVp3z1g201yuV26UEHFi4maILqVD49ZbJIbRV3H
+         tXkQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8Dm2+yCB+9//w18TfP+JHuV0vCFElnGmMq6G3rrdKJH6m9UsTPmENo3h2tvF7lMzbW2HcQTrZE@vger.kernel.org
+X-Gm-Message-State: AOJu0YzlI/aXNsSokRUm/uJKSu5VipdzLfqBVUBOS/cxUUqZ28s7Zvfq
+	Ud6zwGs1ozGfDqSMS9d/7aT25kep/XJaNpI9phwcai95PDPeL++W9efvkMupc7x+bgOK4HYOuxi
+	nvKcsAdfGZmirFRn4lyX4L5k9A6PgqhNX6Ge/HqHj
+X-Gm-Gg: Acq92OGvxn4eFeNHXdOAJZu93Zh3MPvtHuXB/k8shVLkw/ojoZfzx7pDxyEEePdkKbl
+	9yaqXNYVMetA27497+RoSpmzHsaWdDISfa2zoeeHaJI73wp+UwoElojgLsTuY+XjRSojJtvZ4EJ
+	WvsHWp3T/FZplHuuRZepgdh9JMKSrhgFdc3SVLqh1xG78YNkbr14L+rQAd0/Loqu+PwRWyJHv7e
+	xYp3WlT5MuqW4Im4fBdUrZ67hr/AMwExxOzx90FSm2IMXAMJ29h84mwhJgB4072upO7k8CIDZh4
+	+FuBZg==
+X-Received: by 2002:ac8:5785:0:b0:517:38aa:c2b3 with SMTP id
+ d75a77b69052e-519549f8a99mr12415291cf.14.1781486919930; Sun, 14 Jun 2026
+ 18:28:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sun, 14 Jun 2026 06:25:55 -0700
-X-Gm-Features: AVVi8CdOyddTc0VCwydJ03Yt1oOOOGpiCzbsY_HpVqvtkDz1Xj3Bl7yujHIBV_M
-Message-ID: <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
-Subject: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems, not mems_allowed
-To: Andrew Morton <akpm@linux-foundation.org>, Waiman Long <longman@redhat.com>
-Cc: Farhad Alemi <falemi@asu.edu>, David Hildenbrand <david@kernel.org>, Gregory Price <gourry@gourry.net>, 
-	Yury Norov <ynorov@nvidia.com>, Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>, 
-	Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>, 
-	Byungchul Park <byungchul@sk.com>, Ying Huang <ying.huang@linux.alibaba.com>, 
-	Alistair Popple <apopple@nvidia.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, stable@vger.kernel.org
+References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-2-7190909db118@kernel.org> <b6530e92-d648-4028-9e77-0df8c3ab166d@kernel.org>
+ <159d1e20-5b21-4329-ac9a-f7a5cb0fd56a@kernel.org> <e71bfc13-c233-4f85-a6ec-76327d3c6510@kernel.org>
+ <74adf668-78c2-4989-a6c6-c6ec7bd68855@kernel.org> <4cf98483-ae35-4ad0-8f77-5a46194eb65f@kernel.org>
+In-Reply-To: <4cf98483-ae35-4ad0-8f77-5a46194eb65f@kernel.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Sun, 14 Jun 2026 18:28:29 -0700
+X-Gm-Features: AVVi8CeJscivUYBempgvh_YTouGssLUsWYrE-XuqGN36nJ9_C6J7p37pzGF9m8A
+Message-ID: <CAJuCfpH8g9mNGV_ke-mhVZ=J9J05PZg-ozPTA=5WQrm_eViVpA@mail.gmail.com>
+Subject: Re: [PATCH v2 02/16] mm/slab: do not init any kfence objects on allocation
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Cc: Harry Yoo <harry@kernel.org>, Hao Li <hao.li@linux.dev>, 
+	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Alexander Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>, Marco Elver <elver@google.com>, 
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[berkeley.edu,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[berkeley.edu:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:andreyknvl@gmail.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16920-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16919-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:longman@redhat.com,m:falemi@asu.edu,m:david@kernel.org,m:gourry@gourry.net,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[surenb@google.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[asu.edu,kernel.org,gourry.net,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
+	FREEMAIL_CC(0.00)[kernel.org,linux.dev,gentwo.org,google.com,linux-foundation.org,cmpxchg.org,gmail.com,googlegroups.com,kvack.org,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[farhad.alemi@berkeley.edu,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[berkeley.edu:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[surenb@google.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid,vger.kernel.org:from_smtp,msgid.link:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9329868129E
+X-Rspamd-Queue-Id: F1F46682BF9
 
-Creating a child cpuset where cpuset.mems is never set leads to a div/0
-when a VMA mempolicy with MPOL_F_RELATIVE_NODES rebinds in response to a
-CPU hotplug event.
+On Thu, Jun 11, 2026 at 9:37=E2=80=AFAM Vlastimil Babka (SUSE)
+<vbabka@kernel.org> wrote:
+>
+> On 6/11/26 17:11, Harry Yoo wrote:
+> >
+> >> From 3a1c4398ce9f361a4e6f4d9946eab6237eea89c2 Mon Sep 17 00:00:00 2001
+> >> From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+> >> Date: Wed, 10 Jun 2026 17:40:04 +0200
+> >> Subject: [PATCH] mm/slab: do not init any kfence objects on allocation
+> >>
+> >> When init (zeroing) on allocation is requested, for kmalloc() we
+> >> generally have to zero the full object size even if a smaller size is
+> >> requested, in order to provide krealloc()'s __GFP_ZERO guarantees.
+> >>
+> >> When we end up allocating a kfence object, kfence perfoms the zeroing =
+on
+> >
+> > nit: perfoms -> performs
+>
+> Fixed.
+>
+> >> its own because has its own redzone beyond the requested size. Thus
 
-Reproduction steps:
- 1) Create a cgroup w/ cpuset controls (do not set cpuset.mems)
- 2) Move the task into the child cpuset
- 3) Create a VMA mempolicy for that task with MPOL_F_RELATIVE_NODES
- 4) unplug and hotplug a cpu
-      echo 0 > /sys/devices/system/cpu/cpu1/online
-      echo 1 > /sys/devices/system/cpu/cpu1/online
- 5) mempolicy rebind does a div/0 in mpol_relative_nodemask on the
-    call to __nodes_fold()
+nit: s/because has/because it has
 
-The cpuset code passes (cs->mems_allowed) which is not guaranteed to have
-nodes to the rebind routine.  Use cs->effective_mems instead, which is
-guaranteed to have a non-empty nodemask.
+> >> slab_post_alloc_hook() has an 'init' parameter which has to be evaluat=
+ed
+> >> in all callers (via slab_want_init_on_alloc()) and should be false for
+> >> kfence allocations.
+> >>
+> >> For kfence allocations in slab_alloc_node() this is achieved by subtly
+> >> skipping over the slab_want_init_on_alloc() call. Other callers (i.e.
+> >> kmem_cache_alloc_bulk_noprof()) however evaluate it unconditionally ev=
+en
+> >> if they do end up with a kfence allocation. This is only subtly not a
+> >> problem, as those are not kmalloc allocations and thus the "requested
+> >> size" equals s->object_size and thus it cannot interfere with kfence's
+> >> redzone. There's just a unnecessary double zeroing (in both kfence and
+> >> slab_post_alloc_hook()), but it's all very fragile and contradicts the
+> >> comment in kfence_guarded_alloc().
+> >>
+> >> Remove this subtlety and simplify the code by eliminating the init
+> >> parameter from slab_post_alloc_hook() and make it call
+> >> slab_want_init_on_alloc() itself. Instead add a is_kfence_address()
+> >> check before performing the memset, which will start doing the right
+> >> thing for all callers of slab_post_alloc_hook().
+> >>
+> >> This potentially adds overhead of the is_kfence_address() check to
+> >> allocation hotpath, but that one is designed to be as small as possibl=
+e,
+> >> and it's only evaluated if zeroing is about to happen. This means (asi=
+de
+> >> from init_on_alloc hardening) only for __GFP_ZERO allocations, and the
+> >> zeroing itself comes with an overhead likely larger than the added
+> >> check.
+> >
+> >> While at it, refactor the handling of evaluating when KASAN does the
+> >> init instead of SLUB, with no intended functional changes. A
+> >> non-functional change is that we don't pass kasan_init as true to
+> >> kasan_slab_alloc() if kasan has no integrated init, but then the value
+> >> is ignored anyway, so it's theoretically more correct.
+> >
+> > Right.
+> >
+> >> Thanks to Harry Yoo for the initial refactoring attempt, and for updat=
+ed
+> >> comments that are used here.
+> >
+> > No problem ;)
+> >
+> >> Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-2-7190909d=
+b118@kernel.org
+> >> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> >> ---
+> >
+> > Looks good to me,
+> > Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
 
-Link: https://lore.kernel.org/linux-mm/CA+0ovCgxbZkXa+OU8w3s84R3KNPNxxRfmsNR-udh+afQBbGNmw@mail.gmail.com/
-Link: https://lore.kernel.org/all/CA+0ovCiEz6SP_sn3kN4Tb+_oC=eHMXy_Ffj=usV3wREdQrUtww@mail.gmail.com/
-Fixes: ae1c802382f7 ("cpuset: apply cs->effective_{cpus,mems}")
-Suggested-by: Gregory Price <gourry@gourry.net>
-Suggested-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Farhad Alemi <farhad.alemi@berkeley.edu>
-Cc: stable@vger.kernel.org
----
-v2: rebind to cs->effective_mems instead of newmems (Waiman Long);
-    condense the changelog.
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 
- kernel/cgroup/cpuset.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2649,7 +2649,7 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
-
- 		migrate = is_memory_migrate(cs);
-
--		mpol_rebind_mm(mm, &cs->mems_allowed);
-+		mpol_rebind_mm(mm, &cs->effective_mems);
- 		if (migrate)
- 			cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
- 		else
--- 
-2.43.0
+>
+> Thanks!
+>
+> > Thanks!
+> >
+>
 
