@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-16943-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16944-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8A7RFYvNL2o8GwUAu9opvQ
-	(envelope-from <cgroups+bounces-16943-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 12:01:47 +0200
+	id 76ZgE4jQL2oPHQUAu9opvQ
+	(envelope-from <cgroups+bounces-16944-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 12:14:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2DA36853A4
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 12:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC766854C3
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 12:14:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="H/TxuAZi";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16943-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16943-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=SMyTsyB4;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16944-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16944-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4A1D23028F0C
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 10:01:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E3BD302DB5B
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 10:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4F0D399002;
-	Mon, 15 Jun 2026 10:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C203DC4D9;
+	Mon, 15 Jun 2026 10:14:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85EAE27A462;
-	Mon, 15 Jun 2026 10:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DD33DA5BD;
+	Mon, 15 Jun 2026 10:14:28 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781517704; cv=none; b=SWutcFS8xePco3Oay5GdhyDHzSKJRavzVsdjx48fEQ9UryuftLtzTdabx8eOU4JXQZu0adKAIFhlZ+L5sj0mfJjf9KK3uDjqcvJd8zMVHnvjUAVLYLlHZZGSHMC+dqRHWJLal0M9UzYZGmENOELDjjDMqjmkW6HvARUuMyBP2iE=
+	t=1781518469; cv=none; b=VPUm9tpDh0Ht1VYF/Lt9mYeOJVfOFzZ5wTt0uoD5l0ZqFUc+pDU3PT+IXoK6JPPs73CHTNOmPEwGI1DqJQNMGW7nVQcn8CG9P+YNrAVCRI0twwmiqk7IzztY3COWxcZMOBZyRBdOm2Iai2s5ZNNn9pbxxIF5oMZE0e/5lG1ELk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781517704; c=relaxed/simple;
-	bh=uMZgz1vTiaRMLNsKsNm0dvHwt9AvmSvZMAwkSMDijAg=;
+	s=arc-20240116; t=1781518469; c=relaxed/simple;
+	bh=+i98OB42+NmLa3evPR0ZxhKnbDfP9M9EeKCMjPpXO+w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M26jZ3kebAitB8uMjshkuq/AvMLJ6qRcedvTgtBb0qp32C6MBmP3p7yXdtkQF4/RPLSgS9InDHBHRvvlO4a8lfcfrT57NuJti7PzWosXxtEvMUXqk2KcVP86eUzCwU0e1Mzz+j1FOC7zqbIga+V70sQbyP1uorklV/h9/I7O3Uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H/TxuAZi; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D83EF1F000E9;
-	Mon, 15 Jun 2026 10:01:39 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=GsAsT3tIGaJTFEb1KzY42y99G93Yxpc4nXC69jTxslVk39K6K5JYDcdUQkMR5TmPxz1lIxW659ZEttCgJbhvSlUqlHAjofh3ldTmSDH7pwORJ5OCV/8j69Lo6J51vgWgVtgIJL+EuLsg2MypJbKaYxd/G9sVOd1I78WjUdDZRcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SMyTsyB4; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECAD01F000E9;
+	Mon, 15 Jun 2026 10:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781517703;
-	bh=5AbWeqS/xKwakGdjqbnfqVp4y0udwwlVR+ZRCrbcWMg=;
+	s=k20260515; t=1781518468;
+	bh=T2eZ9nicY2ugL7ZhQhUMhUTF6916IovA3mkaq4lvaXQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=H/TxuAZinPO4H71+nK3269iPNOuT97g11xD6SDqSrKd7T3fxvRlFJgHlI4Gma1yQV
-	 /IYJiZhuXR0LLW1db5XGNfABDZkZCbh02bJjkzAhdBC/wFQKZ5hMtroYD8Wnhp24gu
-	 71b1QHLdRCkyNprqN9ZxqsFFnipGqqVARGdJjt2yMQJiCv5i1oBLvxZRCQWpgx7R0L
-	 HUowHP1uxPwScLWaD7ejXYJsITXHuJpM+dl6x1z5uWY9GmEGuZzrVv+OlAWgTghry+
-	 RW1RiJ3Ub64ulmOshHoEtuJc3EYJhRledrDxodS8kEhTft/GYgqYixnRaKiUu+tFRO
-	 wlcUW/8WnRa0g==
-Message-ID: <1c63fbca-6ee4-466f-bfb5-5ff25a847607@kernel.org>
-Date: Mon, 15 Jun 2026 12:01:38 +0200
+	b=SMyTsyB4ltrLipBSuP0C8l+bwRDWSEU8kLkUu3IZFNMNtDlBEECikDD7LhyvijU6/
+	 vhQ+DM8JhL7di73ZhtNnlP3vASRDKZuEAYGK45GD1KfRCD4M49tR9ICRlmBQ6k539+
+	 3kVjBCWjy6QvLFtduPqVzFr5X9qdXVvvK+rbuI11cyr+6/OL3k2IEiv8yhCCrVmNLT
+	 vhrog67BSpEEJZTdC9V+n02oPykFZ1kAyMW5AXPcwQim26LKaEmXySqsV/xv0UY7Jw
+	 dv5Yxv+YBN5C108+p6CgA8yiKv0qfkTKFJXoOJ09YSJvDNT2c6+TFVe6bjjWmC9l0X
+	 H8Xcd2iTnrBWQ==
+Message-ID: <3f454a59-71d0-4354-87d6-85afb91a4ae2@kernel.org>
+Date: Mon, 15 Jun 2026 12:14:23 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,14 +55,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/16] mm/slab: replace struct partial_context with
- slab_alloc_context
+Subject: Re: [PATCH v2 08/16] mm/slab: pass alloc_flags to new slab allocation
 Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, Harry Yoo <harry@kernel.org>
+To: Harry Yoo <harry@kernel.org>
 Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  David Rientjes <rientjes@google.com>,
  Roman Gushchin <roman.gushchin@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>,
  Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
  Shakeel Butt <shakeel.butt@linux.dev>,
@@ -70,9 +69,8 @@ Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
  Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-7-7190909db118@kernel.org>
- <f9b7935c-f5f0-496c-b55e-1f3feee5c87a@kernel.org>
- <CAJuCfpE3XfxLmV-DzM5nLqYqGsFJThr-1i4bmEEqMpGZ28RLFQ@mail.gmail.com>
+ <20260610-slab_alloc_flags-v2-8-7190909db118@kernel.org>
+ <49ca905a-0303-4fad-8257-485b0ed47c8d@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -113,9 +111,9 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <CAJuCfpE3XfxLmV-DzM5nLqYqGsFJThr-1i4bmEEqMpGZ28RLFQ@mail.gmail.com>
+In-Reply-To: <49ca905a-0303-4fad-8257-485b0ed47c8d@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
@@ -126,13 +124,13 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:surenb@google.com,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16943-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16944-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -148,54 +146,72 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A2DA36853A4
+X-Rspamd-Queue-Id: 9EC766854C3
 
-On 6/15/26 04:36, Suren Baghdasaryan wrote:
-> On Wed, Jun 10, 2026 at 11:05 PM Harry Yoo <harry@kernel.org> wrote:
->>
->>
->>
->> On 6/11/26 12:40 AM, Vlastimil Babka (SUSE) wrote:
->> > Refactor get_from_partial_node(), get_from_any_partial(),
->> > get_from_partial() and ___slab_alloc().
->> >
->> > Remove struct partial_context, which used to be more substantial but
->> > shrank as part of the sheaves conversion. Instead pass gfp_flags and
->> > pointer to the new slab_alloc_context, which together is a superset of
->> > partial_context.
->> >
->> > This means alloc_flags are now available and we can use them to
->> > determine if spinning is allowed, further reducing false positive "not
->> > allowed" in the slow path due to gfp flags lacking __GFP_RECLAIM.
->> >
->> > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
->> > ---
->>
->> Looks good to me,
->> Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
+On 6/11/26 09:52, Harry Yoo wrote:
 > 
-> Ah, nice! The conversion I was anticipating in the previous patch...
-> I would do this removal of partial_context as patch 6 and then convert
-> ___slab_alloc() and get_from_any_partial*() altogether in patch 7. I
-> think that would keep the behavior of the ___slab_alloc() more robust
-> throughout the patchset. But I would say it's nice to have, not a
-> must-have.
+> 
+> On 6/11/26 12:40 AM, Vlastimil Babka (SUSE) wrote:
+>> Add the alloc_flags parameter to allocate_slab() and new_slab()
+>> so it can be used to determine if spinning is allowed, independently
+>> from gfp flags.
+>> 
+>> refill_objects() passes SLAB_ALLOC_DEFAULT because it can only be
+>> reached from contexts that allow spinning.
+>> 
+>> Also change how trynode_flags are constructed in ___slab_alloc() to
+>> achieve the same "do not upgrade to GFP_NOWAIT" by using masking instead
+>> of a branch. It will now also not upgrade in cases where gfp is weaker
+>> than GFP_NOWAIT (i.e. lacks __GFP_KSWAPD_RECLAIM) but doesn't come from
+>> kmalloc_nolock() - which is more correct anyway.
+> 
+> Wait, debugobjects intentionally avoids __GFP_KSWAPD_RECLAIM,
+> but we have been upgrading it to GFP_NOWAIT?
 
-OK, so I switched the order of 6 7 and all the changes from
-gfpflags_allow_spinning() to alloc_flags_allow_spinning are now in the
-newly-later patch; the "replace struct partial_context with
-slab_alloc_context" part has no functional changes. Verified that the end
-result is exactly the same, and only updated changelogs a bit.
+Actually, we have not been upgrading it until patch 6/16, which made the
+upgrade trigger by starting to rely on alloc_flags? Because previously it
+would be !allow_spin due to lack of __GFP_KSWAPD_RECLAIM.
 
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+So I will move that flags adjustment to 6/16 (now 7/16).
 
-Thanks!
-
->>
->> --
->> Cheers,
->> Harry / Hyeonggon
+>> During the masking keep also existing __GFP_NOMEMALLOC (pointed out by
+>> Sashiko) and __GFP_ACCOUNT. Previously the hardcoded GFP_NOWAIT would
+>> eliminate them, but it's not a big problem that would need a separate
+>> fix.
+> 
+> Ack.
+> 
+>> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+>> ---
+>>  mm/slub.c | 28 ++++++++++++++--------------
+>>  1 file changed, 14 insertions(+), 14 deletions(-)
+>> 
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 98b79e5e7679..8f6ca3d5fdfa 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -4467,25 +4470,22 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
+>>  	 * 1) try to get a partial slab from target node only by having
+>>  	 *    __GFP_THISNODE in pc.flags for get_from_partial()
+>>  	 * 2) if 1) failed, try to allocate a new slab from target node with
+>> -	 *    GPF_NOWAIT | __GFP_THISNODE opportunistically
+>> +	 *    (at most) GFP_NOWAIT | __GFP_THISNODE opportunistically
+>>  	 * 3) if 2) failed, retry with original gfpflags which will allow
+>>  	 *    get_from_partial() try partial lists of other nodes before
+>>  	 *    potentially allocating new page from other nodes
+>>  	 */
+>>  	if (unlikely(node != NUMA_NO_NODE && !(gfpflags & __GFP_THISNODE)
+>>  		     && try_thisnode)) {
+>> -		if (unlikely(!allow_spin))
+>> -			/* Do not upgrade gfp to NOWAIT from more restrictive mode */
+>> -			trynode_flags = gfpflags | __GFP_THISNODE;
+>> -		else
+>> -			trynode_flags = GFP_NOWAIT | __GFP_THISNODE;
+>> +		trynode_flags &= GFP_NOWAIT | __GFP_NOMEMALLOC | __GFP_ACCOUNT;
+>> +		trynode_flags |= __GFP_NOWARN | __GFP_THISNODE;
+>>  	}
+> 
 
 
