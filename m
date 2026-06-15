@@ -1,312 +1,298 @@
-Return-Path: <cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16968-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XJ4kJEDtL2qsJAUAu9opvQ
-	(envelope-from <cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:17:04 +0200
+	id aN9mLowOMGp1MgUAu9opvQ
+	(envelope-from <cgroups+bounces-16968-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 16:39:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBDBE686170
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:17:03 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5377E687403
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 16:39:08 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16967-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="Tpe1s7W/";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16968-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16968-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0068B3020EC7
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 12:02:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D2526300EDA8
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 14:39:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3F03E4C6E;
-	Mon, 15 Jun 2026 12:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343B53F8227;
+	Mon, 15 Jun 2026 14:39:02 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A060537DEA8;
-	Mon, 15 Jun 2026 12:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF3DA2309AA;
+	Mon, 15 Jun 2026 14:38:59 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781524955; cv=none; b=eFCu9I0PXZ043O+LEsXTwWQKKTUoBrgqWgiUhbto/KdfzPKNXi+Zsrk5sbNLKX9/+aw8WYku4O29QmX879zYI8AZUlCuOB47C5oZ4eKqx8BvavvLfVtwIeoIrR3atBPrB2t/ipLND3JVL4sBFNQQGZ81bB1aMLy+b4ROCbG0jp0=
+	t=1781534341; cv=none; b=ESRpUJ38jGXLZTUKFQf2mgW0RKXStj5RKNQcjjUJLo4PvbdIHXxzKqVI89cDoDSFajmyYwHlOBJPKuR0ZOkvGtRkMLrAQXrYqPb/X3P4ZuIhhkvkxJyer7PxqRuty7HYwYW8RQtx9fGr+u92W57riJYWT0WzKeW+TrB1EBNK4IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781524955; c=relaxed/simple;
-	bh=hDXEzZqbtAzr/uSpgHSfGFAWMMKzIXHwxmJ+XLj8vr8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DaqEDKLJS8yLxKVjCfWAGxDbpGv91cZmO/VuebiKlSXSveBZTfXIXR6MenoNQ+pzyFUNlN66XxsQe4PpqV0V2/0w6PkOZ6/cWL2/1Xql0EbxxgU8OW4jZsrGoNxgmJejLfJexHVUVQAm/jlLE0HhfsQxk9Zvu8eO22s71ZOG28Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gf7yG35D8zKHMRX;
-	Mon, 15 Jun 2026 20:01:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8601F4058D;
-	Mon, 15 Jun 2026 20:02:27 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.50.85.155])
-	by APP1 (Coremail) with SMTP id cCh0CgA3hzzQ6S9qu2+JBw--.21839S4;
-	Mon, 15 Jun 2026 20:02:25 +0800 (CST)
-From: Zizhi Wo <wozizhi@huaweicloud.com>
-To: axboe@kernel.dk,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	linux-block@vger.kernel.org
-Cc: cgroups@vger.kernel.org,
-	yangerkun@huawei.com,
-	chengzhihao1@huawei.com,
-	yukuai@fnnas.com,
-	houtao1@huawei.com,
-	wozizhi@huaweicloud.com
-Subject: [PATCH V2] blk-cgroup: defer blkcg css_put until blkg is unlinked from queue
-Date: Mon, 15 Jun 2026 19:55:56 +0800
-Message-ID: <20260615115556.1225472-1-wozizhi@huaweicloud.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1781534341; c=relaxed/simple;
+	bh=2SyvoKljCiqDT7XAWLBQi18Nl5IGompSDj0xrvARkNU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jSIEsBjhmYvJeRQGFok6epv3WhCL2dPSKu3bmjvUOOFi/bFn5wcJRM8MFJwXAH2sFIycjSlHPRSXAYtTrb2gxxpkgyFCMTF20D2bN1Ts9Mi0DO+mw5exDyLvtZUtNVBywAgkwmaN8Ee4Q1wYiV2VJ/3MqNrUFzrHWFZxkCFeJtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tpe1s7W/; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE9FA1F000E9;
+	Mon, 15 Jun 2026 14:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781534339;
+	bh=NLJ1HyaUGHk9FC6sPoHgRQivjZ9rWHzGujDQIgijU0E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Tpe1s7W/FGNaFy4435tVtHAd9EY3oIvVA4mf4Fb3YDtRFfntZdHFaKKi4f9CCh34Q
+	 N4xz+lIF98xwePPiI+ghawakdTdThDF5S3F8FV+xN0fCucATIu2Lx6YySlJwGbHNu+
+	 2QBbGn2rIZUR9hjHSmq7MQJFg7R6sG3rczMZlJrTSWeubKk3zLT+pforXagFL+Ylvn
+	 fpwfdemAo9uIZautm9dnwTWDKtjOgkD55tEAMcD9uHOTH9QQaMQFGigGXE9tDDkjfE
+	 8O+X25HAcTiNhHhq8UDLz8uu0M0ZPrB8HafAzb9Z3yU7oGpTq13M0aCIUq+uHxmTAc
+	 GX64SZo27dNAQ==
+Message-ID: <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
+Date: Mon, 15 Jun 2026 16:38:43 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgA3hzzQ6S9qu2+JBw--.21839S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxKrWfAr4DJF47Ww1fKFWrGrg_yoW7CFyDpF
-	ZxWrZay3yxKry2qa15Xr17X34Fvw48tr1rGrW8Gw4Y9F4ayr92qF1UurWkZFWxZFZ7Ar43
-	Ar4vqF1qyF48CwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
-X-CM-SenderInfo: pzr2x6tkl6x35dzhxuhorxvhhfrp/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory
+ Nodes (w/ Compressed RAM)
+Content-Language: en-US
+To: Gregory Price <gourry@gourry.net>,
+ "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Balbir Singh <balbirs@nvidia.com>, lsf-pc@lists.linux-foundation.org,
+ linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+ kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+ dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+ dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com,
+ ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com,
+ akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+ joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+ ying.huang@linux.alibaba.com, apopple@nvidia.com, axelrasmussen@google.com,
+ yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+ linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+ baolin.wang@linux.alibaba.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+ muchun.song@linux.dev, xu.xin16@zte.com.cn, chengming.zhou@linux.dev,
+ jannh@google.com, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
+ pfalcato@suse.de, rientjes@google.com, shakeel.butt@linux.dev,
+ riel@surriel.com, harry.yoo@oracle.com, cl@gentwo.org,
+ roman.gushchin@linux.dev, chrisl@kernel.org, kasong@tencent.com,
+ shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+ zhengqi.arch@bytedance.com, terry.bowman@amd.com,
+ Matthew Wilcox <willy@infradead.org>
+References: <ag6XyvxR-NU5rGn-@parvat>
+ <ahOqzpzAua96HVkn@gourry-fedora-PF4VCD3F> <ah47NNhuiClgGCdn@parvat>
+ <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F> <ah-0CyZurn5D1ezY@parvat>
+ <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
+ <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
+ <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
+ <d01fb1ed-2418-42ee-aea2-37f9a5c5729c@kernel.org>
+ <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
+ <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Autocrypt: addr=vbabka@kernel.org; keydata=
+ xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSNWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBrZXJuZWwub3JnPsLBsAQTAQoAWhYhBKlA1DSZLC6OmRA9UCJPp+fM
+ gqZkBQJqFFy6GxSAAAAAAAQADm1hbnUyLDIuNSsxLjEyLDIsMgIbAwUJGtCBUAULCQgHAwUV
+ CgkICwUWAgMBAAIeBQIXgAAKCRAiT6fnzIKmZJIUEADFx/tREzUImHrEwVHeSvDFmA7tJysI
+ UVrlvrM09E7GIuzphzv7jYmo8n3ANpCczLEVr4G0syYQdTigaZgv3+FQDIIzhKih1IHhu1Ei
+ XHlywNWKnQxxQEUNi5Mwx43wQz5XVw9F1A7gtKBKNtfogO511hAbrzagrYajyQacEJ/+sfhZ
+ 9Da8ltHIXD8pcYaHUfQgEusCgmEd9+KrUwrTbckFKmYq5chuE6yJ4J0EmWknL096jIE6CnzF
+ FRslQ3B1UKDjxVsm1ZHfir5NeWszLkTvGFsddFaWTgh8UycESG6VQzKXjjewXu2pG7YQYRpj
+ QKm1W5X2TkwWkXRBZTmfmbhxIUMh3+zf5wQ463rSmDN/8v81tdqBtAW6rH/kzg1GvkaTHXn0
+ 507yEHFzBksk2viAuIxxr7km8+/KARYLIdGtx30EG8cKzAUZOK6WqxtNCsXUJNrVE8CWrCaD
+ icoNu7Fs1c5hmPHdSTnU48ce67449DdnO4neLSNhRiGlMHJgfJUmgrxu/hcYeOZ3haWmEQ2w
+ uW1Mh01OHi8QZHCEyAbABrPs9GUgccc/4eYXX9hIgxfSkYzn8f+8NuIFPWl/0uTvjgqU29FQ
+ SbzOLxHq9439Ox40G5mS5eZXRGxITYR+6TXvRGI6P/264jvflnr/pDGUttaikU+0W+1uxgKH
+ cmYbEc7ATQRbGTU1AQgAn0H6UrFiWcovkh6EXVcl+SeqyO6JHOPm+e9Wu0Vw+VIUvXZVUVVQ
+ La1PQDUi6j00ChlcR66g9/V0sPIcSutacPKfdKYOBvzd4rlhL8rfrdEsQw5ApZxrA8kYZVMh
+ FmBRKAa6wos25moTlMKpCWzTH84+WO5+ziCTsTUZASAToz3RdunTD+vQcHj0GqNTPAHK63sf
+ bAB2I0BslZkXkY1RLb/YhuA6E7JyEd2pilZOrIuBGl/5q2qSakgnAVFWFBR/DO27JuAksYnq
+ +aH8vI0xGvwn75KqSk4UzAkDzWSmO4ZHuahKtQgZNsMYV+PGayRBX9b9zbldzopoLBdqHc4n
+ jQARAQABwsF8BBgBCgAmAhsMFiEEqUDUNJksLo6ZED1QIk+n58yCpmQFAmfIHFQFCRYU6J8A
+ CgkQIk+n58yCpmS2PA//bqN1LfcotmArgElsa+0EGZSQlYgK48pm8WAeTXTngudP9IJ4SuKY
+ HR5RNjHcBeqN+Me0zxRqYzRb8nGanHEkDyf4Im8DQM8d6vbyU+FcPmG4skud4kgS1zMHnlVd
+ SXfSIwKC/hKgdHG8aBV7545Lz9X6Iohea+94wneD0aw/hqF+QWewGZhWJriWAZtvEkzNjQOi
+ 4U9F/trLten/x7bpphDSnDMKJtITbtzATT1Dq7o7VpIUK1nCTQALMuMjKCdi8OdU/+V+R3O4
+ 0PXWvX8qrvqYapVbZ+9KqT74FsuB0Ya9uXwgBF2Q6cRuETZk5vqaqKxzqoQZCO8AOz/58j6O
+ 2RHNy/mZEN+7tJ5Tsq42zVJ4jxsT8b9YplavCMsnBgDeRWhcbYhCyttoL7nYISyWg4kQYZ/P
+ wIV3OuNv2f8iKYsxNsRuClOAF82+gvqOy1/1pprFjy8uo2pkoOrb63aOP3vO5VHnRKgra6dq
+ NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
+ OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
+ jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
+In-Reply-To: <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [4.84 / 15.00];
-	SEM_URIBL(3.50)[huaweicloud.com:mid,huaweicloud.com:from_mime];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
-	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-16968-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-16967-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FORGED_RECIPIENTS(0.00)[m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:yangerkun@huawei.com,m:chengzhihao1@huawei.com,m:yukuai@fnnas.com,m:houtao1@huawei.com,m:wozizhi@huaweicloud.com,s:lists@lfdr.de];
-	GREYLIST(0.00)[pass,body];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	TO_DN_NONE(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wozizhi@huaweicloud.com,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,infradead.org];
 	MIME_TRACE(0.00)[0:+];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c04:e001:36c::/64:c];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,huawei.com:email,vger.kernel.org:from_smtp,huaweicloud.com:mid,huaweicloud.com:from_mime]
+	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:david@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:yury.norov@gmai
+ l.com,m:linux@rasmusvillemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,m:willy@infradead.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[76];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linuxfoundation.org:url,linux-foundation.org:email,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: DBDBE686170
+X-Rspamd-Queue-Id: 5377E687403
 
-From: Zizhi Wo <wozizhi@huawei.com>
+On 6/12/26 17:29, Gregory Price wrote:
+> On Wed, Jun 10, 2026 at 04:12:52PM -0400, Gregory Price wrote:
+>> On Wed, Jun 10, 2026 at 08:59:59PM +0200, David Hildenbrand (Arm) wrote:
+>> > > 
+>> > > I understand this question in two ways:
+>> > > 
+>> > >   1) Can we disallow PAGE allocation and limit this to FOLIO allocation
+>> > 
+>> > Yes. Can we only allow folios to be allocated from private memory nodes. So let
+>> > me reply to that one below.
+>> > 
+>> ... snip ...
+>> > 
+>> > At LSF/MM we talked about how GFP flags are bad and how deriving stuff from the
+>> > context might be better. I think there was also talk about how the memalloc_*
+>> > interface might be a better way forward. Maybe we would start giving the
+>> > allocator more context ("we are allocating a folio").
+>> > 
+>> > The following is incomplete (esp. hugetlb stuff I assume), just as some idea:
+>> >
+>> 
+>> I will still probably send the next RFC version tomorrow or friday,
+>> as I want to get some eyes on the __GFP_PRIVATE-less pattern.
+>> 
+>> Also, I made a new `anondax` driver which enables userland testing
+>> of this functionality without any specialty hardware.
+>> 
+> 
+> (apologies for the length of this email: this will all be covered in
+> the coming cover letter, but I just wanted to share a bit of a preview)
+> 
+> ===
+> 
+> Just another small update - I am planning to post the RFC today once i
+> get some mild cleanup done.  It will be based on the dax atomic hotplug
+> 
+> https://lore.kernel.org/linux-mm/20260605211911.2160954-1-gourry@gourry.net/
+> 
+> But a couple specific details regarding the memalloc pieces that i've
+> learned the past couple of days playing with it.
+> 
+> 1) memalloc_folio is required to ensure non-folio allocations don't land
+>    on the private node, even if it happens within a memalloc_private
+>    context.  Since memalloc_folio may be useful in contexts outside of
+>    private nodes, I kept this as a separate flag.
+> 
+>    If we think there will *never* be additional users of memalloc_folio,
+>    then we could fold _folio into _private to save the flag for now and
+>    add it back when we actually need it.
+> 
+> 2) memalloc_private is needed to unlock private nodes, but in the
+>    original NOFALLBACK-only design, you also needed __GFP_THISNODE.
+> 
+>    This is *highly* restrictive.  I found when playing with mbind that
+>    MPOL_BIND + __GFP_THISNODE generates a WARN (valid WARN, it normally
+>    implies a bug). 
+> 
+>    That leads me to #3
 
-[BUG]
-Our fuzz testing triggered a blkcg use-after-free issue:
+I think the memalloc approach is dangerous due to unexpected nesting. There
+might be nested page allocations in page allocation itself (due to some
+debugging option). But also interrupts do not change what "current" points
+to. Suddenly those could start requesting folios and/or private nodes and be
+surprised, I'm afraid.
 
-  BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
-  Call Trace:
-  ...
-  blkcg_deactivate_policy+0x244/0x4d0
-  ioc_rqos_exit+0x44/0xe0
-  rq_qos_exit+0xba/0x120
-  __del_gendisk+0x50b/0x800
-  del_gendisk+0xff/0x190
-  ...
+The memalloc scopes only work well when they restrict the context wrt
+reclaim, and allocations in IRQ have to be already restricted heavily
+(atomic) so further memalloc restrictions don't do anything in practice. But
+to make them change other aspects of the allocations like this won't work.
 
-[CAUSE]
-process1						process2
-cgroup_rmdir
-...
-  css_killed_work_fn
-    offline_css
-    ...
-      blkcg_destroy_blkgs
-      ...
-        __blkg_release
-	  css_put(&blkg->blkcg->css)
-          blkg_free
-	    INIT_WORK(xxx, blkg_free_workfn)
-	    schedule_work
-    css_put
-    ...
-      blkcg_css_free
-        kfree(blkcg)--------blkcg has been freed!!!
-====================================schedule_work
-              blkg_free_workfn
-							__del_gendisk
-							  rq_qos_exit
-							    ioc_rqos_exit
-							      blkcg_deactivate_policy
-							        mutex_lock(&q->blkcg_mutex)
-								spin_lock_irq(&q->queue_lock)
-							        list_for_each_entry(blkg, xxx)
-								  blkcg = blkg->blkcg
-								  spin_lock(&blkcg->lock)-------UAF!!!
-	        mutex_lock(&q->blkcg_mutex)
-	        spin_lock_irq(&q->queue_lock)
-	        /* Only then is the blkg removed from the list */
-	        list_del_init(&blkg->q_node)
-
-As a result, a blkg can still be reachable through q->blkg_list while
-its ->blkcg has already been freed.
-
-[Fix]
-Fix this by deferring the blkcg css_put() until after the blkg has been
-unlinked from q->blkg_list in blkg_free_workfn(). This ensures that the
-blkcg outlives every blkg still reachable through q->blkg_list, so any
-iterator holding q->queue_lock is guaranteed to observe a valid
-blkg->blkcg.
-
-While at it, move css_tryget_online() from blkg_create() into blkg_alloc()
-so that the css reference is owned by the alloc/free pair rather than
-straddling layers:
-blkg_alloc()  <-> blkg_free()
-blkg_create() <-> blkg_destroy()
-
-Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and blkcg_deactivate_policy()")
-Suggested-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
----
-v2:
- - Move css_tryget_online() from blkg_create() into blkg_alloc() so the
-   css reference follows the blkg's own lifetime, making the put in
-   blkg_free_workfn() symmetric with the get in blkg_alloc().
-
-v1: https://lore.kernel.org/all/20260518010932.633707-1-wozizhi@huaweicloud.com/
-
- block/blk-cgroup.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index bc63bd220865..27414c291e49 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -132,10 +132,15 @@ static void blkg_free_workfn(struct work_struct *work)
- 	if (blkg->parent)
- 		blkg_put(blkg->parent);
- 	spin_lock_irq(&q->queue_lock);
- 	list_del_init(&blkg->q_node);
- 	spin_unlock_irq(&q->queue_lock);
-+	/*
-+	 * Release blkcg css ref only after blkg is removed from q->blkg_list,
-+	 * so concurrent iterators won't see a blkg with a freed blkcg.
-+	 */
-+	css_put(&blkg->blkcg->css);
- 	mutex_unlock(&q->blkcg_mutex);
- 
- 	blk_put_queue(q);
- 	free_percpu(blkg->iostat_cpu);
- 	percpu_ref_exit(&blkg->refcnt);
-@@ -177,12 +182,10 @@ static void __blkg_release(struct rcu_head *rcu)
- 	 * blkg_stat_lock is for serializing blkg stat update
- 	 */
- 	for_each_possible_cpu(cpu)
- 		__blkcg_rstat_flush(blkcg, cpu);
- 
--	/* release the blkcg and parent blkg refs this blkg has been holding */
--	css_put(&blkg->blkcg->css);
- 	blkg_free(blkg);
- }
- 
- /*
-  * A group is RCU protected, but having an rcu lock does not mean that one
-@@ -311,10 +314,13 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 	blkg->iostat_cpu = alloc_percpu_gfp(struct blkg_iostat_set, gfp_mask);
- 	if (!blkg->iostat_cpu)
- 		goto out_exit_refcnt;
- 	if (!blk_get_queue(disk->queue))
- 		goto out_free_iostat;
-+	/* blkg holds a reference to blkcg */
-+	if (!css_tryget_online(&blkcg->css))
-+		goto out_put_queue;
- 
- 	blkg->q = disk->queue;
- 	INIT_LIST_HEAD(&blkg->q_node);
- 	blkg->blkcg = blkcg;
- 	blkg->iostat.blkg = blkg;
-@@ -351,10 +357,12 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 
- out_free_pds:
- 	while (--i >= 0)
- 		if (blkg->pd[i])
- 			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
-+	css_put(&blkcg->css);
-+out_put_queue:
- 	blk_put_queue(disk->queue);
- out_free_iostat:
- 	free_percpu(blkg->iostat_cpu);
- out_exit_refcnt:
- 	percpu_ref_exit(&blkg->refcnt);
-@@ -379,32 +387,26 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
- 	if (blk_queue_dying(disk->queue)) {
- 		ret = -ENODEV;
- 		goto err_free_blkg;
- 	}
- 
--	/* blkg holds a reference to blkcg */
--	if (!css_tryget_online(&blkcg->css)) {
--		ret = -ENODEV;
--		goto err_free_blkg;
--	}
--
- 	/* allocate */
- 	if (!new_blkg) {
- 		new_blkg = blkg_alloc(blkcg, disk, GFP_NOWAIT);
- 		if (unlikely(!new_blkg)) {
- 			ret = -ENOMEM;
--			goto err_put_css;
-+			goto err_free_blkg;
- 		}
- 	}
- 	blkg = new_blkg;
- 
- 	/* link parent */
- 	if (blkcg_parent(blkcg)) {
- 		blkg->parent = blkg_lookup(blkcg_parent(blkcg), disk->queue);
- 		if (WARN_ON_ONCE(!blkg->parent)) {
- 			ret = -ENODEV;
--			goto err_put_css;
-+			goto err_free_blkg;
- 		}
- 		blkg_get(blkg->parent);
- 	}
- 
- 	/* invoke per-policy init */
-@@ -440,12 +442,10 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
- 
- 	/* @blkg failed fully initialized, use the usual release path */
- 	blkg_put(blkg);
- 	return ERR_PTR(ret);
- 
--err_put_css:
--	css_put(&blkcg->css);
- err_free_blkg:
- 	if (new_blkg)
- 		blkg_free(new_blkg);
- 	return ERR_PTR(ret);
- }
--- 
-2.52.0
+> 3) If a private node is opted into something like Demotion (the node is
+>    a demotion target) or mbind(), such that normal kernel operation can
+>    place memory there - it's *pseudo-private*, and should actually land
+>    in it's own FALLBACK list (reachable without __GFP_THISNODE, but not
+>    reachable as a normal fallback allocation target).
+> 
+> I'm still playing with this, but I think we can even omit the
+> __GFP_THISNODE requirement (my initial feeling that __GFP_THISNODE
+> didn't buy us anything in particular seems to have panned out).
+> 
+> At the end of the day, this makes the whole memalloc_private_save()
+> pattern a heck of a lot cleaner than trying fiddle with GFP.
+> 
+> I think you will all enjoy how clean the code ends up, and how easily
+> testable it is.
+> 
+> As a testbed I've implement an anondax (we can discuss naming) that
+> adds some sample NODE_PRIVATE_OPT_* flags so you can do the following.
+> 
+> I'm including this in the next RFC - but we can hack the entire thing
+> off (including the OPT flags) if we prefer to just get the base set in
+> without a new driver as a start.
+> 
+> echo 1 > dax0.0/reclaim   # kswapd and reclaim run normally on this node
+> echo 1 > dax0.0/demotion  # it is a demotion target
+> echo 1 > dax0.0/mbind     # mbind() can target this node for anon-vma's
+> echo 1 > dax0.0/madvise   # allow madvise() to operate on its folios
+> echo 1 > dax0.0/numa_balance  # allow numa balancing for this node
+> echo 1 > dax0.0/ltpin     # allow GUP longterm pin to operate normally
+> echo * > dax0.0/adistance # set the adistance for hotplug time
+> echo * > dax0.0/hotplug   # same as kmem/hotplug
+> 
+> This also means *existing hardware* can leverage private nodes if
+> they're capable of generating a dax device.
+> 
+> I've even gotten it such that you can put a private node above dram in
+> the adistance heirarchy - which means demotion flows downward from
+> device to CPU, but allocations don't default or fallback there.
+> 
+> This seems *immediately* useful for a variety of use cases.
+> 
+> ~Gregory
+> _______________________________________________
+> Lsf-pc mailing list
+> Lsf-pc@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/lsf-pc
 
 
