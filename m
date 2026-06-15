@@ -1,98 +1,98 @@
-Return-Path: <cgroups+bounces-16935-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16936-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id K7f1KF2IL2o7CAUAu9opvQ
-	(envelope-from <cgroups+bounces-16935-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 07:06:37 +0200
+	id z7y4DWCKL2qOCAUAu9opvQ
+	(envelope-from <cgroups+bounces-16936-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 07:15:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0303E68362C
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 07:06:37 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E240068369D
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 07:15:11 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=wNHy5xfe;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16935-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16935-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=google.com header.s=20251104 header.b=pLy6TdSI;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16936-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16936-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 014C930087AC
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 05:06:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 604B3300CFCF
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 05:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6572F7F00;
-	Mon, 15 Jun 2026 05:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F160430C14B;
+	Mon, 15 Jun 2026 05:15:05 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E432356C6
-	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 05:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097363093D8
+	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 05:15:03 +0000 (UTC)
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781499992; cv=pass; b=iNA3AgHVuncBmEQWBh8uSHMbC7SMTH2TnJMkt/RdqmwWisRcQmod2qizzNQkniL7TanHFjfe7hsWJWM//+0PQ6yxrKc2Kfp2t09WoxbLxt+U2+qLkhOd05LmMlGAHxkpJ+yWO8ZfxlHkryCkmHb4cLo/r3Xmhd5XZ3EixE15nbM=
+	t=1781500505; cv=pass; b=qvZbs+uP9qLu1sIuo8mCRX4b1MVObAF3bttNgvXQeX4yatrrhHGvQNrB9R8FO3wnueiUJgSfPJk2HIOC/HFUekFKZmj3zSTlKPk9r7jCQXL2sOO8b7jBbdjYDZduvIDO9nbOk7mEVi5ne9UmhuQTnsX7FeRmDE3v52DqlpQHr4w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781499992; c=relaxed/simple;
-	bh=Jk7xxbhVE56zG/uWPAGorH8GgI9c7exGNGP42BIvXVw=;
+	s=arc-20240116; t=1781500505; c=relaxed/simple;
+	bh=3gNBX5x2LhwOmIQQDlsDq2J8ZH2ZLBGWp0xwFaRLaiY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sE/Rf9bnqPiROrvHLr3G5PEK4UQnrO6lfGeqpP/ToEfN5rs+HUsQVlebqcaIMzojHs4zqy+RSE3rQ0H0gT7U0eGZzAZJV7UxvcngPN7ordrILaIPkH0XHv5qWOKqYvbLgmRI6lNny8m+0QwB2hf88fUjjzAvYZzFBUTbhwYDaG4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wNHy5xfe; arc=pass smtp.client-ip=209.85.160.170
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-5177d1ff061so731681cf.1
-        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 22:06:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781499990; cv=none;
+	 To:Cc:Content-Type; b=qI+XsvkS+w4q2x2wSfnWTeTrih+Uu4JwO0KQa3gbyM97Ohu69avFyeJzf8O+vR06nvByDkjhvuDnDOJmDUFOxnhLYbgUMlm0t6fuudYM+0nZ6JjFuXyGpBKqgIT9fKYV4qffg96+1jTsKt2hudVu1wKRReyxANxrG4punF4xR+M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pLy6TdSI; arc=pass smtp.client-ip=209.85.160.169
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-5175d339e8bso831001cf.0
+        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2026 22:15:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781500503; cv=none;
         d=google.com; s=arc-20240605;
-        b=data/Y7b58+msN6OSPJLWI8BEfvOTvdHomEBI189yOHDevCN6Z/EK23g8qSiOW4nj+
-         n2kv9XMPQzl5moqYQ9uW8dc+HU3sKV2z+10+xAtNGxfYrnUGd47JiWAk/sB7oT5yNyBs
-         8sYbI3pY3cwEpDX+d1iaBTZLQ2K+9rzVsvyQoMtkOM5XWDYi1ejfQTw4NF9tK5/nCRYM
-         0b0nnsbWIkjUO1zKX3T9sNnDjcmVxDN21Tl81jJxt9c8/+QpsFtoNwyNVbsVh3lwOzm2
-         rabaWV8+uqyOylYZgQaJ4XzpykQS/UE/CDIPmpIA1E+mNnmPu9UoMgIXKoJ7fY7fiMHG
-         3UTQ==
+        b=jpvx/mZIp9Mr0uljEGbcKXrCv1A77wKUmVmkgHKQktUYfWDyRScYwSMa1faJHB/upn
+         5SGOcZSBuwLdOExT0qHAAb3MdI47+hbj824TaT1USc50VxjgzM+U5ti1FbXBEQybpN1w
+         QD1QHUOdpTEjeyXBPXakm6ChEwIRlLaVW922bO3jxqa2+WRE5dHlNm1On9QsP0xcgKD0
+         aWAOUZ7I+sY6ADhbeElTOiNyDpZEadgb3yXOcJy36cwTFirmkkO7OV06CdX+uHV1dxkD
+         6j9xVAScbDxOaxn4es6MZNqwf1/lVr4c1HWnifJo163jq8ktc2mGbHcvQX6RR9e2t1hb
+         99Pg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=Jk7xxbhVE56zG/uWPAGorH8GgI9c7exGNGP42BIvXVw=;
-        fh=by/qGUAVydg+IPEB2oO0G6qzTyHSH6iJg1NJOtmJZ28=;
-        b=Ab4EMiAYVbpDzpilluYFT/pfLow6Q6AAeXZNgm/qiueOfaiMDlNESIb86r1ZVr4k2S
-         05dquauUi/RR1G7Onq7UELQnNWHvaW9gTuKCjwkYpEyzOrxTHTP8RGRy/LxRPGL+Hksh
-         ZEWOZbOjI9sOxCDy+G7+TFBMPkiIr4rbDpqeQ6KvSFmG5vOQfyZScaAAZKQZL9ZSK/+z
-         ZLFljdpP61hVBPB1xXCIEqa8I6ykWQ/+jtFirlwJcb3fVky72EZmSTsxeeYIHOLwwNYu
-         Kt1hZSsuqfMInNdtrAlktfwGmHXFn/zB7/BnH5TCp/hEUPSCC02a0p2NLqzU7Rf2vd1H
-         7VWA==;
+        bh=3gNBX5x2LhwOmIQQDlsDq2J8ZH2ZLBGWp0xwFaRLaiY=;
+        fh=xvfiwGSBvJKY6wNZRaU9K2hBUGi4CQbaajmsu4RqTi4=;
+        b=Cht6EkriKsP+yEeO3mvwBKk1ERu41Wme1vrMgnZUTElh88khzhug4sV6ExNKfllFeU
+         WlLwT6LgBPde/lJiACPRtbst3Dm0U6kD3/s4y7fmlS9OAr9VUNGNGkBPtfBX6YK6YU1H
+         DwEehI4VtSO82L1ne6hISFZjJ1h5HcazVvQUdYbL9812Ac2joCCpwzTZ8MWUVcsOl0sl
+         kzDsP3XNdkYtBbA6UbT7DXG24CrRssMNvbrgPPx0gDk47mLYhiUDuAMOQFY4Ajbi0TeM
+         0IdgvRGmf1OU0cf1t+cHypMhx0aZ3hAmqbtgSQNs9CpyPVB04P4ba8k0lqxhF8ktlqH5
+         AtVw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1781499990; x=1782104790; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1781500503; x=1782105303; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Jk7xxbhVE56zG/uWPAGorH8GgI9c7exGNGP42BIvXVw=;
-        b=wNHy5xfevsl8wNh4gwIHgCDS3WLBEaCyvNcs/HRMf5NkkYGJGdnuVk/eYscgtj6zQC
-         lmP8RdUFbbCJNUQewMz7n/IckEeRB5JK5dQXD+8cYMHBNnDH4C7Got2KGACvS10dz2Y2
-         kZETC3iVrC0DICPlh4xeFpvMzEkSFtyKqmjMUSgYpHREQsp+j4P2zLgsjgbO66RQzn1y
-         ltKjsa/QHK4HUggOftIwqxZKpGozmXaK5jYpbVGeGNM0t4Ba6z4oN5fCieat40xtg4SG
-         A8Jwki0D5kPlrnebl9gU3rv5k5l4S5CcFxQveat0+S9HTBIRJFs3kW8stQfn9uVU+m5Q
-         X6Dw==
+        bh=3gNBX5x2LhwOmIQQDlsDq2J8ZH2ZLBGWp0xwFaRLaiY=;
+        b=pLy6TdSI4JPoaB3snk1yfJCQ7N+QnA/JGT1XmFep9GKA4ahACSSWHUkOEkQ7cACGiB
+         +oVY0B5R3ehOqXodEGXXDj9xe2QFM2QiziCDXou3b05jfyWtby6dXLAUmKqANT118dDJ
+         IotLziGWDANijLZEaZPnqRzyrfWfw7pSoPwddQq/dZcZTHhAcRv3ZfDW1ZSDtZDdaeLx
+         cjP5LIlEEemfIqn5MlZNTQy0SAF/5fJmziF2HQTHNyTdaRRdg83Hbhk0bctKnLqYsu7P
+         bY7J+ef0iDkC9m1uHEDeU+AlFLLIXbOQjN/fZTT8+X59dzoBx7/nYqf9kjonN1+iaXkg
+         OcHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781499990; x=1782104790;
+        d=1e100.net; s=20251104; t=1781500503; x=1782105303;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Jk7xxbhVE56zG/uWPAGorH8GgI9c7exGNGP42BIvXVw=;
-        b=liugUgyBbw5YJbeuBOK9dlKU7FOGfIJ2oygTG25UN9DRRMYcHuZ5OKadaTGY43R+s1
-         YVLqZgAFG8fbAALoVlNRTZcdzBvPM/MM0RJi8S9R3LhWMBDTrRp6XWF5ZKLlSsBcTZBS
-         VvMMGTBwRMqDJLiDFvXQA+VYdPbXqpA2lNYpBpMaUosuzND1cg5U7oVPf52g8Yuv1YQ8
-         J145ErEb642Npe482BLQmvjGX8O5NmwK2bFEJXVJqwsVGalJbdSHhdNqmmDmv+qLZncu
-         D0TLbLt1fkkwMLnkbeGDaLSMlo4MRXHLh0CYIx4ukJSZep/JX61Fq7BbOfML4qkMnuDy
-         E7cg==
-X-Forwarded-Encrypted: i=1; AFNElJ9ZpdSN7tAKp5mJVyZeBrCA5L2oXGhX7PL76A/Fg06uN9+IcGbf8ecqlx6qKbn5rSR8BCfRUryK@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxm0wIf8fma9GeLtqAAciUH4u8pCPNjUaN/j4mgvertZb8BIv+5
-	tjGC8p0n8bNYB9Et4A9yOq7TMKWzt39uWq9AojcNYXYuprkPkgZWlk5s4Wv7AZ4Uv+lGaoSXn+n
-	v8nuh2R8V2i29NTRZD+/0goIwCPKXbcByMiLZihaD
-X-Gm-Gg: Acq92OEOkuY2a34aV0r6X2I+C51r8iYwR+u+OaLzh2rOs6mgb8rEug1f64sDsQ57zCy
-	81R60Xj3TvgwfNsxZLkulPvfcuXF6y2mlhdStU22yiU110cqP8vVVhL6Eb0J7FOalpgJwLaQ9Es
-	tfiywiCn4k9/B5IRPFdUlrtmgbwvHXmCo3Kjd0LasrDA/ICzWef+1tJ5f/RDVdJPYe1n4HgWERL
-	7H3ryxqFmk6r/rBXWnJv4uFvSoVMgZFc9had1DBVFLpDO4qh1gZrjvzDFv1dW3bmNaHJdow3NMT
-	YF/HMg==
-X-Received: by 2002:a05:622a:258f:b0:517:6dc0:698d with SMTP id
- d75a77b69052e-519548691ebmr14774511cf.0.1781499989938; Sun, 14 Jun 2026
- 22:06:29 -0700 (PDT)
+        bh=3gNBX5x2LhwOmIQQDlsDq2J8ZH2ZLBGWp0xwFaRLaiY=;
+        b=ZP/BjDLPe7ewYUyvI6+ApILfJxDWnELiTI2NxWQt8Za2mbIHkX91unJ+0rTA1ZkV5M
+         GmToAdYNAAKcGjijKx7Wm+QLxWgK1Ax6bzATDDLQHQOobbRa7DBVQy6gaUEHkcrGISTI
+         U157N4HjS4ZG0NWIJQdcOVqmOY9omWjTcB2RZthExeeOHAf3ydBwygb4nLBOvhcUAmgT
+         d5JG26SYQW3DgbUDqg6DbfRI2Uf3Tb44F3ZASd+3vGBsPVL+A62ESnVSE+BATgLXBpgY
+         88atfSavShErTeedGyussCtzCLyOYYze1i/M1Wj0/eFyk8+S8OXUJqqDtyXvIFsLKCuN
+         7CmQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8qTy8DUxAE//O0yNY31gMrm8e01C6ocNP6regnnNWsMkb9TR4h1ySH94fE+abTtcBhN5reGGYN@vger.kernel.org
+X-Gm-Message-State: AOJu0YzmcjL0ks/z4BTHUTxbFyLdJ7k/KVAdZHhVd+Uh37h7MTvX6BOR
+	jZANWLCv4b2LYXbUt/mnKhDfe+myWpUAq4R+thIzBB8ybfCj1aFDGYyPCx9/NbGdZbCG1fO9/Fb
+	1T4AaeKXp6MZcPR6T/jZTJQnJjmObt+UOP/v1Zy/2
+X-Gm-Gg: Acq92OFicff4AXqt+X2JNHYX6T1j2g8R8zPLi4gi5b2h7jvgzEftqohyCMO04w77ozw
+	4IO6H8/DnSQ799hLu45oMe+kuuvY8i5ogympG6jmW8XVd3RvJW4iVKqVi7WNUt5qGfHZCC+42j5
+	SjymIedupB3E63rwgOsBP9SccLOlACL3AWNqzu+dUa+e5T8C0rmgrNZ2CMrG3ayyxkVMs7yMCAP
+	dJuOzTAQExrfEgOA9ag9/SeFs9kgDPmEskxdbKQQwqMiQLoMSGbI/q/Qlu3rT/sH0TtdFxvWRaS
+	LXheSw==
+X-Received: by 2002:a05:622a:30e:b0:50f:ce97:3b84 with SMTP id
+ d75a77b69052e-519549c5a9dmr13031241cf.6.1781500502356; Sun, 14 Jun 2026
+ 22:15:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -100,14 +100,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
- <20260610-slab_alloc_flags-v2-13-7190909db118@kernel.org> <aiuthBHdDb0CNs3n@fedora>
-In-Reply-To: <aiuthBHdDb0CNs3n@fedora>
+ <20260610-slab_alloc_flags-v2-14-7190909db118@kernel.org> <aiu8W3EQhalCP9HW@fedora>
+In-Reply-To: <aiu8W3EQhalCP9HW@fedora>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Sun, 14 Jun 2026 22:06:19 -0700
-X-Gm-Features: AVVi8CdcidaJaOvFORpuIYafyUSQzk1GYFvijlb7jrAGXeA35XFZPKAIkQsB0og
-Message-ID: <CAJuCfpFQU=n16wZLVrJw-VG6hZzHo=bOtmPtCGGZrNxnwTj3rA@mail.gmail.com>
-Subject: Re: [PATCH v2 13/16] mm/slab: allow __GFP_NOMEMALLOC and __GFP_NOWARN
- for kmalloc_nolock()
+Date: Sun, 14 Jun 2026 22:14:49 -0700
+X-Gm-Features: AVVi8Cc8iefsPrhDpy6jKSpZmymgWH6dzb08vFxAcF-2MAS_up0x9W_1CMPzClM
+Message-ID: <CAJuCfpF4f5=e+y0di=skS3a8_e1e4Ymtk=hSsc_dTNpmLhywEg@mail.gmail.com>
+Subject: Re: [PATCH v2 14/16] mm/slab: introduce kmalloc_flags()
 To: Hao Li <hao.li@linux.dev>
 Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, Harry Yoo <harry@kernel.org>, 
 	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
@@ -123,7 +122,7 @@ X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -134,7 +133,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_SENDER(0.00)[surenb@google.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-16935-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16936-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -148,27 +147,39 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:email,vger.kernel.org:from_smtp,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0303E68362C
+X-Rspamd-Queue-Id: E240068369D
 
-On Thu, Jun 11, 2026 at 11:57=E2=80=AFPM Hao Li <hao.li@linux.dev> wrote:
+On Fri, Jun 12, 2026 at 1:03=E2=80=AFAM Hao Li <hao.li@linux.dev> wrote:
 >
-> On Wed, Jun 10, 2026 at 05:40:15PM +0200, Vlastimil Babka (SUSE) wrote:
-> > The two flags are added internally so there's no point for warning if
-> > they are passed by the caller as well, so allow them. This will allow
-> > simplifying obj_ext allocation under kmalloc_nolock().
+> On Wed, Jun 10, 2026 at 05:40:16PM +0200, Vlastimil Babka (SUSE) wrote:
+> > With alloc_flags usage in slab, we can replace __GFP_NO_OBJ_EXT with an
+> > alloc flag that prevents kmalloc recursion. For that we need a version
+> > of kmalloc() that takes alloc_flags and use it in places that perform
+> > these potentially recursive kmalloc allocations (of sheaves or obj_ext
+> > arrays).
 > >
-> > Also it's not necessary to have the extra alloc_gfp variable for adding
-> > the two flags. The original gfp_flags parameter is not used anywhere
-> > except for the warning. So remove alloc_gfp and directly modify and use
-> > gfp_flags everywhere.
+> > Add this function, named kmalloc_flags(). Right now it's only useful fo=
+r
+> > these nested allocations, so it doesn't need to optimize build-time
+> > constant sizes like kmalloc() or kmalloc_buckets.
+> >
+> > Since we need it to support both normal and non-spinning
+> > kmalloc_nolock() context through the SLAB_ALLOC_TRYLOCK flag, split out
+> > most of the special _kmalloc_nolock_noprof() implementation to
+> > __kmalloc_nolock_noprof() that takes a slab_alloc_context, and make
+> > _kmalloc_nolock_noprof() a simple tail calling wrapper with the proper
+> > context.
+> >
+> > kmalloc_flags() can thus determine whether to call
+> > __kmalloc_nolock_noprof() or __do_kmalloc_node(), based on the
+> > given alloc_flags.
 > >
 > > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 > > ---
 >
-> LGTM
 > Reviewed-by: Hao Li <hao.li@linux.dev>
 
 Reviewed-by: Suren Baghdasaryan <surenb@google.com>
