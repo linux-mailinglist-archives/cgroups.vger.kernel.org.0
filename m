@@ -1,230 +1,288 @@
-Return-Path: <cgroups+bounces-16970-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16971-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id pP06NKgZMGo3NgUAu9opvQ
-	(envelope-from <cgroups+bounces-16970-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 17:26:32 +0200
+	id Jp/QGAsaMGpSNgUAu9opvQ
+	(envelope-from <cgroups+bounces-16971-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 17:28:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CC6C687A73
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 17:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF641687AA6
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 17:28:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gourry.net header.s=google header.b=ut4ljfDL;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16970-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16970-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=none;
 	dmarc=none;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16971-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16971-lists+cgroups=lfdr.de@vger.kernel.org";
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 10DE63252DA9
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 15:21:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1AEAD30D59FC
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 15:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4483F4028FE;
-	Mon, 15 Jun 2026 15:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E223A4028FE;
+	Mon, 15 Jun 2026 15:22:16 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from LO3P265CU004.outbound.protection.outlook.com (mail-uksouthazon11020090.outbound.protection.outlook.com [52.101.196.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B10823C4E9
-	for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 15:21:03 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781536865; cv=none; b=d5LmBFVDAqBjnIpM/Qn1cHu6vmvNPbQiAWyrDNISiwuEy1FpAnczGrEdpZjt2dxjVoEdS5xeWav7OEfdZlILWxcdmeWT5W0UdxyFNYCPfUeX5GklxFs5N3GRXeMTf6XtCEr9LKW6Gmv3ZyUUtWnjTMN/KUHjTMD015h1iO73dts=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781536865; c=relaxed/simple;
-	bh=0p9DGgyaA0KehTdZH8Yw95MJofARANGeM8XYLbTYGJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PuC4tb7jdLCF3ysqwPbu3XkRej2lS09dsK4bQkh2zYXUFjCTYLgo6lLUNVOawzcoGdmLF1lErUl2PNpSKNSDj31Sdxo/8K/Zr1VP4vmBKCbOZ2OJhw0OWpShQdot/10f39HbgmCxMycDZVo9nfb9lEdbkQyIlNlCHxiBPjNAjXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=ut4ljfDL; arc=none smtp.client-ip=209.85.219.42
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-8ce9de10985so45321026d6.0
-        for <cgroups@vger.kernel.org>; Mon, 15 Jun 2026 08:21:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1781536862; x=1782141662; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KchXyzZXU4hh7Rwh6HI+6Qg0C71AldRRnKn7P/ysMLw=;
-        b=ut4ljfDLAWbstC+JxKLmzssrd76deect/p5RkzpLJUPB/zHEgBud1CcwscrKfyizFT
-         p1+RlxSk0PZGrhBWaNbF/RpV4ZyoS0E/bUdf57fQ/LNVrgPe2JJVta9jbCjYTA86U9xB
-         48UgBKQv0fiYIxlybKCrPsluuD6/645xKyhiiVPw6G7zYgMHejDFpllu977P75LFhz/V
-         vaIoI9x6DwaGir4JeC//xxCBYmRe0Bk8bpJWZ77vcea8eO3MXB0mYCYnPpBsWwHaBHJY
-         Q/a8TdKzlLBSi87Hf/e/SQY+bybrM3xx8qc3ceqcFbDeCaiV5Oh5o1hEmyBVDjU9CW0z
-         tZzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781536862; x=1782141662;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KchXyzZXU4hh7Rwh6HI+6Qg0C71AldRRnKn7P/ysMLw=;
-        b=Z1nn2bQTHxi400AB52HK1YxZSNz64aqyQvMqQKiMotxFbEb2b2uSeAL80DpjgrzPNM
-         BY40lUbI4xlDPpL0b9yudUEkcNT6vvrC49WoA1BRR8ilZo7M42bdY52o0eVcjiIj0Bxj
-         tEWss//9w2iohex+hOoLBi0wGUIVs89XIgyCWh8nVtDa3ONZRwFFZmioStoSALXywp+V
-         5cffS43zBpzNXtCcbObHmQp+gn7uel8Sa6Qkgp9SqZ2pUz7eQ9PvVRPn2NP/7KhW+jQk
-         cdq9PKl+aPvVtS8pqCqfZDpiTLPCigvKOz9cSCa7O/DNI+6DDN9FfPC54xBJ8/n7qTqL
-         3o5g==
-X-Forwarded-Encrypted: i=1; AFNElJ+81KtglhdLR/AdTEBTvX+06lyhaV6v854QPT8BdfjweYAFji30JAx9FT1pgYUMsNsOjizt1S+p@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMMmLDfjbkmAptJvJzDjS7SUpjD0G6uLakIg+pVQOn52dGHQIb
-	e7ti0FIAqbm+Zkhr0gmwT2izlMWpEdii/DweRVEnJMbCLxExBt7vzVClqScPlp1PHbM=
-X-Gm-Gg: Acq92OGz5uL4L1QUEFkJx1U/Vx4UyRAlfCnSUa6zujYSmdlizjGDYPCn3+8UEm3v9JZ
-	QowNKZo/1sx3cbBJsX4j736GVCG7HdPZQH8UwGwx4G0MOGu3s7gM8/pc2FF/PNSyvArgiHyHg6O
-	hFYuhPZpSr5NY6E9ckStgLq7j27foLkHGQB7scHnwazHNT+WjHNIEPZ+QmyWgfrJj+tRhJ0OXsL
-	MprzZWIU4/MlTjnKgaiQc3OU8Xg04aD5cHkdZ/ukbrD0yrdLKtty9jE7VzR9PXFY5AFKOkB2iym
-	CBU6omSprF8qILxAH1XQEO/Wj7Yls8NDdt/jYGpT3kWgEkSPTsXknENjEXcAbAcpBurZXhiIfz5
-	KarRFR8AJz3WR/wt5DvKxzEO/cmYDi9yekcuJopNIxCGP6ibsruK4Mejv+d1pZupiUJilvthDqh
-	+pg6w0X6l1S7F4QxedTQ==
-X-Received: by 2002:a05:6214:5f85:b0:8ca:1706:f416 with SMTP id 6a1803df08f44-8d31718548fmr176666086d6.26.1781536862518;
-        Mon, 15 Jun 2026 08:21:02 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F ([2620:10d:c091:500::5f73])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8d9f122d2e4sm1454566d6.8.2026.06.15.08.21.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jun 2026 08:21:01 -0700 (PDT)
-Date: Mon, 15 Jun 2026 11:20:58 -0400
-From: Gregory Price <gourry@gourry.net>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
-	Balbir Singh <balbirs@nvidia.com>,
-	lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	damon@lists.linux.dev, kernel-team@meta.com,
-	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
-	dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, osalvador@suse.de,
-	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com,
-	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
-	apopple@nvidia.com, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, jackmanb@google.com,
-	sj@kernel.org, baolin.wang@linux.alibaba.com, npache@redhat.com,
-	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
-	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
-	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
-	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
-	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory
- Nodes (w/ Compressed RAM)
-Message-ID: <ajAYWur_4J3yhNs4@gourry-fedora-PF4VCD3F>
-References: <ah47NNhuiClgGCdn@parvat>
- <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F>
- <ah-0CyZurn5D1ezY@parvat>
- <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
- <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
- <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
- <d01fb1ed-2418-42ee-aea2-37f9a5c5729c@kernel.org>
- <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
- <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
- <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335014028F4;
+	Mon, 15 Jun 2026 15:22:14 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781536936; cv=fail; b=GvTGqa4yQJuQ5Dr1waNBF9cAdMaeb2aJ8Ca+gB2q3rnMAzH7U/Up27AoZzPQ9lFAHLnHioYddlhwE26B6DEbkfrP76yR5xDums/D79Pn9UlQo2ySTuVw3j2NIiotYJyYZMf1ExYJhNW/6SCu7nKi8HNlfRiS8Zb4Q2Tqj5XE0Qo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781536936; c=relaxed/simple;
+	bh=5lkaCTU0McswHGuigaCbfp4za386DUNOuWtbUZBAFi0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=bk4srL6S+bIOzfdqKijEdeAVnxlvtCGO1NnagHrmx7BCurLJpO4AODe7uUPm3qHztpwQ/MOrFwxHY0FYrRmLTCTvBEzHinFrGEm3Qw83MMQB7qhQTqn68YGZawtHnL1uQDTfCfFbEZHV5ycqrJ7lINqS+9wFkouWtXfDOPdmGXM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.196.90
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=sej8Il35a6qcQ1G1InKgRuhreuFJ2S89kuDtfZgUxO0v5j4vjGCHjcnhjTjPLcSeKx1uTGTWfUE7xxaC80bHj4k7Bpx20qXvSjXf4lhNtnX0ryzu6whvQyeRIMG8dHJV2GXlUk2tTnWGzgoQnLmmRtj6Hn1hjGf/9Pdh8d6pRfNIRt24CA4A4QP7aD6xrwOP9gPAcSv6wG1Jp1fOwlZa119wCTCPeVjsbu8SipxVJJmJ1uq9UuVdzK+k4Sj2Hzx2h98bjvwV5tmoxBrSolmD9uDFqytyLuYNP8hpNxHbmAGA4U9xLUv6wTS/gTPEEThgmQIh87cOoT+usEXQatbc2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
+ bh=ncvcZTgIGK77eePxGMFdvqM6QnkflC9bpfJlVvwj7To=;
+ b=Q1zKFby549YtrqhaFDDN4iWVlPRVlXcglLQyspfKjnm2RcoPvNN2XLIfeaHW9HLyFleYifW1MktveebMSiQwLqwPZWNjNaYa4aPMpHcNz5zUopxYgSnwUwiYtRHoU7NPz3z2oCo86Z0iTFc4PlarvJi9PCtelGwzEvTgCcU4gtV6WPzdyyC6r5VnqgG4hURhZgwlR3e2MqQjUZBYbGsz/yceSZ6ITgwwsflZrIcTtr+D2pa8UrFWMjdUXkwfxULSZ4gmZvhkQed8NNLPfQaF3a0JSxQwIxgWPGTtSwFDcw8JnMtfMCr1RAIGKKvuEGqa9wtu+lrWhVWGBbHAI7GiMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
+ dkim=pass header.d=atomlin.com; arc=none
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:183::5)
+ by LO2P123MB7004.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:32b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.113.18; Mon, 15 Jun
+ 2026 15:22:10 +0000
+Received: from CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230]) by CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cec4:77ab:262e:d230%4]) with mapi id 15.21.0113.015; Mon, 15 Jun 2026
+ 15:22:10 +0000
+Date: Mon, 15 Jun 2026 11:22:08 -0400
+From: Aaron Tomlin <atomlin@atomlin.com>
+To: paul@paul-moore.com
+Cc: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, mingo@redhat.com, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, 
+	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, 
+	chenridong@huaweicloud.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, kprateek.nayak@amd.com, 
+	omosnace@redhat.com, kees@kernel.org, neelx@suse.com, sean@ashe.io, 
+	chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, nick.lange@gmail.com, 
+	cgroups@vger.kernel.org, linux-mips@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] security: Expand task_setscheduler LSM hook to
+ include CPU affinity mask
+Message-ID: <exlgb3dg2kwxgna6gx2qixexvwjjul7z2ya7npal2gz4jjtr7m@h4oxgd74gsbp>
+References: <20260526142838.774711-1-atomlin@atomlin.com>
+ <20260527085221.GQ3126523@noisy.programming.kicks-ass.net>
+ <bgjagepcfb7gz6jawatu6kpfmecw46gwg5cvb6r7dl3dn7bt4l@rtymdaslx7ef>
+ <20260527155404.GV3126523@noisy.programming.kicks-ass.net>
+ <ov33cu2wosubbfufcmfyoinfatecskjgmkvqyit33komlcla2d@2qgj45724bql>
+ <20260527195858.GC3493090@noisy.programming.kicks-ass.net>
+ <6hqq5oxvlcpmjvyns42dy2vtfvvixy7q4xyyjrrn46jrvsx5ar@gkmjsteqlpzd>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6hqq5oxvlcpmjvyns42dy2vtfvvixy7q4xyyjrrn46jrvsx5ar@gkmjsteqlpzd>
+X-ClientProxiedBy: LO4P265CA0292.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:38f::18) To CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:400:183::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP123MB6607:EE_|LO2P123MB7004:EE_
+X-MS-Office365-Filtering-Correlation-Id: 41d3da7d-df1f-4b21-2ef2-08decaf1de8f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|23010399003|376014|7416014|18002099003|22082099003|6133799003|5023799004|3023799007|4143699003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	GaUzuwQ9YHgiFgUDUs7jC+UwSAkLPlMB4us7VzWGffOSKaktWtuOJXUkgRLsfNvOdjbqGt3QqgzSxqWW/eI8+c+IrW0m7QxunGUD/mDTjjpe6DmHSwLFfFGLfvshw99njGoDIsL2HiDitCWz3iYTCzht5omZlZSuOrP6ekpkOySvsDXHpN6xVRYxj9bJadSq5r9NtF35Nh9/aTy/8P2gyMGPCOoYwDOA1g3VemPJ12syP3Sjo9qr2O8jX2DhJntzn+q32Sw/RX/Yyy0btrIq5/O/ysnfjtgeb/ouD8fTqtqLKsH8Cwr+n1UfCnuxB5wGAN/Sj6w8jeSJPFJ4eaYFjY0L1M9jzkWrLGURxLWR7nTHuH81KZOPLXWhIDi/gkS5X4+aoKsmjuOGPFpn9zEEQhbCdMTz+U2JTctCInsXOWOmtF9pLCti79nh/gze8s8k65BTTgbRHz9BAR1UxhsZKSuzRYS+mjZg7odqtuIDM3JFPNbuaFyG/ZnBKHZv/mTj5Vw73LCEis7F9dFCx2O3tH1UKqD3nHGCVPzo0GKtii/YayGelC/Sx7CnlymYuKxAJLAgSc9Dv1yswpI0sPST/fViexmJl3tCJxOj3bxrSr89aKdVIQEgjkoWaHrktetR0YI9QZtRhTm/fu/XBqsq6Em1/xCO1f3PZNbaUui+GO/CjZr/Nia/G/ZkKv4e19lnb4SpPv8Zh0E0eFEWDObLTg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(23010399003)(376014)(7416014)(18002099003)(22082099003)(6133799003)(5023799004)(3023799007)(4143699003)(56012099006);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SG9hV25HRnc3Mk8ySlFHSkpiQ09TNHg2aWFPNWJGYUNUWkFqNWVSUzJDZ0Nm?=
+ =?utf-8?B?OFZMaCtUSExCRm5sb0FXMTVtTkdFVWlCZmhZVHZtcHVMb2pQbjk3dlcxZ2N3?=
+ =?utf-8?B?YS9lU21zSlhuYnhkT25SVWk5Y29nZFZmdzVRMUQzZ0NQYk1kSm1qM1hSVjE5?=
+ =?utf-8?B?KytCS0FZa0FuY0VRK1pHdGJ5U3hpN0FWUXUrb1RyN0ViU3U0b2JFNERTQVpB?=
+ =?utf-8?B?dzE1Vnh0WVFCdkxXMVhLbm1xb2c2VXpzOEdWMlVyRFZYWGlkblJIQlJackV6?=
+ =?utf-8?B?NzVmNDhrZDV0TlA1OWduZUtVbmcza2ExMTV3b0hNN0dqWUFKRUtqZzZTZ1dS?=
+ =?utf-8?B?YU1XMks5ZWxEZ1o5MW02Y09JNXZWYU1xMDFmMXhkMi94Vzlwc1JXUkhGc1BW?=
+ =?utf-8?B?dHV3Tm5PKzBDQ2k3MHZLU0hWUzhsNXRaSTNYT3BRUFJlUnhleUxXbFJPakZx?=
+ =?utf-8?B?RWtzTDBoa2k2OVNhalRYbDltYSsvSEhlakZNT0NBV0lCZlBLNUs0b0hQWDE2?=
+ =?utf-8?B?aTQ4STllRHY5T0QxMDZKZXF5NDdlbFhabmFvaFRwaDN6TWdmWXFJZFl2OGxM?=
+ =?utf-8?B?WWt0QUY4dTN3S3ZVaEZzcnhtWE44UlMzaHNJREVjM0w1ZURrVzBDdlgxM2E2?=
+ =?utf-8?B?Y2s1VGdKRG9vbmtvQWJBQmtIOFAwZnYwTk04ejdNc1RNUHBlclpQeHJUS0RX?=
+ =?utf-8?B?RURFWDVqVEdwTFBiMmpjd053M2R2aGFZcjZnS2FPQkFOWlJTMUZ6Qys0S3Ri?=
+ =?utf-8?B?bnhoOG9GZVhXM29GQi9qWkpGUzI3Q2FwZENnQXowbzV4dWpUQm1YWXB2aHJr?=
+ =?utf-8?B?MFJaaHJXU2FVQWwxWXBWK1RSWEtONFVoRDNWMW1TQUZmRE5HT0FoSlplOGtI?=
+ =?utf-8?B?OWNtZDZBWW5nMTdnZnQxT2lQU05yZHJ5UTVzS1NFbmQrQllJTTRpK1BYK2xG?=
+ =?utf-8?B?VzJQL3Z1b3NwTk1VSmZrV2srbW1sQ2FkQ1lYblp2RFpzL1Z6NEZUM0ZZYUZn?=
+ =?utf-8?B?WnFOenZac3lpN1JTSC8vZ0g2eTB6dkVwYm83R2wzTWxIK3JuVktHb2lpUHcv?=
+ =?utf-8?B?b2ttNDM3YW5kdFMwOXlDdjNtSTBrQ3ozaTRVOTkvems1eG1veU9UT0tadmhI?=
+ =?utf-8?B?QzFDQ3Rtc3NyVjVnbEhBamQ4d0lXVHBuQ092ekl1dGtjNHJjVGZPRitndGV5?=
+ =?utf-8?B?SmwrcFRrSUlMMUZhbHZSUlFRRVE3ajBvVXExZjdCMTF6cFMrVnREakVleEw0?=
+ =?utf-8?B?eFZDR1pHS3FUcVFvRVNrc2IyeGg3WndzaVJLTjBHTlZHY3Myb1BUZEJ6M2t1?=
+ =?utf-8?B?WWd1RTEzZGc2RTZJR0JqYjl2dG56QkxkZWxYdXdFdXlHS0hqMm1aVytGU0No?=
+ =?utf-8?B?UEhxakR5YUxqWEVka0xhODZjN2F3eUNIL1VFKzRtQzJSV2pmMXhscFFzeVI5?=
+ =?utf-8?B?M2t1R2Q5cDRSZ1BhWklpUUFNS2FHMzNTQ0paUnRoQk5yTElvY3kyYU9XeXRR?=
+ =?utf-8?B?bUVqdDZnUDlXY3lOenVWVERZQkFxZ21vdmJ1VjNFeTZGc0FZN1A5Qm82OEFx?=
+ =?utf-8?B?QXNXZkNlaXg2dzgyZUJETHlmMWp4M2JxWkx0RTBPREE2QnR6OXM1T3FmS1Ni?=
+ =?utf-8?B?ZzNZb3NBdklpNUJWdjZBVG1ocHZqd2NWUUVYdlhQMzB0Z1llMmVQOUdqWkd2?=
+ =?utf-8?B?enVNVk5pSUNWZ3R5K3VnOVlGbkpNWFJvZStUUHBaTy9LMWJvZEwwdHpRbm9K?=
+ =?utf-8?B?RUczN3dXalRGN0dOZ1llUTZkTXE2elplQUc1WTdJUFZpYVFVKzNyU21nTWQw?=
+ =?utf-8?B?aiswNHNIRldlMVllcnBLMFcxT05Pa1ozWWVra3BFbzlxMEptOXRqZ1FMdnQ5?=
+ =?utf-8?B?UjhrdElUWVZJWDEzWGJzRk8yY2Jnd0xmdU1VQllabTlFYUlxaGgvcis3TWNN?=
+ =?utf-8?B?T2RENlNjSWJ4REg2OEhGcU1TMCtIdmdSQjk1OGZXcWJBbzd5L0RBU3owZ1Qv?=
+ =?utf-8?B?aHNleWxkcEZ6WGxQbzduTDlzNlNhMUMrK2c0MFFGd3pmVm56ZXFidnFkWGtG?=
+ =?utf-8?B?Y2dMbGprQ2pHTmU0ekM4T1pwSlg3b3pmaE5wWFFLUnZRaDZrMi8vMDR6Z29s?=
+ =?utf-8?B?QW5KSUhQUHk2S1pHdTRGRVB6WjV3MWIwQVFRYWU2Z092eXF6QVAzZmVtakJi?=
+ =?utf-8?B?dzFJWEhQZ0hUL0E3UUIvNkpFUkVmQ1RIcC95UGwzUUUrQTlaZUZJbFZVSm9a?=
+ =?utf-8?B?RGJCQzNycjNROHJQeEE5WUxEaTFQOU9GSzExVFZ6YVVCQURXaWEyU2g2cnUw?=
+ =?utf-8?Q?tecn6hfKZacSeYFFK0?=
+X-OriginatorOrg: atomlin.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41d3da7d-df1f-4b21-2ef2-08decaf1de8f
+X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB6607.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2026 15:22:10.5829
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 19ohcmb8MNOsYQE/hGHPCtSppMFIXPQ7vFnUOlwoIuLY/43Ad8/REnmAEYtmVi8yr3enkuC0D9miqE0yw0rBAg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P123MB7004
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [2.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	ARC_REJECT(1.00)[cv is fail on i=2];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16970-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-16971-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:david@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:yury.norov@gmai
- l.com,m:linux@rasmusvillemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,m:willy@infradead.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
+	DMARC_NA(0.00)[atomlin.com];
+	FORGED_SENDER(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,infradead.org];
+	FORGED_RECIPIENTS(0.00)[m:paul@paul-moore.com,m:tsbogend@alpha.franken.de,m:jmorris@namei.org,m:serge@hallyn.com,m:mingo@redhat.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:stephen.smalley.work@gmail.com,m:casey@schaufler-ca.com,m:longman@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:chenridong@huaweicloud.com,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:kprateek.nayak@amd.com,m:omosnace@redhat.com,m:kees@kernel.org,m:neelx@suse.com,m:sean@ashe.io,m:chjohnst@gmail.com,m:steve@abita.co,m:mproche@gmail.com,m:nick.lange@gmail.com,m:cgroups@vger.kernel.org,m:linux-mips@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-security-module@vger.kernel.org,m:selinux@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stephensmalleywork@gmail.com,m:nicklange@gmail.com,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[gourry.net];
-	FORGED_SENDER(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com,huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,amd.com,ashe.io,abita.co,vger.kernel.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[35];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[76];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,gourry.net:dkim,gourry.net:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,atomlin.com:from_mime,h4oxgd74gsbp:mid,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1CC6C687A73
+X-Rspamd-Queue-Id: CF641687AA6
 
-On Mon, Jun 15, 2026 at 04:38:43PM +0200, Vlastimil Babka (SUSE) wrote:
-> On 6/12/26 17:29, Gregory Price wrote:
+On Wed, May 27, 2026 at 09:19:11PM -0400, Aaron Tomlin wrote:
+> On Wed, May 27, 2026 at 09:58:58PM +0200, Peter Zijlstra wrote:
+> > On Wed, May 27, 2026 at 01:41:52PM -0400, Aaron Tomlin wrote:
 > > 
-> > 1) memalloc_folio is required to ensure non-folio allocations don't land
-> >    on the private node, even if it happens within a memalloc_private
-> >    context.  Since memalloc_folio may be useful in contexts outside of
-> >    private nodes, I kept this as a separate flag.
+> > > > > The actual use case here is multi-tenant workload isolation and visibility.
+> > > > > Passing the evaluated cpumask to the BPF LSM allows operators to write a
+> > > > > simple eBPF program to detect spatial boundary overlaps (e.g., logging an
+> > > > > event if a requested mask intersects with platform-reserved cores).
 > > 
-> >    If we think there will *never* be additional users of memalloc_folio,
-> >    then we could fold _folio into _private to save the flag for now and
-> >    add it back when we actually need it.
-> > 
-> > 2) memalloc_private is needed to unlock private nodes, but in the
-> >    original NOFALLBACK-only design, you also needed __GFP_THISNODE.
-> > 
-> >    This is *highly* restrictive.  I found when playing with mbind that
-> >    MPOL_BIND + __GFP_THISNODE generates a WARN (valid WARN, it normally
-> >    implies a bug). 
-> > 
-> >    That leads me to #3
+> > Why isn't cgroups good enough to enforce this? If you create a cgroup
+> > hierarchy per tenant, and constrain them using the cpuset controller,
+> > they should not be able to escape, rendering this event impossible.
 > 
-> I think the memalloc approach is dangerous due to unexpected nesting. There
-> might be nested page allocations in page allocation itself (due to some
-> debugging option). But also interrupts do not change what "current" points
-> to. Suddenly those could start requesting folios and/or private nodes and be
-> surprised, I'm afraid.
+> Hi Peter,
 > 
-> The memalloc scopes only work well when they restrict the context wrt
-> reclaim, and allocations in IRQ have to be already restricted heavily
-> (atomic) so further memalloc restrictions don't do anything in practice. But
-> to make them change other aspects of the allocations like this won't work.
->
+> You raise a very fair point. The cpuset cgroup controller is indeed the
+> kernel's primary vehicle for spatial enforcement, and under normal
+> circumstances, it successfully prevents a tenant from escaping their
+> designated cores.
+> 
+> The cpuset controller does govern resource limits, but does not audit
+> intent. When __sched_setaffinity() is invoked, the kernel compares the
+> requested in_mask against the task's allowed cpuset. If there is only a
+> partial intersection, the kernel silently truncates the requested mask to
+> fit the cpuset, without raising any alarm.
+> 
+> The BPF LSM hook, conversely, receives the raw, untruncated in_mask,
+> affording operators the visibility to detect, audit, and even reject these
+> violations of intent before the kernel silently sanitises the input.
+> 
+> This patch does not seek to replace the cpuset controller, but rather to
+> complement it by providing auditing capabilities.
+> 
+> > > We are not creating a bespoke BPF hook here; rather, we are rectifying a
+> > > historical blind spot within the API. The existing LSM hook is invoked
+> > > during sched_setaffinity(), yet it presently receives only the task_struct
+> > > pointer. Consequently, the security module is essentially asked, "Should
+> > > Process A be permitted to alter Process B's affinity?" without being
+> > > informed of the proposed affinity itself. Providing in_mask simply
+> > > furnishes the existing hook with the requisite payload to make an informed
+> > > decision.
+> > 
+> > It occurs to me that this same argument would require to also pass in
+> > the new sched_attr, no? That way the LSM can inspect the new policy
+> > before it becomes effective.
+> 
+> I agree, the underlying logic does indeed extend perfectly to sched_attr.
+> 
+> Presently, the LSM is equally oblivious as to whether a process is
+> requesting a benign transition to SCHED_BATCH, or attempting to escalate
+> its privileges by requesting a real-time policy such as SCHED_FIFO with
+> maximum priority. Just as with the CPU mask, providing the sched_attr
+> payload would rectify this parallel blind spot, allowing BPF policies to
+> inspect and mediate scheduling attributes before they become effective.
+> 
+> If you are amenable, I should be more than happy to expand the scope of the
+> forthcoming patch to include this. Alternatively, we could address the
+> sched_attr expansion in a separate, subsequent patch. Personally, I would
+> favour the latter approach, but please do let me know your preference.
+> 
+> I very much look forward to hearing Paul's thoughts on whether this aligns
+> with the broader LSM vision.
 
-Reduced to practice I have found success, however what you are
-describing could probably be resolved by re-introducing fallback list
-isolation.  If private nodes are not in fallback lists, and they're not
-N_MEMORY, then they're unreachable via nodemask-fallbacks, and a
-specific node has to be requested.  For everything else memalloc locks
-them out regardless.
+Hi Paul,
 
-In v5 I actually stripped this all the way back to just memalloc flags
-and implemented a bunch of pressure tests to try to detect leakage - and
-I was not able to do so - even with all nodes in each other's fallback
-lists.
+I am writing to politely follow up on the discussion above regarding the
+proposed enhancement to the sched_setaffinity LSM hook.
 
-We can tack on both fallback list isolation and __GFP_THISNODE
-requirements on top without ABI implications if we find that is
-insufficient.
+As you will see from the thread, Peter Zijlstra and I have discussed the
+architectural justification for this change. While the cpuset cgroup
+controller effectively handles spatial enforcement, it silently truncates
+requested affinity masks. Passing the raw in_mask to the LSM hook enables
+security modules (such as the BPF LSM) to audit and mediate the actual
+intent of the request before the kernel sanitises the input, a capability
+that cgroups inherently lack.
 
-The only place I think this will matter is in the reclaim / demotion
-code, would need to rework the allocation code to handle private nodes
-more explicitly.  This has no ABI implications AND the entire demotion
-logic in vmscan.c is utterly broken anyway and needs a rewrite.
+Furthermore, Peter rightly observed that this reasoning extends naturally
+to sched_attr. Presently, the LSM cannot inspect whether a process is
+requesting a benign scheduling policy or attempting to escalate to a
+real-time priority. I am entirely amenable to addressing this parallel
+blind spot, preferably in a subsequent patch.
 
-I'm running a mass build test at the moment, and it's looking clean, I'm
-expecting to be able to test the new code today or tomorrow.
+Before I proceed any further, I would be most grateful for your perspective
+as the Security sub-system maintainer. Do you feel this expansion is
+acceptable?
 
-~Gregory
+As a brief administrative aside, please note that Thomas Bogendoerfer has
+already queued the MIPS-specific changes related to this work into the
+mips-next tree [1][2].
+
+I look forward to hearing your thoughts.
+
+[1]: https://lore.kernel.org/lkml/psb6pxogv2dlknps4p3sh6rt2h7xuuxkoif6ock5vxfz2jimec@txa6iy65crtb/
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/commit/?id=98e37db4a34d3af3fb2f4648295c25b5e40b20e3
+
+
+Kind regards,
+-- 
+Aaron Tomlin
 
