@@ -1,55 +1,55 @@
-Return-Path: <cgroups+bounces-16951-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-16952-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /QmzL8PoL2qBIwUAu9opvQ
-	(envelope-from <cgroups+bounces-16951-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:57:55 +0200
+	id nhzULd7oL2qDIwUAu9opvQ
+	(envelope-from <cgroups+bounces-16952-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:58:22 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17AFC685E59
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5D1685E61
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 13:58:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=HGmCN35m;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16951-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16951-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="bp5/gS/H";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16952-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-16952-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 946C730534C7
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:54:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ADB9D305BF93
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jun 2026 11:54:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12ABF3E3179;
-	Mon, 15 Jun 2026 11:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F0F37D10F;
+	Mon, 15 Jun 2026 11:54:50 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBE4A145B3F;
-	Mon, 15 Jun 2026 11:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4530B3E3D89;
+	Mon, 15 Jun 2026 11:54:48 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781524485; cv=none; b=SOcg68ihktvv7vcXUAHVWhbAhQHw1710i+mypUIfZCjNXAr+hgjn9QTfgPUmjIFn1ls4T5rSO1Iqm8U6gJNRht6IfCTg96MiYkgKhlR+JMvGdwHjoTfoBXRdaRdWfXdaN/OPmqst3le6PAvVp2gQXsqwhslyBgzw0aNeZbZnJ1c=
+	t=1781524490; cv=none; b=hEN2OzGeJED+6NPbySNHbluCT0bm7lQUwQHLBTxMxeN6GV3uY2QTc4tiGXjwPNgvjxGaRZjjmOMVBE92IcVPUHGuxj0h86UWPiJPwUyIpWfvL+SL/wn9kEvvCSpuapWjqZydjXxPwen/jS1JyLetS2Q7FfmJKPyhDrBOS5fNKEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781524485; c=relaxed/simple;
-	bh=1WBNjzo0PorAZRcn0KdOJGVEfNPYfkA6zMBQIhfC8bE=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CfvpHMUKxPiDsMD67yZD3BF+as9eFT3gS0r6sJlHjSgsKVEbqYEona1ZBkrXr6MwsMa+IxCIL4gpWmJxQGEeS0vUknYRB7bceRyReUBUZ1ojGc8fqWQyRyVykFpzKVZojsejwjv5OyXFUdGQfPu5O3ujvbF594sL98LeV3datpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HGmCN35m; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E0571F000E9;
-	Mon, 15 Jun 2026 11:54:41 +0000 (UTC)
+	s=arc-20240116; t=1781524490; c=relaxed/simple;
+	bh=a+Gyd0fczyDCpHtdCONRwKD14fyAzz74oAuyfY0c8Es=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=YSO7cNtDeIewggYaBtXBP1Bm0RSlVp3HXqmOCmRMwfabPT3o2NSCAeTxt8i+gv4Pxxva2AIxAAlsoT+ASK0FFLeSEyQdKTSXAkrfangRwNCxvMqKFTEmdF5jEoY3SgCK5qDBhN6l/bNGptvQLmT0E0yqqB9iSLNGLauHwE7+at0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bp5/gS/H; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17AE81F00A3A;
+	Mon, 15 Jun 2026 11:54:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781524484;
-	bh=dA6pXgYKZb0WIDS2w3jJIvRv7wIBxlN6dP+Wu8BjXu0=;
-	h=From:Subject:Date:To:Cc;
-	b=HGmCN35mELvu47Clj9Yd/zpHmlPIi8WgOMfhm4P+zBXvy5oadvPdfjG3Z0Ewtygm/
-	 5gjE3A0SuWkXu95LiUj4NLYERoL2xlNDinf6jKmlCi+xwXOVdR+EejK8VaCMtnM54S
-	 LLDxe8OImksC1W/yslLnIWJSGajL5TPNKb62B3+IiTXpJvGh4z3Q9TM8+4GSypjhZ9
-	 oJtWJn8hHK58r/4+UUthS12avoYO+bfxDzesRWwcgd5VSlkP7QzP4T4Bd9ij1CIOLW
-	 G/5jZ4o6RAeJU2d31H/GyvZGLo2KlFWdQ27hudgxEbIfZVCOn+mHmiRt+WRsfaNrUq
-	 kZFPZqdIfrMhw==
+	s=k20260515; t=1781524488;
+	bh=rF2KPZAYSMCMaUkCSzteXR62HLRjNqxtc4Qy0wCy7Js=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc;
+	b=bp5/gS/HxOvXkSZolqVvBQRPO8CCBYdQJbc/EZElnbJ3F28bzRNKDPgmIhhfbSmRu
+	 o+9Onv1HMEu06W0+m6MCMTQZBBI+SaEh3iANuy/vFrnvssf3MKdcG/MUiJPTHZqa/x
+	 7oC9SRWnH6dpeo/Z/uk46HhpFjn15z4jjKa7183MOdZJ23gYOwFwhnZNRWqS352ipo
+	 jTwoDjo4mcSkCyCmswClw+iSgAMLQ+CaVolDq0mGguugmUCf4Nqymt2aDql5RzhQb7
+	 ccPU/qj4mp81af1x85AZYfQRKaATFJ4xv8RTS2cLSZYRG+jsAlor370NVdoq5gQbeC
+	 VUY9hZSFgmj+A==
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Subject: [PATCH v3 00/15] mm/slab: introduce alloc_flags and
- slab_alloc_context
-Date: Mon, 15 Jun 2026 13:54:33 +0200
-Message-Id: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
+Date: Mon, 15 Jun 2026 13:54:34 +0200
+Subject: [PATCH v3 01/15] mm/slab: do not init any kfence objects on
+ allocation
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,11 +58,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPnnL2oC/23NTQrCMBAF4KuUrI0kY39deQ+RkqTTNhoaSWpQS
- u9uWhEUZVYP3vtmIh6dRk/2yUQcBu21HWLYbRKiejF0SHUTMwEGOcsZp94IWQtjrKpbIzpPIVN
- FCZKprFAkzq4OW31fyePplf1NnlGNi7M0eu1H6x7rz8CX3puvfvnAKaMg21SkspIZ5IcLugHN1
- rqOLH6AD4GzPwJEoeAVi9dIzssvYZ7nJwCbJ3IFAQAA
-X-Change-ID: 20260601-slab_alloc_flags-25c782b0c57c
+Message-Id: <20260615-slab_alloc_flags-v3-1-ce1146d140fb@kernel.org>
+References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
+In-Reply-To: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
 To: Harry Yoo <harry@kernel.org>
 Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
  David Rientjes <rientjes@google.com>, 
@@ -92,7 +90,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-16951-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-16952-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -108,136 +106,213 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,msgid.link:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 17AFC685E59
+X-Rspamd-Queue-Id: 0A5D1685E61
 
-This series is now in slab/for-next, based on the slab-for-7.2 tag that
-was sent as first PR to Linus. Posting new version due to many
-accumulated changes, for final rounds of review. The plan is to send a
-second slab PR with this early next week, if nothing explodes.
+When init (zeroing) on allocation is requested, for kmalloc() we
+generally have to zero the full object size even if a smaller size is
+requested, in order to provide krealloc()'s __GFP_ZERO guarantees.
 
-Git: https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/slab_alloc_flags
+When we end up allocating a kfence object, kfence performs the zeroing
+on its own because it has its own redzone beyond the requested size.
+Thus slab_post_alloc_hook() has an 'init' parameter which has to be
+evaluated in all callers (via slab_want_init_on_alloc()) and should be
+false for kfence allocations.
 
-The slab implementation currently relies on gfp flags to convey
-some context information internally:
+For kfence allocations in slab_alloc_node() this is achieved by subtly
+skipping over the slab_want_init_on_alloc() call. Other callers (i.e.
+kmem_cache_alloc_bulk_noprof()) however evaluate it unconditionally even
+if they do end up with a kfence allocation. This is only subtly not a
+problem, as those are not kmalloc allocations and thus the "requested
+size" equals s->object_size and thus it cannot interfere with kfence's
+redzone. There's just a unnecessary double zeroing (in both kfence and
+slab_post_alloc_hook()), but it's all very fragile and contradicts the
+comment in kfence_guarded_alloc().
 
-- The absence of both __GFP_RECLAIM flags is interpreted as "cannot spin
-  on locks", and intended to be used by kmalloc_nolock(). But false
-  positives are possible e.g. during early boot where gfp_allowed_mask
-  clears __GFP_RECLAIM from all allocations. This leads to unnecessary
-  allocation failures and workarounds such as fd3634312a04 ("debugobject:
-  Make it work with deferred page initialization - again").
+Remove this subtlety and simplify the code by eliminating the init
+parameter from slab_post_alloc_hook() and make it call
+slab_want_init_on_alloc() itself. Instead add a is_kfence_address()
+check before performing the memset, which will start doing the right
+thing for all callers of slab_post_alloc_hook().
 
-- __GFP_NO_OBJ_EXT exists and takes up valuable bit in the gfp flags
-  space, only to prevent recursive kmalloc() allocations for obj_ext
-  arrays and sheaves.
+This potentially adds overhead of the is_kfence_address() check to
+allocation hotpath, but that one is designed to be as small as possible,
+and it's only evaluated if zeroing is about to happen. This means (aside
+from init_on_alloc hardening) only for __GFP_ZERO allocations, and the
+zeroing itself comes with an overhead likely larger than the added
+check.
 
-The page allocator uses its internal alloc_flags to convey various
-context information, including ALLOC_TRYLOCK (meaning "cannot spin").
-This series copies that concept for the slab allocator, with its own
-slab-specific internal flags:
+While at it, refactor the handling of evaluating when KASAN does the
+init instead of SLUB, with no intended functional changes. A
+non-functional change is that we don't pass kasan_init as true to
+kasan_slab_alloc() if kasan has no integrated init, but then the value
+is ignored anyway, so it's theoretically more correct.
 
-- SLAB_ALLOC_DEFAULT - no extra flags (the value is 0), but explicit
-- SLAB_ALLOC_NOLOCK - do not spin on locks (used by kmalloc_nolock())
-- SLAB_ALLOC_NEW_SLAB - replacing existing 'bool new_slab' parameter
-			for allocating obj_ext arrays
-- SLAB_ALLOC_NO_RECURSE - replacing usage of __GFP_NO_OBJ_EXT
+Thanks to Harry Yoo for the initial refactoring attempt, and for updated
+comments that are used here.
 
-To reduce the amount of parameters in various internal functions, we
-additionally introduce slab_alloc_context (also inspired by page
-allocator's alloc_context) for passing a number of existing arguments
-and the new alloc_flags:
-
-/* Structure holding extra parameters for slab allocations */
-struct slab_alloc_context {
-	unsigned long caller_addr;
-	size_t orig_size;
-	unsigned int alloc_flags;
-	struct list_lru *lru;
-};
-
-This also replaces the existing struct partial_context.
-
-The last necessary piece is kmalloc_flags() which can take the
-alloc_flags in addition to gfp flags and is intended for the recursive
-allocations of sheaves and obj_ext arrays, so that both
-SLAB_ALLOC_NOLOCK and SLAB_ALLOC_NO_RECURSE can be communicated.
-Internally it decides between kmalloc_nolock() and normal kmalloc()
-depending on SLAB_ALLOC_NOLOCK.
-
-The rest of the series is gradually expanding the usage of both
-alloc_flags and slab_alloc_context as necessary, with bits of
-refactoring. Then, __GFP_NO_OBJ_EXT is removed completely.
-
-Note that some usage of gfpflags_allow_spinning() relying on absence of
-__GFP_RECLAIM remains outside of slab (and page allocator) in memcg,
-page_owner and stackdepot code. These can thus yield false-positive
-decisions that spinning is not allowed, but should not result in
-important allocations failing anymore.
-
+Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-2-7190909db118@kernel.org
+Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
 Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 ---
-Changes in v3:
-- Applied R-b tags from Harry, Hao, Suren (thanks!)
-- Former Patch 1 "mm/slab: do not limit zeroing to orig_size when only
-  red zoning is enabled" fast tracked as a fix to slab-for-7.2 PR.
-- Patch 1: refactor kasan_init handling (Harry).
-- Constify struct slab_alloc_context usage eveywhere (Suren)
-- Rename SLAB_ALLOC_TRYLOCK to SLAB_ALLOC_NOLOCK (Suren, Alexei)
-- Reorder patches 5 and 6 (formerly 6 7) (Suren)
-- Move trynode_flags refactoring from 7 to 6 to avoid bisection
-  hazard.
-- In Patch 14, support temporarily both __GFP_NO_OBJ_EXT and
-  SLAB_ALLOC_NO_RECURSE to prevent obj_ext -> sheaves -> obj_ext
-  recursion (Sashiko)
-- Expand OBJCGS_CLEAR_MASK to allow kmalloc_nolock() warnings
-  (Hao Li, Shengming Hu).
-- Link to v2: https://patch.msgid.link/20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org
+ mm/kfence/core.c |  2 +-
+ mm/slub.c        | 60 ++++++++++++++++++++++++++------------------------------
+ 2 files changed, 29 insertions(+), 33 deletions(-)
 
-Changes in v2:
-- Due to Sashiko review, drop the idea of zeroing orig_size
-  unconditionally, as it can break krealloc(). Thanks to that found a
-  pre-existing bug fixed by the new Patch 1. The kfence zeroing related
-  cleanup is implemented differently in Patch 2.
-- Prevent nested kmalloc_nolock warnings due to added gfp flags
-  (Sashiko)
-- Fix a pre-existing issue with opportunistic slab allocation from the
-  target node only effectively dropping __GFP_NOMEMALLOC and __GFP_RECLAIM.
-  (Sashiko)
-- Move kmalloc_flags() definitions to mm/slab.h (per Harry).
-- Link to v1: https://patch.msgid.link/20260609-slab_alloc_flags-v1-0-2bf4a4b9b526@kernel.org
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index 655dc5ce3240..5e0b406924e9 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -500,7 +500,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
+ 
+ 	/*
+ 	 * We check slab_want_init_on_alloc() ourselves, rather than letting
+-	 * SL*B do the initialization, as otherwise we might overwrite KFENCE's
++	 * slab do the initialization, as otherwise it might overwrite KFENCE's
+ 	 * redzone.
+ 	 */
+ 	if (unlikely(slab_want_init_on_alloc(gfp, cache)))
+diff --git a/mm/slub.c b/mm/slub.c
+index e2ee8f1aaccf..d762cbe5d040 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4565,13 +4565,13 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
+ 
+ static __fastpath_inline
+ bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+-			  gfp_t flags, size_t size, void **p, bool init,
++			  gfp_t flags, size_t size, void **p,
+ 			  unsigned int orig_size)
+ {
++	bool init = slab_want_init_on_alloc(flags, s);
+ 	unsigned int zero_size = s->object_size;
+-	bool kasan_init = init;
+-	size_t i;
+ 	gfp_t init_flags = flags & gfp_allowed_mask;
++	bool kasan_init = false;
+ 
+ 	/*
+ 	 * For kmalloc object, the allocated size (object_size) can be larger
+@@ -4588,28 +4588,33 @@ bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+ 		zero_size = orig_size;
+ 
+ 	/*
+-	 * When slab_debug is enabled, avoid memory initialization integrated
+-	 * into KASAN and instead zero out the memory via the memset below with
+-	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
+-	 * cause false-positive reports. This does not lead to a performance
++	 * ARM64 can set memory tags and zero the memory using a single
++	 * instruction. Since HW_TAGS KASAN uses that while tagging the object,
++	 * separate zeroing is unnecessary.
++	 *
++	 * However, KASAN never zeroes memory when slab_debug is enabled to
++	 * avoid overwriting SLUB redzones. This does not lead to a performance
+ 	 * penalty on production builds, as slab_debug is not intended to be
+ 	 * enabled there.
+ 	 */
+-	if (__slub_debug_enabled())
+-		kasan_init = false;
++	if (kasan_has_integrated_init() && !__slub_debug_enabled()) {
++		kasan_init = init;
++		init = false;
++	}
+ 
+-	/*
+-	 * As memory initialization might be integrated into KASAN,
+-	 * kasan_slab_alloc and initialization memset must be
+-	 * kept together to avoid discrepancies in behavior.
+-	 *
+-	 * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
+-	 */
+-	for (i = 0; i < size; i++) {
++	for (size_t i = 0; i < size; i++) {
+ 		p[i] = kasan_slab_alloc(s, p[i], init_flags, kasan_init);
+-		if (p[i] && init && (!kasan_init ||
+-				     !kasan_has_integrated_init()))
++
++		/*
++		 * memset and hooks come after KASAN as p[i] might get tagged
++		 *
++		 * kfence zeroes the object instead of SLUB to avoid overwriting
++		 * its own redzone starting at orig_size, which could happen
++		 * with SLUB zeroing full s->object_size
++		 */
++		if (init && p[i] && !is_kfence_address(p[i]))
+ 			memset(p[i], 0, zero_size);
++
+ 		if (gfpflags_allow_spinning(flags))
+ 			kmemleak_alloc_recursive(p[i], s->object_size, 1,
+ 						 s->flags, init_flags);
+@@ -4910,7 +4915,6 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 		gfp_t gfpflags, int node, unsigned long addr, size_t orig_size)
+ {
+ 	void *object;
+-	bool init = false;
+ 
+ 	s = slab_pre_alloc_hook(s, gfpflags);
+ 	if (unlikely(!s))
+@@ -4926,16 +4930,13 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+ 		object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
+ 
+ 	maybe_wipe_obj_freeptr(s, object);
+-	init = slab_want_init_on_alloc(gfpflags, s);
+ 
+ out:
+ 	/*
+-	 * When init equals 'true', like for kzalloc() family, only
+-	 * @orig_size bytes might be zeroed instead of s->object_size
+ 	 * In case this fails due to memcg_slab_post_alloc_hook(),
+ 	 * object is set to NULL
+ 	 */
+-	slab_post_alloc_hook(s, lru, gfpflags, 1, &object, init, orig_size);
++	slab_post_alloc_hook(s, lru, gfpflags, 1, &object, orig_size);
+ 
+ 	return object;
+ }
+@@ -5230,7 +5231,6 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+ 				   struct slab_sheaf *sheaf)
+ {
+ 	void *ret = NULL;
+-	bool init;
+ 
+ 	if (sheaf->size == 0)
+ 		goto out;
+@@ -5240,10 +5240,8 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
+ 	if (likely(!ret))
+ 		ret = sheaf->objects[--sheaf->size];
+ 
+-	init = slab_want_init_on_alloc(gfp, s);
+-
+ 	/* add __GFP_NOFAIL to force successful memcg charging */
+-	slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, init, s->object_size);
++	slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, s->object_size);
+ out:
+ 	trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
+ 
+@@ -5423,8 +5421,7 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
+ 
+ success:
+ 	maybe_wipe_obj_freeptr(s, ret);
+-	slab_post_alloc_hook(s, NULL, alloc_gfp, 1, &ret,
+-			     slab_want_init_on_alloc(alloc_gfp, s), orig_size);
++	slab_post_alloc_hook(s, NULL, alloc_gfp, 1, &ret, orig_size);
+ 
+ 	ret = kasan_kmalloc(s, ret, orig_size, alloc_gfp);
+ 	return ret;
+@@ -7339,8 +7336,7 @@ bool kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags,
+ 
+ out:
+ 	/* memcg and kmem_cache debug support and memory initialization */
+-	return likely(slab_post_alloc_hook(s, NULL, flags, size, p,
+-			slab_want_init_on_alloc(flags, s), s->object_size));
++	return likely(slab_post_alloc_hook(s, NULL, flags, size, p, s->object_size));
+ }
+ EXPORT_SYMBOL(kmem_cache_alloc_bulk_noprof);
+ 
 
----
-Vlastimil Babka (SUSE) (15):
-      mm/slab: do not init any kfence objects on allocation
-      mm/slab: stop inlining __slab_alloc_node()
-      mm/slab: introduce slab_alloc_context
-      mm/slab: introduce alloc_flags and SLAB_ALLOC_NOLOCK
-      mm/slab: replace struct partial_context with slab_alloc_context
-      mm/slab: add alloc_flags to slab_alloc_context
-      mm/slab: pass alloc_flags to new slab allocation
-      mm/slab: pass alloc_flags through slab_post_alloc_hook() chain
-      mm/slab: replace slab_alloc_node() parameters with slab_alloc_context
-      mm/slab: allow kmem_cache_alloc_bulk() with any gfp flags
-      mm/slab: pass slab_alloc_context to __do_kmalloc_node()
-      mm/slab: allow __GFP_NOMEMALLOC and __GFP_NOWARN for kmalloc_nolock()
-      mm/slab: introduce kmalloc_flags()
-      mm/slab: remove __GFP_NO_OBJ_EXT usage from alloc_slab_obj_exts()
-      mm/slab: replace __GFP_NO_OBJ_EXT with SLAB_ALLOC_NO_RECURSE for sheaves
-
- include/linux/slab.h |   5 +-
- mm/kfence/core.c     |   2 +-
- mm/memcontrol.c      |   5 +-
- mm/slab.h            |  29 ++-
- mm/slub.c            | 488 +++++++++++++++++++++++++++++++--------------------
- 5 files changed, 329 insertions(+), 200 deletions(-)
----
-base-commit: dfdfd58cce1c3f5df8733b64595448996c08e424
-change-id: 20260601-slab_alloc_flags-25c782b0c57c
-
-Best regards,
---  
-Vlastimil Babka (SUSE) <vbabka@kernel.org>
+-- 
+2.54.0
 
 
