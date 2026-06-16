@@ -1,246 +1,172 @@
-Return-Path: <cgroups+bounces-16999-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cAy/MSA/MWrQfAUAu9opvQ
-	(envelope-from <cgroups+bounces-16999-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 14:18:40 +0200
+	id AXuSHW5TMWpkgwUAu9opvQ
+	(envelope-from <cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:45:18 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CFDB68F3A2
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 14:18:40 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 774716900F7
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:45:17 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=ehK3Zm+d;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-16999-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-16999-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=gourry.net header.s=google header.b=a3a5F13U;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=none;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C6C9330104BE
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 12:15:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7C41F30151D6
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 13:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A592F745E;
-	Tue, 16 Jun 2026 12:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1465D334C08;
+	Tue, 16 Jun 2026 13:44:59 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578E01E8320
-	for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 12:15:49 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781612150; cv=pass; b=n0girIGERe7VVDLjkhLGzuYgsd0ETsgDd0J6B5jcAXqlvj46yZgnojSnSfls6VOrIrX4Cm/pzNi8iKr97vQZ+2LVPSTOa40+wJuDa8RvMtd2FJN/4yBIjCfOSNkm3SV98Oqc0AMfv4E1NuSkAX2D6xiiKtO8AddKD5oCYi9FXKs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781612150; c=relaxed/simple;
-	bh=0Sxr9nHRTMlxWC+/vtlKL1AgOLRnk+j4roZHiJzJV9w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D48t53do6JjcuOER8Rxos+v+fjYRc2/qPZR4HHIPzRnroHxj+6k2pNOJ1hn/BaDOyfJZdR/Bimz6BEewavbWATW98SBauqJKPd+rYMmfZ/IyAlhtQGsB/dpvQPvjfQBT479DM/UhKnhXcs43LXdqTiF4gke23fTUTLz0VTGQlKM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehK3Zm+d; arc=pass smtp.client-ip=209.85.128.47
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-490c1915793so38108935e9.2
-        for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 05:15:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781612148; cv=none;
-        d=google.com; s=arc-20240605;
-        b=HMnabozsIIQegBrsCL0eT0KXDCoAD5+efdxKbrYgB43C5hGYkJk76WAGXp2DkmNJ1i
-         bqlprG98GHI94MpQpgSa54YxaAfdNAlTqr1kjT+T9kzv/YoJbJPUF5s/kpA7KJTGxdHJ
-         FVRRTXEOijiPl6WGbdsB9NgP+p//Sn8moZRQipLqWXGy0cQp0xVwZJ3YA6lFOgN1ZPTP
-         RwfQpaPpI1rPIFy3E1VuufaUHk/HDrvfcB7RrAS9+DKiyrN3LtQDq45YUMOcb26Cqh1a
-         XXPFIaVYwrV68kxTjgwNZJxie6aHKH47e+Yk/+fuP36prpurLa9Cip+bwL3t6h+DV17f
-         bqNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=K5foDtgqeTQXrOWV48GNDC5TnV9fQo3PaQ7iDDwN1xA=;
-        fh=imQto0kzY7GdeZlyF0+ku9I0cwjYsI1yGSlTsFmnpVY=;
-        b=UQXXywawNeNXzbpVUq+ulMlPCaKDsdeucUJrskSdJ0Y8hK25jHGmadMgRM4WjC0Rux
-         ARwnto0B0VlBeDoArDaAQS7xTFCbcVQtg/kcBafRSVVxitq/vP2WwS6hfs955PumkS3B
-         4mEzm37DQExhmJ6E8Pq9uy7jAuNHge/9J0nb7gBInzrjGCdzW84ee5lBh+2HdHPhWEa7
-         GOEPzy6tPTcNOFRG2BdGUtZrgTEgXdlhhDtqK/0y7mqy6hFNx6fe54dAlz7DtqIEk1nN
-         IHf30Iwr7PAIit61ZaJ3cuk77V01muexWBtzL6gisvPWRpZ8idgJDFTr0dxw+6yL6ZHO
-         T1MQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934E22FFDD5
+	for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 13:44:57 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781617498; cv=none; b=TT2NzeliIfpmZ54AFVwYRExLbj7Yj9JBRb1IyO7SPvkaSk6HVkPo0dMMzMw6onwN7LMTHBaN+yL/EhM2l0m+r2JbOMrM07UJZttpWMY6YNj+1uiSy/K/Djzvaom+OB+AKCyodLx+9+3oJd0fJme9J2ibcqQw/oIRkdK+ID21msg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781617498; c=relaxed/simple;
+	bh=2FuiWMyjXh68tYMurmD9NRNYivd+DBtBW0Gd/vXz02s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bqceBgkDL5n70XHp3ens9i8zFdAg9wCDHyVlkMYsdv+A1iGFkK8zTQKNSyhq3iR4SF3HSGkTZHba9lWtuP1soOsgtNI1QW3gnphlo4+TE4/2IgOdg0urJAVisYFYV5o0EqKp2+K39PZc/qK1FB39geDcNevQfHkC/jeV5eScvSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=a3a5F13U; arc=none smtp.client-ip=209.85.219.52
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-8dad1718d7dso2175926d6.0
+        for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 06:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781612148; x=1782216948; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K5foDtgqeTQXrOWV48GNDC5TnV9fQo3PaQ7iDDwN1xA=;
-        b=ehK3Zm+dX1n/qk0QbSFI8+80ONdm+yIDzI5nS6kcBqmfamtKjfX9o6OO8p8aID0psx
-         p/nUvSqd5vf2Gux4yhq5Z1RHJT8gf7w+1sy2GACmbGYd2HwzgZJgcgUy0GcXVtQH8E+/
-         5689ag3G2kT9Mvs/mBCf3x2rgwIFkGL4mDgXbQ4z8oBtqHzXDm2EF2HNgbfQ2YBrBAUS
-         LDHRj2Obk1oh3k86ozB8ytHG3Hm+j5ZN4n2HB7RnCx9n6IxFCoggMnUXNfuW3agMFo+a
-         WPaSGJAVJUwr1trYdlhWt5kIqJRlARinvCye0EXsOtR0w+BQ5NNs1FBx/wyRDwPtNCgL
-         fS6Q==
+        d=gourry.net; s=google; t=1781617496; x=1782222296; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2FuiWMyjXh68tYMurmD9NRNYivd+DBtBW0Gd/vXz02s=;
+        b=a3a5F13U7QwjSojqxK6WJWsr4KMcn/68BL5eZED9kbZd8ouwwg8XXmV8kHQjnOkO2e
+         1P1v+UqqXmwqJZ8mmp59WDtd3vgQ8+zEZqM8z/ST8jyv1FWh5a3XIfa9fEA9v95WB+QQ
+         kgx4YRhm5ahRvbo0m3umIfLtC3WvYkLN+L1dMCDxqLtXNVqmjyZG9Ej2goFxVDGHHgov
+         0L/rLIKobc+QB6TlUal3/sB9G2TnlKQNQ4JcT3d/Y68zviH8uSQpCgfum3oj1Bacp/71
+         +jnxAJPKVsw2UZLQS8rIL77dY37VR0nkVrDPZDxf/ddEDgnnoePsAq2MMWc07WHXDf98
+         ZWAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781612148; x=1782216948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=K5foDtgqeTQXrOWV48GNDC5TnV9fQo3PaQ7iDDwN1xA=;
-        b=JMib+O3Zq1iqyteJUPeSNt3xAUu/zzdYi4/8bZX/dkttDcOGp39cbV9CF6g7DajUlf
-         HE7xE3jGoE3ZfQxSe9H1kdFwsWch1vT/mK4vjcAF3wC7UhOc2wpnFCzdcOugLFJSRv98
-         ko7sUhICrhGwySdZ4xygI5CoONald/uc7KRQLpNbNMkyMJGlw7qArSoeWSoZTQNah+Le
-         a5vjOPBqBg9EKmTnEDx9hCXkljn8H4F98U2bMLyTbtN/d4ZSAvCztEoOBY/qvgo4O72R
-         x2B7l68dveeg1DICT9OuOeaeGhHdT8EKH3TeZjseMFcKC83X4rV1TwHrxFG8yOUXwmUa
-         /aPg==
-X-Forwarded-Encrypted: i=1; AFNElJ/hr2oNSNULq0hlo1Z8py6GojtVKWMl6SLDOLPyQr2y2jA9OOQ5eerFEyZegj1U4UagxD/serGV@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5oVb9nkHEDpBwOShXkQKZCUMoDcnAUPHthNI/NtnYeKC5teVF
-	2pfE+wwYr9awMM4GzGFXFgrYQyUMuXYRpn9AxEcNtS/sO/UttbcojUUR6LTUxCDpH6UgWsi1UIy
-	PY3UWbuBJb/i6y17NwPWfZMYGLJPY+/I=
-X-Gm-Gg: Acq92OHXJrHRQO7brdj36U1BDAxYarrqtdlQJjSE4SbAajLj76Vp16iPXz2Rx8dgRP1
-	3jIQ2IHpWTBDid0z6I5XLMFiVosGpdyS2zJNEoFvUfHXgYClBsAlzd8gMLnin8HvcBYyebazJL8
-	nG1k+d636JLmVP1n9rLXPZQ+95sKXWYGREX1F8ESf1q2Ld6yRgqOZczgoMAxrgco73PdQtZ2aZC
-	yzvTTjMGovlFXB++eDmxuZ66gRjduqwqUTEkhNV1pIYKJFa3bzMP+zoIWOT3Lba+8fLsO8OqRuL
-	Ikt2x6nOPwh4PlbeC/ODcbY06ULLlPOksDeIKQ==
-X-Received: by 2002:a05:600c:820c:b0:490:c2a3:3302 with SMTP id
- 5b1f17b1804b1-490ec526f4fmr251514085e9.35.1781612147341; Tue, 16 Jun 2026
- 05:15:47 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1781617496; x=1782222296;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2FuiWMyjXh68tYMurmD9NRNYivd+DBtBW0Gd/vXz02s=;
+        b=WUS9RU9mKwPweBqNj8l5Ffy9VXc+nH+M5zekr4heMRYqLVcKpVrv69RoiORlV6mE+X
+         +pg8yX3K7kSY8gDMojzO7sY+Cq17g64b7G/HXgbya4dYA+skTA3ldFSGVCRJqecNpOYI
+         Y9XV4sMR1qYOeu/oEbi0KYxyE7sLd7n9PImCbD/ytafG8DTtCTKB3E9Y/WpRe0oFA+Tc
+         fx8v80OhU8w+htfLDORknmHq60ehaIks6kVNiEJyOb7NNMmmkCvJiQXOHVtm+6YXjF9p
+         ALtWODEIKVChj1bZjRRhuMKjOeuy90gnGDIPy0ZBBZHjtFw7v2BfcJoLnzqN4Psbn2An
+         7GXQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/GVfoRjzkAuoUm6C793fQed3btmPi3USPx6RawXdEqq63DllwDAqk4f6tKPErSJKd5qp+5g8+P@vger.kernel.org
+X-Gm-Message-State: AOJu0YycqBIDS521lPlf4lONX32ASw73CiAxiApdKqY5n0pB9JvvIZuN
+	BKzoDw623uTqOg3iviushPl1Exte1fO9baeOksP35SbklkwcmanULhn1FmpLGDQXphs=
+X-Gm-Gg: Acq92OE8B9dBJ2/dkkavpkXKkxptnR2qNSnbRjQG2rB9qVo265kSjhhPZT754eJocLZ
+	ZVRVGXIXpq1vxuLfkmWCMEZ7AV74N8vCRIVYkktEUXLDUQ/1YH1ftWj9dIRqDAn2Gcfnv3PFHGH
+	33k6iibOA/WkmJY67499LMTMXLBSWpq7RY1WCi74qFVoej+jVIRDoFOPGzeBnZtIS+gGIvR4IPU
+	8+y6VReXpZs/ZGEPjxt9/4IOjteQ3VP1Eu7V69fyPtib5SFbjE7Aq2vV6hTTKd/h0st9S3IjQaE
+	JKKAHYaNUg3t7eIk169NJnOr61+itFH8xffaQYBff6/XxCtXUEjx1lA3Sc7eC8Nld7MHHduRNim
+	T1ziqOSoad9q+QBzTKEJqBFByB6MSugRiNDjVj1RRaj/v0l6D8YsY5mYboBThGr8WRUmQYeRSIM
+	conGzcxCoZy1XPAjtqvkv3
+X-Received: by 2002:ad4:5d6f:0:b0:8cb:e63e:2a45 with SMTP id 6a1803df08f44-8da1f0168f7mr50299196d6.18.1781617496409;
+        Tue, 16 Jun 2026 06:44:56 -0700 (PDT)
+Received: from gourry-fedora-PF4VCD3F ([2620:10d:c091:500::3:437e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8d9f4ff2206sm32423616d6.37.2026.06.16.06.44.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2026 06:44:55 -0700 (PDT)
+Date: Tue, 16 Jun 2026 09:44:53 -0400
+From: Gregory Price <gourry@gourry.net>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: Waiman Long <longman@redhat.com>,
+	Farhad Alemi <farhad.alemi@berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Farhad Alemi <falemi@asu.edu>, Yury Norov <ynorov@nvidia.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>,
+	Ying Huang <ying.huang@linux.alibaba.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems,
+ not mems_allowed
+Message-ID: <ajFTVaMBeu-ViGIC@gourry-fedora-PF4VCD3F>
+References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
+ <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
+ <8d3b4561-92cd-4ebc-8462-5fb0fd659e8a@kernel.org>
+ <ai_IHvyptWPcTD0y@gourry-fedora-PF4VCD3F>
+ <70f486ce-5ef6-4d72-8cc3-7086f4eea930@redhat.com>
+ <c1495b1b-9dee-4cd5-ac8e-eeb7a2d968ed@redhat.com>
+ <51eafe6c-6622-479b-b391-6d3ff9350e75@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260612193738.2183968-1-nphamcs@gmail.com> <ai5kOOmR1LPTWs1J@yjaykim-PowerEdge-T330>
- <CAKEwX=O23a4iWBZoewKVb8QqODte6r3Xijckw3_oCJNoiO9M5A@mail.gmail.com>
- <CAO9r8zPj5EH8Mbpc6N+d1u2eEgoV33f+4s=v-84gaobAodPtUw@mail.gmail.com> <ajCm44rYpLOKCQ43@yjaykim-PowerEdge-T330>
-In-Reply-To: <ajCm44rYpLOKCQ43@yjaykim-PowerEdge-T330>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 16 Jun 2026 08:15:34 -0400
-X-Gm-Features: AVVi8Cf1GupVHqkNcZhtYoOUz9DU0zT_2oeWtf5qDBtNiWLRx6q_yt7muoLsCPw
-Message-ID: <CAKEwX=OPaUputOYJrJDvcNGn7WWoXOp-GzztA5MPbynj-4cPWQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] mm, swap: Virtual Swap Space (Swap Table Edition)
-To: YoungJun Park <youngjun.park@lge.com>
-Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org, chrisl@kernel.org, 
-	kasong@tencent.com, hannes@cmpxchg.org, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, david@kernel.org, 
-	muchun.song@linux.dev, shikemeng@huaweicloud.com, baoquan.he@linux.dev, 
-	baohua@kernel.org, chengming.zhou@linux.dev, ljs@kernel.org, 
-	liam@infradead.org, vbabka@kernel.org, rppt@kernel.org, surenb@google.com, 
-	qi.zheng@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
-	weixugc@google.com, riel@surriel.com, gourry@gourry.net, 
-	haowenchao22@gmail.com, kernel-team@meta.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51eafe6c-6622-479b-b391-6d3ff9350e75@kernel.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-16999-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:youngjun.park@lge.com,m:yosry@kernel.org,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:david@kernel.org,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:chengming.zhou@linux.dev,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:qi.zheng@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:riel@surriel.com,m:gourry@gourry.net,m:haowenchao22@gmail.com,m:kernel-team@meta.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17000-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[31];
+	DMARC_NA(0.00)[gourry.net];
+	FORGED_SENDER(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS(0.00)[m:david@kernel.org,m:longman@redhat.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,linux-foundation.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,infradead.org,google.com,surriel.com,gourry.net,gmail.com,meta.com,kvack.org,vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[redhat.com,berkeley.edu,linux-foundation.org,asu.edu,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3CFDB68F3A2
+X-Rspamd-Queue-Id: 774716900F7
 
-On Mon, Jun 15, 2026 at 9:29=E2=80=AFPM YoungJun Park <youngjun.park@lge.co=
-m> wrote:
->
-> On Mon, Jun 15, 2026 at 12:56:26PM -0700, Yosry Ahmed wrote:
-> > On Sun, Jun 14, 2026 at 7:39=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> w=
-rote:
-> > >
-> > > On Sun, Jun 14, 2026 at 4:20=E2=80=AFAM YoungJun Park <youngjun.park@=
-lge.com> wrote:
-> > > >
-> > > > ...
-> > > > > * Integration with swap.tier by Youngjun (see [12]). For now, I'm
-> > > > >   leaning towards opting out the vswap device from swap.tier enti=
-rely, and
-> > > > >   treat it as a special device. Integrating it with swap.tiers wi=
-ll
-> > > > >   benefit the cases where you want some cgroups to skip vswap for=
- fast
-> > > > >   swap devices (pmem), whereas other should go through zswap firs=
-t. But
-> > > > >   most other use cases, either the overhead of vswap will be acce=
-ptable
-> > > > >   (or not the bottleneck), or we can just disable CONFIG_VSWAP en=
-tirely :)
-> > > > >
-> > > > >   Youngjun, may I ask for your thoughts on this?
-> > > >
-> > > > Hi Nhat,
-> > > >
-> > > > Tier 1: VSWAP, Tier 2: ZSWAP ...
-> > > >
-> > > > I don't see any problem applying the desired functionality with the
-> > > > currently proposed mechanism and interface. With this, a user would=
- be
-> > > > assigned the default Virtual -> RAM swap tier, and the overall pict=
-ure
-> > > > becomes one where swap tiers are composed according to the priority
-> > > > setting.
-> > >
-> > > It's more - is there a strong argument to let vswap be a tier (which
-> > > is not supported by just turning of vswap altogether).
-> > >
-> > > Because right now I'm not exposing vswap device to userspace in any
-> > > manner, pretty much. It's abstract and transparent, and minimizes
-> > > complexity (no vswap and swap.tier interaction) and surfaces for
-> > > issues.
-> >
-> > I definitely think vswap should *not* be a tier. First of all, a vswap
-> > entry can be backed by zswap or an actual swap device, which would be
-> > two different tiers. How does that work?
-> >
-> > I also think vswap should not be exposed to userspace in any way, at
-> > least not now. I still think we should aim to just make the
-> > redirection layer always on and eliminate "vswap devices".
+On Tue, Jun 16, 2026 at 08:59:07AM +0200, David Hildenbrand (Arm) wrote:
+> On 6/16/26 05:43, Waiman Long wrote:
+> > On 6/15/26 10:26 PM, Waiman Long wrote:
+> >>
+> >>
+> >> The reason why I am suggesting to use cs->effective_mems to keep the old
+> >> cgroup v1 behavior. If the consensus is to use the output of
+> >> guarantee_online_mems() for mpol_rebind_mm(), I will not be against that but
+> >> it will be a slight change in user-visible behavior.
 
-Yeah I will just expose a pair of usage/failure for diagnostics purposes :)
+I'm not grok'ing what is user-visible here.
 
->
-> After following the answers and giving it some thought, I agree that
-> vswap should be kept user-transparent. If there is a strict need to
-> disable it, relying on CONFIG_VSWAP to remove it entirely seems like
-> the right approach.
->
-> If a strong use case for user interaction emerges in the future, we can
-> revisit the design and figure out how to handle it at that time.
+The two values should effectively be equivalent because we're
+using this value to constrain mpol's during a hotplug event.
 
-Yeah the only argument for adding vswap to swap tier is if we want it
-to virtualize swap on a per-cgroup basis, assuming:
+If the values differed, you would be saying there's a race condition
+that could affect correctness of the rebind (which can't happen,
+because this whole thing is done under the hotplug lock btw).
 
-1. There's a setup where some cgroups benefit from vswap and some
-don't, in the same deployment or host (so you can't just use
-CONFIG_VSWAP).
+Can you help me understand?
 
-2. We can't decide it with some heuristics purely based on kernel's
-knowledge (so for e.g, if a cgroup enables zswap, then vswap probably
-makes more sense than not, etc. etc.).
-
-Maybe I'm missing something, and if so please let me know. But
-otherwise I'll stick with transparent vswap for the next version.
-
-With Youngjun's new interface, if we made a mistake here and
-per-cgroup vswapping turned out to be necessary, fixing it is fairly
-cheap. We don't need to add any new knob - just need to expose it to
-memory.swap.tier somehow, and we're done. That can be done as
-follow-up :)
+~Gregory
 
