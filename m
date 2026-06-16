@@ -1,67 +1,84 @@
-Return-Path: <cgroups+bounces-17003-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17004-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id W8ygBN9sMWoKjAUAu9opvQ
-	(envelope-from <cgroups+bounces-17003-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 17:33:51 +0200
+	id TjzwC6p/MWqpkwUAu9opvQ
+	(envelope-from <cgroups+bounces-17004-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 18:54:02 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C4D69125A
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 17:33:50 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4494B6928ED
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 18:54:01 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=OzTFwDNS;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17003-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17003-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=cQuwGAkw;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17004-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17004-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 74827305E164
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:27:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8ABA8301EFF9
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 16:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8C9441035;
-	Tue, 16 Jun 2026 15:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15148466B79;
+	Tue, 16 Jun 2026 16:44:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3E243E48C
-	for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 15:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 904A12F745E
+	for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 16:44:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781623649; cv=none; b=bQ5Dr7GiFsllXvwWx7DJhjGUudQeg0RbwtpSm4vm3EkhbUs5w8OOgkiCWQUgfzzQRF+gUWHYwgrjoUBwPIKxpWc2yuVNHfDExZsNlSMHMpqS3dkxJfyFxGk71Fg7ULNtpCF2zlxWUr9+9nYecc0SvJanSMfeUHqR9YFSSCMVGwc=
+	t=1781628258; cv=none; b=n4pH1JxPhm+pELzENf4PzqxadZuP2qKCdqkgyxlsp/WOFLUP/IvXOSrqdO+FVfu/F1bpPjcC2sM/PTd1N7YP/xhv/gYM9MVBLjlFot3JNVO3uM6w/C5BhRMZFDoVLs4oZK54ifMc8QrvDlo8JYT9qAttqzZ3aKmUvWFd0H2PPVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781623649; c=relaxed/simple;
-	bh=gWePh3Vznf74DWR5pPqi6EqAwqedNELsKH618o5hclA=;
+	s=arc-20240116; t=1781628258; c=relaxed/simple;
+	bh=rzzTs9fhIg4PWYleHoMK85337153JCynCROXTm1Ez1s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tzdxcpYkKTyQ/dWPOY8LsPj+yXLE70Nupi3WVu5i0v2SjbwlzVlA0b4eMMUzcejGzQ6mQwfNQdkZZU9EcBsGQJDZ8unoBhgNUdqD9K2DS2hCNoUpqVSSf1HinU1LtY9viqtZ791/e4UqJ75zmwLrZmXL7RIYW+tk+lfeowmSsm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OzTFwDNS; arc=none smtp.client-ip=170.10.129.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1781623647;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PM8sP3MAiJZZknY6HDXqfIBCoWcPf7VRCGmXyvu7wus=;
-	b=OzTFwDNSBl3u2LRbBfCht4oYlTCf5fMXKy5A4LW7874ao80szCQZpZfK44I7IgHBkNKdaU
-	qhZtxffnvvz/9UixPHc2TxPF2HTKkqA8ZVvyqY0Xfh6PZcuOVDc8K4N6BZhTZmloNlucKO
-	SDe7lhM9hqS74ohof/OiXVhzMVJuqp4=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-563-jgGo_N4IM2WI6zmN4LSXbA-1; Tue,
- 16 Jun 2026 11:27:23 -0400
-X-MC-Unique: jgGo_N4IM2WI6zmN4LSXbA-1
-X-Mimecast-MFC-AGG-ID: jgGo_N4IM2WI6zmN4LSXbA_1781623638
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4AB4C1955F0D;
-	Tue, 16 Jun 2026 15:27:17 +0000 (UTC)
-Received: from [10.22.81.159] (unknown [10.22.81.159])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 60017180058F;
-	Tue, 16 Jun 2026 15:27:13 +0000 (UTC)
-Message-ID: <cca24d1a-f4c9-43a2-8411-5b2919d4efb0@redhat.com>
-Date: Tue, 16 Jun 2026 11:27:12 -0400
+	 In-Reply-To:Content-Type; b=rZ/dNqXPPQxvyVAuNlj2o1I20D3EOFBdAKFTHP+x8Hkk4V4fMW6c6NDmmK0sYwyR7czaKDZ7mlI5eSw/YPq8lIe5g63onXq94pS/U9xwXVxwP8NAecKWRrVEDE+aHgaxBvlCyAS/7jcsWNeq4kXpjlfvrWqNDWm29HK932wFTqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cQuwGAkw; arc=none smtp.client-ip=209.85.215.173
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-c85c531d4a9so1879863a12.2
+        for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 09:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781628257; x=1782233057; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=t2CCEUKQZKvmLv8dOI8g0/AAZWEkeikspIPGZa/cYB8=;
+        b=cQuwGAkweII/lsClKqNu7AVRCAIN0iw89dSlrImVIrEO4eTa31n3BA0yPvRZRHz/rG
+         Q6tPkt1wsOUE0rAQbhE1NMZymYJbgb2CuyjGTjS44i0++70k64B2OatUZgRJxMO94hSF
+         2mhFuFtDPwNnm5hIWhT8ya7YxoBeLdwpuWlt8lUXt7lTc638oKNdHRiydbNCPriZjmR4
+         VuTOrmTBMOwMCbGpsamb/oYxGmxKBI5cON9VDYlgBNnY3gJPNqoqnoI1cR/Yv89DRP66
+         9Fvw/wzB06YFWGX4oQE5AFgW9hiaPCTPAxSxxlRxFabN92KCHH9/besz/dukHeJ3Ax6L
+         WELQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781628257; x=1782233057;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t2CCEUKQZKvmLv8dOI8g0/AAZWEkeikspIPGZa/cYB8=;
+        b=IYV/ZrCG3hl9rr/LjWrbLHlYhvEiwnBDkIfOjcs0+Fzf3ypxIA0+DBvE8k+H+JCBVf
+         BUhJywbYavGTxZJ+bXBqPq5OajBnOMP4bLmrGWsusKf5ykuvVWq0uPP0V18FSJm9bKco
+         YsrToGvUja0VNmBbN+lAEVLqfqI8UbdgOEyKrW4KsENPhyfefebntmlzHETUlsBAOphN
+         n2GiT9MJ/n/7Nt8eUuTkVRbBjti+//tbqVs86eG09dztanJ5uNpXp2qbEdJed6NPsplN
+         fJ+sN2LsuBamfAmQ87M9qudyDeNUZqm0T7bTKaLhS6SRqGUSDCa0oU+AABsvAy30OFtl
+         9f8A==
+X-Gm-Message-State: AOJu0YzUe0XSY+sm1Rrx8FGI7Uj2hzIw99KF3MqMtJhe1yHv2w7OzPcu
+	1xqrSmKEC3Kd5pex56mhJcJUg1qMLfdXdtGM9FJFIG4rTKarQYHMzUht
+X-Gm-Gg: Acq92OHn4KgM+ijGewjncyn0GPKxkxiVBE74m6M6ul5GW01DOioErOGzeKpOI+h4cGr
+	CyNdmIHODxlJXxBR4S04bHrOrE3bdK46fTd0ADvVJhvIx89vfw1qpKLxTAMcRDDuPHKMEqaZXdv
+	3C9PJbiQatpT7d2x9W4O9I7qil7vWeBLziqK5FSK1JkyXNuBKea6Y1jrbRhOzgU0ByTvEOJiw/X
+	Llo3qDeThtjX+Kx+QX3c1Ewu+8xZKnwsA55dGxBkjIoOAsPekFGJxj4QbGG9lHLfbuaOTR1XG1u
+	wDmIPRXQm+7SYRI4ZnI4qWYvBFgThqpP/r406Glcx2SPPyLGaraKhM3db+ak2s9F/uGPWbgCXdG
+	2U+bmS60OlxYFU4R6NkZ9wfHmmJsdCqmlAABUTP/dDa86at82ungVDYEQG7Rel/uL63bGdGhKlM
+	+SNq0+XWMdyIre9VlE0bLwI6dcyBCb1ASQc1C0/OnVOCOEFR7bdlCzo2n2V6nTEqt8n1qsWRZD/
+	c0/uND2G8Qw06UMzGTjahOl/g==
+X-Received: by 2002:a05:6a21:6d84:b0:3b4:871a:5aaa with SMTP id adf61e73a8af0-3b8b75cbff1mr109629637.26.1781628256881;
+        Tue, 16 Jun 2026 09:44:16 -0700 (PDT)
+Received: from ?IPV6:2400:79e0:1203:64b0:8460:77be:58ac:5bd9? ([2400:79e0:1203:64b0:8460:77be:58ac:5bd9])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-8434ac9cfebsm12407961b3a.9.2026.06.16.09.44.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jun 2026 09:44:16 -0700 (PDT)
+Message-ID: <910b0637-0afe-4533-937c-86ec8076376f@gmail.com>
+Date: Wed, 17 Jun 2026 00:44:13 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -69,94 +86,275 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems,
- not mems_allowed
-To: Gregory Price <gourry@gourry.net>,
- "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Farhad Alemi <farhad.alemi@berkeley.edu>,
- Andrew Morton <akpm@linux-foundation.org>, Farhad Alemi <falemi@asu.edu>,
- Yury Norov <ynorov@nvidia.com>, Joshua Hahn <joshua.hahnjy@gmail.com>,
- Zi Yan <ziy@nvidia.com>, Matthew Brost <matthew.brost@intel.com>,
- Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>,
- Ying Huang <ying.huang@linux.alibaba.com>,
- Alistair Popple <apopple@nvidia.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, stable@vger.kernel.org
-References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
- <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
- <8d3b4561-92cd-4ebc-8462-5fb0fd659e8a@kernel.org>
- <ai_IHvyptWPcTD0y@gourry-fedora-PF4VCD3F>
- <70f486ce-5ef6-4d72-8cc3-7086f4eea930@redhat.com>
- <c1495b1b-9dee-4cd5-ac8e-eeb7a2d968ed@redhat.com>
- <51eafe6c-6622-479b-b391-6d3ff9350e75@kernel.org>
- <ajFTVaMBeu-ViGIC@gourry-fedora-PF4VCD3F>
+Subject: Re: [PATCH V2] blk-cgroup: defer blkcg css_put until blkg is unlinked
+ from queue
+To: Hou Tao <houtao@huaweicloud.com>, yukuai@fygo.io,
+ Zizhi Wo <wozizhi@huaweicloud.com>, axboe@kernel.dk, tj@kernel.org,
+ josef@toxicpanda.com, linux-block@vger.kernel.org
+Cc: cgroups@vger.kernel.org, yangerkun@huawei.com, chengzhihao1@huawei.com
+References: <20260615115556.1225472-1-wozizhi@huaweicloud.com>
+ <70642ddf-9ed9-45cb-bf40-891a07247c97@fnnas.com>
+ <8bdf88b3-0879-e3ec-a52d-3e7559bfddbb@huaweicloud.com>
 Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ajFTVaMBeu-ViGIC@gourry-fedora-PF4VCD3F>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+From: Tang Yizhou <tangyeechou@gmail.com>
+In-Reply-To: <8bdf88b3-0879-e3ec-a52d-3e7559bfddbb@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17003-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17004-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:david@kernel.org,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[berkeley.edu,linux-foundation.org,asu.edu,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:houtao@huaweicloud.com,m:yukuai@fygo.io,m:wozizhi@huaweicloud.com,m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:yangerkun@huawei.com,m:chengzhihao1@huawei.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[tangyeechou@gmail.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ALIAS_RESOLVED(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tangyeechou@gmail.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,fygo.io:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A5C4D69125A
+X-Rspamd-Queue-Id: 4494B6928ED
 
-On 6/16/26 9:44 AM, Gregory Price wrote:
-> On Tue, Jun 16, 2026 at 08:59:07AM +0200, David Hildenbrand (Arm) wrote:
->> On 6/16/26 05:43, Waiman Long wrote:
->>> On 6/15/26 10:26 PM, Waiman Long wrote:
->>>>
->>>> The reason why I am suggesting to use cs->effective_mems to keep the old
->>>> cgroup v1 behavior. If the consensus is to use the output of
->>>> guarantee_online_mems() for mpol_rebind_mm(), I will not be against that but
->>>> it will be a slight change in user-visible behavior.
-> I'm not grok'ing what is user-visible here.
->
-> The two values should effectively be equivalent because we're
-> using this value to constrain mpol's during a hotplug event.
->
-> If the values differed, you would be saying there's a race condition
-> that could affect correctness of the rebind (which can't happen,
-> because this whole thing is done under the hotplug lock btw).
->
-> Can you help me understand?
+On 16/6/26 9:23 am, Hou Tao wrote:
+> Hi,
+> 
+> On 6/16/2026 12:16 AM, Yu Kuai wrote:
+>> Hi，
+>>
+>> 在 2026/6/15 19:55, Zizhi Wo 写道:
+>>> From: Zizhi Wo <wozizhi@huawei.com>
+>>>
+>>> [BUG]
+>>> Our fuzz testing triggered a blkcg use-after-free issue:
+>>>
+>>>    BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
+>>>    Call Trace:
+>>>    ...
+>>>    blkcg_deactivate_policy+0x244/0x4d0
+>>>    ioc_rqos_exit+0x44/0xe0
+>>>    rq_qos_exit+0xba/0x120
+>>>    __del_gendisk+0x50b/0x800
+>>>    del_gendisk+0xff/0x190
+>>>    ...
+>>>
+>>> [CAUSE]
+>>> process1						process2
+>>> cgroup_rmdir
+>>> ...
+>>>    css_killed_work_fn
+>>>      offline_css
+>>>      ...
+>>>        blkcg_destroy_blkgs
+>>>        ...
+>>>          __blkg_release
+>>> 	  css_put(&blkg->blkcg->css)
+>>>            blkg_free
+>>> 	    INIT_WORK(xxx, blkg_free_workfn)
+>>> 	    schedule_work
+>>>      css_put
+>>>      ...
+>>>        blkcg_css_free
+>>>          kfree(blkcg)--------blkcg has been freed!!!
+>>> ====================================schedule_work
+>>>                blkg_free_workfn
+>>> 							__del_gendisk
+>>> 							  rq_qos_exit
+>>> 							    ioc_rqos_exit
+>>> 							      blkcg_deactivate_policy
+>>> 							        mutex_lock(&q->blkcg_mutex)
+>>> 								spin_lock_irq(&q->queue_lock)
+>>> 							        list_for_each_entry(blkg, xxx)
+>>> 								  blkcg = blkg->blkcg
+>>> 								  spin_lock(&blkcg->lock)-------UAF!!!
+>>> 	        mutex_lock(&q->blkcg_mutex)
+>>> 	        spin_lock_irq(&q->queue_lock)
+>>> 	        /* Only then is the blkg removed from the list */
+>>> 	        list_del_init(&blkg->q_node)
+>>>
+>>> As a result, a blkg can still be reachable through q->blkg_list while
+>>> its ->blkcg has already been freed.
+>>>
+>>> [Fix]
+>>> Fix this by deferring the blkcg css_put() until after the blkg has been
+>>> unlinked from q->blkg_list in blkg_free_workfn(). This ensures that the
+>>> blkcg outlives every blkg still reachable through q->blkg_list, so any
+>>> iterator holding q->queue_lock is guaranteed to observe a valid
+>>> blkg->blkcg.
+>>>
+>>> While at it, move css_tryget_online() from blkg_create() into blkg_alloc()
+>>> so that the css reference is owned by the alloc/free pair rather than
+>>> straddling layers:
+>>> blkg_alloc()  <-> blkg_free()
+>>> blkg_create() <-> blkg_destroy()
+>>>
+>>> Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free_workfn() and blkcg_deactivate_policy()")
+>>> Suggested-by: Hou Tao <houtao1@huawei.com>
+>>> Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
+>>> ---
+>>> v2:
+>>>   - Move css_tryget_online() from blkg_create() into blkg_alloc() so the
+>>>     css reference follows the blkg's own lifetime, making the put in
+>>>     blkg_free_workfn() symmetric with the get in blkg_alloc().
+>>>
+>>> v1: https://lore.kernel.org/all/20260518010932.633707-1-wozizhi@huaweicloud.com/
+>>>
+>>>   block/blk-cgroup.c | 24 ++++++++++++------------
+>>>   1 file changed, 12 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+>>> index bc63bd220865..27414c291e49 100644
+>>> --- a/block/blk-cgroup.c
+>>> +++ b/block/blk-cgroup.c
+>>> @@ -132,10 +132,15 @@ static void blkg_free_workfn(struct work_struct *work)
+>>>   	if (blkg->parent)
+>>>   		blkg_put(blkg->parent);
+>>>   	spin_lock_irq(&q->queue_lock);
+>>>   	list_del_init(&blkg->q_node);
+>>>   	spin_unlock_irq(&q->queue_lock);
+>>> +	/*
+>>> +	 * Release blkcg css ref only after blkg is removed from q->blkg_list,
+>>> +	 * so concurrent iterators won't see a blkg with a freed blkcg.
+>>> +	 */
+>>> +	css_put(&blkg->blkcg->css);
+>>>   	mutex_unlock(&q->blkcg_mutex);
+>> Please move css_put after mutex_unlock, unless there is a strong reason.
+> 
+> I think blkcg_mutex is used here to serialize the access of blkg->q_node
+> and blkg->blkcg. We could move the css_put after the mutex_unlock(),
+> however it stills depends on the mutex_lock and mutex_unlock pair on
+> blkcg_mutex implicitly. Instead of such implicit dependency, we move the
+> css_put inside the lock to make it be explicit.
 
-The effective_mems and guarantee_online_mems() should be more or less 
-equivalent for v2, but not for v1. In my response to David, I gave an 
-example of how the behavior will differ.
+Hi, I think I understand your point. Keeping css_put() inside blkcg_mutex makes the dependency explicit, since the same mutex serializes both the removal of blkg->q_node and the access to blkg->blkcg.
 
-Cheers,
-Longman
+Placing css_put() after mutex_unlock(&q->blkcg_mutex) is still functionally correct. The blkg has already been removed from q->blkg_list under the mutex, so once we drop the mutex no iterator can reach this blkg anymore.
+
+The benefit of moving it out is a smaller critical section.
+
+-- 
+Best Regards,
+Yi
+
+>>
+>> With above change, feel free to add:
+>>
+>> Reviewed-by: Yu Kuai <yukuai@fygo.io>
+>>
+>>>   
+>>>   	blk_put_queue(q);
+>>>   	free_percpu(blkg->iostat_cpu);
+>>>   	percpu_ref_exit(&blkg->refcnt);
+>>> @@ -177,12 +182,10 @@ static void __blkg_release(struct rcu_head *rcu)
+>>>   	 * blkg_stat_lock is for serializing blkg stat update
+>>>   	 */
+>>>   	for_each_possible_cpu(cpu)
+>>>   		__blkcg_rstat_flush(blkcg, cpu);
+>>>   
+>>> -	/* release the blkcg and parent blkg refs this blkg has been holding */
+>>> -	css_put(&blkg->blkcg->css);
+>>>   	blkg_free(blkg);
+>>>   }
+>>>   
+>>>   /*
+>>>    * A group is RCU protected, but having an rcu lock does not mean that one
+>>> @@ -311,10 +314,13 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
+>>>   	blkg->iostat_cpu = alloc_percpu_gfp(struct blkg_iostat_set, gfp_mask);
+>>>   	if (!blkg->iostat_cpu)
+>>>   		goto out_exit_refcnt;
+>>>   	if (!blk_get_queue(disk->queue))
+>>>   		goto out_free_iostat;
+>>> +	/* blkg holds a reference to blkcg */
+>>> +	if (!css_tryget_online(&blkcg->css))
+>>> +		goto out_put_queue;
+>>>   
+>>>   	blkg->q = disk->queue;
+>>>   	INIT_LIST_HEAD(&blkg->q_node);
+>>>   	blkg->blkcg = blkcg;
+>>>   	blkg->iostat.blkg = blkg;
+>>> @@ -351,10 +357,12 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
+>>>   
+>>>   out_free_pds:
+>>>   	while (--i >= 0)
+>>>   		if (blkg->pd[i])
+>>>   			blkcg_policy[i]->pd_free_fn(blkg->pd[i]);
+>>> +	css_put(&blkcg->css);
+>>> +out_put_queue:
+>>>   	blk_put_queue(disk->queue);
+>>>   out_free_iostat:
+>>>   	free_percpu(blkg->iostat_cpu);
+>>>   out_exit_refcnt:
+>>>   	percpu_ref_exit(&blkg->refcnt);
+>>> @@ -379,32 +387,26 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
+>>>   	if (blk_queue_dying(disk->queue)) {
+>>>   		ret = -ENODEV;
+>>>   		goto err_free_blkg;
+>>>   	}
+>>>   
+>>> -	/* blkg holds a reference to blkcg */
+>>> -	if (!css_tryget_online(&blkcg->css)) {
+>>> -		ret = -ENODEV;
+>>> -		goto err_free_blkg;
+>>> -	}
+>>> -
+>>>   	/* allocate */
+>>>   	if (!new_blkg) {
+>>>   		new_blkg = blkg_alloc(blkcg, disk, GFP_NOWAIT);
+>>>   		if (unlikely(!new_blkg)) {
+>>>   			ret = -ENOMEM;
+>>> -			goto err_put_css;
+>>> +			goto err_free_blkg;
+>>>   		}
+>>>   	}
+>>>   	blkg = new_blkg;
+>>>   
+>>>   	/* link parent */
+>>>   	if (blkcg_parent(blkcg)) {
+>>>   		blkg->parent = blkg_lookup(blkcg_parent(blkcg), disk->queue);
+>>>   		if (WARN_ON_ONCE(!blkg->parent)) {
+>>>   			ret = -ENODEV;
+>>> -			goto err_put_css;
+>>> +			goto err_free_blkg;
+>>>   		}
+>>>   		blkg_get(blkg->parent);
+>>>   	}
+>>>   
+>>>   	/* invoke per-policy init */
+>>> @@ -440,12 +442,10 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg, struct gendisk *disk,
+>>>   
+>>>   	/* @blkg failed fully initialized, use the usual release path */
+>>>   	blkg_put(blkg);
+>>>   	return ERR_PTR(ret);
+>>>   
+>>> -err_put_css:
+>>> -	css_put(&blkcg->css);
+>>>   err_free_blkg:
+>>>   	if (new_blkg)
+>>>   		blkg_free(new_blkg);
+>>>   	return ERR_PTR(ret);
+>>>   }
+> 
+> 
+
 
 
