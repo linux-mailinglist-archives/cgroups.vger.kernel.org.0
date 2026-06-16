@@ -1,105 +1,127 @@
-Return-Path: <cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17001-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AXuSHW5TMWpkgwUAu9opvQ
-	(envelope-from <cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:45:18 +0200
+	id omViADlUMWqegwUAu9opvQ
+	(envelope-from <cgroups+bounces-17001-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:48:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 774716900F7
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:45:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6AD690169
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 15:48:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gourry.net header.s=google header.b=a3a5F13U;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17000-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gourry.net header.s=google header.b=LCkTe2IB;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17001-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17001-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7C41F30151D6
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 13:45:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0494E30942CA
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jun 2026 13:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1465D334C08;
-	Tue, 16 Jun 2026 13:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A9E33C182;
+	Tue, 16 Jun 2026 13:47:14 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934E22FFDD5
-	for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 13:44:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F4F332EAE
+	for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 13:47:12 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781617498; cv=none; b=TT2NzeliIfpmZ54AFVwYRExLbj7Yj9JBRb1IyO7SPvkaSk6HVkPo0dMMzMw6onwN7LMTHBaN+yL/EhM2l0m+r2JbOMrM07UJZttpWMY6YNj+1uiSy/K/Djzvaom+OB+AKCyodLx+9+3oJd0fJme9J2ibcqQw/oIRkdK+ID21msg=
+	t=1781617634; cv=none; b=sHcnqHtFx+3jKnFMaqVRx9lbRwSVjvBQAfzR+758sbDihhL0RFVGg3cexO299Nn9ChR+UI4qAsXFDRWijHqNOvIRb06voDq+9HvDCBV+TXO8tqC3boAFSCn0LZUWKmOFskOiUDd9avLdJmbwxMqp0q0p+mfC2+LFo/J5A/6VmG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781617498; c=relaxed/simple;
-	bh=2FuiWMyjXh68tYMurmD9NRNYivd+DBtBW0Gd/vXz02s=;
+	s=arc-20240116; t=1781617634; c=relaxed/simple;
+	bh=ON5XRz8lHOpOJ8xktgKhULmQK7Hl4dNNx6xl4pP0U7U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bqceBgkDL5n70XHp3ens9i8zFdAg9wCDHyVlkMYsdv+A1iGFkK8zTQKNSyhq3iR4SF3HSGkTZHba9lWtuP1soOsgtNI1QW3gnphlo4+TE4/2IgOdg0urJAVisYFYV5o0EqKp2+K39PZc/qK1FB39geDcNevQfHkC/jeV5eScvSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=a3a5F13U; arc=none smtp.client-ip=209.85.219.52
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-8dad1718d7dso2175926d6.0
-        for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 06:44:57 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=h4kUzNGniSJY5etw2pBfp3zxmOSdYnPUuLCMrrnzcmij9c1l+w0T5XD28z5DteZPNZ9SBdTgKM84n8GkGPzfku4nXei9bGMpWiFD/R1seGpQU3rGPLAEGrVuefC4QWieipGmzHPrNPTdqgFuzISErmltHp62hbE5EZieFJGD/uA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=LCkTe2IB; arc=none smtp.client-ip=209.85.160.173
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-51788280e71so50753631cf.0
+        for <cgroups@vger.kernel.org>; Tue, 16 Jun 2026 06:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1781617496; x=1782222296; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1781617632; x=1782222432; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2FuiWMyjXh68tYMurmD9NRNYivd+DBtBW0Gd/vXz02s=;
-        b=a3a5F13U7QwjSojqxK6WJWsr4KMcn/68BL5eZED9kbZd8ouwwg8XXmV8kHQjnOkO2e
-         1P1v+UqqXmwqJZ8mmp59WDtd3vgQ8+zEZqM8z/ST8jyv1FWh5a3XIfa9fEA9v95WB+QQ
-         kgx4YRhm5ahRvbo0m3umIfLtC3WvYkLN+L1dMCDxqLtXNVqmjyZG9Ej2goFxVDGHHgov
-         0L/rLIKobc+QB6TlUal3/sB9G2TnlKQNQ4JcT3d/Y68zviH8uSQpCgfum3oj1Bacp/71
-         +jnxAJPKVsw2UZLQS8rIL77dY37VR0nkVrDPZDxf/ddEDgnnoePsAq2MMWc07WHXDf98
-         ZWAA==
+        bh=EvNzegJ7+heyexsBUGAQ0jwoVUjk7efTCiVuRf1VOy0=;
+        b=LCkTe2IBkv5qsv/rAmGrOexkI/ZfXf5q6AV8BqKMOOZ+sHg78vk69hSs+G8iRTCY5v
+         cBhcigAqcSSFuNUN6XPPFKundVuwRQFhop+/+/fUKrv3GG/rLB7va1VT2qASgn0EHkQH
+         fIHaDBVjEL5IiGHZs1jE6KCzQxaM+SSybNLhFBQj9Uwl3v/L2i+i6lch40EIrpPmaVFQ
+         c55fGSwNOIdqM4IPGd8JBp7QTkM8ULCKMIFgubmM5K7RtnuAWHk0qvXXik2UHAk/NcMx
+         SuBqjt0rDc3YlRFJu1MXZNOhDqTDk5tk3S0IND+cMCL74Nhq+x5UQ3pvsyhBUR8CUkD8
+         WwBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781617496; x=1782222296;
+        d=1e100.net; s=20251104; t=1781617632; x=1782222432;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2FuiWMyjXh68tYMurmD9NRNYivd+DBtBW0Gd/vXz02s=;
-        b=WUS9RU9mKwPweBqNj8l5Ffy9VXc+nH+M5zekr4heMRYqLVcKpVrv69RoiORlV6mE+X
-         +pg8yX3K7kSY8gDMojzO7sY+Cq17g64b7G/HXgbya4dYA+skTA3ldFSGVCRJqecNpOYI
-         Y9XV4sMR1qYOeu/oEbi0KYxyE7sLd7n9PImCbD/ytafG8DTtCTKB3E9Y/WpRe0oFA+Tc
-         fx8v80OhU8w+htfLDORknmHq60ehaIks6kVNiEJyOb7NNMmmkCvJiQXOHVtm+6YXjF9p
-         ALtWODEIKVChj1bZjRRhuMKjOeuy90gnGDIPy0ZBBZHjtFw7v2BfcJoLnzqN4Psbn2An
-         7GXQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/GVfoRjzkAuoUm6C793fQed3btmPi3USPx6RawXdEqq63DllwDAqk4f6tKPErSJKd5qp+5g8+P@vger.kernel.org
-X-Gm-Message-State: AOJu0YycqBIDS521lPlf4lONX32ASw73CiAxiApdKqY5n0pB9JvvIZuN
-	BKzoDw623uTqOg3iviushPl1Exte1fO9baeOksP35SbklkwcmanULhn1FmpLGDQXphs=
-X-Gm-Gg: Acq92OE8B9dBJ2/dkkavpkXKkxptnR2qNSnbRjQG2rB9qVo265kSjhhPZT754eJocLZ
-	ZVRVGXIXpq1vxuLfkmWCMEZ7AV74N8vCRIVYkktEUXLDUQ/1YH1ftWj9dIRqDAn2Gcfnv3PFHGH
-	33k6iibOA/WkmJY67499LMTMXLBSWpq7RY1WCi74qFVoej+jVIRDoFOPGzeBnZtIS+gGIvR4IPU
-	8+y6VReXpZs/ZGEPjxt9/4IOjteQ3VP1Eu7V69fyPtib5SFbjE7Aq2vV6hTTKd/h0st9S3IjQaE
-	JKKAHYaNUg3t7eIk169NJnOr61+itFH8xffaQYBff6/XxCtXUEjx1lA3Sc7eC8Nld7MHHduRNim
-	T1ziqOSoad9q+QBzTKEJqBFByB6MSugRiNDjVj1RRaj/v0l6D8YsY5mYboBThGr8WRUmQYeRSIM
-	conGzcxCoZy1XPAjtqvkv3
-X-Received: by 2002:ad4:5d6f:0:b0:8cb:e63e:2a45 with SMTP id 6a1803df08f44-8da1f0168f7mr50299196d6.18.1781617496409;
-        Tue, 16 Jun 2026 06:44:56 -0700 (PDT)
+        bh=EvNzegJ7+heyexsBUGAQ0jwoVUjk7efTCiVuRf1VOy0=;
+        b=eiWLhiVUSj9j6Sp2fX2HWW2twMouzUQZ4pu1hxLqCDKoOqP/g6mTbO33MhwOVHz/pj
+         Tog1rosSKmFoZ5l9FCQgapFtLqRTAphCMdFpe9lg6YPGLey3AGijqemjLkf4q32G5dlW
+         76zzQsCxBxKiKbHvycaxXC3WiCnYQtyCNvKnqgAwkf2q0EXDCBAZohPmzSZk8ya6bikh
+         7qFx3F+eceQIDJhva7i/BUw8yZyNlGk/PDT7gjOR5NbGdzw5iAIn9Js9uUMUu13dmXmp
+         CseIULBCINw8prK2x80stKfvf9iXNkrL3D18/SCobaKO81qK6afyuiBAA7nsVnmnJcUv
+         ck1w==
+X-Forwarded-Encrypted: i=1; AFNElJ/LIynp8sBqBNHhJkhs/nftW8+gJ9Nkx8ypTsfIRmGgzhTLKIIe+adBpynWcWY7P5RqhvLi9+p1@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy3B3jp4/vaViGDXSs1eX1/7S5gT/YDHk5zu4JgeJQfvgIqASMs
+	DCzLqtyi4zSedkPHVQ4eXryISNFjXRbR4PLNjd1DJBsAn/OdkhWDNzfS7Zuyy6TQhk8=
+X-Gm-Gg: Acq92OEF0zOy2MWQhmnLoBWgFOHGtGqyvvi7F0AdWNilqjJgR6/M7/qwjNxKk/8Tee0
+	1E+1UdX675QpfPawObHzMs7xEZ7rbO6sbqj0psMHiDjWPgwzc+M4uqbfMyt4CiJgOfTEFf38ubW
+	WMSu+fmvppUdULfTrg1q/6MuwLDZxIt6XMlOtJFZsaCcCE/ng0RAwapI5y8RFbwBbUTPAIjOccB
+	Jss2e6g+/9n7cOmcjAfPph1tjjThGe6mRvDtfMr2Z3NDBsRYewo2t48d4WdKy10Vrh4FwsV5aYi
+	znsheheht473ef6qUHOdciAo0+1Yij1tkfBNvYlzt8zw59dnlElHjqef4WrYRLyOZFb2RjWMx9k
+	w2z7bjwWDFdmw4s19VSy97AlbcsGZ4zX3YpxCOyXUgBbjPmSkpu1TU6EiHK20oYTiryXQXtyM1c
+	o1SoX9AsazQDXgM5Vgnhyh
+X-Received: by 2002:a05:622a:a6d4:b0:517:7e3a:5ee1 with SMTP id d75a77b69052e-519916d65f2mr43449041cf.1.1781617631680;
+        Tue, 16 Jun 2026 06:47:11 -0700 (PDT)
 Received: from gourry-fedora-PF4VCD3F ([2620:10d:c091:500::3:437e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8d9f4ff2206sm32423616d6.37.2026.06.16.06.44.55
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-517fb84188asm150577021cf.29.2026.06.16.06.47.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jun 2026 06:44:55 -0700 (PDT)
-Date: Tue, 16 Jun 2026 09:44:53 -0400
+        Tue, 16 Jun 2026 06:47:10 -0700 (PDT)
+Date: Tue, 16 Jun 2026 09:47:07 -0400
 From: Gregory Price <gourry@gourry.net>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: Waiman Long <longman@redhat.com>,
-	Farhad Alemi <farhad.alemi@berkeley.edu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Farhad Alemi <falemi@asu.edu>, Yury Norov <ynorov@nvidia.com>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>,
-	Ying Huang <ying.huang@linux.alibaba.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems,
- not mems_allowed
-Message-ID: <ajFTVaMBeu-ViGIC@gourry-fedora-PF4VCD3F>
-References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
- <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
- <8d3b4561-92cd-4ebc-8462-5fb0fd659e8a@kernel.org>
- <ai_IHvyptWPcTD0y@gourry-fedora-PF4VCD3F>
- <70f486ce-5ef6-4d72-8cc3-7086f4eea930@redhat.com>
- <c1495b1b-9dee-4cd5-ac8e-eeb7a2d968ed@redhat.com>
- <51eafe6c-6622-479b-b391-6d3ff9350e75@kernel.org>
+To: Brendan Jackman <brendan.jackman@linux.dev>
+Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+	"David Hildenbrand (Arm)" <david@kernel.org>,
+	Balbir Singh <balbirs@nvidia.com>,
+	lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+	damon@lists.linux.dev, kernel-team@meta.com,
+	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
+	dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, osalvador@suse.de,
+	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com,
+	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
+	apopple@nvidia.com, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, jackmanb@google.com,
+	sj@kernel.org, baolin.wang@linux.alibaba.com, npache@redhat.com,
+	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
+	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
+	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory
+ Nodes (w/ Compressed RAM)
+Message-ID: <ajFT235iYsSJ7nbR@gourry-fedora-PF4VCD3F>
+References: <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F>
+ <ah-0CyZurn5D1ezY@parvat>
+ <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
+ <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
+ <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
+ <d01fb1ed-2418-42ee-aea2-37f9a5c5729c@kernel.org>
+ <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
+ <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
+ <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
+ <DJAGEUY8S09F.3V3HF570G85OF@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -108,65 +130,71 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <51eafe6c-6622-479b-b391-6d3ff9350e75@kernel.org>
+In-Reply-To: <DJAGEUY8S09F.3V3HF570G85OF@linux.dev>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17000-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17001-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:brendan.jackman@linux.dev,m:vbabka@kernel.org,m:david@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@
+ google.com,m:yury.norov@gmail.com,m:linux@rasmusvillemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,m:willy@infradead.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,infradead.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DMARC_NA(0.00)[gourry.net];
 	FORGED_SENDER(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_RECIPIENTS(0.00)[m:david@kernel.org,m:longman@redhat.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[redhat.com,berkeley.edu,linux-foundation.org,asu.edu,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[77];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 774716900F7
+X-Rspamd-Queue-Id: 6E6AD690169
 
-On Tue, Jun 16, 2026 at 08:59:07AM +0200, David Hildenbrand (Arm) wrote:
-> On 6/16/26 05:43, Waiman Long wrote:
-> > On 6/15/26 10:26 PM, Waiman Long wrote:
-> >>
-> >>
-> >> The reason why I am suggesting to use cs->effective_mems to keep the old
-> >> cgroup v1 behavior. If the consensus is to use the output of
-> >> guarantee_online_mems() for mpol_rebind_mm(), I will not be against that but
-> >> it will be a slight change in user-visible behavior.
+On Tue, Jun 16, 2026 at 11:57:42AM +0000, Brendan Jackman wrote:
+> On Mon Jun 15, 2026 at 2:38 PM UTC, Vlastimil Babka (SUSE) wrote:
+> > On 6/12/26 17:29, Gregory Price wrote:
+> >> On Wed, Jun 10, 2026 at 04:12:52PM -0400, Gregory Price wrote:
+> >>> On Wed, Jun 10, 2026 at 08:59:59PM +0200, David Hildenbrand (Arm) wrote:
+> >>> > > 
+> >
+> > I think the memalloc approach is dangerous due to unexpected nesting. There
+> > might be nested page allocations in page allocation itself (due to some
+> > debugging option). But also interrupts do not change what "current" points
+> > to. Suddenly those could start requesting folios and/or private nodes and be
+> > surprised, I'm afraid.
+> 
+> Minor side-note: couldn't we just define it such that the allocator
+> ignores the context when not in_task() (and warn if you try to enter the
+> context while not currently in_task())?
+> 
+> (Don't think this would change the conclusion very much, e.g. doesn't
+> help with the nesting issues. Mostly curious in case I'm missing a
+> detail here).
+>
 
-I'm not grok'ing what is user-visible here.
-
-The two values should effectively be equivalent because we're
-using this value to constrain mpol's during a hotplug event.
-
-If the values differed, you would be saying there's a race condition
-that could affect correctness of the rebind (which can't happen,
-because this whole thing is done under the hotplug lock btw).
-
-Can you help me understand?
+I looked at this - only solves one issue and oh boy is that an obtuse
+confusing condition to understand.  We still suffer from recursion in
+reclaim.
 
 ~Gregory
 
