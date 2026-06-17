@@ -1,238 +1,203 @@
-Return-Path: <cgroups+bounces-17040-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17041-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id QrMsGGyoMmpF3QUAu9opvQ
-	(envelope-from <cgroups+bounces-17040-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:00:12 +0200
+	id yxliJtmpMmqf3QUAu9opvQ
+	(envelope-from <cgroups+bounces-17041-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:06:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD22669A5B6
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB5369A680
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:06:17 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=kraHK5CF;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17040-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17040-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=gourry.net header.s=google header.b="VKY/uljc";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17041-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17041-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B0A5C30D32F9
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 13:56:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8C52B3082C2A
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CAA3F0746;
-	Wed, 17 Jun 2026 13:56:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40C93D47C8;
+	Wed, 17 Jun 2026 14:03:53 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F633D47C8;
-	Wed, 17 Jun 2026 13:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6C5413235
+	for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 14:03:52 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781704609; cv=none; b=Gyu55MPSsACc5oV6ssesPWFKWWoaI4Usc5MhBLC+uSef0PGH2TxSkFMA/VIJ2rcflfoqn+p5hd3SXPBAsUe+hQ4ck2+w+6Jo3xiu40VZCLLFb9umpSM06qCzGcbKe3R9VzSwqGM0/dTEmoZl7u6K4pRT507qeGzyxYrsyCJVK2s=
+	t=1781705033; cv=none; b=i6HGDsufQVyMdqS9Aj5RTem3XxjSuxTd7PT6uTEcIuV8suvAZPd3N3cdQKydFr3WPP9kgQcvMXw0JdI6QB+3JPWfXRVosJ7/52GDfI9xCvU8Y+7XMffmX1wdF8IzIldB6Do9BKvz8t0wNjyApukIpkAG4OGYb9H+nU7TUM0EVFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781704609; c=relaxed/simple;
-	bh=Mi7jxCBuTqaaYC6JDqqn8peOnTfQK8+n6GuPM4X817w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KAzoPT8ikIbuXmMJbBBz2cQoRZAgAyPewdzOFioL/Ns9mslP8YezkfkTl44yKy834CC5kNGjsQeBJsr/Zeh1J3WyLEYcCfH1D/6DvHtpUeO1rB2TX3C8NcryWJyNO+TAiiRqBwC/MS8upL5SgnwyhKnb+G+7kYtbnfi5bwT8rsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kraHK5CF; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A62731F000E9;
-	Wed, 17 Jun 2026 13:56:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781704608;
-	bh=Mi7jxCBuTqaaYC6JDqqn8peOnTfQK8+n6GuPM4X817w=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=kraHK5CF4FrRvFnQJ0VsRChLUJSHWInCzt2ZQlbzcfxiJwaZPkbZb/szb9+MAX+i7
-	 t7gPjz6AE5H0WiV9bYsLcRXHAMXa62IrS8LD2lKFH7hlfwE4/LLR8yYFx14Ja4XU9J
-	 g100+AcmfJ8CMsw7poJskCe+caWz7uE5qvBpnBdyWbrxS7wC6/cWekkczcgFSeaQiH
-	 iqJFBRWZz4HXTsi53E/M1UspG4tGKSACwTcuWuWkDaSbhypB9XoilM0+4Sx/5H4hB7
-	 jnT1bbpPzpCQ0t9EM1W+WtJvaLsHGa48iknWK4LE0Cvcgu+9Ot5Eooe4m25C7IHiYm
-	 x9HRHfRAZV7Ug==
-Message-ID: <78b67a9b-44e5-4649-957a-9d42bfaa098e@kernel.org>
-Date: Wed, 17 Jun 2026 22:56:42 +0900
+	s=arc-20240116; t=1781705033; c=relaxed/simple;
+	bh=95TSTVQlWc9XEmLQ5CRQKISimsK3+z9mzOJYVfT8u2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XiJRDw+wcAifpKCGK/r199tqZ/oCTQafPpugzSeE1gWPyX+KleCNBilglxo7pGnKCeLBVN+UuBMzftK2q6raVF7oU4dW16cxF6tD0tMaI9uUzbqVsLhRseHiuoDMcVegfhCtpRKCVCXNseJEbFGF8LgkV7fdAjK7+UEr5dG3mTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=VKY/uljc; arc=none smtp.client-ip=209.85.160.169
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-5177945a279so65719371cf.0
+        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 07:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1781705031; x=1782309831; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=21pxQXdsUMGW+bGknxxPyRxRyaJDV62jMRhp5DnWHkk=;
+        b=VKY/uljcfnKh99zo5ySSTpXVX7+PQXcN9dydeIP3wAjLilTe7GyGtIKsWKRXaqjfcj
+         V60zh+FXk43C01MtPyaBVrkkdpfCl05MVgB8i39okjylUDiUNSlSKaXk2ht/jc3PilPZ
+         HhjWrtpiTDxksxAS3zbmbcxNEToz6Ha9CTeE3/wQBXkraKZvoeYV3B9KQ5R6VSzel+xv
+         AdZ6a5EFmVMuU9exqmP7Cb3moiTHWGs8es23xSFCEbinplwlXICueJo9ReoXUb2Ee4nR
+         1tRIZrraIrLJCu/UJBEc9RMu9dylL1GP0EbKXIj5hprozLZDygg1KuOwmHEoAInY5eOX
+         yThQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781705031; x=1782309831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=21pxQXdsUMGW+bGknxxPyRxRyaJDV62jMRhp5DnWHkk=;
+        b=ZT9K0roqGBnIbklU1jQe/RuGzGXxgKrEG/IPGxzdMAEofLjkyI2PcHIvMcIDVG9TpO
+         PmfBCau21xWRwDxWh3rwPS4bhXg2XNR53Xd48k9Ssd6QHGJWa81tBpDCe5raH87oYZO9
+         +UDva2wd1XchMXB4545Pw8PS+cqrgv2Rg0Qvu4v0on6j1cRPKpUgBfdyLe0R73bsBM3f
+         132dCe276AN+BRq1G25Qp1Vq3MrdloDQtSjMj2r0GaoBDHFH380FE1kFgCSs9liPJ+JF
+         xcvKI5OoMgYEDUmpRsSMaGJ/T+xdqB6wQrD/cDTmwmnPKnBxrZfYBcXjE7gXEKNULP5W
+         tv+g==
+X-Forwarded-Encrypted: i=1; AFNElJ+uF7wEMv3gWm9NWSQyYC4BSMfIjnZUBGYYYz0C36s2+idOv16TX+TCL1yPklLCTukeFxaD5aTx@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJCTAwK5OKVktxcoVRltjimn5408PN9xhrHpdnd+oECbMYACre
+	7QKN2S2CnIxa6KnE7d0TZoGvjW3zJtr+u5ICL3/8Qmz65QEAJairJvEnz039qXsqUIs=
+X-Gm-Gg: Acq92OFgImHsDSPRYwdPUPnQFZbgmeYV8LOh4qanSG4+G45h4mmXN/cPHj5f1xfiRmx
+	nqnfLf+zG9P2bEjm5nTg6AxmalIafjx7SHgKYpgP0qEzuXN7cL8mEJp42vYA6dBDp3us/CDm+0A
+	L7mjvWy+8oDhPbfwsaIfnDyQMwNtVWZ7ykJydZK/IagrU9pybbcZjFXybdJUupg+Dziq8tEzfmS
+	wKcQByOJTkyGVdHmgWnsLK+tSCDIYStCc3YMx0aXisvfz6eNA5NjculvU0S8VdZH130VklXFmOn
+	qw6HGDiwU5iGWroTIUdPsC0x9ysNPSQHHjdI0iROSAtrCpemuvCyt1cc1RGPNujKtxoUHbQigQe
+	BOnPd01JLCQprZ9pDkxkjvOy7jDwUJziIHq8Y0VJd885Vvm3ekR1Tmnd3TROydQCkY9R8w54p+l
+	FaZOpfWWshow88chYFjEyU
+X-Received: by 2002:a05:622a:4a89:b0:517:82a1:adf1 with SMTP id d75a77b69052e-519a8de2756mr65756641cf.15.1781705031230;
+        Wed, 17 Jun 2026 07:03:51 -0700 (PDT)
+Received: from gourry-fedora-PF4VCD3F ([2620:10d:c091:500::3:ce0d])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-51955b271fbsm134106091cf.22.2026.06.17.07.03.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2026 07:03:50 -0700 (PDT)
+Date: Wed, 17 Jun 2026 10:03:46 -0400
+From: Gregory Price <gourry@gourry.net>
+To: Balbir Singh <balbirs@nvidia.com>
+Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
+	lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+	damon@lists.linux.dev, kernel-team@meta.com,
+	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
+	dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, osalvador@suse.de,
+	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com,
+	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
+	apopple@nvidia.com, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, jackmanb@google.com,
+	sj@kernel.org, baolin.wang@linux.alibaba.com, npache@redhat.com,
+	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
+	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
+	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+Message-ID: <ajKpQgfimm-ztnHv@gourry-fedora-PF4VCD3F>
+References: <20260222084842.1824063-1-gourry@gourry.net>
+ <ag6XyvxR-NU5rGn-@parvat>
+ <ahOqzpzAua96HVkn@gourry-fedora-PF4VCD3F>
+ <ah47NNhuiClgGCdn@parvat>
+ <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F>
+ <ah-0CyZurn5D1ezY@parvat>
+ <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
+ <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
+ <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
+ <ajIb4DJdLGPbMB4V@parvat>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 14/15] mm/slab: remove __GFP_NO_OBJ_EXT usage from
- alloc_slab_obj_exts()
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
- <20260615-slab_alloc_flags-v3-14-ce1146d140fb@kernel.org>
-Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260615-slab_alloc_flags-v3-14-ce1146d140fb@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------3cY5hSMZtGl0G9UhgN7kKCMK"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ajIb4DJdLGPbMB4V@parvat>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-7.26 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17041-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-17040-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS(0.00)[m:balbirs@nvidia.com,m:david@kernel.org,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:yury.norov@gmail.com,m:linux@rasmus
+ villemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[gourry.net];
+	FORGED_SENDER(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[74];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CD22669A5B6
+X-Rspamd-Queue-Id: 0DB5369A680
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------3cY5hSMZtGl0G9UhgN7kKCMK
-Content-Type: multipart/mixed; boundary="------------5rrQhoodNrxJ9Qsb340LQn6A";
- protected-headers="v1"
-From: Harry Yoo <harry@kernel.org>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Message-ID: <78b67a9b-44e5-4649-957a-9d42bfaa098e@kernel.org>
-Subject: Re: [PATCH v3 14/15] mm/slab: remove __GFP_NO_OBJ_EXT usage from
- alloc_slab_obj_exts()
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
- <20260615-slab_alloc_flags-v3-14-ce1146d140fb@kernel.org>
-In-Reply-To: <20260615-slab_alloc_flags-v3-14-ce1146d140fb@kernel.org>
+On Wed, Jun 17, 2026 at 02:02:47PM +1000, Balbir Singh wrote:
+> On Wed, Jun 10, 2026 at 12:37:34PM -0400, Gregory Price wrote:
+> > On Wed, Jun 10, 2026 at 05:00:33PM +0200, David Hildenbrand (Arm) wrote:
+> > > On 6/10/26 12:41, Gregory Price wrote:
+> > > > On Wed, Jun 03, 2026 at 03:00:01PM +1000, Balbir Singh wrote:
+> > > > 
+> > 
+> > For mm/slub.c we can choose to do one of thwo things
+> > 
+> >   1) 100% refuse slab allocations on private nodes, i.e.:
+> > 
+> >      kmalloc_node(..., private_nid, __GFP_THISNODE)
+> > 
+> >      And will fail (return NULL).
+> > 
+> 
+> Doesn't this iterate through N_MEMORY only? N_MEMORY_PRIVATE should not
+> be in the regular for_each(...) loops
+> 
 
---------------5rrQhoodNrxJ9Qsb340LQn6A
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+If a node is in neither FALLBACK nor NOFALLBACK - it is *completely*
+unreachable in the current page allocator.
 
+Next RFC I've reduced this to create a ZONELIST_PRIVATE separate from
+the ZONELIST_FALLBACK and ZONELIST_NOFALLBACK, and an explicit folio
+allocation interface that selects which fallback list to use.
 
+the feedback in the past week has been helpful in honing in on a
+solution that I think is generalizable.  Have just been taking the time
+to test various behaviors to make sure I haven't been regressing any
+userland API/ABIs (mbind, mempolicy, etc).
 
-On 6/15/26 8:54 PM, Vlastimil Babka (SUSE) wrote:
-> __GFP_NO_OBJ_EXT has limited scope within the slab allocator itself and=
-
-> gfp flags are a scarce resource, unlike slab's alloc_flags.
->=20
-> Introduce SLAB_ALLOC_NO_RECURSE alloc flag that has the same intent as
-> __GFP_NO_OBJ_EXT but a more generic name, meaning that a kmalloc()
-> family function should not recurse into another kmalloc*() for the
-> purposes of allocating auxiliary structures (obj_ext arrays or sheaves)=
-=2E
->=20
-> First, replace the __GFP_NO_OBJ_EXT for allocating obj_ext arrays in
-> alloc_slab_obj_exts(). Make use of the newly added kmalloc_flags()
-> function, where we can pass alloc_flags with SLAB_ALLOC_NO_RECURSE
-> added. This will also pass through SLAB_ALLOC_NOLOCK so we don't need
-> to special case kmalloc_nolock() anymore.
->=20
-> Note that until now the kmalloc_nolock() ignored the incoming gfp flags=
-
-> and hardcoded __GFP_ZERO | __GFP_NO_OBJ_EXT. But it's correct to pass o=
-n
-> the incoming gfp flags (only augmented with __GFP_ZERO), because if
-> alloc_flags contain SLAB_ALLOC_NOLOCK, the incoming gfp flags have to
-> be also compatible with it. However, we might have added __GFP_THISNODE=
-
-> for opportunistic slab allocation, as pointed out by Hao Li, and
-> __GFP_COMP by allocate_slab() as pointed out by Shengming Hu. Solve thi=
-s
-> by adding both flags to OBJCGS_CLEAR_MASK as it makes sense to strip
-> them anyway for non-kmalloc_nolock() allocations of sheaves or obj_ext
-> arrays as well.
->=20
-> To avoid recursion of sheaf -> obj_ext -> sheaf -> ... allocations at
-> this patch, until the next patch converts sheaves to
-> SLAB_ALLOC_NO_RECURSE, use both gfp and alloc_flags for obj_ext. The
-> next patch will remove the gfp part.
->=20
-> Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-15-7190909d=
-b118@kernel.org
-> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> ---
-
-Looks good to me,
-Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
-
-With some comments below.
-
-I was worried that perhaps replacing SLAB_ALLOC_NO_RECURSE with
-__GFP_NO_OBJ_EXT will create a cycle of
-
-alloc_slab_obj_exts(SLAB_ALLOC_DEFAULT)
--> kmalloc_flags(SLAB_ALLOC_NO_RECURSE)
--> alloc_from_pcs(SLAB_ALLOC_NO_RECURSE)
--> refill_objects(SLAB_ALLOC_DEFAULT)
--> new_slab(SLAB_ALLOC_DEFAULT)
--> account_slab(SLAB_ALLOC_DEFAULT)
--> alloc_slab_obj_exts(SLAB_ALLOC_DEFAULT)
-
-with __GFP_NO_OBJ_EXT, it would have been passed to refill_objects(),
-but SLAB_ALLOC_NO_RECURSE is not. However this cycle does not exist
-because alloc_slab_obj_exts() clears __GFP_ACCOUNT (as part of
-OBJCG_CLEAR_MASK) and memory profiling itself does not invoke
-alloc_slab_obj_exts() when allocating new slabs if SLAB_ACCOUNT is not
-set (which is interesting, by the way).
-
-Also alloc_slab_obj_exts() propagating SLAB_ALLOC_NEW_SLAB to
-kmalloc_flags() is little bit confusing because it does not have any
-effect due to SLAB_ALLOC_NO_RECURSE.
-
-Those are quite subtle and perhaps worth some attention.
-But technically, should not be a blocker for the patch.
-
---=20
-Cheers,
-Harry / Hyeonggon
-
---------------5rrQhoodNrxJ9Qsb340LQn6A--
-
---------------3cY5hSMZtGl0G9UhgN7kKCMK
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCajKnmgAKCRCGXBN6rc5S
-1haJAQDK3uVXonDI0YBvLzkAybijWZr2Qa7jZx3GhFza1G/qjQD/dcdV6qNgaQS6
-SF4LWQHTO6baylkB0+NrAe4QBdWSKQ8=
-=/47q
------END PGP SIGNATURE-----
-
---------------3cY5hSMZtGl0G9UhgN7kKCMK--
+~Gregory
 
