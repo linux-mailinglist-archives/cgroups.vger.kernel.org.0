@@ -1,362 +1,187 @@
-Return-Path: <cgroups+bounces-17030-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17031-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id c2tRB3yMMmqd1wUAu9opvQ
-	(envelope-from <cgroups+bounces-17030-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:01:00 +0200
+	id OxsrGmSTMmpS2QUAu9opvQ
+	(envelope-from <cgroups+bounces-17031-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:30:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5291A6996A2
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:00:59 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AF6699B83
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:30:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=dlUmciTH;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17030-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17030-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=google.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=suse.com header.s=google header.b=al3ub1Aa;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17031-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17031-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=suse.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5B3C130EF4B6
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 11:53:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4BA0530D2604
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 12:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 949363F0A8C;
-	Wed, 17 Jun 2026 11:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812D03F54C6;
+	Wed, 17 Jun 2026 12:25:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f45.google.com (mail-dl1-f45.google.com [74.125.82.45])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FCA368D42
-	for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 11:53:09 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781697193; cv=pass; b=ds7X1kk3P+jYfLHcm7RFSsnDT/H+tRuVObRNT0tIpk7O8FxSW4IEp3kbkuxBeUEaRGceu6N4Q1y00tcp0EyL+Fj+BldUi6HvYaQhA84LnkTozFs1QOa7jG3RdpTBHYREYIQaPJo5Pd32GPE0SSd+1ST0gy/nHc3hfx6/0+kODL8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781697193; c=relaxed/simple;
-	bh=cUDEvLc6wTYr8D5hsHGI1WTFC3szUreAtdaQwP+TXug=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jZKisdHD7+fWkxXmrxRUKRG8YWoJDAqoKyMuo03TZaSNgurSMcCA0DXEOkH9iTiUT3PibPGrloKGv8w5mgi/3ATbQziYRX9JYly/xiXPl2wgslcLArNQL52fTOhxeFeHBZYKtu1e2UlWxP7aJ0giF3qBDUHu79cN/xXoh6wMi+A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dlUmciTH; arc=pass smtp.client-ip=74.125.82.45
-Received: by mail-dl1-f45.google.com with SMTP id a92af1059eb24-1363fe80fe8so8066377c88.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 04:53:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1781697188; cv=none;
-        d=google.com; s=arc-20240605;
-        b=iq+8FF+ts6Kvzc9vVejeVua9O0NJ3kgN4FmHoFMfvRC0Oz6KzwXtKbiR0S64FEBV1+
-         nsSnFv2md6ynUP8PFlwKBD7SGj2+Y6MB5YwxTy/DNJceUtSm4NQqQwSP7vybMlQX88YQ
-         atqslfOPuHRg8neIaVJ456cKc1K5TEqi5E3fIqmBSercNPzCjt7aWC4Vg15qLWFtdKyN
-         k/O5eI5Mlumc53BXbToIK7V9kPycODfure4u4aPVkDi+rApXODQftaSfGM1qud88jePi
-         Ydj//MbtCA/YYJ5utx5h0yF824SUyrUZKOT83SMHGI8Zl7hU18NQwpLxc1dr4L5pD0xK
-         SzBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=cGlHWuGXeKrZx4UWzJ913wMAVSNzg6yu/EagxfeXFaY=;
-        fh=h4HMeXUJXgHYl/Juqqb4Vr/hsKUcn9h/ThdXNSV34pU=;
-        b=StzChe2MUpEXxE5gP0ExGHLpmVWWzmK6cROA5Z8r1JCpPSfCmgyrP+hmbXOUqlQV6k
-         Q/ZwGkqXO7/QCYjsFTt5w/0vxxnfbCew64Im/X3EbU1xjWDD1uepFOgXyDY7rrO55kdB
-         J0KzQcn3Qscy/gijOWDeE6Hz9MciUUY0wtMafAhG9YG0rsjTkXRs6vyYncp/bG3MQsgb
-         HKHcsXhYSVprs/nViR/EdvNV0stQWGHv0Cp/Z5eLa9e0iJXlSeMjidNTmn85ixQNDvWd
-         qggo6i+XR6cEj0KbhTf6QNHcgUAR4+X3vuWwvmcG5MLZZLt8FYV8Bibkwzv5rV60Vioj
-         pV2Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994303F65FB
+	for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 12:25:19 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781699122; cv=none; b=HqF7HBXwNdCakDBBN2Fcd6IEWYf+Rl3FE4cJzmhsG4VArTZ6a4ZZujQVlb6X0IgGKr26luBVHgwJ5zWfMQI946U8OIv41XCX9gLfQY7YlWy+1pS+lSbajwVyY656HNWqvNl3owXF/rEvQPnEY1nRJbU474l7XYQfRhFsodqtbcM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781699122; c=relaxed/simple;
+	bh=1yJxZq3tkF0bDvOTRpsnisysrPdGXlXB3E4O1ntJTHg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FfRQt1QWnx9g8MT9WMmO5VYuK1f5dwuLZKJ+AJEFQigfXE/FISG63YN7e1OHcgUnvLgg9AXV/wl0ZkSaNLvIKhcKcmM+1bfrRQwTkeM4bg4nQMUBzlpjGySAvUezPmsV1F5k0IFDCJkD4KHUR22wgln9h8LxJuq8Pffio+IsFjo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=al3ub1Aa; arc=none smtp.client-ip=209.85.128.50
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-490ac357c55so53856925e9.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 05:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1781697188; x=1782301988; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cGlHWuGXeKrZx4UWzJ913wMAVSNzg6yu/EagxfeXFaY=;
-        b=dlUmciTHjpPld4YVPPTj7ZqNxrWhFdcF6ia1O2BU5vuIFWNNeCMKw//AbR9r7NAC0h
-         pJ/a3O7qKNzhJBmhZ4Om7rUF8Kim0Mq1tN21POCE7F9f1/YCnehA74QSuUnu9WiRupjW
-         7mOdCbSrqUfx6p6Kh3WNr33SME52wZFA+E2q3ZWnR9vT1VCX6/iodGklmMFgA6rDf0hd
-         vW8PytlerqaMDuGbdzBQcPY1AEocyp2r6C5VRTB4kxAx9k/lnLcFVnKcS6mQ4fo/sITQ
-         5ESdG+uDaQFLRd1GHotyX/bGSRH8jEW6HMXLgv2w7dS78I+E6H3ur4uHbIeKSbNC5Frb
-         9yCw==
+        d=suse.com; s=google; t=1781699118; x=1782303918; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1yJxZq3tkF0bDvOTRpsnisysrPdGXlXB3E4O1ntJTHg=;
+        b=al3ub1Aa+DrvVM6gEt0RcABwn0dqsOPQ81H94gI0H3nh9GyialPhTFd5qEOsHPTU74
+         JZmfLGrLJId7/F6PaUqLQsYMvvDNOAFxc1WEsHIgjSebRtKiTN0Scfw0Sn+9EM6WIB0E
+         LQkQt5nVWCa5gPYxoC/ydL597UQHpBGfB138pdRMJZpPKh3l4zwaqprm3n9aXRxYkH+T
+         4toaU5y3NsvTO8nte6GpVestg4GkoVJOvxrFGQ+Ymwshgx7euPt1pIez3OShMK0r+kto
+         j8zFGVxW986Vd43ctXl7JdQ+TPrTg7LGkpVXEPwMGKJ18Nb4bE61GZNqPjlKP8IkWlGz
+         o/jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781697188; x=1782301988;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cGlHWuGXeKrZx4UWzJ913wMAVSNzg6yu/EagxfeXFaY=;
-        b=ot6yXMhyU/bvhxzuuQh8sQmx7TASmjYPa73EY0gvKycPS07I07g2gdIRl9I1qe5WV3
-         96VyYrVigy022asBuiGS6fAtinV0sCblkDk4y2nyia4OaEvjHs3XplbMxJ5hwM9RD6wO
-         HdqKoSkC7PBUZJvmYc3Z/ziUTrYamjgsxhJ7KlIU+ubTXC7ZgHVRgCK8Fy9tPtgvzoGQ
-         Ki9HnOK411SuXXZ2Hp/FjXAXPa4TQOxpqJdNi6uP4b4iI9i1BfiIsyPLa1w/1S8guZqU
-         rAKW4Bw9D2kqy7lVZ7TCSOacZhg/LM87b+/uaVkLZH/ppKtgB3uzcxbh+wU0RE2lAITO
-         4mSA==
-X-Forwarded-Encrypted: i=1; AFNElJ/v+5u+rJgrWrQgx1Gdn0fTo1boZY8R3TBRGiOXL1UGA8sNqPO1+NhjtopAHtbSQQZD1F42pQ5I@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz29OIhK35vkvVt0oaO7Q0qaq/fhl6aRh4DW0CLxL6WtF96qPCf
-	W5Rgsa7m/EMJCgSZh438eDB6Kk1aLtms6PKrqmqQ4/1xsRm/C1G9MQnJIFs1bK2GgmmstjMBDtr
-	5yRFy78Yo0oCR8mQvkkMssWDqYcwyl8CkGfPhmvQU
-X-Gm-Gg: Acq92OETgmkFznQr8VAWF6FQHeSUCGpot6JFVuJbo+4IROnGy6K5wz6IqXoCiuGa+YT
-	EoNecB2vHTlkyJzugt2t2/r4pVMMLFpKkv0KHqz8gtYElg0Qoob7VmeD9h5V9En+TpHdnxSi3AF
-	R9gLk2rk1h8aRqwAm3+bTJtf5h+V//yAt7xtsF+U4SBdpTmuKDRCPSf8C/ephydW2g+BrkF00I9
-	pvZnpJgL7FNrK4QrVpKEbeZIG9mikTU72vHik/w1FJ5iSZl/ERs4S3GjgP/kAnvYMl2tHae1ptR
-	ICUghJXgNBAPWb2gbcM13xcG0Q==
-X-Received: by 2002:a05:7022:61b:b0:138:43a4:840a with SMTP id
- a92af1059eb24-1398f6de373mr1539573c88.28.1781697187613; Wed, 17 Jun 2026
- 04:53:07 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1781699118; x=1782303918;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1yJxZq3tkF0bDvOTRpsnisysrPdGXlXB3E4O1ntJTHg=;
+        b=mVUy4tvWXGFuR08yvUKfGUKhD3sUZuoKSbEtZ49CjHVt63zI6mRlJBMep8oc5wjzQK
+         mXqRoJLE0X/rXGAZnxurA4llHZXo61nQsj3zqv2g/ZSt2SRReQjLUAp1SLKpuNaXqERz
+         biVg1qlIHWnOBFgcC+O4vqzvZeY5ZJ/WSLJNndsnRRfObTUvqYMBwooJlMOmFuXugjVl
+         +0H7aWFpY6TwfJ6U2XLMYENRC+iPrUB2876EcTsP03OKAM4+MMZFOXfVIPt5dSw9lqN+
+         R/NRREYX2QtW46W8xkAMMnZOyE2ZILGUu1NXutQ7NlzTH9pjgrjgD+BnZAW0dErSLs2s
+         hj1g==
+X-Forwarded-Encrypted: i=1; AFNElJ/RkcMdsiBdg/oTgzL66hZaN0bFjA9XbXmAhftqbdpn7dYH4M2u2WEOqyvjFxzRbEWtBgcecKRk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0vZZHghWx7LMrK8FtdQq0//NAAd+udhMdEXaJhmIW2xjFCkgQ
+	UpZSeSuXehJoj8kikzCcZ7gQauc7NNWGoDbodC2xefUBYv9mBEK6hDl71LE2V2vOpxE=
+X-Gm-Gg: Acq92OFaSrOCfD1TZZZ61lslR4o/AsEd+u4K8L9JSgUxO8rSq7zOfxnR2/1QHx1nR8P
+	W65L70O3yYEd6+uy3nZny8jagnD2oTD4ZRijicLNVWMsP+uKxBK6Xz/YO0FOUPI1LFUGHoax2gP
+	kAQqfNFdbqAfRHswblV2jjChKPAgHS1W3e1f3vp5zjpvRk4TRzM64cAXAsabe9XYpgMQLytB4QB
+	OBdEEBiNfeupfFW3yUis43kuN7lq2lRLGLBOieEcmN4bWI8LzKQS5zPB0jeQo9vkxIJoAtBhlk7
+	rKncRJrTc8PoHzGOgUugOc6sZV/DabdD1kmu41Kv7zuwQaaZxsWiCv5Zhx9k/Dy/jObeNzWOGns
+	goVuInBflgfXnOZDo6wae8h2W7E38lSA4gp3aK2c/5raI/Y4U/MyMrGenKdlw5lBUrrgIVuRTQs
+	Ik9cnLYKPb1XX4X2BIWg==
+X-Received: by 2002:a05:600c:c0d2:10b0:490:e5c1:b8c6 with SMTP id 5b1f17b1804b1-492333a16c3mr51513355e9.8.1781699117684;
+        Wed, 17 Jun 2026 05:25:17 -0700 (PDT)
+Received: from localhost.localdomain ([62.77.90.70])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-49230a9a399sm140088385e9.14.2026.06.17.05.25.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2026 05:25:16 -0700 (PDT)
+Date: Wed, 17 Jun 2026 14:25:14 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Li Wang <li.wang@linux.dev>
+Cc: akpm@linux-foundation.org, tj@kernel.org, longman@redhat.com, 
+	roman.gushchin@linux.dev, hannes@cmpxchg.org, yosry@kernel.org, jiayuan.chen@linux.dev, 
+	nphamcs@gmail.com, chengming.zhou@linux.dev, shuah@kernel.org, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>
+Subject: Re: [PATCH v7 3/8] selftests/cgroup: use runtime page size for
+ zswpin check
+Message-ID: <ajJwNecLWRvX_7Tw@localhost.localdomain>
+References: <20260424040059.12940-1-li.wang@linux.dev>
+ <20260424040059.12940-4-li.wang@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org> <20260615-slab_alloc_flags-v3-1-ce1146d140fb@kernel.org>
-In-Reply-To: <20260615-slab_alloc_flags-v3-1-ce1146d140fb@kernel.org>
-From: Marco Elver <elver@google.com>
-Date: Wed, 17 Jun 2026 13:52:30 +0200
-X-Gm-Features: AVVi8CeSd8DwGdr5fwTjeMrcXBBqYNOxp4cbPTPDwCMkFfaEjjw7vXGVvvRGZ3o
-Message-ID: <CANpmjNNm9jwAHDoNO_u156HEHhAYvSmpbD-rHs9OHdnHAWeKSA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/15] mm/slab: do not init any kfence objects on allocation
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Harry Yoo <harry@kernel.org>, Hao Li <hao.li@linux.dev>, 
-	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Suren Baghdasaryan <surenb@google.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Alexander Potapenko <glider@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="fw3psxfcciuimhrk"
+Content-Disposition: inline
+In-Reply-To: <20260424040059.12940-4-li.wang@linux.dev>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+X-Spamd-Result: default: False [-4.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[elver@google.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-17030-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,redhat.com,linux.dev,cmpxchg.org,gmail.com,kvack.org,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17031-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS(0.00)[m:li.wang@linux.dev,m:akpm@linux-foundation.org,m:tj@kernel.org,m:longman@redhat.com,m:roman.gushchin@linux.dev,m:hannes@cmpxchg.org,m:yosry@kernel.org,m:jiayuan.chen@linux.dev,m:nphamcs@gmail.com,m:chengming.zhou@linux.dev,m:shuah@kernel.org,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:mhocko@kernel.org,m:muchun.song@linux.dev,m:shakeel.butt@linux.dev,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[elver@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
+	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,msgid.link:url,mail.gmail.com:mid,vger.kernel.org:from_smtp]
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost.localdomain:mid,suse.com:dkim,suse.com:email,suse.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,linux.dev:email,cmpxchg.org:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5291A6996A2
+X-Rspamd-Queue-Id: B9AF6699B83
 
-On Mon, 15 Jun 2026 at 13:54, Vlastimil Babka (SUSE) <vbabka@kernel.org> wrote:
->
-> When init (zeroing) on allocation is requested, for kmalloc() we
-> generally have to zero the full object size even if a smaller size is
-> requested, in order to provide krealloc()'s __GFP_ZERO guarantees.
->
-> When we end up allocating a kfence object, kfence performs the zeroing
-> on its own because it has its own redzone beyond the requested size.
-> Thus slab_post_alloc_hook() has an 'init' parameter which has to be
-> evaluated in all callers (via slab_want_init_on_alloc()) and should be
-> false for kfence allocations.
->
-> For kfence allocations in slab_alloc_node() this is achieved by subtly
-> skipping over the slab_want_init_on_alloc() call. Other callers (i.e.
-> kmem_cache_alloc_bulk_noprof()) however evaluate it unconditionally even
-> if they do end up with a kfence allocation. This is only subtly not a
-> problem, as those are not kmalloc allocations and thus the "requested
-> size" equals s->object_size and thus it cannot interfere with kfence's
-> redzone. There's just a unnecessary double zeroing (in both kfence and
-> slab_post_alloc_hook()), but it's all very fragile and contradicts the
-> comment in kfence_guarded_alloc().
->
-> Remove this subtlety and simplify the code by eliminating the init
-> parameter from slab_post_alloc_hook() and make it call
-> slab_want_init_on_alloc() itself. Instead add a is_kfence_address()
-> check before performing the memset, which will start doing the right
-> thing for all callers of slab_post_alloc_hook().
->
-> This potentially adds overhead of the is_kfence_address() check to
-> allocation hotpath, but that one is designed to be as small as possible,
-> and it's only evaluated if zeroing is about to happen. This means (aside
-> from init_on_alloc hardening) only for __GFP_ZERO allocations, and the
-> zeroing itself comes with an overhead likely larger than the added
-> check.
->
-> While at it, refactor the handling of evaluating when KASAN does the
-> init instead of SLUB, with no intended functional changes. A
-> non-functional change is that we don't pass kasan_init as true to
-> kasan_slab_alloc() if kasan has no integrated init, but then the value
-> is ignored anyway, so it's theoretically more correct.
->
-> Thanks to Harry Yoo for the initial refactoring attempt, and for updated
-> comments that are used here.
->
-> Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-2-7190909db118@kernel.org
-> Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
-Reviewed-by: Marco Elver <elver@google.com>
+--fw3psxfcciuimhrk
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v7 3/8] selftests/cgroup: use runtime page size for
+ zswpin check
+MIME-Version: 1.0
 
-> ---
->  mm/kfence/core.c |  2 +-
->  mm/slub.c        | 60 ++++++++++++++++++++++++++------------------------------
->  2 files changed, 29 insertions(+), 33 deletions(-)
+On Fri, Apr 24, 2026 at 12:00:54PM +0800, Li Wang <li.wang@linux.dev> wrote:
+> test_zswapin compares memory.stat:zswpin (counted in pages) against a
+> byte threshold converted with PAGE_SIZE. In cgroup selftests, PAGE_SIZE
+> is hardcoded to 4096, which makes the conversion wrong on systems with
+> non-4K base pages (e.g. 64K).
+>=20
+> As a result, the test requires too many pages to pass and fails
+> spuriously even when zswap is working.
+>=20
+> Use sysconf(_SC_PAGESIZE) for the zswpin threshold conversion so the
+> check matches the actual system page size.
+>=20
+> Signed-off-by: Li Wang <li.wang@linux.dev>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Michal Koutn=FD <mkoutny@suse.com>
+> Cc: Muchun Song <muchun.song@linux.dev>
+> Cc: Nhat Pham <nphamcs@gmail.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Yosry Ahmed <yosry@kernel.org>
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
 >
-> diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-> index 655dc5ce3240..5e0b406924e9 100644
-> --- a/mm/kfence/core.c
-> +++ b/mm/kfence/core.c
-> @@ -500,7 +500,7 @@ static void *kfence_guarded_alloc(struct kmem_cache *cache, size_t size, gfp_t g
->
->         /*
->          * We check slab_want_init_on_alloc() ourselves, rather than letting
-> -        * SL*B do the initialization, as otherwise we might overwrite KFENCE's
-> +        * slab do the initialization, as otherwise it might overwrite KFENCE's
->          * redzone.
->          */
->         if (unlikely(slab_want_init_on_alloc(gfp, cache)))
-> diff --git a/mm/slub.c b/mm/slub.c
-> index e2ee8f1aaccf..d762cbe5d040 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4565,13 +4565,13 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
->
->  static __fastpath_inline
->  bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
-> -                         gfp_t flags, size_t size, void **p, bool init,
-> +                         gfp_t flags, size_t size, void **p,
->                           unsigned int orig_size)
->  {
-> +       bool init = slab_want_init_on_alloc(flags, s);
->         unsigned int zero_size = s->object_size;
-> -       bool kasan_init = init;
-> -       size_t i;
->         gfp_t init_flags = flags & gfp_allowed_mask;
-> +       bool kasan_init = false;
->
->         /*
->          * For kmalloc object, the allocated size (object_size) can be larger
-> @@ -4588,28 +4588,33 @@ bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->                 zero_size = orig_size;
->
->         /*
-> -        * When slab_debug is enabled, avoid memory initialization integrated
-> -        * into KASAN and instead zero out the memory via the memset below with
-> -        * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
-> -        * cause false-positive reports. This does not lead to a performance
-> +        * ARM64 can set memory tags and zero the memory using a single
-> +        * instruction. Since HW_TAGS KASAN uses that while tagging the object,
-> +        * separate zeroing is unnecessary.
-> +        *
-> +        * However, KASAN never zeroes memory when slab_debug is enabled to
-> +        * avoid overwriting SLUB redzones. This does not lead to a performance
->          * penalty on production builds, as slab_debug is not intended to be
->          * enabled there.
->          */
-> -       if (__slub_debug_enabled())
-> -               kasan_init = false;
-> +       if (kasan_has_integrated_init() && !__slub_debug_enabled()) {
-> +               kasan_init = init;
-> +               init = false;
-> +       }
->
-> -       /*
-> -        * As memory initialization might be integrated into KASAN,
-> -        * kasan_slab_alloc and initialization memset must be
-> -        * kept together to avoid discrepancies in behavior.
-> -        *
-> -        * As p[i] might get tagged, memset and kmemleak hook come after KASAN.
-> -        */
-> -       for (i = 0; i < size; i++) {
-> +       for (size_t i = 0; i < size; i++) {
->                 p[i] = kasan_slab_alloc(s, p[i], init_flags, kasan_init);
-> -               if (p[i] && init && (!kasan_init ||
-> -                                    !kasan_has_integrated_init()))
-> +
-> +               /*
-> +                * memset and hooks come after KASAN as p[i] might get tagged
-> +                *
-> +                * kfence zeroes the object instead of SLUB to avoid overwriting
-> +                * its own redzone starting at orig_size, which could happen
-> +                * with SLUB zeroing full s->object_size
-> +                */
-> +               if (init && p[i] && !is_kfence_address(p[i]))
->                         memset(p[i], 0, zero_size);
-> +
->                 if (gfpflags_allow_spinning(flags))
->                         kmemleak_alloc_recursive(p[i], s->object_size, 1,
->                                                  s->flags, init_flags);
-> @@ -4910,7 +4915,6 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
->                 gfp_t gfpflags, int node, unsigned long addr, size_t orig_size)
->  {
->         void *object;
-> -       bool init = false;
->
->         s = slab_pre_alloc_hook(s, gfpflags);
->         if (unlikely(!s))
-> @@ -4926,16 +4930,13 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
->                 object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
->
->         maybe_wipe_obj_freeptr(s, object);
-> -       init = slab_want_init_on_alloc(gfpflags, s);
->
->  out:
->         /*
-> -        * When init equals 'true', like for kzalloc() family, only
-> -        * @orig_size bytes might be zeroed instead of s->object_size
->          * In case this fails due to memcg_slab_post_alloc_hook(),
->          * object is set to NULL
->          */
-> -       slab_post_alloc_hook(s, lru, gfpflags, 1, &object, init, orig_size);
-> +       slab_post_alloc_hook(s, lru, gfpflags, 1, &object, orig_size);
->
->         return object;
->  }
-> @@ -5230,7 +5231,6 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
->                                    struct slab_sheaf *sheaf)
->  {
->         void *ret = NULL;
-> -       bool init;
->
->         if (sheaf->size == 0)
->                 goto out;
-> @@ -5240,10 +5240,8 @@ kmem_cache_alloc_from_sheaf_noprof(struct kmem_cache *s, gfp_t gfp,
->         if (likely(!ret))
->                 ret = sheaf->objects[--sheaf->size];
->
-> -       init = slab_want_init_on_alloc(gfp, s);
-> -
->         /* add __GFP_NOFAIL to force successful memcg charging */
-> -       slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, init, s->object_size);
-> +       slab_post_alloc_hook(s, NULL, gfp | __GFP_NOFAIL, 1, &ret, s->object_size);
->  out:
->         trace_kmem_cache_alloc(_RET_IP_, ret, s, gfp, NUMA_NO_NODE);
->
-> @@ -5423,8 +5421,7 @@ void *_kmalloc_nolock_noprof(DECL_TOKEN_PARAMS(size, token), gfp_t gfp_flags, in
->
->  success:
->         maybe_wipe_obj_freeptr(s, ret);
-> -       slab_post_alloc_hook(s, NULL, alloc_gfp, 1, &ret,
-> -                            slab_want_init_on_alloc(alloc_gfp, s), orig_size);
-> +       slab_post_alloc_hook(s, NULL, alloc_gfp, 1, &ret, orig_size);
->
->         ret = kasan_kmalloc(s, ret, orig_size, alloc_gfp);
->         return ret;
-> @@ -7339,8 +7336,7 @@ bool kmem_cache_alloc_bulk_noprof(struct kmem_cache *s, gfp_t flags,
->
->  out:
->         /* memcg and kmem_cache debug support and memory initialization */
-> -       return likely(slab_post_alloc_hook(s, NULL, flags, size, p,
-> -                       slab_want_init_on_alloc(flags, s), s->object_size));
-> +       return likely(slab_post_alloc_hook(s, NULL, flags, size, p, s->object_size));
->  }
->  EXPORT_SYMBOL(kmem_cache_alloc_bulk_noprof);
->
->
-> --
-> 2.54.0
->
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+
+--fw3psxfcciuimhrk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCajKSJBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AifigEAsoKP16b+0Ymtb3KGVhyI
+va7ay0/8bjusHJQkcZqNicIA/1Wml5S9Nn0nE+3XPCz+4d6nCaUqIpGdRKFGT56w
+XSAD
+=y8NZ
+-----END PGP SIGNATURE-----
+
+--fw3psxfcciuimhrk--
 
