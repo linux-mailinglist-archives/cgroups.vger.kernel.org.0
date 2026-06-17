@@ -1,192 +1,211 @@
-Return-Path: <cgroups+bounces-17042-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17044-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id bbIPIh+xMmq53gUAu9opvQ
-	(envelope-from <cgroups+bounces-17042-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:37:19 +0200
+	id C+0UEfixMmrg3gUAu9opvQ
+	(envelope-from <cgroups+bounces-17044-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:40:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED76169A971
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:37:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6A1069A9D9
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 16:40:55 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=bCG6sPUF;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17042-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17042-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=google.com header.s=20251104 header.b=oA8rh6Q0;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17044-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17044-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=google.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BCD4F30CF5B7
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:37:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3EAB2305A713
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2026 14:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C451244BC92;
-	Wed, 17 Jun 2026 14:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84AE44A71C;
+	Wed, 17 Jun 2026 14:40:14 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C2139DBD4;
-	Wed, 17 Jun 2026 14:37:04 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781707025; cv=none; b=o3Tk2BugwPal5jQmg7/o4ypgl/06MCEciRl1Xa+QedxnShf2k0Bq9qpSoVBXMh+Vk0qWiMH3Ek9kPFx0desbnY/5vhZPZ6Hm/RHWy/nKJOYEeGIZR/dEp+I3ULwU+9FmYUeGy7NB56orcteSYcWUOSYbdgh1pPBk/Ne6LvQBSCg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781707025; c=relaxed/simple;
-	bh=UlarZjz9hb/rXsZr46rmLI8X0P0F5x2cPPGw+EkC9ok=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AnhM0nsGCBvAps+UtwrzgKsdvPtaC09vcbpGxcQpJESwVTUtMBNYwgAvzjzSE4OnWDW34eTiaIS6pnz5kSDULsXaAwdkpTzmW5RV++uDAoknQSnhvc8TNzv/p19TV7tUqIiFLAsOa/kQTjuUEghhtctcysdnQ4pmztXE+5i4m8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bCG6sPUF; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D231F000E9;
-	Wed, 17 Jun 2026 14:37:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781707024;
-	bh=UlarZjz9hb/rXsZr46rmLI8X0P0F5x2cPPGw+EkC9ok=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=bCG6sPUF2jYcVg9dDrzvJNAZYQUr/vuARhv3RVL/2ysFZlxJRvkaCLKyEKXqyzZmI
-	 fKbKuhccmK5+ZPKO+1uZVZB0ofCpLz60PpbOu0FYYXuB6scZApXyb8EeZEN3D9lxLH
-	 AJlDoaz4tghoSEaqJFLVQ8jmUST+zsxuml1CxX9VP0CMiZNU6hyRBV523HcslHcwgl
-	 PLdBbXuyPHbHHlaW/n8bzvfKQIn2pyvhfZCmufP0Aw0Zy878G8TcRRUJVyhP6XukBT
-	 pizbh0YHdGPC+8ZhPXyrH2HKNZ16voiuLOZl/N2PAGcbsc+hVCNSwwahg4+MRBricy
-	 SiujHPqM6gAxg==
-Message-ID: <918fae64-1323-46ea-a86e-3c847a52f174@kernel.org>
-Date: Wed, 17 Jun 2026 23:36:58 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F143DB960
+	for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 14:40:13 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781707214; cv=pass; b=TDVYyKaKbMjYxJu7/5Q81PPBBu5AyJDFbi1XX3glJ3/hvbfqQrmz7MV8ZnbkWc0ZF6A0eUF/5od4j4vW0LfRoHf+TSaQZwuAqDiFlz9ApQM0yt7GBPDIJmzsTwh+0zed7tMShQSsN/VKG8ACWNFsqrsm/W1uUCodXhYupc5oyhk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781707214; c=relaxed/simple;
+	bh=SrECtSXktFVmwe2HfKzsMsXW5gYWCynhrT414gDrZrU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bVhtjcrNbUL7yRI7YmmoLcWRI+FvdDMpGagASVs9Oqj8Zb6f/QX5DvgCBLLv4xxeEoVzQndSKeJ1S+7jlCikc5TQV3LMCa0szZ1tY1Kg1qsPlVMrLVBpKk3XaxeKAYXIsc0GygfE0EpXK7Q/WK2vBWhZGjjvnc8eiegyI2dLAy8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oA8rh6Q0; arc=pass smtp.client-ip=209.85.160.176
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-51765331535so263831cf.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2026 07:40:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781707212; cv=none;
+        d=google.com; s=arc-20240605;
+        b=KGgeqL5AzAi3CmU1A63TGcruW3TT+aT2aQpVoN4AVGtYMJB5AI7d05YdIEwTQK/fWk
+         db5VwKE4rIzToy8GHR7vfRpBFoopYx+qlCsiwoGNItoMQLHP3OmfNbhxl8gEltwZOqH7
+         5rbDzkgZWwVpgeVZOuYQ/3Df0SXQKzjykwpNAl9jp9Hp7/gV1ihPUXgWPSi2YsV+a70A
+         qGx2365ptu2GiiaPuv6MijzS0jrXL30vKqk5cgnV4T+3sG1ZaBGe/CQTyi8fcJAaBtti
+         d/Dkm2xjFAVZyF8tFrsBMDHspvakQuOXeHr6o6o+AiL3WYXfObcq1jAlDxz/xf5Q1LwV
+         8Ihg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=SrECtSXktFVmwe2HfKzsMsXW5gYWCynhrT414gDrZrU=;
+        fh=sflAe4+eaKjFEpMyJ8R4I0OQHzu/i3bhD3C/1I4IthM=;
+        b=OTqXxJ1NRml7Y94nv5mLvg9lC26SUW7eWl9k2+W/CNx51bv2o8gzmmYryVr7NsBheK
+         v08ucJpaZqapLZIFJS2mk1iF5vlW1a2qNRYm3hexdgzc8aZaqenngZ/ZpenKV+dTxUbv
+         E+Mb8oJlFGdt73LOwXq6tdImrE+gIZpYQ06U/oOvsB0zNTllTPf9EC8CKh1LongcIQFa
+         tr4aBJZNKJQuzwjPk1Wotndf/CwfJ41Qij8hGBDMnyW5tQgBQRk75gdth9dbY5q25PgD
+         axP4uBCwfSVKXqvc8aiURbmsy29Lg6PGi7IZvdiBV4HU2yE3YuselwSB7YHFxf7eOC6o
+         w9NQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1781707212; x=1782312012; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SrECtSXktFVmwe2HfKzsMsXW5gYWCynhrT414gDrZrU=;
+        b=oA8rh6Q0pWYj51q2L+7TcECsPzR9YrONFVd3boSeaKzMz12Fn9aup0I5SFSIV0RpAm
+         SKPyZqk+JUtO1bqWlo6CECqvB7ElIYQ+ifgvx2XahtzRH+Zmb9ZKS5Hl003MYOZIaZ3Q
+         MW6LPTeSr5vkbrgAwILdkUdtMahEh4RIsrnl5q6A/ZYmGNa9CZOu+jTnmHX8izKhXoiV
+         L/c4mqbwuL2te3msmIBNpZMyIjxpx8OFQ61bfQldmKThEa8ys3+9TZfIPSY3CfJP5Ubn
+         CHIrksCEIkGRr+TgK2mF8my2Pci7Yop4uussxdfdudkTksdO1/LfsWWm++YXGMVvTw6+
+         PJRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781707212; x=1782312012;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=SrECtSXktFVmwe2HfKzsMsXW5gYWCynhrT414gDrZrU=;
+        b=bW8tsa68kKDr9whRaiMp38sxakRU7XLvMZKPsWkkvbTTbWlU2iOPHnYd6oDH6utzJt
+         4QHx+o6Bsutg4qF5SG3aRl43QORtYtQgB2kgkI7+9RGhuClTLryPGzEfrujxM5VVgtFy
+         S/+EG4G2fI5LCH8IUuqbCMNPKtiY8HuqgMCjrmp6j/R3WtVnJWxhkeiNuKVCspesOru2
+         q4qGXxEQpCH1qoGYingf9O8zSRLlebUqeCBGqB2alaSg2KlXfBHK1mv/6yo/HLhh6Dek
+         Y7afuCxRPnrbFGszoe8Sc8ld725tD2SOgiNCxa0s7TUUw7BDoXTZW2MFooVYYrrARenX
+         8ViA==
+X-Forwarded-Encrypted: i=1; AFNElJ+sPQBgENftg98dq91FAUCk59d1cHONHHXE2WmZg1VvC6mx32h46/XsJdzboOQtZ7HeslJSR3AG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyfGqaOSOjD+R6ZPYDqffaz3Uyv/I03Il/r9pLKAOMx0hnwdBQq
+	5kJus2OsmS+Vg/pzJOaZibBPKAdsNnaoa/5q/fF2TBvVwff35MrKpIo74/I65nz6g1TeM2CoNp2
+	j/esKYn3ZTuo29rLLF8tWcvsIt7T/gvIvkL7CdtZg
+X-Gm-Gg: Acq92OG52Osdpfi/bRcOAc8F47xqPPNIcYi28GqNk2+H919+ajG3BsqM6oaLA4z+vcZ
+	QooCfrYbjq0VFpjjg3bQAV7qAmOU/1pu6DLA9sH895MW9mrzwHqdAJmihGPR0u+1f+j0ZiGCSj/
+	cQwtqkTBotXhP7xJZkBhuF8dRo38c+CGGVxxz+DiwHmK79TZhBDLWbPGZ/JgofPqHDImeAO9tkd
+	B4aYaw3liE/qOtzYOYL7wE3ainC5eY2PDNP6DpCCpTlS3vx7JVaen3SE9U8zTxkFj8YOweDIJz7
+	T4iRWYzE06RLeBhWVyku3l4TZXs=
+X-Received: by 2002:a05:622a:1809:b0:516:ccc0:ee38 with SMTP id
+ d75a77b69052e-519ad992ba9mr7504101cf.9.1781707211224; Wed, 17 Jun 2026
+ 07:40:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 15/15] mm/slab: replace __GFP_NO_OBJ_EXT with
- SLAB_ALLOC_NO_RECURSE for sheaves
+References: <20260610-slab_alloc_flags-v2-0-7190909db118@kernel.org>
+ <20260610-slab_alloc_flags-v2-7-7190909db118@kernel.org> <f9b7935c-f5f0-496c-b55e-1f3feee5c87a@kernel.org>
+ <CAJuCfpE3XfxLmV-DzM5nLqYqGsFJThr-1i4bmEEqMpGZ28RLFQ@mail.gmail.com> <1c63fbca-6ee4-466f-bfb5-5ff25a847607@kernel.org>
+In-Reply-To: <1c63fbca-6ee4-466f-bfb5-5ff25a847607@kernel.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 17 Jun 2026 07:39:59 -0700
+X-Gm-Features: AVVi8Ce_vCvZNT5yYs5Y8bQHsLpdQUSPne6OsjaB_y8AFj79h8otRJdz2a0FfJg
+Message-ID: <CAJuCfpGiDKygFBTAwwiBaXL+dGJjTR232Rd_ARTyAtjEAMkDZQ@mail.gmail.com>
+Subject: Re: [PATCH v2 07/16] mm/slab: replace struct partial_context with slab_alloc_context
 To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
- <20260615-slab_alloc_flags-v3-15-ce1146d140fb@kernel.org>
-Content-Language: en-US
-From: Harry Yoo <harry@kernel.org>
-In-Reply-To: <20260615-slab_alloc_flags-v3-15-ce1146d140fb@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0psGISE63oZNEUmTQW1sVnap"
+Cc: Harry Yoo <harry@kernel.org>, Hao Li <hao.li@linux.dev>, 
+	Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, 
+	kasan-dev@googlegroups.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-7.26 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SIGNED_PGP(-2.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:harry@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[surenb@google.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
-	TAGGED_FROM(0.00)[bounces-17042-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+	TAGGED_FROM(0.00)[bounces-17044-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[surenb@google.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[msgid.link:url,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:email]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: ED76169A971
+X-Rspamd-Queue-Id: A6A1069A9D9
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0psGISE63oZNEUmTQW1sVnap
-Content-Type: multipart/mixed; boundary="------------TBNAO9MmQOQu2Pmqd1aWCBrf";
- protected-headers="v1"
-From: Harry Yoo <harry@kernel.org>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Hao Li <hao.li@linux.dev>, Christoph Lameter <cl@gentwo.org>,
- David Rientjes <rientjes@google.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>,
- Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Message-ID: <918fae64-1323-46ea-a86e-3c847a52f174@kernel.org>
-Subject: Re: [PATCH v3 15/15] mm/slab: replace __GFP_NO_OBJ_EXT with
- SLAB_ALLOC_NO_RECURSE for sheaves
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
- <20260615-slab_alloc_flags-v3-15-ce1146d140fb@kernel.org>
-In-Reply-To: <20260615-slab_alloc_flags-v3-15-ce1146d140fb@kernel.org>
+On Mon, Jun 15, 2026 at 3:01=E2=80=AFAM Vlastimil Babka (SUSE)
+<vbabka@kernel.org> wrote:
+>
+> On 6/15/26 04:36, Suren Baghdasaryan wrote:
+> > On Wed, Jun 10, 2026 at 11:05=E2=80=AFPM Harry Yoo <harry@kernel.org> w=
+rote:
+> >>
+> >>
+> >>
+> >> On 6/11/26 12:40 AM, Vlastimil Babka (SUSE) wrote:
+> >> > Refactor get_from_partial_node(), get_from_any_partial(),
+> >> > get_from_partial() and ___slab_alloc().
+> >> >
+> >> > Remove struct partial_context, which used to be more substantial but
+> >> > shrank as part of the sheaves conversion. Instead pass gfp_flags and
+> >> > pointer to the new slab_alloc_context, which together is a superset =
+of
+> >> > partial_context.
+> >> >
+> >> > This means alloc_flags are now available and we can use them to
+> >> > determine if spinning is allowed, further reducing false positive "n=
+ot
+> >> > allowed" in the slow path due to gfp flags lacking __GFP_RECLAIM.
+> >> >
+> >> > Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> >> > ---
+> >>
+> >> Looks good to me,
+> >> Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
+> >
+> > Ah, nice! The conversion I was anticipating in the previous patch...
+> > I would do this removal of partial_context as patch 6 and then convert
+> > ___slab_alloc() and get_from_any_partial*() altogether in patch 7. I
+> > think that would keep the behavior of the ___slab_alloc() more robust
+> > throughout the patchset. But I would say it's nice to have, not a
+> > must-have.
+>
+> OK, so I switched the order of 6 7 and all the changes from
+> gfpflags_allow_spinning() to alloc_flags_allow_spinning are now in the
+> newly-later patch; the "replace struct partial_context with
+> slab_alloc_context" part has no functional changes. Verified that the end
+> result is exactly the same, and only updated changelogs a bit.
 
---------------TBNAO9MmQOQu2Pmqd1aWCBrf
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Thanks for the refactoring. LGTM.
 
-
-
-On 6/15/26 8:54 PM, Vlastimil Babka (SUSE) wrote:
-> Finish the switch away from __GFP_NO_OBJ_EXT by replacing it with
-> SLAB_ALLOC_NO_RECURSE when allocating empty sheaves. Pass alloc_flags t=
-o
-> [__]alloc_empty_sheaf(). Callers that can't be part of a recursive
-> kmalloc() chain simply pass SLAB_ALLOC_DEFAULT. Use kmalloc_flags()
-> instead of kzalloc() for allocating the sheaf.
->=20
-> With that we can finalize the removal the __GFP_NO_OBJ_EXT handling fro=
-m
-> obj_ext allocations as well, leaving only SLAB_ALLOC_NO_RECURSE in
-> place.
->=20
-> This leaves __GFP_NO_OBJ_EXT with no users in slab, so stop allowing th=
-e
-> flag in kmalloc_nolock().
->=20
-> Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-16-7190909d=
-b118@kernel.org
-> Reviewed-by: Hao Li <hao.li@linux.dev>
-> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> ---
-
-Looks good to me,
-Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
-
---=20
-Cheers,
-Harry / Hyeonggon
-
---------------TBNAO9MmQOQu2Pmqd1aWCBrf--
-
---------------0psGISE63oZNEUmTQW1sVnap
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCajKxCgAKCRCGXBN6rc5S
-1r87AQCEyvL7xwt5erc8QniuHD39QfJrMf+Jct/CdQ6VCpZwHQD9F2GeRLOW2gH8
-BdWpY/PNn1VD0J1HMWM/+M8tRZMkoAw=
-=AtOR
------END PGP SIGNATURE-----
-
---------------0psGISE63oZNEUmTQW1sVnap--
+>
+> > Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Thanks!
+>
+> >>
+> >> --
+> >> Cheers,
+> >> Harry / Hyeonggon
+>
 
