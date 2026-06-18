@@ -1,188 +1,228 @@
-Return-Path: <cgroups+bounces-17072-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id n1hcHBirM2p+EwYAu9opvQ
-	(envelope-from <cgroups+bounces-17072-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:23:52 +0200
+	id T5TVMDmtM2rYEwYAu9opvQ
+	(envelope-from <cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:32:57 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D072B69E6DE
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:23:51 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4806269E79D
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:32:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=bfJZ8O6W;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17072-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17072-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=j2jEFGPE;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D49D93022DDF
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 08:23:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A088D30376B2
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 08:32:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1DF39AD33;
-	Thu, 18 Jun 2026 08:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2713B14DE;
+	Thu, 18 Jun 2026 08:32:05 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355393A1685
-	for <cgroups@vger.kernel.org>; Thu, 18 Jun 2026 08:23:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2C139C632;
+	Thu, 18 Jun 2026 08:32:04 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781771028; cv=none; b=A/mBnnuKj8PwcR88/SiWSarvoToSEB2X4rBCQ5lx0wXrdXYXus9hhq8b75tNN2Marx79m5b8wreBZ5w08YOrp5ZSSN+gTElJ8Bkmdkjgum5fMOdBjCuLx3SqgCvG1nnCzlsY08mm7p3L8btVeBo6R8fwiG08GetgrPeh0U5sElA=
+	t=1781771525; cv=none; b=Re/ZsUoBwyGHcSpTzCyy62Htre/L9iSI9uKoOHThNWCB51uTlxk16HUdAALIwBfc/+LlFRQzjC/qFr843X9WmmOl8tuDzVYUjwOylnmW7VZgN4FNiWofIQ+BXLuwPoElLHwvm/ktUfimLgd+E9ExOINdLKgReqbJxpWJWStUElw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781771028; c=relaxed/simple;
-	bh=pbH1wzXv2lUBjk0W1MD4+Q/EdzDfAA7OAgSSLfvC/Pg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=llI8GBMKqLXIusPqmhlx1o2Aufrmy98lnIyQDs6cOBXdtgmFsWrlveVq5mgz/EPO35eIcqWgD077LTgbhNnFdYCJsk6FNu0KiPGuUxrJRCb0Mjn/zr0u48C6FyeDq8vq6ZG4xmpOk8f+zth8bNUyLrhCaLaUdwmzy/i1CzjNDkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bfJZ8O6W; arc=none smtp.client-ip=95.215.58.171
-Date: Thu, 18 Jun 2026 16:23:32 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1781771024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dN14oRJSbqwIkwKM2Sd6jqKzksJad326cLtI3tbLbjY=;
-	b=bfJZ8O6WD2awZZmLUvzA/vF9D97j0zbcGCT7hs5TGLZkvtVRvAg9wCKDtLDdxOHIPRm/rH
-	+KnXftHvAr6qfI4Hs/4olirIdD/duq5cji1tkOMEOdBk8CcLv07Tl0yjlEKfbqjclJXE85
-	u72nZHF49mtYJ3CjAYaaq35xEAvD8hA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Harry Yoo <harry@kernel.org>, Christoph Lameter <cl@gentwo.org>, 
-	David Rientjes <rientjes@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Suren Baghdasaryan <surenb@google.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 14/15] mm/slab: remove __GFP_NO_OBJ_EXT usage from
- alloc_slab_obj_exts()
-Message-ID: <ajOpMCibPiFTkj6d@fedora>
-References: <20260615-slab_alloc_flags-v3-0-ce1146d140fb@kernel.org>
- <20260615-slab_alloc_flags-v3-14-ce1146d140fb@kernel.org>
- <78b67a9b-44e5-4649-957a-9d42bfaa098e@kernel.org>
- <26c29e4b-09b1-424a-b4e4-3358aac20115@kernel.org>
+	s=arc-20240116; t=1781771525; c=relaxed/simple;
+	bh=uNgb/SC4s+Cl8BiN4hC5BHdxJV6aYS6e0CFl5/hOr/g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=exaGBCCQ/d73/gzc8nnkSGLRUO7N4MEt/VX9Sk/xzhFQuttzv0gqbFr66TzkmPwliKyLavUFqjim0Fl0hyve8vO/n1BWq17HoojkY88HAZlBmLnDVoJKyjJHdHneM0/a6XdicRU0Hp3c2u9kZY1yNO5c+t54/s0yuUfQ2g8tLhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2jEFGPE; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C766C1F000E9;
+	Thu, 18 Jun 2026 08:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781771524;
+	bh=A7kSk5FOjjwX9qzkYqIYgCSl9ULz2D77J4Nkg6zht44=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=j2jEFGPEWL9lzxkVGCvnNtZYdbh7pxmtdsBZwXn6+iEb0YuIKU7gTgPF6WKXSMfp4
+	 usaZPHg+k9PxJ0wAYkulqzXk31waexQkXRLEwIWdUVQnZFCvBGrGmf343JfRuxW7GB
+	 jwE+289txwb9YxL3a1PLpPC6RVeUuhOEMpEtg54JLPSSZmbWQ5r6Dr0VD0esXw3ca8
+	 4B654DM+7BOAjc70LM74Awq64aIXg7mwchJeowJwxVqVcjnL/VbBUzAT447veLzEop
+	 5CHYhmBx8ajvlM2jn1CLZZRHtPfG4RQi7JfZkNcekAHGj/r0KeQOrQkWhCUjYdW6H/
+	 lePv65VCIFDpg==
+Message-ID: <48c80176-369d-40e1-bf6b-1cc72483a8da@kernel.org>
+Date: Thu, 18 Jun 2026 10:31:46 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <26c29e4b-09b1-424a-b4e4-3358aac20115@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory
+ Nodes (w/ Compressed RAM)
+To: Gregory Price <gourry@gourry.net>,
+ Brendan Jackman <brendan.jackman@linux.dev>
+Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Balbir Singh <balbirs@nvidia.com>, lsf-pc@lists.linux-foundation.org,
+ linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+ kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+ dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+ dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com,
+ ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com,
+ akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+ joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+ ying.huang@linux.alibaba.com, apopple@nvidia.com, axelrasmussen@google.com,
+ yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+ linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+ baolin.wang@linux.alibaba.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+ muchun.song@linux.dev, xu.xin16@zte.com.cn, chengming.zhou@linux.dev,
+ jannh@google.com, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
+ pfalcato@suse.de, rientjes@google.com, shakeel.butt@linux.dev,
+ riel@surriel.com, harry.yoo@oracle.com, cl@gentwo.org,
+ roman.gushchin@linux.dev, chrisl@kernel.org, kasong@tencent.com,
+ shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+ zhengqi.arch@bytedance.com, terry.bowman@amd.com,
+ Matthew Wilcox <willy@infradead.org>
+References: <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F>
+ <ah-0CyZurn5D1ezY@parvat> <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
+ <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
+ <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
+ <d01fb1ed-2418-42ee-aea2-37f9a5c5729c@kernel.org>
+ <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
+ <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
+ <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
+ <DJAGEUY8S09F.3V3HF570G85OF@linux.dev>
+ <ajFT235iYsSJ7nbR@gourry-fedora-PF4VCD3F>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <ajFT235iYsSJ7nbR@gourry-fedora-PF4VCD3F>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17073-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_RECIPIENTS(0.00)[m:vbabka@kernel.org,m:harry@kernel.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:surenb@google.com,m:ast@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:dvyukov@google.com,m:kasan-dev@googlegroups.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[hao.li@linux.dev,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,infradead.org];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17072-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:brendan.jackman@linux.dev,m:vbabka@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc
+ @google.com,m:yury.norov@gmail.com,m:linux@rasmusvillemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,m:willy@infradead.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[77];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hao.li@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D072B69E6DE
+X-Rspamd-Queue-Id: 4806269E79D
 
-On Wed, Jun 17, 2026 at 04:36:58PM +0200, Vlastimil Babka (SUSE) wrote:
-> On 6/17/26 15:56, Harry Yoo wrote:
-> > 
-> > 
-> > On 6/15/26 8:54 PM, Vlastimil Babka (SUSE) wrote:
-> >> __GFP_NO_OBJ_EXT has limited scope within the slab allocator itself and
-> >> gfp flags are a scarce resource, unlike slab's alloc_flags.
-> >> 
-> >> Introduce SLAB_ALLOC_NO_RECURSE alloc flag that has the same intent as
-> >> __GFP_NO_OBJ_EXT but a more generic name, meaning that a kmalloc()
-> >> family function should not recurse into another kmalloc*() for the
-> >> purposes of allocating auxiliary structures (obj_ext arrays or sheaves).
-> >> 
-> >> First, replace the __GFP_NO_OBJ_EXT for allocating obj_ext arrays in
-> >> alloc_slab_obj_exts(). Make use of the newly added kmalloc_flags()
-> >> function, where we can pass alloc_flags with SLAB_ALLOC_NO_RECURSE
-> >> added. This will also pass through SLAB_ALLOC_NOLOCK so we don't need
-> >> to special case kmalloc_nolock() anymore.
-> >> 
-> >> Note that until now the kmalloc_nolock() ignored the incoming gfp flags
-> >> and hardcoded __GFP_ZERO | __GFP_NO_OBJ_EXT. But it's correct to pass on
-> >> the incoming gfp flags (only augmented with __GFP_ZERO), because if
-> >> alloc_flags contain SLAB_ALLOC_NOLOCK, the incoming gfp flags have to
-> >> be also compatible with it. However, we might have added __GFP_THISNODE
-> >> for opportunistic slab allocation, as pointed out by Hao Li, and
-> >> __GFP_COMP by allocate_slab() as pointed out by Shengming Hu. Solve this
-> >> by adding both flags to OBJCGS_CLEAR_MASK as it makes sense to strip
-> >> them anyway for non-kmalloc_nolock() allocations of sheaves or obj_ext
-> >> arrays as well.
-> >> 
-> >> To avoid recursion of sheaf -> obj_ext -> sheaf -> ... allocations at
-> >> this patch, until the next patch converts sheaves to
-> >> SLAB_ALLOC_NO_RECURSE, use both gfp and alloc_flags for obj_ext. The
-> >> next patch will remove the gfp part.
-> >> 
-> >> Link: https://patch.msgid.link/20260610-slab_alloc_flags-v2-15-7190909db118@kernel.org
-> >> Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-> >> ---
-> > 
-> > Looks good to me,
-> > Reviewed-by: Harry Yoo (Oracle) <harry@kernel.org>
-> 
-> Thanks!
->  
-> > With some comments below.
-> > 
-> > I was worried that perhaps replacing SLAB_ALLOC_NO_RECURSE with
-> > __GFP_NO_OBJ_EXT will create a cycle of
-> > 
-> > alloc_slab_obj_exts(SLAB_ALLOC_DEFAULT)
-> > -> kmalloc_flags(SLAB_ALLOC_NO_RECURSE)
-> > -> alloc_from_pcs(SLAB_ALLOC_NO_RECURSE)
-> > -> refill_objects(SLAB_ALLOC_DEFAULT)
-> > -> new_slab(SLAB_ALLOC_DEFAULT)
-> > -> account_slab(SLAB_ALLOC_DEFAULT)
-> > -> alloc_slab_obj_exts(SLAB_ALLOC_DEFAULT)
-> > 
-> > with __GFP_NO_OBJ_EXT, it would have been passed to refill_objects(),
-> > but SLAB_ALLOC_NO_RECURSE is not. However this cycle does not exist
-> > because alloc_slab_obj_exts() clears __GFP_ACCOUNT (as part of
-> > OBJCG_CLEAR_MASK) and memory profiling itself does not invoke
-> > alloc_slab_obj_exts() when allocating new slabs if SLAB_ACCOUNT is not
-> > set (which is interesting, by the way).
-> 
-> Hm yeah I think we should propagate alloc_flags to refill_objects() etc, to 
-> avoid later surprise. But can be done as a later cleanup.
->  
-> > Also alloc_slab_obj_exts() propagating SLAB_ALLOC_NEW_SLAB to
-> > kmalloc_flags() is little bit confusing because it does not have any
-> > effect due to SLAB_ALLOC_NO_RECURSE.
-> 
-> OK let's address this one by this fixup:
+On 6/16/26 15:47, Gregory Price wrote:
+> On Tue, Jun 16, 2026 at 11:57:42AM +0000, Brendan Jackman wrote:
+>> On Mon Jun 15, 2026 at 2:38 PM UTC, Vlastimil Babka (SUSE) wrote:
+>>>
+>>> I think the memalloc approach is dangerous due to unexpected nesting. There
+>>> might be nested page allocations in page allocation itself (due to some
+>>> debugging option). But also interrupts do not change what "current" points
+>>> to. Suddenly those could start requesting folios and/or private nodes and be
+>>> surprised, I'm afraid.
+>>
+>> Minor side-note: couldn't we just define it such that the allocator
+>> ignores the context when not in_task() (and warn if you try to enter the
+>> context while not currently in_task())?
+>>
+>> (Don't think this would change the conclusion very much, e.g. doesn't
+>> help with the nesting issues. Mostly curious in case I'm missing a
+>> detail here).
+>>
 
-Both the patch and the fix looks good to me.
-Reviewed-by: Hao Li <hao.li@linux.dev>
+So I took a look at which nested allocations we could end up having, and I
+wonder whether gfp_nested_mask() indicates all these?
+
+If we could reliably identify them, all we'd have to do is safe+restore some
+context (activating a "nested" context).
+
+> 
+> I looked at this - only solves one issue and oh boy is that an obtuse
+> confusing condition to understand.  We still suffer from recursion in
+> reclaim.
+
+Right, we'd have to clear the context before calling into reclaim/compaction
+that does weird things.
+
+I'm sure BPF hooks could just arbitrarily try to allocate pages with
+kmalloc_nolock(). So that would require a context save/restore as well.
 
 -- 
-Thanks,
-Hao
+Cheers,
+
+David
 
