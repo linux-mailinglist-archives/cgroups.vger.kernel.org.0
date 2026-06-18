@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17074-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id T5TVMDmtM2rYEwYAu9opvQ
-	(envelope-from <cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:32:57 +0200
+	id 7X+1AuyvM2pEFAYAu9opvQ
+	(envelope-from <cgroups+bounces-17074-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:44:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4806269E79D
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:32:57 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id C42E069E8C1
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 10:44:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=j2jEFGPE;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17073-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Z7rxWD60;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17074-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17074-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A088D30376B2
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 08:32:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B35A03074B5E
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 08:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2713B14DE;
-	Thu, 18 Jun 2026 08:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03BE3B47C6;
+	Thu, 18 Jun 2026 08:42:05 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2C139C632;
-	Thu, 18 Jun 2026 08:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1EA39E175;
+	Thu, 18 Jun 2026 08:42:04 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781771525; cv=none; b=Re/ZsUoBwyGHcSpTzCyy62Htre/L9iSI9uKoOHThNWCB51uTlxk16HUdAALIwBfc/+LlFRQzjC/qFr843X9WmmOl8tuDzVYUjwOylnmW7VZgN4FNiWofIQ+BXLuwPoElLHwvm/ktUfimLgd+E9ExOINdLKgReqbJxpWJWStUElw=
+	t=1781772125; cv=none; b=na/W0kH3u80Qq3d1HkyVtOCa5v18PkuZL6bvegKeAObzzWwpvzyc5SsOrRF2gueDYRLpfc43MFjlU89krC2K+tOrnjvfgdpxFSORtvwj6boUXCqJt8PvimJ+6X62CJicbulvpA62ldxsdMg1czEjgPndkiRC/nABvfozlizDEUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781771525; c=relaxed/simple;
-	bh=uNgb/SC4s+Cl8BiN4hC5BHdxJV6aYS6e0CFl5/hOr/g=;
+	s=arc-20240116; t=1781772125; c=relaxed/simple;
+	bh=yRNRPBCUPQ0G3xv17DqJoRECg7OmRNWA0tUcK34RFvM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=exaGBCCQ/d73/gzc8nnkSGLRUO7N4MEt/VX9Sk/xzhFQuttzv0gqbFr66TzkmPwliKyLavUFqjim0Fl0hyve8vO/n1BWq17HoojkY88HAZlBmLnDVoJKyjJHdHneM0/a6XdicRU0Hp3c2u9kZY1yNO5c+t54/s0yuUfQ2g8tLhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2jEFGPE; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C766C1F000E9;
-	Thu, 18 Jun 2026 08:31:47 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=DxFkDwtGgsLy+gHIHZk4fVCTPJD0QtrPwD0gd6syskkR0/M8C7kftoSNbQPWhsOZuDnreL9j1Q4r2hNCxUUCvWwajwLmsT0Pwn13z9qmYJEXud9jlA4wJRgWDheAs53xlra8yTC1R8SMU3aALQ05rDhgrJNLu4dUpWoZCsITS98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z7rxWD60; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30C7A1F000E9;
+	Thu, 18 Jun 2026 08:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781771524;
-	bh=A7kSk5FOjjwX9qzkYqIYgCSl9ULz2D77J4Nkg6zht44=;
+	s=k20260515; t=1781772124;
+	bh=RKs9ir66i8mxyfauBkj7MGREb7nDkX7OxGexd1/PnhU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=j2jEFGPEWL9lzxkVGCvnNtZYdbh7pxmtdsBZwXn6+iEb0YuIKU7gTgPF6WKXSMfp4
-	 usaZPHg+k9PxJ0wAYkulqzXk31waexQkXRLEwIWdUVQnZFCvBGrGmf343JfRuxW7GB
-	 jwE+289txwb9YxL3a1PLpPC6RVeUuhOEMpEtg54JLPSSZmbWQ5r6Dr0VD0esXw3ca8
-	 4B654DM+7BOAjc70LM74Awq64aIXg7mwchJeowJwxVqVcjnL/VbBUzAT447veLzEop
-	 5CHYhmBx8ajvlM2jn1CLZZRHtPfG4RQi7JfZkNcekAHGj/r0KeQOrQkWhCUjYdW6H/
-	 lePv65VCIFDpg==
-Message-ID: <48c80176-369d-40e1-bf6b-1cc72483a8da@kernel.org>
-Date: Thu, 18 Jun 2026 10:31:46 +0200
+	b=Z7rxWD60Q8cUSuDSV8lzscOFAMbL0aXmzN4C/T0nU7pITDihMCWBx9FFre95Xo+X+
+	 4fOejYcQmunAe12DyagZb+Ux+4MvZ8wNZVR4yLW/jP8L71G3jO4U04OzFgQz9eBVr6
+	 lSUFxVDQaJ6LDiWOJHYZQ8uKdHMDf3qNLtfCqJbEYBbk4e41s9zk3Tq8Oc9HcTm4/6
+	 FZBJU40l58xnf336bnytkrzP94T7P1UmYX1MAUOx1Pr2CbNzUF3ZFlGoNOn1BcX53E
+	 h0QeRE3N98Rgx5wo5JRT4WO8QawcVu1i2oWksGP3aa1j0diN4RlKKFTRFmsHmeqm0Q
+	 h7J85TSO2JKwQ==
+Message-ID: <38578aea-61c3-4328-aee9-8e7421672647@kernel.org>
+Date: Thu, 18 Jun 2026 10:41:59 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,48 +55,26 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory
- Nodes (w/ Compressed RAM)
-To: Gregory Price <gourry@gourry.net>,
- Brendan Jackman <brendan.jackman@linux.dev>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
- Balbir Singh <balbirs@nvidia.com>, lsf-pc@lists.linux-foundation.org,
- linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
- kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
- dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
- dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com,
- ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com,
- akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
- joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
- ying.huang@linux.alibaba.com, apopple@nvidia.com, axelrasmussen@google.com,
- yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
- linux@rasmusvillemoes.dk, mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
- baolin.wang@linux.alibaba.com, npache@redhat.com, ryan.roberts@arm.com,
- dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
- muchun.song@linux.dev, xu.xin16@zte.com.cn, chengming.zhou@linux.dev,
- jannh@google.com, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
- pfalcato@suse.de, rientjes@google.com, shakeel.butt@linux.dev,
- riel@surriel.com, harry.yoo@oracle.com, cl@gentwo.org,
- roman.gushchin@linux.dev, chrisl@kernel.org, kasong@tencent.com,
- shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
- zhengqi.arch@bytedance.com, terry.bowman@amd.com,
- Matthew Wilcox <willy@infradead.org>
-References: <ah6bDNxlB1zBUnzN@gourry-fedora-PF4VCD3F>
- <ah-0CyZurn5D1ezY@parvat> <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
- <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
- <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
- <d01fb1ed-2418-42ee-aea2-37f9a5c5729c@kernel.org>
- <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
- <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
- <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
- <DJAGEUY8S09F.3V3HF570G85OF@linux.dev>
- <ajFT235iYsSJ7nbR@gourry-fedora-PF4VCD3F>
+Subject: Re: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems,
+ not mems_allowed
+To: Waiman Long <longman@redhat.com>, Gregory Price <gourry@gourry.net>
+Cc: Farhad Alemi <farhad.alemi@berkeley.edu>,
+ Andrew Morton <akpm@linux-foundation.org>, Farhad Alemi <falemi@asu.edu>,
+ Yury Norov <ynorov@nvidia.com>, Joshua Hahn <joshua.hahnjy@gmail.com>,
+ Zi Yan <ziy@nvidia.com>, Matthew Brost <matthew.brost@intel.com>,
+ Rakie Kim <rakie.kim@sk.com>, Byungchul Park <byungchul@sk.com>,
+ Ying Huang <ying.huang@linux.alibaba.com>,
+ Alistair Popple <apopple@nvidia.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, stable@vger.kernel.org
+References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
+ <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
+ <8d3b4561-92cd-4ebc-8462-5fb0fd659e8a@kernel.org>
+ <ai_IHvyptWPcTD0y@gourry-fedora-PF4VCD3F>
+ <70f486ce-5ef6-4d72-8cc3-7086f4eea930@redhat.com>
+ <c1495b1b-9dee-4cd5-ac8e-eeb7a2d968ed@redhat.com>
+ <51eafe6c-6622-479b-b391-6d3ff9350e75@kernel.org>
+ <c61c7925-b9e7-4a6f-82e2-398849ad9f27@redhat.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -143,83 +121,103 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <ajFT235iYsSJ7nbR@gourry-fedora-PF4VCD3F>
+In-Reply-To: <c61c7925-b9e7-4a6f-82e2-398849ad9f27@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17073-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17074-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,infradead.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:brendan.jackman@linux.dev,m:vbabka@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc
- @google.com,m:yury.norov@gmail.com,m:linux@rasmusvillemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,m:willy@infradead.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:gourry@gourry.net,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:falemi@asu.edu,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[77];
+	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_CC(0.00)[berkeley.edu,linux-foundation.org,asu.edu,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4806269E79D
+X-Rspamd-Queue-Id: C42E069E8C1
 
-On 6/16/26 15:47, Gregory Price wrote:
-> On Tue, Jun 16, 2026 at 11:57:42AM +0000, Brendan Jackman wrote:
->> On Mon Jun 15, 2026 at 2:38 PM UTC, Vlastimil Babka (SUSE) wrote:
->>>
->>> I think the memalloc approach is dangerous due to unexpected nesting. There
->>> might be nested page allocations in page allocation itself (due to some
->>> debugging option). But also interrupts do not change what "current" points
->>> to. Suddenly those could start requesting folios and/or private nodes and be
->>> surprised, I'm afraid.
+On 6/16/26 17:23, Waiman Long wrote:
+> On 6/16/26 2:59 AM, David Hildenbrand (Arm) wrote:
+>> On 6/16/26 05:43, Waiman Long wrote:
+>>> BTW, I still prefer the v2 patch. If it is decided we should use the
+>>> guarantee_online_mems() value instead, it will have to be a separate patch with
+>>> changes in the relevant documentation like Documentation/admin-guide/cgroup-v1/
+>>> cpuset.rst.
+>> newmems is "obviously" correct, so I really don't see why we should add
+>> something that needs half a page of text to explain why it is fine -- if newmems
+>> just does the trick?
 >>
->> Minor side-note: couldn't we just define it such that the allocator
->> ignores the context when not in_task() (and warn if you try to enter the
->> context while not currently in_task())?
->>
->> (Don't think this would change the conclusion very much, e.g. doesn't
->> help with the nesting issues. Mostly curious in case I'm missing a
->> detail here).
->>
-
-So I took a look at which nested allocations we could end up having, and I
-wonder whether gfp_nested_mask() indicates all these?
-
-If we could reliably identify them, all we'd have to do is safe+restore some
-context (activating a "nested" context).
-
+>> Please enlighten me.
 > 
-> I looked at this - only solves one issue and oh boy is that an obtuse
-> confusing condition to understand.  We still suffer from recursion in
-> reclaim.
+> Yes, taking newmems is a reasonable choice and there are pros and cons with each
+> options. My focus is more on not changing how v1 cpuset behaves as it is well
+> defined in the v1 cpusets.rst file:
+> 
+>     Requests by a task, using the sched_setaffinity(2) system call to
+>     include CPUs in its CPU affinity mask, and using the mbind(2) and
+>     set_mempolicy(2) system calls to include Memory Nodes in its memory
+>     policy, are both filtered through that task's cpuset, filtering out any
+>     CPUs or Memory Nodes not in that cpuset.  The scheduler will not
+>     schedule a task on a CPU that is not allowed in its cpus_allowed
+>     vector, and the kernel page allocator will not allocate a page on a
+>     node that is not allowed in the requesting task's mems_allowed vector.
+> 
+> v2, OTOH, is more vague as to what setting cpuset.mems will mean and we
+> generally follow what v1 is doing, but we have more leeway of what we can do.
+> 
+> Using newmems will make the above text not totally correct. At least the offline
+> memory nodes will be filtered out which will not be utilized by the task when
+> the offline node becomes online. That is why I am saying that we will have to
+> correct the documentation if we want to make this change.
 
-Right, we'd have to clear the context before calling into reclaim/compaction
-that does weird things.
+So IIUC:
 
-I'm sure BPF hooks could just arbitrarily try to allocate pages with
-kmalloc_nolock(). So that would require a context save/restore as well.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 1335e437098e..cdfc615f35a5 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2645,7 +2645,13 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
+ 
+                migrate = is_memory_migrate(cs);
+ 
+-               mpol_rebind_mm(mm, &cs->mems_allowed);
++               /*
++                * For v1 we can have empty effective_mems, but we cannot
++                * attach any tasks (see cpuset_can_attach_check()). For v2,
++                * it's guaranteed to not be empty.
++                */
++               VM_WARN_ON_ONCE(nodes_empty(cs->effective_mems));
++               mpol_rebind_mm(mm, &cs->effective_mems);
+                if (migrate)
+                        cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
+                else
+
 
 -- 
 Cheers,
