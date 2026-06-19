@@ -1,138 +1,364 @@
-Return-Path: <cgroups+bounces-17084-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17085-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id uHSPMhJfNGoAWQYAu9opvQ
-	(envelope-from <cgroups+bounces-17084-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 23:11:46 +0200
+	id QcyqH787NWrrpQYAu9opvQ
+	(envelope-from <cgroups+bounces-17085-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jun 2026 14:53:19 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CD546A2BC7
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 23:11:46 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 814626A5DCF
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jun 2026 14:53:18 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=NRlpDCJR;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17084-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17084-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=arm.com header.s=foss header.b=LTCcKpXW;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17085-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17085-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=arm.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 908143027DBE
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2026 21:11:44 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AC5A83004C9A
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jun 2026 12:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6583438A1;
-	Thu, 18 Jun 2026 21:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1D1372EC5;
+	Fri, 19 Jun 2026 12:53:11 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B94A284662;
-	Thu, 18 Jun 2026 21:11:38 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8357E372EDB;
+	Fri, 19 Jun 2026 12:53:09 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781817100; cv=none; b=XknVYvuXptZUfaVV6e4MMNTWB2i5P7FyGQdS2fmOXdO+Yp249m9Qy5eDeWvhaq0wFWbhX3pNxPzS8TxcSPGtNdoxbu+DijVVm9F53k982WumXG1V3/5SYn8/OVdrP+fayWw1EnITW48BA2Fnq+TCfo7XN5HMQI4912c6q9iITuE=
+	t=1781873591; cv=none; b=qjXi62j0+cY0ZKwBR3bGG43g+qBrPEVAiGs9kciZ8jBZkzGhihJf0pZYdc5GbqCIyX+v3wL0XW4pbP7NK82I2hAuQNvGmTNgFKwZsLz5MAoBPG+j6aN1p5AHu6mm7M/i48crkYandxShWDNfCbMGKBWKN1gn15APPbzeQcZcHrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781817100; c=relaxed/simple;
-	bh=5J6h2tNPPWn/FYPAOaZ2llids3Y3YxLIy/0yx0sHrgM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YhWUFFfQKIdRhV/Y8p7ASI7wl+jSwpo7RHPrdwaPsqG2jMoC5QNmLrZt2M2QMxToIcGfd0H6BthPgKg7faHUJEkSik3xt9CkgQQTwcBv2xz077ltkd0itC3NQJez2dxkD5mV450K2lpm81DJTwR3sdhW16BOwqa2JigQeRb83kM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NRlpDCJR; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7CC1F000E9;
-	Thu, 18 Jun 2026 21:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781817098;
-	bh=aBAfK0AC8Dm0DX5YdQDLhdJtI8Iuh2HnALm598WNeYA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=NRlpDCJRw0x8mRkCKYUNiDKD/ZijAaUiBQKyxzhdEjNmyjeQAF0QjatXwliSbKJkM
-	 8tYxA9woFXv/dRVXmmFfTAjvmkY91ZRTKmk0N0ac6eeb1bpYXYrD2wgwjK4ryTl+/T
-	 xOOkcUgyRQ6PpKwF05z81XqyS9Sb+vKq4tGJqVqgKfmWpSr1IVP9jEWoiXXwxLe2tJ
-	 juHAj0VC6UigQqEDNSieHZFoxuvPETllOy8jEf25QfpRKFUlMVEn6YbnS9pEOWtL9l
-	 3habm1Q8OHDj68B3+kdS23NlfLI94fgqt2va9UYYhX2GlsERg3EBOwnisLxP3GraIb
-	 JRdklbliVVatw==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Jing Wu <realwujing@gmail.com>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Valentin
- Schneider <vschneid@redhat.com>, "Paul E. McKenney" <paulmck@kernel.org>,
- Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes <joelagnelf@nvidia.com>, Josh
- Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, Uladzislau
- Rezki <urezki@gmail.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Zqiang <qiang.zhang@linux.dev>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Tejun Heo <tj@kernel.org>, Jonathan Corbet
- <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Shuah Khan
- <shuah@kernel.org>, Waiman Long <longman@redhat.com>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Jing Wu <realwujing@gmail.com>, Qiliang
- Yuan <yuanql9@chinatelecom.cn>
-Subject: Re: [PATCH v3 08/13] genirq: Add explicit housekeeping callback for
- managed IRQ migration
-In-Reply-To: <87cxxnegqa.ffs@fw13>
-References: <20260618-wujing-dhm-v3-0-28f1a4d83b68@gmail.com>
- <20260618-wujing-dhm-v3-8-28f1a4d83b68@gmail.com> <87cxxnegqa.ffs@fw13>
-Date: Thu, 18 Jun 2026 23:11:36 +0200
-Message-ID: <87zf0rd053.ffs@fw13>
+	s=arc-20240116; t=1781873591; c=relaxed/simple;
+	bh=ZoYK/NfeRfrHjjGWAH0i3x+/+ZWvMjwFdDPoyC/BlfI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AMuLLLfzgYqA8Q9H84IaNPJ38sKeOcvzGfPQXA/JQgO8WZQIES4ADxbvLOP5HHyrHYcRS42OFXeZVg8r3kp9XBbmTBTiJXfwWJP2QZJs0XuyQrbyGZN7nDajlPTah5aWqqOHUUUJjVC9aK9DuVbGyH/tcf+13KpDcB5fAE9CSMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; dkim=pass (1024-bit key) header.d=arm.com header.i=@arm.com header.b=LTCcKpXW; arc=none smtp.client-ip=217.140.110.172
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F5B5339;
+	Fri, 19 Jun 2026 05:53:04 -0700 (PDT)
+Received: from [10.163.166.1] (unknown [10.163.166.1])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA8CB3F62B;
+	Fri, 19 Jun 2026 05:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arm.com; s=foss;
+	t=1781873588; bh=ZoYK/NfeRfrHjjGWAH0i3x+/+ZWvMjwFdDPoyC/BlfI=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LTCcKpXWRTWAIFxamoizT7xDCcTR7bQKWKNZb8mQcqZBOHyNXFy6XRDMvhiJzf7NF
+	 vjuI2ht2lUlzVSjiuT212vEyL0HT8WwjdvEcdcgKfJW2L7z9d24FytiaegrlOFOSIC
+	 m4V68+uHN8IUY01HLtBscTTRGmVsbQo+cLN6nUd4=
+Message-ID: <15973e53-5774-428c-96c4-675eea600788@arm.com>
+Date: Fri, 19 Jun 2026 18:23:01 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: [REGRESSION] [PATCH v2 1/2] mm: vmalloc: streamline vmalloc memory
+ accounting
+To: Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Joshua Hahn
+ <joshua.hahnjy@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Ryan Roberts <ryan.roberts@arm.com>
+References: <20260223160147.3792777-1-hannes@cmpxchg.org>
+Content-Language: en-US
+From: Aishwarya Rambhadran <aishwarya.rambhadran@arm.com>
+In-Reply-To: <20260223160147.3792777-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[arm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[arm.com:s=foss];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:realwujing@gmail.com,m:mingo@redhat.com,m:peterz@infradead.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:paulmck@kernel.org,m:frederic@kernel.org,m:neeraj.upadhyay@kernel.org,m:joelagnelf@nvidia.com,m:josh@joshtriplett.org,m:boqun@kernel.org,m:urezki@gmail.com,m:mathieu.desnoyers@efficios.com,m:jiangshanlai@gmail.com,m:qiang.zhang@linux.dev,m:anna-maria@linutronix.de,m:tj@kernel.org,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:shuah@kernel.org,m:longman@redhat.com,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,redhat.com,infradead.org,linaro.org,arm.com,goodmis.org,google.com,suse.de,kernel.org,nvidia.com,joshtriplett.org,efficios.com,linux.dev,linutronix.de,lwn.net,linuxfoundation.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-17084-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-17085-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:akpm@linux-foundation.org,m:urezki@gmail.com,m:joshua.hahnjy@gmail.com,m:mhocko@suse.com,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ryan.roberts@arm.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[aishwarya.rambhadran@arm.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,suse.com,linux.dev,kvack.org,vger.kernel.org,arm.com];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,chinatelecom.cn];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[aishwarya.rambhadran@arm.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[arm.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,fw13:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,arm.com:dkim,arm.com:mid,arm.com:from_mime,cmpxchg.org:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7CD546A2BC7
+X-Rspamd-Queue-Id: 814626A5DCF
 
-On Thu, Jun 18 2026 at 22:27, Thomas Gleixner wrote:
-> On Thu, Jun 18 2026 at 11:11, Jing Wu wrote:
->> +		 */
->> +		if (irqd_affinity_is_managed(&desc->irq_data)) {
+Hi Johannes,
+
+We have observed kernel performance regressions in vmalloc benchmarks
+when comparing v7.0 mainline results against later releases in the v7.1
+cycle.
+The regressions were detected by Fastpath, our automated kernel
+performance benchmark and regression tracking framework.
+Independent bisections on multiple arm64 systems consistently
+identify this patch as the root cause. The regressions are reproducible
+on both AWS Graviton3 & AmpereOne systems.
+
+Fastpath bisection details :
+Benchmark - micromm/vmalloc
+Test - fix_size_alloc_test: p:512, h:1, l:100000
+Good Kernel - v7.0
+Bad Kernel - v7.1-rc4
+
+The measured regression for the above test is approximately 32.5%
+on AWS Graviton3. Similar regressions are observed across multiple
+tests within the vmalloc benchmark suite as well as on AmpereOne.
+
+Below given are the performance benchmark results of vmalloc
+suite generated by Fastpath Tool, for v7.1 kernel version relative to
+the base version v7.0, executed on the AWS Graviton3 SUT. Label (R)
+mean statistically significant regression, where "statistically 
+significant"
+means the 95% confidence intervals do not overlap.
+
+v7.0 (base) | v7.1
+-------------------------------------------------------------------
+fix_align_alloc_test: p:1, h:0, l:500000
+895106.67 | (R) -10.73%
+
+fix_size_alloc_test: p:1, h:0, l:500000
+336785.00 | (R) -7.31%
+
+fix_size_alloc_test: p:4, h:0, l:500000
+529652.83 | (R) -13.11%
+
+fix_size_alloc_test: p:16, h:0, l:500000
+1043412.50 | (R) -21.92%
+
+fix_size_alloc_test: p:16, h:1, l:500000
+1015795.83 | (R) -22.02%
+
+fix_size_alloc_test: p:64, h:0, l:100000
+643074.33 | (R) -25.91%
+
+fix_size_alloc_test: p:64, h:1, l:100000
+607604.00 | (R) -27.31%
+
+fix_size_alloc_test: p:256, h:0, l:100000
+2367906.50 | (R) -27.67%
+
+fix_size_alloc_test: p:256, h:1, l:100000
+2275464.67 | (R) -28.66%
+
+fix_size_alloc_test: p:512, h:0, l:100000
+4696069.17 | (R) -28.15%
+
+fix_size_alloc_test: p:512, h:1, l:100000
+3767292.00 | (R) -32.65%
+
+full_fit_alloc_test: p:1, h:0, l:500000
+493884.17 | (R) -12.38%
+
+kvfree_rcu_1_arg_vmalloc_test: p:1, h:0, l:500000
+354542.83 | -2.31%
+
+kvfree_rcu_2_arg_vmalloc_test: p:1, h:0, l:500000
+358082.83 | -1.53%
+
+long_busy_list_alloc_test: p:1, h:0, l:500000
+5490101.33 | (R) -25.85%
+
+pcpu_alloc_test: p:1, h:0, l:500000
+193634.00 | -1.53%
+
+random_size_align_alloc_test: p:1, h:0, l:500000
+1200206.83 | (R) -11.88%
+
+random_size_alloc_test: p:1, h:0, l:500000
+2875736.33 | (R) -24.41%
+
+vm_map_ram_test: p:1, h:0, l:500000
+81204.33 | -0.28%
+-------------------------------------------------------------------
+
+The regression signal appears stable across repeated runs.
+Have you seen similar effects before, or is there an expected
+behavioral change associated with the conversion from the
+custom atomic accounting to vmstat counters that could
+explain this result ?
+
+We would be happy to provide additional performance data,
+kernel configurations or any other details if useful.
+
+Thank you.
+Aishwarya Rambhadran
+
+On 23/02/26 9:31 PM, Johannes Weiner wrote:
+> Use a vmstat counter instead of a custom, open-coded atomic. This has
+> the added benefit of making the data available per-node, and prepares
+> for cleaning up the memcg accounting as well.
 >
-> So you set the affinity even on an interrupt which is shutdown?
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>   fs/proc/meminfo.c       |  3 ++-
+>   include/linux/mmzone.h  |  1 +
+>   include/linux/vmalloc.h |  3 ---
+>   mm/vmalloc.c            | 19 ++++++++++---------
+>   mm/vmstat.c             |  1 +
+>   5 files changed, 14 insertions(+), 13 deletions(-)
 >
->> +			const struct cpumask *mask;
->> +			struct cpumask *tmp = this_cpu_ptr(&__tmp_mask);
-
-How is this correct? You cannot get the per cpu pointer in preemptible
-context. The task might be migrated and then fiddle with the wrong
-per CPU data. But that's moot as this code is broken anyway.
-
+> V2:
+> - Fix mod_node_page_state() pgdat argument (Shakeel)
+>
+> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+> index a458f1e112fd..549793f44726 100644
+> --- a/fs/proc/meminfo.c
+> +++ b/fs/proc/meminfo.c
+> @@ -126,7 +126,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+>   	show_val_kb(m, "Committed_AS:   ", committed);
+>   	seq_printf(m, "VmallocTotal:   %8lu kB\n",
+>   		   (unsigned long)VMALLOC_TOTAL >> 10);
+> -	show_val_kb(m, "VmallocUsed:    ", vmalloc_nr_pages());
+> +	show_val_kb(m, "VmallocUsed:    ",
+> +		    global_node_page_state(NR_VMALLOC));
+>   	show_val_kb(m, "VmallocChunk:   ", 0ul);
+>   	show_val_kb(m, "Percpu:         ", pcpu_nr_pages());
+>   
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index fc5d6c88d2f0..64df797d45c6 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -220,6 +220,7 @@ enum node_stat_item {
+>   	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
+>   	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
+>   	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
+> +	NR_VMALLOC,
+>   	NR_KERNEL_STACK_KB,	/* measured in KiB */
+>   #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+>   	NR_KERNEL_SCS_KB,	/* measured in KiB */
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index e8e94f90d686..3b02c0c6b371 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -286,8 +286,6 @@ int unregister_vmap_purge_notifier(struct notifier_block *nb);
+>   #ifdef CONFIG_MMU
+>   #define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
+>   
+> -unsigned long vmalloc_nr_pages(void);
+> -
+>   int vm_area_map_pages(struct vm_struct *area, unsigned long start,
+>   		      unsigned long end, struct page **pages);
+>   void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
+> @@ -304,7 +302,6 @@ static inline void set_vm_flush_reset_perms(void *addr)
+>   #else  /* !CONFIG_MMU */
+>   #define VMALLOC_TOTAL 0UL
+>   
+> -static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+>   static inline void set_vm_flush_reset_perms(void *addr) {}
+>   #endif /* CONFIG_MMU */
+>   
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index e286c2d2068c..a5fc7795aafd 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -1063,14 +1063,8 @@ static BLOCKING_NOTIFIER_HEAD(vmap_notify_list);
+>   static void drain_vmap_area_work(struct work_struct *work);
+>   static DECLARE_WORK(drain_vmap_work, drain_vmap_area_work);
+>   
+> -static __cacheline_aligned_in_smp atomic_long_t nr_vmalloc_pages;
+>   static __cacheline_aligned_in_smp atomic_long_t vmap_lazy_nr;
+>   
+> -unsigned long vmalloc_nr_pages(void)
+> -{
+> -	return atomic_long_read(&nr_vmalloc_pages);
+> -}
+> -
+>   static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
+>   {
+>   	struct rb_node *n = root->rb_node;
+> @@ -3463,11 +3457,11 @@ void vfree(const void *addr)
+>   		 * High-order allocs for huge vmallocs are split, so
+>   		 * can be freed as an array of order-0 allocations
+>   		 */
+> +		if (!(vm->flags & VM_MAP_PUT_PAGES))
+> +			dec_node_page_state(page, NR_VMALLOC);
+>   		__free_page(page);
+>   		cond_resched();
+>   	}
+> -	if (!(vm->flags & VM_MAP_PUT_PAGES))
+> -		atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
+>   	kvfree(vm->pages);
+>   	kfree(vm);
+>   }
+> @@ -3655,6 +3649,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>   			continue;
+>   		}
+>   
+> +		mod_node_page_state(page_pgdat(page), NR_VMALLOC, 1 << large_order);
+> +
+>   		split_page(page, large_order);
+>   		for (i = 0; i < (1U << large_order); i++)
+>   			pages[nr_allocated + i] = page + i;
+> @@ -3675,6 +3671,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>   	if (!order) {
+>   		while (nr_allocated < nr_pages) {
+>   			unsigned int nr, nr_pages_request;
+> +			int i;
+>   
+>   			/*
+>   			 * A maximum allowed request is hard-coded and is 100
+> @@ -3698,6 +3695,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>   							nr_pages_request,
+>   							pages + nr_allocated);
+>   
+> +			for (i = nr_allocated; i < nr_allocated + nr; i++)
+> +				inc_node_page_state(pages[i], NR_VMALLOC);
+> +
+>   			nr_allocated += nr;
+>   
+>   			/*
+> @@ -3722,6 +3722,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>   		if (unlikely(!page))
+>   			break;
+>   
+> +		mod_node_page_state(page_pgdat(page), NR_VMALLOC, 1 << order);
+> +
+>   		/*
+>   		 * High-order allocations must be able to be treated as
+>   		 * independent small pages by callers (as they can with
+> @@ -3864,7 +3866,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>   			vmalloc_gfp_adjust(gfp_mask, page_order), node,
+>   			page_order, nr_small_pages, area->pages);
+>   
+> -	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+>   	/* All pages of vm should be charged to same memcg, so use first one. */
+>   	if (gfp_mask & __GFP_ACCOUNT && area->nr_pages)
+>   		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index d6e814c82952..bc199c7cd07b 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1270,6 +1270,7 @@ const char * const vmstat_text[] = {
+>   	[I(NR_KERNEL_MISC_RECLAIMABLE)]		= "nr_kernel_misc_reclaimable",
+>   	[I(NR_FOLL_PIN_ACQUIRED)]		= "nr_foll_pin_acquired",
+>   	[I(NR_FOLL_PIN_RELEASED)]		= "nr_foll_pin_released",
+> +	[I(NR_VMALLOC)]				= "nr_vmalloc",
+>   	[I(NR_KERNEL_STACK_KB)]			= "nr_kernel_stack",
+>   #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+>   	[I(NR_KERNEL_SCS_KB)]			= "nr_shadow_call_stack",
 
 
