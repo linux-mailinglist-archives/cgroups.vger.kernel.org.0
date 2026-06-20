@@ -1,362 +1,249 @@
-Return-Path: <cgroups+bounces-17087-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17088-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id gSChAAQPNmr17AYAu9opvQ
-	(envelope-from <cgroups+bounces-17087-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 05:54:44 +0200
+	id 0wt0KLhDNmrh8wYAu9opvQ
+	(envelope-from <cgroups+bounces-17088-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 09:39:36 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E256A849D
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 05:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A7C6A8806
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 09:39:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b="QVuweg2/";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17087-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17087-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=LrqFVLcL;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17088-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17088-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5ECC73038176
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 03:54:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CA7DE3030134
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 07:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736551FF7C8;
-	Sat, 20 Jun 2026 03:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C24FA372055;
+	Sat, 20 Jun 2026 07:39:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AFB2BB17;
-	Sat, 20 Jun 2026 03:54:36 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781927679; cv=fail; b=CktIPQZqv7sBO8nTXDYZ4UHpSsZj5vLXcvqkWW1N1u0bvYWc2irfbXFiF4KtUHL5XP664dCoCyRMKNrGmDiBc7JQeh6/cdJYK9XVaECjDpIHXeJGkyZCKCqJlbBNorwq/EMDVJyHv/OwBW6FU8HMKdVo84qlx+N4Yak2oWl9frI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781927679; c=relaxed/simple;
-	bh=WIm1kmcEf/7OGmZtbA0r4PzDqFUBEympjJCPKYBOY4k=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dApFvEtk/yz44nw+/eD6Bt5DymQp5pQw2PNc/10pheDO0jtejs0dXUNkzviwBfORo9RbqsqSin4Z9rIHleKXEVxqO6/+YNb2OTQG9y0WTL5rrZuESr8/3ToYG3EbYbaVE3D4ujSeM18Jv6llEsDit1BTJVuUEA0hdGIgI4fqBOU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QVuweg2/; arc=fail smtp.client-ip=198.175.65.21
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1781927677; x=1813463677;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=WIm1kmcEf/7OGmZtbA0r4PzDqFUBEympjJCPKYBOY4k=;
-  b=QVuweg2/wEJI/PoOQ63DNRmxTXIlfrLR5lTf/9XaRezyaYQ2FGCK3jU7
-   poc8doG6n3vMwLUqVhrSs034indihzqqL1spVH8fTqyK6O5ENV6+TkL2Q
-   7XJlTtfDtQpKnggJabaoga5Z8bzXyrhJWQDArMXkkJhHh6158BJlAG46i
-   8HJEXXFew63mXlNxEwSYWHTrANjI4CbwyCq0IvamO2fomf6f/OGqcb4WB
-   sb2vdJSPg56PlCeMjhgHY+U+OcYfM4ehWxR9hMHaNDBXJNspWtHqjuRo6
-   wePO47g4O7VlgmnjjFph+eIOraIGPaT0bSBoL1y8TupCNPfHbmMW+l86t
-   Q==;
-X-CSE-ConnectionGUID: QvqZ99S4QYKnRiQD6aSCgA==
-X-CSE-MsgGUID: lImBpO+HRd+1AkTbrBPrEQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11822"; a="82645361"
-X-IronPort-AV: E=Sophos;i="6.24,214,1774335600"; 
-   d="scan'208";a="82645361"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2026 20:54:37 -0700
-X-CSE-ConnectionGUID: 0dRmsQ0wR/2+Dpa9kmwXWQ==
-X-CSE-MsgGUID: VCjqEOQxTf6NVv3DJrz3mQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,214,1774335600"; 
-   d="scan'208";a="272451317"
-Received: from fmsmsx903.amr.corp.intel.com ([10.18.126.92])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2026 20:54:36 -0700
-Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
- fmsmsx903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Fri, 19 Jun 2026 20:54:35 -0700
-Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
- FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37 via Frontend Transport; Fri, 19 Jun 2026 20:54:35 -0700
-Received: from BN8PR05CU002.outbound.protection.outlook.com (52.101.57.29) by
- edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.37; Fri, 19 Jun 2026 20:54:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=oytCdko3njcYypSWLTP6EVAajx4OVIXdIZW3gUlCB6FZ9IfWu/VXUhR2OykODoXoVdj54sGD4+sqCEPlKexwhAUeyoGmQ/r6JKi1UkfSmHjZYiZELW6hIv+cfqY/m7eU3bq36dCAaw0L7hkFitSereDJLHVYOW3bXjEhvHFaCWlwRj1gLwPG16sBDOuf412DSrtqnhWodkfpGpFBi4XoTEfhs1o6MgL8+y+o+qs4S6nuLbqtwR6lS/u365z4deJPGVHnTdtvGk4m4nBjyf1tflRV9jw0LuVoWj25l1zR8OAh6lN/yI28z3MqAOhMlK15M0IZQonQAkdMGRKcEg7sjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lIjtNLqLHOC0baWQ5Tqj+JGnKqw3aD3VBwflb9SgafM=;
- b=GErALxuTkQE5GCvb6KhtkxMTj/4LATSG3FfZuRkwUk3NPzTPAV5GpkG6ioSxFwH7NgBw4aLUmtY7n7BER8r1ccFxCx/p1tMiAl6Csdew04jMBHN9VVUnxtLHMTvDS43xA9dm6ZukwqETpCaMncdYmETDpku8r9OV3rTzdag5+pywCIK0pWXlfCBEBSzKPtDg36gK+zagJyt9TY5D5jzaPXQqLnVyA/YesqlE3tEKChdjipRA7lb1DUwqUm6fEkKJNLBg6vWH6nBuGLOOE9TyoGKO54hvmoon+KG9BZvBmzURGpqB96aCDz2L0nA9IMHxDUsW+J9sfRPpNzzxKxx7oQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
- SN7PR11MB7996.namprd11.prod.outlook.com (2603:10b6:806:2e3::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.139.18; Sat, 20 Jun 2026 03:54:33 +0000
-Received: from DM4PR11MB6020.namprd11.prod.outlook.com
- ([fe80::3058:1480:e4ac:5765]) by DM4PR11MB6020.namprd11.prod.outlook.com
- ([fe80::3058:1480:e4ac:5765%4]) with mapi id 15.21.0139.009; Sat, 20 Jun 2026
- 03:54:32 +0000
-Message-ID: <a22eea2b-4c4a-4623-9a44-d7b18c0c91c8@intel.com>
-Date: Sat, 20 Jun 2026 11:54:22 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/7] sched/eevdf: Move to a single runqueue
-To: Peter Zijlstra <peterz@infradead.org>
-CC: <longman@redhat.com>, <chenridong@huaweicloud.com>,
-	<juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-	<dietmar.eggemann@arm.com>, <rostedt@goodmis.org>, <bsegall@google.com>,
-	<mgorman@suse.de>, <vschneid@redhat.com>, <tj@kernel.org>,
-	<hannes@cmpxchg.org>, <mkoutny@suse.com>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <jstultz@google.com>,
-	<kprateek.nayak@amd.com>, <qyousef@layalina.io>, <mingo@kernel.org>
-References: <20260605105513.354837583@infradead.org>
- <20260605124052.227463677@infradead.org>
-Content-Language: en-US
-From: "Chen, Yu C" <yu.c.chen@intel.com>
-In-Reply-To: <20260605124052.227463677@infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TPYP295CA0030.TWNP295.PROD.OUTLOOK.COM
- (2603:1096:7d0:a::16) To DM4PR11MB6020.namprd11.prod.outlook.com
- (2603:10b6:8:61::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE10341077
+	for <cgroups@vger.kernel.org>; Sat, 20 Jun 2026 07:39:19 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781941162; cv=none; b=PkaF88sOJpRe4N5RUIN4lEtX2rxhz7WgERaUFF1PGfwTD7RGBVszXQohPuK799Ya8N+/es/PoF+zsuvJIealH1TUdJNBLCQtKX4EU+CAZdah8sbLRPUFSqEEqkBUxAo/E+OY3troR5u+s8NN1/yZDtfZ6rbjnPf1SiTy102k4GI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781941162; c=relaxed/simple;
+	bh=nKeQ7rrUKZ9THl2tDpoaBhzXk+kd8XwcuuWgSDqbwnk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sQz1OvvoThb/y4Ax7s7YZWZYlSrcJXgHZLsi40WAFdlO2B6c9/vatpXtT7rbbfqUWbksHZOdMf/DgDwmijz4xNc9Q3Xkcm5SP0nkQLaiwa/UhMc1QlJJPIZ+hA4u6xlxCBO+Zi+zfEL8dmwnyYtDWHierDC8MobbqJFqcv2SdwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LrqFVLcL; arc=none smtp.client-ip=209.85.208.50
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-6976c215e7aso1248498a12.0
+        for <cgroups@vger.kernel.org>; Sat, 20 Jun 2026 00:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781941158; x=1782545958; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j/Dx8yZbdV0tUU5+RWiOyp7h/hJ2ofnlgcFrB51X8kc=;
+        b=LrqFVLcLHUWXFF+rzzCi+axFX9C0Dx0cz17VuUZmBctSOHEqsImm+x+Hnsc21ajAFn
+         qH/k20wG4V4ltmjMyela5fqnK8A7jF579Y8MoTNpTkMm7JzlN6R3Yg4wHGx3cPfxjpZ4
+         LjoAbJwCA62Wiv+J7qQItMK+g8Qxps8wVdITW9J8zEh3fycYQQ1PwNOX6XH6LMK8y13c
+         W5Y3Z2f9r8E3JfVFpfcY0TvqcT1vqJK1tFV4qoWwFb/AVO/2JKse1khYj58g/unwbGJg
+         OUa9dk6JaLT6P/SzmM8JTU6mpVhYbNkd5KVsSUYZIM+m3GFG4M+gobAuHshRLnOtNH9Q
+         9KUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781941158; x=1782545958;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j/Dx8yZbdV0tUU5+RWiOyp7h/hJ2ofnlgcFrB51X8kc=;
+        b=SfYk0sv3U5+ZdIQ30Cf1zbX9GKLdNPDFpmObXyCu7PAqPGQF0ygX3yWVC3tVA8o+6a
+         uEbV7uc897AhmUS15FS/OoM9EaDjVuGe2uTOlxBugfeIqd+Rhue7VKljNHzKSmezYRn4
+         vdxx/nhjyK4Xx8YQcXyjB/CVX+HdwGTLOkrp02M9HBYdEmd244uZXUdi1ulPHjjV3OL6
+         UZfrVLEtgT0EcphnvisttjVycLEm4NOEPVvxK/2JLp4Bmiy0VwNSD3ygcemxhxv7ahHX
+         L5NHEj6UoyEm5g6Rv5mxLv+ImCOlMq3ZmOxs84yTCpK72ICCPi0xDvNZIlRy3AIIy1fC
+         vjLQ==
+X-Forwarded-Encrypted: i=1; AFNElJ95gWeO9bsp38jWHfPhRcz31EpV9bNVpEgGa8AjbWM5+Lt4MOAcwC+3WZ1rhMxjfNQI2sEFfMz2@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQB8z/zNq5Ay/Tw1kkXvfzZJ+iVW5GtlNxvk6m7Jr/Cx+CS9Mf
+	ALAjLryJP1ldRjq31JaOogdwgxEEgQRsN+ct+WmtQQE4PKG5Hoa6spEL
+X-Gm-Gg: AfdE7cmu/2Gs4OIZ7fH9G/chcpofNIU8Lo4F1yLHODPhoQIgk2xJ1OUq1Blxi1aA0DH
+	tLYUiDPbVIlHZWrroCe4mvCmA+kkWJpuADlTBHP01A5NbObefcS9b1sCNNfh1UPQF6EDL2P4vsH
+	w3ROCymDmUxqdbaqpPJ6NpC6gOxpejOgUoDOx/3FJjM/ubqfvTvfgnFSIVozxR3lto2BLKQRRYK
+	PmG40cmyynRFHE3aMHRNz9vOjPXPiQsllondU44U+fjK2L7xDVfeP2F44YHxw8Hbzbw9ie2igoe
+	QWBrlC6swA2zNKwvcs0zJSqnJvFItbvU0foZu8qgfWmlE1UFBQvGKltVsIviybwom8/uiHqCYJP
+	UnfILQG3InuqP96NLdsizLRuFvZFJVIOjAJvnvxEXCG35cY3fWTkzbiBXUIb/muHb8OrdBmwrNd
+	i/j2B+BmELlCA=
+X-Received: by 2002:a05:6402:254d:b0:697:833e:9179 with SMTP id 4fb4d7f45d1cf-697833e999cmr53512a12.11.1781941158096;
+        Sat, 20 Jun 2026 00:39:18 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6977b856f92sm426279a12.11.2026.06.20.00.39.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 20 Jun 2026 00:39:16 -0700 (PDT)
+Date: Sat, 20 Jun 2026 07:39:16 +0000
+From: Wei Yang <richard.weiyang@gmail.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Michal Hocko <mhocko@kernel.org>,
+	Dave Chinner <david@fromorbit.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Zi Yan <ziy@nvidia.com>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Usama Arif <usama.arif@linux.dev>, Kiryl Shutsemau <kas@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>, Kairui Song <ryncsn@gmail.com>,
+	Mikhail Zaslonko <zaslonko@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Barry Song <baohua@kernel.org>, Dev Jain <dev.jain@arm.com>,
+	Lance Yang <lance.yang@linux.dev>, Nico Pache <npache@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 9/9] mm: switch deferred split shrinker to list_lru
+Message-ID: <20260620073916.ico5v2kji4skpf5m@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20260527204757.2544958-1-hannes@cmpxchg.org>
+ <20260527204757.2544958-10-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|SN7PR11MB7996:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38d5bb2e-de37-4f00-e968-08dece7fa31c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|23010399003|376014|366016|7416014|1800799024|18002099003|4143699003|5023799004|11063799006|56012099006|22082099003|6133799003;
-X-Microsoft-Antispam-Message-Info: eeZSQMVlUROADXU6EEkt7MM1Iv5aFIA3ESSM8B0VTHxnfPZwMKK8hog82AN42ir9KAvjWWA7PMBxVkusChTeX+ihVhi5PeaT26CIKWChFp2RGuWsPTdovMDXgLY5MFHzv2O332ZV/GW+klibhMCNsOOj5sT1ZLz8s5RzbPhHJpigrN68D9+qUPbG8Kd/erCVRcUHFnRChCrBkW3Cr+FoHPH9w2SJU/2W41MqVWrwB5E2fi652I9ww+3Az10EjwIy4cQMNxeE9I4VurphacK4PmhpWTox1Kf/IWvrsky6VuXVqCi80ivPXc87vVoGRKea4wFpF4+CT7NS/qO4ybq5AxjjpWJaiqp2Rw8Zy5G7lN/CGeKiVI5aQ5q2DJUerhKlyqZw7iPbEtz3CX2SeFWtYjzVcUHTtZ8ayMaIfwQdQWpcabYM7a5i43UdGtBMdJ4yWg+bPqyHbYwdWYP2Pj+BzfJFGB9CIfa6Q4uUwJe7FjfzvN7lgmCdcJZqv4hbAynR37wGCCagSxol7z0Rmr6R/AVP+L5EHPpunEDlNe4qh78tFwNyKjT7X9qBeF/bZwqQIZ/72zGrrGHj4trQNjhrvYWirHs10I6ZzsynUQMfgjjwmL9xVi8aWtEVj+iq96jSLSk7fnD15WAOcg28zz4mgSTUN9nsyXelqHqdeqBURkc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(376014)(366016)(7416014)(1800799024)(18002099003)(4143699003)(5023799004)(11063799006)(56012099006)(22082099003)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YjFUOWY2anVBM0kvK3h0Rmp2RUR2RUdsSXZ3N3JTRjNHVVFvV0tYaWtNZ2F4?=
- =?utf-8?B?ZFJzMGVpb2tGQm0rWXRzV1JBTkU0aE10Sys3TWlWaE9YZjR3T0NkUE85aU9h?=
- =?utf-8?B?bXVNdGRickMweUdCbkw3MWNkVmVOTnZhVW9obUNsaWZReTVIdE1NUmZyV3dM?=
- =?utf-8?B?amJ2enVJd2kwZHJyUjdiOTRvUy9RMjJhT3dia1JsVWJLbDJpNFBBMFZmK2w0?=
- =?utf-8?B?Z1JkSHJVVnVKWC9uYkpKZnZtWVpQZUJKT3dDSWRaVFBON2NCcTBzeElMSVVs?=
- =?utf-8?B?cEt2OU8yelhscjdvekFqMDUyTjlpU1RnTUk3T0ZxVkZ1c1VHWnFEZ01sOTBB?=
- =?utf-8?B?STNFRktDTFR4SnZpL00vcHJVSnMvOVFhdkZtRFlGTnQxTFBna21ZdGFXQWFx?=
- =?utf-8?B?U25kUkRFbVpSajJKOHFKRjlnazBmWkl6ZVRBRVE5NHVYNEJSYmdaMlFRbkU5?=
- =?utf-8?B?UXBvZlZsRURhY2FKU3BNalRaNytOam9GQndXY00reGZxVllPMGJMNmM4RDZJ?=
- =?utf-8?B?MVhmckhiKzVyNHdROUpZMXl1UW1PQ254Y1NkVTZTQkR2RHQycFBIaFpmMnV4?=
- =?utf-8?B?bXpkclA4WFlYMnFnTitlV0xsbVBXOEpEZTJKTlBHT3Q1K0JSZTVOQjQ2UFl3?=
- =?utf-8?B?M1RJZzlDNUQzVkRndWg0TU0zZEJtVEZmeENXUkZUYTBSWkxBcnhrNUZ1WG1m?=
- =?utf-8?B?WlpHK0JWUy92Qng1NStIaXJ1KzJrU0ZndnN2bjQyc2ZoWDYrUFZieEpYVzA4?=
- =?utf-8?B?Wkl5a3pBZlZMbWVJU2NjWjVvVGxmZzBWUmVYM2R3TDE2ZmxDMjVlTHZqNnlR?=
- =?utf-8?B?WE5LRDJuRXFBZm9iOWtmZkY5N3IzZmc4d1JaK2ppSTZBdytkOGg5d3ljbEN3?=
- =?utf-8?B?aU9yWGtxSU44MkpQQlhjRU0vYkRHV1RMOHZFL0VFWGJrdHhZaWVsMFJZTDJi?=
- =?utf-8?B?aEJ4M0VHRk54Mzh6QXZMNkNKTnR6MjFUbTBlRWpZVXNIcTFSV0RFMDY0dTZp?=
- =?utf-8?B?cTAvNlpsRU9FTHh3T1YvVnNVbWNKTXNqd0tvVG9lRkN1MHBZZVF2UHdQMHlQ?=
- =?utf-8?B?dm14a1NuVjk2dTJ4UUlYU0RKSUFIUFNnWmZOc1lvQTJ1aVVpSzNiWGs2Ym95?=
- =?utf-8?B?WldIRitxM2hjbkRvRFA2a3pZaXhpZFBQbXdqeHBBNmF4V0F1SGNTMHQ0YmNX?=
- =?utf-8?B?dnlZM2VTTU9vQTcrQkMzdm5iU0JLNmtqZG9DZ1o1TmxXMmI5cEVsc2JuNmpV?=
- =?utf-8?B?S3FtVzB1dlZKWTIrdlR4bGlhWWoycFFpY2JxODg4dzM4ZVQvVmdqQlRNMWJi?=
- =?utf-8?B?S1dtaFo2S2lIUnkyWkQrODhKbkx5OEhpazhSeGpUTDU0cTcwTmJyQzVuNUEr?=
- =?utf-8?B?TlRtVFoxcHB1WXdBQUdMaUZnSU1VN1pYTnNxdVZqTTdOMmRXQnRQb3dHZGd0?=
- =?utf-8?B?THNud2FWcEV4YW5ZNlhZaTNiN2xjZTdLVmQvdElsaWFXZEpTQzE3WS9TSHNF?=
- =?utf-8?B?Ry9QUjdLYzhLNTlxdXBTTkYwaGtsbjdXYTJQa205dDFMSlNsRnRCQ2dYb0lW?=
- =?utf-8?B?aGxmK0xDY3pYaXZZSHU3cTlMenk1cTRZd3pTVnlhY1Y4Y282M0VURTlvZUZP?=
- =?utf-8?B?c3l2Q1c4UUpiRjl1SHMrcWVVYUpIYzlvV3VZU0gvV21YeVo4NmIzNFlyeFdU?=
- =?utf-8?B?Q0w0aWdGS0IzcUxMeHJ5N2NtYlFKNko1K1BQWUJxajF4VXVBVyttcUV1dHd2?=
- =?utf-8?B?SEErSlN3a1pvSVpGaWpuMGcreHhDQUFBaVBqMDEwOW4vcDVkTDRGV1BVU1NL?=
- =?utf-8?B?VGlqNzdidDJqNEFFdGxNZ3hKeHZnR1NWY0JuVnlCMlN6bFJIUVBCKzdRcGVw?=
- =?utf-8?B?Yzh6SWlIYmRSaHZkZ0VwZ3pyWjltS2JrRTJXajZUdDBMQXN3SXBtbHJCQ1Nz?=
- =?utf-8?B?NnlDNzZpUjBCTEcveFBZMzY5QmlsNzNJc1NDOW04bmdmOWMzcU5VU1hZYmRr?=
- =?utf-8?B?RzlXN05tdnZaV05iRmUxWHJSTzJvek9UaVNvQ3FuTmphTGhiU25lUXhpTDlV?=
- =?utf-8?B?UklBejNGdlRKUmIrWGFKdWxXd1BsaFFMblRiNEcvd2t2MGJwVDcvZWxZZFJl?=
- =?utf-8?B?V0U3akk1b25ydjc1NnJSVTBzUnhJblNveERja1dvTTc1cjhMbktIVWpHaU9T?=
- =?utf-8?B?UEVaZzJQMU1uZmVNUzhnUCs4NFZZMnhBaWppSVk5MzRmR1ljbnhZeDRUTEE0?=
- =?utf-8?B?ZTV1a1loNVNKRk9WUlU1Mlp2MkRmeTNnRnBIVWJHck44UFhzaDhBSGx5dkMy?=
- =?utf-8?B?dGNSWmNHd0gxUmxZUzR1ekxuVlZqTXZIS3VNM3hhZWs3NThMbDRmdz09?=
-X-Exchange-RoutingPolicyChecked: qYnh8b3FCX2HT2xp/JCShqfuaND8q4XWcFhTw3QnHoS4OpoerrWFabz9/btBkDLb57IrBTB199WwxsmtUb22m/lm1R97wsBJbr5cvNwQlay3MErZ0bc3ZBudGOMpQGOWafnc2+JS9iVBSS6V8lXUGupBVr0oHiaxHv1BYhck76D4Kr+pJmQF/uQLMgtnfhzcFBr/vHw6RghZlAGRZItKCs409WkVrsmXJaI5hLQdxhV752qkK0dQ8OXUOTVfdLhAlwglG+PuWJj4OJSA0G2qQA73XWpumR2zc3c4wgCj3LLh1DIm72N7FcfOp1aD7WASMGlE7bgtAYxH8X8zqpet5A==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38d5bb2e-de37-4f00-e968-08dece7fa31c
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jun 2026 03:54:32.7074
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G6qaavTnXI2K4y+lTyI14UniDyFafNmoOZJMw70N8f8IqgyKCMtCjn+w4d4z9lKlTzULhvVN5MvtWdzxFe9yOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7996
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260527204757.2544958-10-hannes@cmpxchg.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-17087-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:peterz@infradead.org,m:longman@redhat.com,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,m:mingo@kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[yu.c.chen@intel.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17088-lists,cgroups=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:shakeel.butt@linux.dev,m:mhocko@kernel.org,m:david@fromorbit.com,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:qi.zheng@linux.dev,m:yosry.ahmed@linux.dev,m:ziy@nvidia.com,m:liam@infradead.org,m:usama.arif@linux.dev,m:kas@kernel.org,m:vbabka@kernel.org,m:ryncsn@gmail.com,m:zaslonko@linux.ibm.com,m:gor@linux.ibm.com,m:baolin.wang@linux.alibaba.com,m:baohua@kernel.org,m:dev.jain@arm.com,m:lance.yang@linux.dev,m:npache@redhat.com,m:ryan.roberts@arm.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[master:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,intel.com:mid,intel.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,infradead.org:email];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_REPLYTO(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[richardweiyang@gmail.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,linux.dev,fromorbit.com,nvidia.com,infradead.org,gmail.com,linux.ibm.com,linux.alibaba.com,arm.com,redhat.com,vger.kernel.org,kvack.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	HAS_REPLYTO(0.00)[richard.weiyang@gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yu.c.chen@intel.com,cgroups@vger.kernel.org];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ALIAS_RESOLVED(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[richardweiyang@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	PRECEDENCE_BULK(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCVD_COUNT_SEVEN(0.00)[10]
+	REPLYTO_EQ_FROM(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 46E256A849D
+X-Rspamd-Queue-Id: 38A7C6A8806
 
-On 6/5/2026 8:40 PM, Peter Zijlstra wrote:
-> Change fair/cgroup to a single runqueue.
+On Wed, May 27, 2026 at 04:45:16PM -0400, Johannes Weiner wrote:
+[...]
+>@@ -3890,34 +3804,43 @@ static int __folio_freeze_and_split_unmapped(struct folio *folio, unsigned int n
+> 	struct folio *end_folio = folio_next(folio);
+> 	struct folio *new_folio, *next;
+> 	int old_order = folio_order(folio);
+>+	struct list_lru_one *lru;
+>+	bool dequeue_deferred;
+> 	int ret = 0;
+>-	struct deferred_split *ds_queue;
 > 
-> Infamously fair/cgroup isn't working for a number of people; typically
-> the complaint is latencies and/or overhead. The latency issue is due
-> to the intermediate entries that represent a combination of tasks and
-> thereby obfuscate the runnability of tasks.
+> 	VM_WARN_ON_ONCE(!mapping && end);
+>-	/* Prevent deferred_split_scan() touching ->_refcount */
+>-	ds_queue = folio_split_queue_lock(folio);
+>+	/*
+>+	 * If this folio can be on the deferred split queue, lock out
+>+	 * the shrinker before freezing the ref. If the shrinker sees
+>+	 * a 0-ref folio, it assumes it beat folio_put() to the list
+>+	 * lock and must clean up the LRU state - the same dequeue we
+>+	 * will do below as part of the split.
+>+	 */
+>+	dequeue_deferred = folio_test_anon(folio) && old_order > 1;
+
+Looking at __folio_remove_rmap(), we check !folio_is_device_private() before
+deferred_split_folio(). __folio_freeze_and_split_unmapped() is used in
+folio_split_unmapped(). According to its comment, it could take device-private
+folio.
+
+This means for device-private folio, we still lock lru_list and try to remove
+it from deferred_split_lru. The good news is this doesn't harm the system, but
+does some extra work.
+
+Would it be better to add !folio_is_device_private() here?
+
+The purpose to lock here is to prevent shrinker seeing ref-0 folio. Since
+device-private folio is not on deferred_split_lru, shrink won't see it.
+
+>+	if (dequeue_deferred) {
+>+		struct mem_cgroup *memcg;
+>+
+>+		rcu_read_lock();
+>+		memcg = folio_memcg(folio);
+>+		lru = list_lru_lock(&deferred_split_lru,
+>+				    folio_nid(folio), &memcg);
+>+	}
+> 	if (folio_ref_freeze(folio, folio_cache_ref_count(folio) + 1)) {
+> 		struct swap_cluster_info *ci = NULL;
+> 		struct lruvec *lruvec;
 > 
-> The approach here is to leave the cgroup hierarchy as is; including
-> the intermediate enqueue/dequeue but move the actual EEVDF runqueue
-> outside. This means things like the shares_weight approximation are
-> fully preserved.
+>-		if (old_order > 1) {
+>-			if (!list_empty(&folio->_deferred_list)) {
+>-				ds_queue->split_queue_len--;
+>-				/*
+>-				 * Reinitialize page_deferred_list after removing the
+>-				 * page from the split_queue, otherwise a subsequent
+>-				 * split will see list corruption when checking the
+>-				 * page_deferred_list.
+>-				 */
+>-				list_del_init(&folio->_deferred_list);
+>-			}
+>+		if (dequeue_deferred) {
+>+			__list_lru_del(&deferred_split_lru, lru,
+>+				       &folio->_deferred_list, folio_nid(folio));
+> 			if (folio_test_partially_mapped(folio)) {
+> 				folio_clear_partially_mapped(folio);
+> 				mod_mthp_stat(old_order,
+> 					MTHP_STAT_NR_ANON_PARTIALLY_MAPPED, -1);
+> 			}
+>+			list_lru_unlock(lru);
+>+			rcu_read_unlock();
+> 		}
+>-		split_queue_unlock(ds_queue);
+>+
+> 		if (mapping) {
+> 			int nr = folio_nr_pages(folio);
 > 
-> That is, given a hierarchy like:
+>@@ -4017,7 +3940,10 @@ static int __folio_freeze_and_split_unmapped(struct folio *folio, unsigned int n
+> 		if (ci)
+> 			swap_cluster_unlock(ci);
+> 	} else {
+>-		split_queue_unlock(ds_queue);
+>+		if (dequeue_deferred) {
+>+			list_lru_unlock(lru);
+>+			rcu_read_unlock();
+>+		}
+> 		return -EAGAIN;
+> 	}
 > 
->            R
->            |
->            se--G1
->                / \
->          G2--se   se--G3
->         / \           |
->    T1--se se--T2      se--T3
-> 
-> This is fully maintained for load tracking, however the EEVDF parts of
-> cfs_rq/se go unused for the intermediates and are instead connected
-> like:
-> 
->       _R_
->      / | \
->     T1 T2 T3
-> 
-> Since the effective weight of the entities is determined by the
-> hierarchy, this gets recomputed on enqueue,set_next_task and tick.
-> 
-> Notably, the effective weight (se->h_load) is computed from the
-> hierarchical fraction: se->load / cfs_rq->load.
-> 
-> Since EEVDF is now exclusively operating on rq->cfs, it needs to
-> consider cfs_rq->h_nr_queued rather than cfs_rq->nr_queued. Similarly,
-> only tasks can get delayed, simplifying some of the cgroup cleanup.
-> 
-> One place where additional information was required was
-> set_next_task() / put_prev_task(), where we need to track 'current'
-> both in the hierarchical sense (cfs_rq->h_curr) and in the flat sense
-> (cfs_rq->curr).
-> 
-> As a result of only having a single level to pick from, much of the
-> complications in pick_next_task() and preemption go away.
-> 
-> Since many of the hierarchical operations are still there, this won't
-> immediately fix the performance issues, but hopefully it will fix some
-> of the latency issues.
-> 
-> TODO: split struct cfs_rq / struct sched_entity
-> TODO: try and get rid of h_curr
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-A divide-by-zero crash is observed when running hackbench:
-
-   [14697.488452] CPU: 112 UID: 0 PID: 124791 Comm: hackbench Not 
-tainted 7.1.0-rc2+
-   [14697.492627] RIP: 0010:propagate_entity_load_avg+0x35f/0x3e0
-   [14697.506799]  <TASK>
-   [14697.507411]  __dequeue_task+0x2b4/0xc70
-   [14697.508677]  dequeue_task_fair+0x36/0x370
-   [14697.509047]  dequeue_task+0x101/0x2f0
-   [14697.509426]  __schedule+0x1b1/0x1a00
-   [14697.510868]  anon_pipe_read+0x3da/0x450
-   [14697.511400]  vfs_read+0x361/0x390
-   [14697.512053]  __x64_sys_read+0x19/0x30
-
-The divide-by-zero happens here:
-
-if (scale_load_down(gcfs_rq->load.weight)) {
-         load_sum = div_u64(gcfs_rq->avg.load_sum,
-                 scale_load_down(gcfs_rq->load.weight));
-}
-
-gcfs_rq->load.weight is an insane large value and is truncated
-to the lower 32 bits by div_u64, which happen to be 0.
-
-Using AI for investigation, the cause is a u32 overflow in
-update_tg_cfs_runnable(), and flat pickup became a victim when using
-tg_tasks():
-
-   u32 new_sum, divider;
-   ...
-   new_sum = se->avg.runnable_avg * divider; <-- boom
-
-The following sequence shows how this triggers the crash:
-
-   propagate_entity_load_avg()
-     update_tg_cfs_runnable()     # u32 overflow corrupts runnable_sum
-
-   __update_load_avg_cfs_rq()
-     ___update_load_avg()         # computes insane runnable_avg
-   update_tg_load_avg()           # propagates to tg->runnable_avg
-
-   update_cfs_group()
-     calc_concur_shares()
-       tg_tasks()                 # long-to-int truncation, negative nr
-     reweight_entity()            # corrupted se->load.weight
-       update_load_add()          # corrupted cfs_rq->load.weight
-
-   propagate_entity_load_avg()
-     update_tg_cfs_load()
-       div_u64()                  # divide-by-zero
-
-Fix by widening new_sum from u32 to u64(no need to force tg_tasks()
-to return unsigned long after this fix)
-Assisted-by: Claude:claude-opus-4.6
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
-  kernel/sched/fair.c | 5 +++--
-  1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d991ea85873a..99ea51448981 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5305,7 +5305,8 @@ static inline void
-  update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, 
-struct cfs_rq *gcfs_rq)
-  {
-  	long delta_sum, delta_avg = gcfs_rq->avg.runnable_avg - 
-se->avg.runnable_avg;
--	u32 new_sum, divider;
-+	u64 new_sum;
-+	u32 divider;
-
-  	/* Nothing to update */
-  	if (!delta_avg)
-@@ -5319,7 +5320,7 @@ update_tg_cfs_runnable(struct cfs_rq *cfs_rq, 
-struct sched_entity *se, struct cf
-
-  	/* Set new sched_entity's runnable */
-  	se->avg.runnable_avg = gcfs_rq->avg.runnable_avg;
--	new_sum = se->avg.runnable_avg * divider;
-+	new_sum = (u64)se->avg.runnable_avg * divider;
-  	delta_sum = (long)new_sum - (long)se->avg.runnable_sum;
-  	se->avg.runnable_sum = new_sum;
 
 -- 
-2.45.2
+Wei Yang
+Help you, Help me
 
