@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-17094-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17095-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id CvirLnLZNmo/FgcAu9opvQ
-	(envelope-from <cgroups+bounces-17094-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 20:18:26 +0200
+	id 2GUYKjPZNmo2FgcAu9opvQ
+	(envelope-from <cgroups+bounces-17095-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 20:17:23 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5606A975F
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 20:18:26 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D23B6A9750
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 20:17:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=BHdFa90z;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17094-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17094-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b="AOTF/UVk";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17095-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17095-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CE7013035256
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 18:17:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BAF183004C98
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jun 2026 18:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9264345CAF;
-	Sat, 20 Jun 2026 18:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3DAA349CD9;
+	Sat, 20 Jun 2026 18:17:17 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36AF130F7F7
-	for <cgroups@vger.kernel.org>; Sat, 20 Jun 2026 18:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0F530F7F7
+	for <cgroups@vger.kernel.org>; Sat, 20 Jun 2026 18:17:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781979431; cv=none; b=WOeI1XjP6M5IdFq3IrbE/W9ePoaumpOoCFlq2O9kFKauNwcoq7XShrlE/MmO5Hfr3iEhMLCPz6sY2UZejpsJls6cHS2fS59rPVkmhgf2M/OZm+lPLCdIzt1n/cNL1DmHbsH3z4YXtLykU28m9RVRyvVYxxqHUGzcmFAzOTBX7wU=
+	t=1781979437; cv=none; b=uEuy9s4mmQhbwq/E2Jr/l80lKuT+CrXktqRX3B4loR8WoD0FKXbfmaernmwioukJO2lR3ixp9UN1tDHafDBKgLQrTqCuMLS43LJL98QOEHE2XrQbyBKqnGRruS78581Kd2wXas0iwAQWeN10ONua7rLFhc0wXuoaIarB+67IEPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781979431; c=relaxed/simple;
-	bh=pNZz6I4aoMMaZf0YjkzTitFAZSWSIRpbW4EBzjpsk58=;
+	s=arc-20240116; t=1781979437; c=relaxed/simple;
+	bh=S5sYyvW9QyY6clCsvttkMWXxewus1Gyh5/QzlK0Cpuc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k6jDGqfMGrQ4/vzivhayY73R+IM0OW3MZS/5ULuBraPxXtKRUpGVH8QmlfknDXfyeD3QUmN1kSHJqqkw0g3lxUS/ViPM2cpFcmPGWKB2eOq1TJPJm1cYo9MtI8hIHq6z5kqsZvWRPyEkoXIXVopuCQM0H0KZs5C3TtME87a+3Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BHdFa90z; arc=none smtp.client-ip=209.85.214.171
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2c6fcfcdb2bso22600115ad.1
-        for <cgroups@vger.kernel.org>; Sat, 20 Jun 2026 11:17:10 -0700 (PDT)
+	 MIME-Version; b=FDWJl4ZHSc43ibuKSMSmGfY+i7WOihUb3WL3ZMe7TotFEYqMwzgACtJ7fNvlwck7iibXAx3Yep+dxO3esZ7H+0hu7huIwjX3L0syzsqtdp4V1DQLsRw36ZqcuGZeSW86rMMKJQvO9mJdo4XZDHVcN6XLVPJrghVU4UhUzw1OaXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AOTF/UVk; arc=none smtp.client-ip=209.85.214.179
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2c74383c93cso8512165ad.1
+        for <cgroups@vger.kernel.org>; Sat, 20 Jun 2026 11:17:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781979429; x=1782584229; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1781979435; x=1782584235; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GYeylIml7s8sCOsaJDbGPnepJyRivCDRMtCf2+mDIaE=;
-        b=BHdFa90zDBclBbApum0Qi05Ka1yzsIznYnkCXMELg67yXA3dKrAJH75SvJ4FwZM4P9
-         gJMSPvN+8xS3UrJcx/8lb+iCyprUkcouX99i0BW/WGOjfv5lR9y6XKamXyi6CRLgj0Ci
-         zVovixSVBIHdokoDPo1g36dF9KCoRfb34CNGDhOKxqEVkQn/X/cVnjUknibkYOHU7qYu
-         0CR7CsArxbE7ns3DameBvR4W2HojLmt2S3vzdrX+WHIHVzzlTcjSae8Ea3H4GqpGel5N
-         zCXncyp7bPofdiSNY5DzJu+z50JQBPVcfJR3cDTVmSt/6RcLgYXUDjHFeFHJYfs3frhy
-         q4MA==
+        bh=RgH4Dj17obnxSLq/3NpwgVl7Hll2I/0OEirSKJI2pMo=;
+        b=AOTF/UVkJymF10Vt4pjUsPBw/z9L/WN6j+D6VqpHpWVTLD8kWJ6e9WoR5ZP2vCbKIB
+         J6/4X1BRDoC1lJg2sPHIhF+YY5UhC7fT9dbCWd9xKhySq4S3kuh4mH84kmPEGLBEQi3L
+         A/vfB6cvJkb2eppyiPqqPcW9Pnw8PSQK7ic6+f0RHUnN3jB4Y7hNa2qqpP1TiteOx/JD
+         xMtAqWngnHA9AdQksIgSA3sdaMNn2qmeIyCvZgAMx27BesSOT1//UqDznWBhvBvkoA7V
+         ShVYYPqzoUWACOjNs3DmtsQhRRapIFedAVnd3timextaM4YDh/T6pDNFZ6oB/7uJ168Y
+         znVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781979429; x=1782584229;
+        d=1e100.net; s=20251104; t=1781979435; x=1782584235;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=GYeylIml7s8sCOsaJDbGPnepJyRivCDRMtCf2+mDIaE=;
-        b=XAoIGspud25GMcvI0+KPedchAGomTryuTcIRB46H9x6mO77hyRVHtY1w1uLlLkKgsX
-         FvqSDRcyA0addBP0rNnKqKx8ie6dmqYrxn/FXzW0tNqSfFnaYRSveTkHdM3OGAUHZJUz
-         eMgUVFXQzXWIphMG/lOZ8ThCt2pd2PJRPySSIixP2ke0Zju2IIrm9N373lVI6K7uKX29
-         jJsT5fampmqw0QOD4C10/JXZ1muTdsz0I4ZRNWX4tuZUX2HZQ7sX+2nc5LpFHsFE8pPN
-         NJLPhtXkg6YtD2G/KMsFomJEVNpVEBSWEUFEc+vm9Kt/eSrz0Z7cvmtEqoHOdSndKw6J
-         7Tcw==
-X-Forwarded-Encrypted: i=1; AHgh+RqorvcSCJlEKDDKx7z37xJ6n3NRqSqn93L62nVuNDzwNNcfHD6Zc39mJ7R5+bvEnVo2kUmKHr6L@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLLnUjzQpJaGNT6GuJ4/cNR5u49vnacVitmxVnuhhg5fMaH1nN
-	FWZGQBFnnBHt6804UPmMWxqLZ24YSKKo7enYlzl6zGYZ5T4ARxirKZVs
-X-Gm-Gg: AfdE7ckYj4pBMMaYoDE+JO6cmmhBVSa4ExMxXuDCkNPwCjVxAll3UrTwOfxystZs3kh
-	Mz6ZNo5x37x9FkGVMEV7QBfN2pZdwFbi+PSymtYXrTQgNApUDkwFgmEKWk40pNU/LjqEoLGra/1
-	4mPd8thMSHq+srhrbu0uhFoFHBNRVgPjt4fbVTbkn835l2BCgfj7ToleMAUJM77dk8KkvZqeI+Q
-	FFa1o9gMIsDbV45LMDF+Lv5XjRH+ZsuHd3oetvv+kVMiUsFN9PMBTUvbODHF3ULhkRCElaaZvsV
-	tH3mx1lKyU7kwbWHwalqojQBXe5++EfOnBK4VHfxwFOpwStARKPC5mJBPRfzoI61xg6mJ5LNqIN
-	bGIfwt3EfFGix7gNjxJvxpQEeV81Zo7mjOuQo7jR3x2B09V6M7RL6b8gNixE3XWYV6cPNklsH59
-	lK3tC9ekOGkFhrVySkAE8Q4TZOx2PzkauGZVzuEAxhuChR9fmR5osTrWskF+wWyKbInDcx83F50
-	g==
-X-Received: by 2002:a17:902:d586:b0:2c2:27be:39aa with SMTP id d9443c01a7336-2c725d7d58dmr82330625ad.17.1781979429395;
-        Sat, 20 Jun 2026 11:17:09 -0700 (PDT)
+        bh=RgH4Dj17obnxSLq/3NpwgVl7Hll2I/0OEirSKJI2pMo=;
+        b=E/Ip56Jv/JxCVzfrl0QDf10HV0APP7qhczeyyp3P+hqvXN4lmfhoA4LhAu8j3JPFH+
+         +MXfCHMDQVkwvjZcpIbOz2W+ElI0dfh1MsX2PqsEnFGUhX/kVFKzv3TQSsvxfOf6URXQ
+         yl7HFnTj+dMhg3yQhGPuKN1JXiLZvJfGTFLBquoUWCDig3/qVLSlH8Q9RktDNvn/2AQ4
+         F+kGfjmU8AdDTg9JTXH/MeoDx3KWos+0PemmrqLVXjrJaUCpBfsXdDpyPR4kSkpMim8I
+         bgCL5vd1BX1zGG3QU2QSjtna8q2VyyU4m0nPGVvzb18czfzZzdanM2C+7kxf4OB1HImY
+         DJlg==
+X-Forwarded-Encrypted: i=1; AHgh+RrJpzPbf5feFOnoGhD+FqpnhVMuVc95AkUP4/SxvJQI2zyxPHd1GOtvgJ3mbj8As2UQXyyRCapF@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywu6xRAsAzm3My4xG2Rz6AnaS9F6ZYiR0TrETlh8/qEdzq49azA
+	WjnQ9U2IDn0MdIkKzI5/un4G4w+qv++IWxPemPTSR/3XZhy3ZYuAM+Uq
+X-Gm-Gg: AfdE7cmBg7ZsboHtSY+GT4VvTba5ZBnvrrW6Yet+s/TkNGw5Ghvb5R2u4spvo4DCeQb
+	fsmg2MYqABZfExL0ar7z4jkMgJdmmAUosFFUbuaV1UirstmNfrtFjSDVUEJbimsv6b6v1HYmwsi
+	Q1m9d23Jh5re/7FAc+uJkpsrzurf++zztc7Nxef2G3DxZgT/MbUPqhxtdYZevQbJErESqX3HIcr
+	JVZEvThn/4lnWgU9vSuwQjiCTUh8aQIt+Dilt7QUewqWEHJe1miHcRvkZG0apjcbUSvG+RpNE02
+	InqP3wzVaZEN8UvRkZH17ssnjUhrPoD2wGDbXqkh83nb5Xale4MzUCIo1RVjfWKkxTyFdVLrjFA
+	4lhZUAe8NDBFvb3QV9Z+aAPXs1P+60fjqxZPMYuq5lvdvCAOQqblwpBCuoMrP1NrJ9aCxAbGA7R
+	mO5sdWk4BDVd3vFoZfmB/PhhC2Ef++Y/OXyaPIxFpV3M98I5qG6ElMavCMMJbwh5Ie7YRnKKKEG
+	w==
+X-Received: by 2002:a17:902:cf03:b0:2c1:f262:4962 with SMTP id d9443c01a7336-2c718f03795mr93845965ad.20.1781979435385;
+        Sat, 20 Jun 2026 11:17:15 -0700 (PDT)
 Received: from localhost.localdomain ([220.85.166.190])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c7436af6d9sm30339465ad.4.2026.06.20.11.17.04
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c7436af6d9sm30339465ad.4.2026.06.20.11.17.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2026 11:17:08 -0700 (PDT)
+        Sat, 20 Jun 2026 11:17:14 -0700 (PDT)
 From: Youngjun Park <her0gyugyu@gmail.com>
 X-Google-Original-From: Youngjun Park <youngjun.park@lge.com>
 To: akpm@linux-foundation.org
@@ -102,9 +102,9 @@ Cc: chrisl@kernel.org,
 	mkoutny@suse.com,
 	baver.bae@lge.com,
 	matia.kim@lge.com
-Subject: [PATCH v9 4/6] mm: swap: filter swap allocation by memcg tier mask
-Date: Sun, 21 Jun 2026 03:16:29 +0900
-Message-ID: <20260620181635.299364-5-youngjun.park@lge.com>
+Subject: [PATCH v9 5/6] selftests/mm: add a swap tier configuration test
+Date: Sun, 21 Jun 2026 03:16:30 +0900
+Message-ID: <20260620181635.299364-6-youngjun.park@lge.com>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20260620181635.299364-1-youngjun.park@lge.com>
 References: <20260620181635.299364-1-youngjun.park@lge.com>
@@ -121,13 +121,13 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:youngjun.park@lge.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:yosry@kernel.org,m:gunho.lee@lge.com,m:taejoon.song@lge.com,m:hyungjun.cho@lge.com,m:mkoutny@suse.com,m:baver.bae@lge.com,m:matia.kim@lge.com,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-17094-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17095-lists,cgroups=lfdr.de];
 	FORGED_SENDER(0.00)[her0gyugyu@gmail.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -146,140 +146,416 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,lge.com:mid,lge.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,lge.com:mid,lge.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0E5606A975F
+X-Rspamd-Queue-Id: 9D23B6A9750
 
-Apply memcg tier effective mask during swap slot allocation to
-enforce per-cgroup swap tier restrictions.
+This commit adds a test program for the global swap tier interface at
+/sys/kernel/mm/swap/tiers. It checks the add, split and remove
+operations and the documented error and batch atomicity rules. It also
+checks that a tier with an active swap device cannot be removed until
+the device is swapped off. That device is a zram device, and the check
+is skipped when zram is not available.
 
-The folio's effective mask is computed once and passed to the fast,
-slow and discard paths as a parameter, so all of them act on the same
-mask even if the memcg's mask changes concurrently.
-
-In the fast path, check the percpu cached swap_info's tier_mask
-against the folio's effective mask. If it does not match, fall
-through to the slow path. In the slow path, skip swap devices
-whose tier_mask is not covered by the folio's effective mask.
-The discard fallback honors the mask too: otherwise it would drain
-the discard clusters of a device outside the folio's tiers and then
-loop back to allocate from a tier the memcg is not allowed to use.
-
-This works correctly when there is only one non-rotational
-device in the system and no devices share the same priority.
-However, there are known limitations:
-
- - When non-rotational devices are distributed across multiple
-   tiers, and different memcgs are configured to use those
-   distinct tiers, they may constantly overwrite the shared
-   percpu swap cache. This cache thrashing leads to frequent
-   fast path misses.
-
- - Combined with the above issue, if same-priority devices exist
-   among them, a percpu cache miss (overwritten by another memcg)
-   forces the allocator to round-robin to the next device
-   prematurely, even if the current cluster is not fully
-   exhausted.
-
-These edge cases do not affect the primary use case of
-directing swap traffic per cgroup. Further optimization is
-planned for future work.
-
+Assisted-by: Claude:claude-opus-4-8
 Signed-off-by: Youngjun Park <youngjun.park@lge.com>
 ---
- mm/swapfile.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ tools/testing/selftests/mm/.gitignore     |   1 +
+ tools/testing/selftests/mm/Makefile       |   1 +
+ tools/testing/selftests/mm/config         |   2 +
+ tools/testing/selftests/mm/run_vmtests.sh |   5 +
+ tools/testing/selftests/mm/swap_tier.c    | 323 ++++++++++++++++++++++
+ 5 files changed, 332 insertions(+)
+ create mode 100644 tools/testing/selftests/mm/swap_tier.c
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 9a86ebe992f4..624d1ba93fd9 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1359,7 +1359,7 @@ static bool get_swap_device_info(struct swap_info_struct *si)
-  * Fast path try to get swap entries with specified order from current
-  * CPU's swap entry pool (a cluster).
-  */
--static bool swap_alloc_fast(struct folio *folio)
-+static bool swap_alloc_fast(struct folio *folio, int mask)
- {
- 	unsigned int order = folio_order(folio);
- 	struct swap_cluster_info *ci;
-@@ -1371,8 +1371,11 @@ static bool swap_alloc_fast(struct folio *folio)
- 	 * so checking it's liveness by get_swap_device_info is enough.
- 	 */
- 	si = this_cpu_read(percpu_swap_cluster.si[order]);
-+	if (!si || !swap_tiers_mask_test(si->tier_mask, mask))
+diff --git a/tools/testing/selftests/mm/.gitignore b/tools/testing/selftests/mm/.gitignore
+index 9ccd9e1447e6..a6e588c7979e 100644
+--- a/tools/testing/selftests/mm/.gitignore
++++ b/tools/testing/selftests/mm/.gitignore
+@@ -46,6 +46,7 @@ hmm-tests
+ memfd_secret
+ soft-dirty
+ split_huge_page_test
++swap_tier
+ ksm_tests
+ local_config.h
+ local_config.mk
+diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+index e6df968f0971..1836127df092 100644
+--- a/tools/testing/selftests/mm/Makefile
++++ b/tools/testing/selftests/mm/Makefile
+@@ -105,6 +105,7 @@ TEST_GEN_FILES += guard-regions
+ TEST_GEN_FILES += merge
+ TEST_GEN_FILES += rmap
+ TEST_GEN_FILES += folio_split_race_test
++TEST_GEN_FILES += swap_tier
+ 
+ ifneq ($(ARCH),arm64)
+ TEST_GEN_FILES += soft-dirty
+diff --git a/tools/testing/selftests/mm/config b/tools/testing/selftests/mm/config
+index 06f78bd232e2..de3752e1bbd2 100644
+--- a/tools/testing/selftests/mm/config
++++ b/tools/testing/selftests/mm/config
+@@ -14,3 +14,5 @@ CONFIG_UPROBES=y
+ CONFIG_MEMORY_FAILURE=y
+ CONFIG_HWPOISON_INJECT=m
+ CONFIG_PROC_MEM_ALWAYS_FORCE=y
++CONFIG_SWAP=y
++CONFIG_ZRAM=y
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 8c296dedf047..1b0b8ec185a9 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -71,6 +71,8 @@ separated by spaces:
+ 	tests for VM_PFNMAP handling
+ - process_madv
+ 	test for process_madv
++- swap_tier
++	test the /sys/kernel/mm/swap/tiers configuration interface
+ - cow
+ 	test copy-on-write semantics
+ - thp
+@@ -353,6 +355,9 @@ CATEGORY="process_madv" run_test ./process_madv
+ 
+ CATEGORY="vma_merge" run_test ./merge
+ 
++# swap tier configuration interface (/sys/kernel/mm/swap/tiers)
++CATEGORY="swap_tier" run_test ./swap_tier
++
+ if [ -x ./memfd_secret ]
+ then
+ if [ -f /proc/sys/kernel/yama/ptrace_scope ]; then
+diff --git a/tools/testing/selftests/mm/swap_tier.c b/tools/testing/selftests/mm/swap_tier.c
+new file mode 100644
+index 000000000000..b4fe21b0eb5d
+--- /dev/null
++++ b/tools/testing/selftests/mm/swap_tier.c
+@@ -0,0 +1,323 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <errno.h>
++#include <fcntl.h>
++#include <limits.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/swap.h>
++#include <unistd.h>
++
++#include "kselftest.h"
++
++#define TIERS_PATH "/sys/kernel/mm/swap/tiers"
++
++static int tiers_write(const char *cmd)
++{
++	int fd, ret = 0;
++
++	fd = open(TIERS_PATH, O_WRONLY);
++	if (fd < 0)
++		return -errno;
++	if (write(fd, cmd, strlen(cmd)) < 0)
++		ret = -errno;
++	close(fd);
++	return ret;
++}
++
++static int tier_range(const char *name, int *start, int *end)
++{
++	char buf[4096], *line, *save;
++	int fd;
++	ssize_t n;
++
++	fd = open(TIERS_PATH, O_RDONLY);
++	if (fd < 0)
++		return -1;
++	n = read(fd, buf, sizeof(buf) - 1);
++	close(fd);
++	if (n < 0)
++		return -1;
++	buf[n] = '\0';
++
++	for (line = strtok_r(buf, "\n", &save); line;
++	     line = strtok_r(NULL, "\n", &save)) {
++		char tname[64];
++		int idx, s, e;
++
++		/* The header line has no integer columns, so sscanf skips it. */
++		if (sscanf(line, "%63s %d %d %d", tname, &idx, &s, &e) != 4)
++			continue;
++		if (!strcmp(tname, name)) {
++			*start = s;
++			*end = e;
++			return 0;
++		}
++	}
++	return -1;
++}
++
++static bool tier_exists(const char *name)
++{
++	int s, e;
++
++	return tier_range(name, &s, &e) == 0;
++}
++
++static bool range_is(const char *name, int start, int end)
++{
++	int s, e;
++
++	if (tier_range(name, &s, &e))
 +		return false;
++	return s == start && e == end;
++}
 +
- 	offset = this_cpu_read(percpu_swap_cluster.offset[order]);
--	if (!si || !offset || !get_swap_device_info(si))
-+	if (!offset || !get_swap_device_info(si))
- 		return false;
- 
- 	ci = swap_cluster_lock(si, offset);
-@@ -1389,13 +1392,16 @@ static bool swap_alloc_fast(struct folio *folio)
- }
- 
- /* Rotate the device and switch to a new cluster */
--static void swap_alloc_slow(struct folio *folio)
-+static void swap_alloc_slow(struct folio *folio, int mask)
- {
- 	struct swap_info_struct *si, *next;
- 
- 	spin_lock(&swap_avail_lock);
- start_over:
- 	plist_for_each_entry_safe(si, next, &swap_avail_head, avail_list) {
-+		if (!swap_tiers_mask_test(si->tier_mask, mask))
-+			continue;
++static int tier_count(void)
++{
++	char buf[4096], *line, *save;
++	int fd, count = 0;
++	ssize_t n;
 +
- 		/* Rotate the device and switch to a new cluster */
- 		plist_requeue(&si->avail_list, &swap_avail_head);
- 		spin_unlock(&swap_avail_lock);
-@@ -1429,7 +1435,7 @@ static void swap_alloc_slow(struct folio *folio)
-  * Discard pending clusters in a synchronized way when under high pressure.
-  * Return: true if any cluster is discarded.
-  */
--static bool swap_sync_discard(void)
-+static bool swap_sync_discard(int mask)
- {
- 	bool ret = false;
- 	struct swap_info_struct *si, *next;
-@@ -1437,6 +1443,8 @@ static bool swap_sync_discard(void)
- 	spin_lock(&swap_lock);
- start_over:
- 	plist_for_each_entry_safe(si, next, &swap_active_head, list) {
-+		if (!swap_tiers_mask_test(si->tier_mask, mask))
++	fd = open(TIERS_PATH, O_RDONLY);
++	if (fd < 0)
++		return -1;
++	n = read(fd, buf, sizeof(buf) - 1);
++	close(fd);
++	if (n < 0)
++		return -1;
++	buf[n] = '\0';
++
++	for (line = strtok_r(buf, "\n", &save); line;
++	     line = strtok_r(NULL, "\n", &save)) {
++		char tname[64];
++		int idx, s, e;
++
++		if (sscanf(line, "%63s %d %d %d", tname, &idx, &s, &e) == 4)
++			count++;
++	}
++	return count;
++}
++
++/*
++ * A single add at a priority above -1, from the empty set, leaves the range
++ * below it uncovered and must be rejected. the set stays empty.
++ */
++static int test_coverage(void)
++{
++	if (tiers_write("+orphan:100") != -EINVAL)
++		return KSFT_FAIL;
++	if (tier_exists("orphan"))
++		return KSFT_FAIL;
++	return KSFT_PASS;
++}
++
++/*
++ * Add two tiers covering the full range. The end priority of a tier is the
++ * start of the next higher tier minus one.
++ */
++static int test_add(void)
++{
++	if (tiers_write("+lo:-1 +hi:50"))
++		return KSFT_FAIL;
++	if (!range_is("hi", 50, SHRT_MAX) || !range_is("lo", -1, 49))
++		return KSFT_FAIL;
++	return KSFT_PASS;
++}
++
++/* Adding a tier inside an existing range splits it. the lower part shrinks. */
++static int test_split(void)
++{
++	if (tiers_write("+mid:100"))
++		return KSFT_FAIL;
++	if (!range_is("mid", 100, SHRT_MAX) ||
++	    !range_is("hi", 50, 99) ||
++	    !range_is("lo", -1, 49))
++		return KSFT_FAIL;
++	return KSFT_PASS;
++}
++
++/* Removing a tier merges its range into the adjacent (lower) tier. */
++static int test_remove(void)
++{
++	/* Remove the top tier: 'hi' re-expands upward to SHRT_MAX. */
++	if (tiers_write("-mid"))
++		return KSFT_FAIL;
++	if (tier_exists("mid") || !range_is("hi", 50, SHRT_MAX))
++		return KSFT_FAIL;
++
++	/* Remove the lowest tier: 'hi' shifts its start down to -1. */
++	if (tiers_write("-lo"))
++		return KSFT_FAIL;
++	if (tier_exists("lo") || !range_is("hi", -1, SHRT_MAX))
++		return KSFT_FAIL;
++
++	return KSFT_PASS;
++}
++
++/* Each invalid operation must fail with its documented errno. State: hi[-1,MAX]. */
++static int test_errors(void)
++{
++	if (tiers_write("+hi:100") != -EEXIST)		/* duplicate name */
++		return KSFT_FAIL;
++	if (tiers_write("+bad.name:100") != -EINVAL)	/* illegal name */
++		return KSFT_FAIL;
++	if (tiers_write("+dup:-1") != -EBUSY)		/* priority in use */
++		return KSFT_FAIL;
++	if (tiers_write("+low:-2") != -EINVAL)		/* prio < DEF_SWAP_PRIO */
++		return KSFT_FAIL;
++	return KSFT_PASS;
++}
++
++/*
++ * A write carrying several operations is atomic: if any operation fails, the
++ * whole batch is rolled back. The second '+a' duplicates the first and fails,
++ * so neither must take effect. State before/after: hi[-1,MAX].
++ */
++static int test_atomic(void)
++{
++	if (tiers_write("+a:50 +a:60") != -EEXIST)
++		return KSFT_FAIL;
++	if (tier_exists("a") || !range_is("hi", -1, SHRT_MAX))
++		return KSFT_FAIL;
++	return KSFT_PASS;
++}
++
++static int zram_add(long size)
++{
++	char path[128], val[64];
++	ssize_t n;
++	int idx, fd;
++
++	fd = open("/sys/class/zram-control/hot_add", O_RDONLY);
++	if (fd < 0)
++		return -1;
++	n = read(fd, val, sizeof(val) - 1);
++	close(fd);
++	if (n <= 0)
++		return -1;
++	val[n] = '\0';
++	idx = atoi(val);
++
++	snprintf(path, sizeof(path), "/sys/block/zram%d/disksize", idx);
++	fd = open(path, O_WRONLY);
++	if (fd < 0)
++		return -1;
++	snprintf(val, sizeof(val), "%ld", size);
++	n = write(fd, val, strlen(val));
++	close(fd);
++	return n < 0 ? -1 : idx;
++}
++
++static void zram_remove(int idx)
++{
++	char val[16];
++	int fd;
++
++	fd = open("/sys/class/zram-control/hot_remove", O_WRONLY);
++	if (fd < 0)
++		return;
++	snprintf(val, sizeof(val), "%d", idx);
++	if (write(fd, val, strlen(val)) < 0)
++		; /* ignore: best-effort cleanup */
++	close(fd);
++}
++
++static int swap_setup(const char *dev, int prio)
++{
++	char cmd[128];
++
++	snprintf(cmd, sizeof(cmd), "mkswap %s >/dev/null 2>&1", dev);
++	if (system(cmd))
++		return -1;
++	return swapon(dev, SWAP_FLAG_PREFER | (prio & SWAP_FLAG_PRIO_MASK));
++}
++
++/* A tier holding an active swap device can't be removed until swapoff. */
++static int test_device_pins_tier(void)
++{
++	char dev[32];
++	int zidx, ret = KSFT_FAIL;
++
++	if (tiers_write("+top:50"))
++		return KSFT_FAIL;
++
++	zidx = zram_add(64 << 20);
++	if (zidx < 0) {
++		ret = KSFT_SKIP;
++		goto out_tier;
++	}
++	snprintf(dev, sizeof(dev), "/dev/zram%d", zidx);
++	if (swap_setup(dev, 50)) {
++		ret = KSFT_SKIP;
++		goto out_zram;
++	}
++
++	if (tiers_write("-top") == -EBUSY) {		/* blocked while active */
++		swapoff(dev);
++		if (!tiers_write("-top"))		/* removable after swapoff */
++			ret = KSFT_PASS;
++	} else {
++		swapoff(dev);
++	}
++out_zram:
++	zram_remove(zidx);
++out_tier:
++	tiers_write("-top");
++	return ret;
++}
++
++/* Remove all remaining tiers, so a mid-test failure still leaves them empty. */
++static void tiers_clear(void)
++{
++	char buf[4096], *line, *save;
++	int fd;
++	ssize_t n;
++
++	fd = open(TIERS_PATH, O_RDONLY);
++	if (fd < 0)
++		return;
++	n = read(fd, buf, sizeof(buf) - 1);
++	close(fd);
++	if (n < 0)
++		return;
++	buf[n] = '\0';
++
++	for (line = strtok_r(buf, "\n", &save); line;
++	     line = strtok_r(NULL, "\n", &save)) {
++		char name[64], cmd[80];
++		int idx, s, e;
++
++		if (sscanf(line, "%63s %d %d %d", name, &idx, &s, &e) != 4)
 +			continue;
- 		spin_unlock(&swap_lock);
- 		if (get_swap_device_info(si)) {
- 			if (si->flags & SWP_PAGE_DISCARD)
-@@ -1736,6 +1744,7 @@ int folio_alloc_swap(struct folio *folio)
- {
- 	unsigned int order = folio_order(folio);
- 	unsigned int size = 1 << order;
-+	int mask;
- 
- 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
- 	VM_BUG_ON_FOLIO(!folio_test_uptodate(folio), folio);
-@@ -1759,13 +1768,14 @@ int folio_alloc_swap(struct folio *folio)
- 	}
- 
- again:
-+	mask = folio_tier_effective_mask(folio);
- 	local_lock(&percpu_swap_cluster.lock);
--	if (!swap_alloc_fast(folio))
--		swap_alloc_slow(folio);
-+	if (!swap_alloc_fast(folio, mask))
-+		swap_alloc_slow(folio, mask);
- 	local_unlock(&percpu_swap_cluster.lock);
- 
- 	if (!order && unlikely(!folio_test_swapcache(folio))) {
--		if (swap_sync_discard())
-+		if (swap_sync_discard(mask))
- 			goto again;
- 	}
- 
++		snprintf(cmd, sizeof(cmd), "-%s", name);
++		tiers_write(cmd);
++	}
++}
++
++int main(void)
++{
++	ksft_print_header();
++	ksft_set_plan(7);
++
++	if (geteuid() != 0)
++		ksft_exit_skip("test requires root\n");
++	if (access(TIERS_PATH, F_OK))
++		ksft_exit_skip("%s not present (CONFIG_SWAP/tiers)\n", TIERS_PATH);
++	if (tier_count() != 0)
++		ksft_exit_skip("swap tiers already configured; run on a clean system\n");
++
++	ksft_test_result(test_coverage() == KSFT_PASS, "coverage rule\n");
++	ksft_test_result(test_add() == KSFT_PASS, "add tiers\n");
++	ksft_test_result(test_split() == KSFT_PASS, "split tier\n");
++	ksft_test_result(test_remove() == KSFT_PASS, "remove and merge\n");
++	ksft_test_result(test_errors() == KSFT_PASS, "invalid operations\n");
++	ksft_test_result(test_atomic() == KSFT_PASS, "batch atomicity\n");
++
++	ksft_test_result_code(test_device_pins_tier(), "device pins its tier", NULL);
++
++	tiers_clear();
++
++	ksft_finished();
++}
 -- 
 2.48.1
 
