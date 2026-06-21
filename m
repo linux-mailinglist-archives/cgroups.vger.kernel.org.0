@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-17103-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17104-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XiOKEp9aN2o/MwcAu9opvQ
-	(envelope-from <cgroups+bounces-17103-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2026 05:29:35 +0200
+	id /z95A7NbN2poMwcAu9opvQ
+	(envelope-from <cgroups+bounces-17104-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2026 05:34:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B978D6AA182
-	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2026 05:29:34 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0376AA1F1
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2026 05:34:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=NPkbMUgk;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17103-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17103-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=aSghJv1B;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17104-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17104-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 77E77300DD79
-	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2026 03:29:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2A62F305A265
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2026 03:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED8930100E;
-	Sun, 21 Jun 2026 03:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A20306744;
+	Sun, 21 Jun 2026 03:29:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64C130568B
-	for <cgroups@vger.kernel.org>; Sun, 21 Jun 2026 03:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51793019C8
+	for <cgroups@vger.kernel.org>; Sun, 21 Jun 2026 03:29:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782012557; cv=none; b=RGeehfxxWPAmK/rvfNaLjEinwgBrza9d60UrIXWJZadBabfHq0hJiO5IPktbB+romH27D3aKGISwVWFyeNT85beBgF0knNuoaTlVIYlDYOofzNrctp/X0zYGFxZSiJJ0TjDatymmqaVh+0zG5gbB7/c/xKTsybQpLyRFeafnoOw=
+	t=1782012559; cv=none; b=NhEGEtAPr5NkZuxZAp9jYSx2rv9vMkxRdGyofYt4XBEzDJ6N+l38mF+fDMsA9XJO9HyS/4CqXzFPTs/VV6F3rxBJgVViNACYjw/ItrVKfqahsmQmXUx85LW/rL6xKwpyFUpWuCgL74j/1GqHhhR3amgPbsHkLQq/Frq30X3lFIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782012557; c=relaxed/simple;
-	bh=LG3jA1kns3vOL7iDl4c0Y72M/5n2zvpUFl+rM/4aX9Q=;
+	s=arc-20240116; t=1782012559; c=relaxed/simple;
+	bh=/we5puykqdoiyalGPloOcLI5knOGUqsw88iPz9JkyZQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D9z7OCTHmLT9xHaBkYmECR5x00kVL8Yk0gMbLQXpUPLf1J/yZT66F/jgZ51EM24LZfQNEKo59SgO4fRNDlN6IKyMmJOrea0Nl9kfhqav0D5ckSxWzf49GCaGKpbL0kKWqkLhV+IIU8upqVopBq+GLfBqvKsGZVIFNUh5DDFZvRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NPkbMUgk; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=mtHPWokLmp/cMVdOq1iukcdW5goynF89ykwacuHzC0kv8rF9JcPoBCSqSp362XTNU6lzvXnZiz3itmxiCpAC8A0au8PmREHTZxvtIlcOTZuTfx1VckG0N5AYdHVQgp8Q5uFF9FzjXd/cpV++vwlJr9WtKJYkXxp0Qjn0vNy5eKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aSghJv1B; arc=none smtp.client-ip=170.10.133.124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1782012552;
+	s=mimecast20190719; t=1782012557;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1eGmG/4U4ZgvfKwrtncYxEsc8C96XKxQC9pSbAEGcKw=;
-	b=NPkbMUgk0b9K2SijgcqXsQZEDRPKR2TN0n0PDYZhGPsixpFA79P4As5wZjH8dK9oH2awIm
-	zdz6PqH3XXNio9QRe11HYho9DfH19aqMdfdCQObHeKXqgyiymSb1Gk7GWrfraUHuCReUGx
-	p80eT8pWeLWJVD3yNeJOJv4oKabqP5M=
+	bh=KUwBC06+cbgbFAXUy9wTqsbvmrhAJxN7zFgKwurRmec=;
+	b=aSghJv1BlcPhL9alSC6ZqNHoT2V61qTn3PI4O6k8gTuwlCp03pN7Vq+a306AYrqD1tqvqM
+	JhEJWhOqtaEDdmWCli6Nj2SMBMaxuVHhJ5AGf6Q0fuxn3Iy97j0wbQ6hMNtoX/5QCluZCT
+	5yAzpjxfIXPQj7BIjZLbwiPF5KN3hVk=
 Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-441-aLNYCjBHOsqHh0q8KOcpew-1; Sat,
- 20 Jun 2026 23:29:09 -0400
-X-MC-Unique: aLNYCjBHOsqHh0q8KOcpew-1
-X-Mimecast-MFC-AGG-ID: aLNYCjBHOsqHh0q8KOcpew_1782012547
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-608-P4oyMuNdNPyVenx9lXC8Xg-1; Sat,
+ 20 Jun 2026 23:29:11 -0400
+X-MC-Unique: P4oyMuNdNPyVenx9lXC8Xg-1
+X-Mimecast-MFC-AGG-ID: P4oyMuNdNPyVenx9lXC8Xg_1782012549
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E8F0F1956060;
-	Sun, 21 Jun 2026 03:29:06 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 560E1195605F;
+	Sun, 21 Jun 2026 03:29:09 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.88.8])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E5F48195604E;
-	Sun, 21 Jun 2026 03:29:04 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 43F7B195604D;
+	Sun, 21 Jun 2026 03:29:07 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Ridong Chen <ridong.chen@linux.dev>,
 	Tejun Heo <tj@kernel.org>,
@@ -75,9 +75,9 @@ Cc: cgroups@vger.kernel.org,
 	Gregory Price <gourry@gourry.net>,
 	David Hildenbrand <david@kernel.org>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH v7 4/9] cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
-Date: Sat, 20 Jun 2026 23:28:11 -0400
-Message-ID: <20260621032816.1806773-5-longman@redhat.com>
+Subject: [PATCH v7 5/9] cgroup/cpuset: Expand the scope of cpuset_can_attach_check()
+Date: Sat, 20 Jun 2026 23:28:12 -0400
+Message-ID: <20260621032816.1806773-6-longman@redhat.com>
 In-Reply-To: <20260621032816.1806773-1-longman@redhat.com>
 References: <20260621032816.1806773-1-longman@redhat.com>
 Precedence: bulk
@@ -94,12 +94,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17103-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17104-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:lizefan@huawei.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:gourry@gourry.net,m:david@kernel.org,m:longman@redhat.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -118,98 +118,108 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B978D6AA182
+X-Rspamd-Queue-Id: 4E0376AA1F1
 
-Extract the DL bandwidth allocation code in cpuset_attach() to a new
-cpuset_reserve_dl_bw() helper to simplify code.
-
-No functional change is expected.
+Expand the scope of cpuset_can_attach_check() by including the setting
+of setsched flag inside cpuset_can_attach_check() with the new @oldcs
+and @psetsched argument. As cpuset_can_attach_check() is also called
+from cpuset_can_fork(), set the new arguments to NULL from that caller.
 
 Reviewed-by: Ridong Chen <ridong.chen@linux.dev>
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset.c | 47 ++++++++++++++++++++++++------------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+ kernel/cgroup/cpuset.c | 52 ++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 65d095dcada1..2ffc66baedf3 100644
+index 2ffc66baedf3..b7b5072f2fdd 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -2994,6 +2994,25 @@ static int cpuset_can_attach_check(struct cpuset *cs)
+@@ -2985,12 +2985,39 @@ static struct cpuset *cpuset_attach_old_cs;
+  * For v1, cpus_allowed and mems_allowed can't be empty.
+  * For v2, effective_cpus can't be empty.
+  * Note that in v1, effective_cpus = cpus_allowed.
++ *
++ * Also set the boolean flag passed in by @psetsched depending on if
++ * security_task_setscheduler() call is needed and @oldcs is not NULL.
+  */
+-static int cpuset_can_attach_check(struct cpuset *cs)
++static int cpuset_can_attach_check(struct cpuset *cs, struct cpuset *oldcs,
++				   bool *psetsched)
+ {
+ 	if (cpumask_empty(cs->effective_cpus) ||
+ 	   (!is_in_v2_mode() && nodes_empty(cs->mems_allowed)))
+ 		return -ENOSPC;
++
++	if (!oldcs)
++		return 0;
++
++	/*
++	 * Skip rights over task setsched check in v2 when nothing changes,
++	 * migration permission derives from hierarchy ownership in
++	 * cgroup_procs_write_permission()).
++	 */
++	*psetsched = !cpuset_v2() ||
++		!cpumask_equal(cs->effective_cpus, oldcs->effective_cpus) ||
++		!nodes_equal(cs->effective_mems, oldcs->effective_mems);
++
++	/*
++	 * A v1 cpuset with tasks will have no CPU left only when CPU hotplug
++	 * brings the last online CPU offline as users are not allowed to empty
++	 * cpuset.cpus when there are active tasks inside. When that happens,
++	 * we should allow tasks to migrate out without security check to make
++	 * sure they will be able to run after migration.
++	 */
++	if (!is_in_v2_mode() && cpumask_empty(oldcs->effective_cpus))
++		*psetsched = false;
++
  	return 0;
  }
  
-+static int cpuset_reserve_dl_bw(struct cpuset *cs)
-+{
-+	int cpu, ret;
-+
-+	if (!cs->sum_migrate_dl_bw)
-+		return 0;
-+
-+	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-+	if (unlikely(cpu >= nr_cpu_ids))
-+		return -EINVAL;
-+
-+	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-+	if (ret)
-+		return ret;
-+
-+	cs->dl_bw_cpu = cpu;
-+	return 0;
-+}
-+
- static void reset_migrate_dl_data(struct cpuset *cs)
- {
- 	cs->nr_migrate_dl_tasks = 0;
-@@ -3008,7 +3027,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 	struct cpuset *cs, *oldcs;
- 	struct task_struct *task;
- 	bool setsched_check;
--	int cpu, ret;
-+	int ret;
+@@ -3037,29 +3064,10 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	mutex_lock(&cpuset_mutex);
  
- 	/* used later by cpuset_attach() */
- 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-@@ -3064,28 +3083,16 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 		}
- 	}
+ 	/* Check to see if task is allowed in the cpuset */
+-	ret = cpuset_can_attach_check(cs);
++	ret = cpuset_can_attach_check(cs, oldcs, &setsched_check);
+ 	if (ret)
+ 		goto out_unlock;
  
--	if (!cs->sum_migrate_dl_bw)
--		goto out_success;
+-	/*
+-	 * Skip rights over task setsched check in v2 when nothing changes,
+-	 * migration permission derives from hierarchy ownership in
+-	 * cgroup_procs_write_permission()).
+-	 */
+-	setsched_check = !cpuset_v2() ||
+-		!cpumask_equal(cs->effective_cpus, oldcs->effective_cpus) ||
+-		!nodes_equal(cs->effective_mems, oldcs->effective_mems);
 -
--	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
--	if (unlikely(cpu >= nr_cpu_ids)) {
--		ret = -EINVAL;
--		goto out_unlock;
--	}
+-	/*
+-	 * A v1 cpuset with tasks will have no CPU left only when CPU hotplug
+-	 * brings the last online CPU offline as users are not allowed to empty
+-	 * cpuset.cpus when there are active tasks inside. When that happens,
+-	 * we should allow tasks to migrate out without security check to make
+-	 * sure they will be able to run after migration.
+-	 */
+-	if (!is_in_v2_mode() && cpumask_empty(oldcs->effective_cpus))
+-		setsched_check = false;
 -
--	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
--	if (ret)
--		goto out_unlock;
--
--	cs->dl_bw_cpu = cpu;
--
--out_success:
--	cs->attach_in_progress++;
--	oldcs->attach_in_progress++;
-+	ret = cpuset_reserve_dl_bw(cs);
+ 	cgroup_taskset_for_each(task, css, tset) {
+ 		ret = task_can_attach(task);
+ 		if (ret)
+@@ -3616,7 +3624,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
+ 	mutex_lock(&cpuset_mutex);
  
- out_unlock:
--	if (ret)
-+	if (ret) {
- 		reset_migrate_dl_data(cs);
-+	} else {
-+		cs->attach_in_progress++;
-+		oldcs->attach_in_progress++;
-+	}
-+
- 	mutex_unlock(&cpuset_mutex);
- 	return ret;
- }
+ 	/* Check to see if task is allowed in the cpuset */
+-	ret = cpuset_can_attach_check(cs);
++	ret = cpuset_can_attach_check(cs, NULL, NULL);
+ 	if (ret)
+ 		goto out_unlock;
+ 
 -- 
 2.54.0
 
