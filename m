@@ -1,127 +1,165 @@
-Return-Path: <cgroups+bounces-17126-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17124-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ODgJOIPJOGpoiAcAu9opvQ
-	(envelope-from <cgroups+bounces-17126-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 07:34:59 +0200
+	id STc7EJjGOGqxhwcAu9opvQ
+	(envelope-from <cgroups+bounces-17124-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 07:22:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01C316ACCC7
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 07:34:56 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9453F6ACBAC
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 07:22:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lge.com (policy=none);
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17126-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17126-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=fail ("headers rsa verify failed") header.d=kernel.org header.s=k20260515 header.b=VPoPKF9k;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17124-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17124-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 47322302C6E0
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 05:33:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D1FED3026F2E
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 05:22:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4459335BDAA;
-	Mon, 22 Jun 2026 05:33:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC2235836B;
+	Mon, 22 Jun 2026 05:22:14 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo12.lge.com (lgeamrelo12.lge.com [156.147.23.52])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6FE2D0C89
-	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 05:33:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE972AD00;
+	Mon, 22 Jun 2026 05:22:13 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782106399; cv=none; b=MHikr3TNv0bniIQmSE7agiMZrNmxJ0SGI29NuVqUL2Mx+FGGIiuRF7H80GRIkZ0UlmGSspAjQXd8LeqvD29l4p2Zi+DnD/scqm1MPmesuXoTy5swoO08Xuj4FdgJe9tXe3gcDIeRvxVOQExKQ7vTmw34IV2Md7Hy2IlIyaocNug=
+	t=1782105734; cv=none; b=GC5Rvv04JijapjK3y0sFbn185sJKyKuFDlpxwhGOxwDoEUShVV9EvcqG6jg1wQE0s8niu+S2EQHfe77yIhkiYezb5VVM0TWMdbRafFnefQomx4fEET0X3s82bvTtJID45/d2Bbo2+DCCXsvbOZ/PgINaE+0k6Zr2Wv8fqwylLeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782106399; c=relaxed/simple;
-	bh=dvuVZU3b3GFeoDmdsdia2z0DnArkjvhWJGfEkeEP+Lg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qjixwd53LhXPFLmSKvK9On3+J6169KppeV/dK4nLB1nPQtxDMSWY99weV+stO6U04y7iGn+Rcs8L+4UwXsK5s4zib3QyH1wHp51NYG9HGBHK0pK/Rplgc97ao7os+3I80DBQJiwG7Ng3uj0wtX5qk4b+9JogqPjRtSFVgREXtAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.23.52
-Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
-	by 156.147.23.52 with ESMTP; 22 Jun 2026 14:03:13 +0900
-X-Original-SENDERIP: 156.147.1.121
-X-Original-MAILFROM: youngjun.park@lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.154)
-	by 156.147.1.121 with ESMTP; 22 Jun 2026 14:03:13 +0900
-X-Original-SENDERIP: 10.177.112.154
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Mon, 22 Jun 2026 14:03:13 +0900
-From: Youngjun Park <youngjun.park@lge.com>
-To: Youngjun Park <her0gyugyu@gmail.com>
-Cc: akpm@linux-foundation.org, chrisl@kernel.org, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kasong@tencent.com, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	baoquan.he@linux.dev, baohua@kernel.org, yosry@kernel.org,
-	gunho.lee@lge.com, taejoon.song@lge.com, hyungjun.cho@lge.com,
-	mkoutny@suse.com, baver.bae@lge.com, matia.kim@lge.com
-Subject: Re: [PATCH v9 3/6] mm: memcontrol: add interface for swap tier
- selection
-Message-ID: <ajjCEWN6IwNJLv4j@yjaykim-PowerEdge-T330>
-References: <20260620181635.299364-1-youngjun.park@lge.com>
- <20260620181635.299364-4-youngjun.park@lge.com>
+	s=arc-20240116; t=1782105734; c=relaxed/simple;
+	bh=TLqjtoxyQNBS4x+LOScCt7CwmrTyt3kjY6p33duqeE4=;
+	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
+	 Subject:From:To:Cc:Date; b=Ev/zTAYT7vazGoPoDRAYDe8Faj81Pf7zpbO73ibC6hSmt1pENNFvRiz8Xr1qWVczOdInpNCIw0Zg0Jxi/9NRnuf6AOv6bheQEBEozzhykDAIccQkihO4A5KMvIMoCAwvsmZCQWVD69UH5tfx3yEeuqOp0+AZ8HmoSjAtrVKEbug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=fail (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VPoPKF9k reason="signature verification failed"; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 378331F00A3F;
+	Mon, 22 Jun 2026 05:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782105733;
+	bh=IjSWiRWMU9Ee27IawNNdMZlcd+pdKiRJTFL+L2RHmwk=;
+	h=In-Reply-To:References:Subject:From:To:Cc:Date;
+	b=VPoPKF9kD8SQIQF6VNPVqYW4nAuqARtP874wgBw9ktl1VwB0bHFPLCbcXYj7HUMxH
+	 Mj3NKz7moMW1j+SXZ5JmJDnOZXBZW5IRtgrf/R6VIt2WEKZCRvzJOEpijHbPfQq0b0
+	 nm0TeCZgQXRR4HX/TRhbDsnY+V7xNwuVA9DRk2Y55c/zCXC+PjQS50Jq+EMuggkTRd
+	 9oW5HaoUighBQ6x6uk8YcD6TgdtMpwCo25V+L/RnXeQZlOC/g45FDA5+g0tzRvIsbT
+	 YyCpmQk1Wl7rkCzOR5GCrA3tMSulv6dAwtezT3ajTjhRDdDcAq0rBDJrWSlu6Ht97u
+	 uxcDgxs29F2vw==
+Content-Type: multipart/mixed; boundary="===============3341382443539626176=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260620181635.299364-4-youngjun.park@lge.com>
+Message-Id: <a431d311fb11ec06b89a5986cbacf2ebe983bdaddc4a93076564d83799471cad@mail.kernel.org>
+In-Reply-To: <20260622042811.31684-1-kaitao.cheng@linux.dev>
+References: <20260622042811.31684-1-kaitao.cheng@linux.dev>
+Subject: Re: [PATCH v3 5/7] kernel: Use mutable list iterators
+From: bot+bpf-ci@kernel.org
+To: kaitao.cheng@linux.dev,paul@paul-moore.com,eparis@redhat.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,memxor@gmail.com,davem@davemloft.net,kuba@kernel.org,hawk@kernel.org,john.fastabend@gmail.com,tj@kernel.org,hannes@cmpxchg.org,mkoutny@suse.com,dev@lankhorst.se,mripard@kernel.org,natalie.vock@gmx.de,peterz@infradead.org,mingo@redhat.com,acme@kernel.org,namhyung@kernel.org,mhiramat@kernel.org,oleg@redhat.com,oberpar@linux.ibm.com,akpm@linux-foundation.org,baoquan.he@linux.dev,rppt@kernel.org,pasha.tatashin@soleen.com,pratyush@kernel.org,naveen@kernel.org,jpoimboe@kernel.org,jikos@kernel.org,mbenes@suse.cz,pmladek@suse.com,will@kernel.org,boqun@kernel.org,mcgrof@kernel.org,petr.pavlu@suse.com,da.gomez@kernel.org,samitolvanen@google.com,steffen.klassert@secunet.com,daniel.m.jordan@oracle.com,rafael@kernel.org,dave@stgolabs.net,paulmck@kernel.org,josh@joshtriplett.org,frederic@kernel.org,neeraj.upadhyay@kernel.org,joelagnelf@nvidia.com,urezki@gmail.com
+ ,juri.lelli@redhat.com,vincent.guittot@linaro.org,kees@kernel.org,bsingharora@gmail.com,anna-maria@linutronix.de,tglx@kernel.org,jstultz@google.com,kpsingh@kernel.org,mattbobrowski@google.com,nathan@kernel.org,martin.lau@linux.dev,song@kernel.org,mark.rutland@arm.com,mathieu.desnoyers@efficios.com,dietmar.eggemann@arm.com,void@manifault.com,rostedt@goodmis.org
+Cc: audit@vger.kernel.org,linux-kernel@vger.kernel.org,bpf@vger.kernel.org,netdev@vger.kernel.org,cgroups@vger.kernel.org,dri-devel@lists.freedesktop.org,linux-perf-users@vger.kernel.org,linux-trace-kernel@vger.kernel.org,kexec@lists.infradead.org,live-patching@vger.kernel.org,linux-modules@vger.kernel.org,linux-crypto@vger.kernel.org,linux-pm@vger.kernel.org,rcu@vger.kernel.org,sched-ext@lists.linux.dev,llvm@lists.linux.dev,chengkaitao@kylinos.cn,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
+Date: Mon, 22 Jun 2026 05:22:12 +0000 (UTC)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.86 / 15.00];
+X-Spamd-Result: default: False [0.54 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	CTYPE_MIXED_BOGUS(1.00)[];
+	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
-	MIME_GOOD(-0.10)[text/plain];
+	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lists.freedesktop.org,lists.infradead.org,lists.linux.dev,kylinos.cn,kernel.org,iogearbox.net,gmail.com,linux.dev,meta.com];
+	TAGGED_FROM(0.00)[bounces-17124-lists,cgroups=lfdr.de,bpf-ci];
+	R_DKIM_REJECT(0.00)[kernel.org:s=k20260515];
+	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:her0gyugyu@gmail.com,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:yosry@kernel.org,m:gunho.lee@lge.com,m:taejoon.song@lge.com,m:hyungjun.cho@lge.com,m:mkoutny@suse.com,m:baver.bae@lge.com,m:matia.kim@lge.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17126-lists,cgroups=lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,lge.com,suse.com];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	FORGED_SENDER(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:kaitao.cheng@linux.dev,m:paul@paul-moore.com,m:eparis@redhat.com,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:eddyz87@gmail.com,m:memxor@gmail.com,m:davem@davemloft.net,m:kuba@kernel.org,m:hawk@kernel.org,m:john.fastabend@gmail.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:dev@lankhorst.se,m:mripard@kernel.org,m:natalie.vock@gmx.de,m:peterz@infradead.org,m:mingo@redhat.com,m:acme@kernel.org,m:namhyung@kernel.org,m:mhiramat@kernel.org,m:oleg@redhat.com,m:oberpar@linux.ibm.com,m:akpm@linux-foundation.org,m:baoquan.he@linux.dev,m:rppt@kernel.org,m:pasha.tatashin@soleen.com,m:pratyush@kernel.org,m:naveen@kernel.org,m:jpoimboe@kernel.org,m:jikos@kernel.org,m:mbenes@suse.cz,m:pmladek@suse.com,m:will@kernel.org,m:boqun@kernel.org,m:mcgrof@kernel.org,m:petr.pavlu@suse.com,m:da.gomez@kernel.org,m:samitolvanen@google.com,m:steffen.klassert@secunet.com,m:daniel.m.jordan@oracle.com,m:rafael@kernel.org,m:dave@stgolabs.net,m:paulmck@kerne
+ l.org,m:josh@joshtriplett.org,m:frederic@kernel.org,m:neeraj.upadhyay@kernel.org,m:joelagnelf@nvidia.com,m:urezki@gmail.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:kees@kernel.org,m:bsingharora@gmail.com,m:anna-maria@linutronix.de,m:tglx@kernel.org,m:jstultz@google.com,m:kpsingh@kernel.org,m:mattbobrowski@google.com,m:nathan@kernel.org,m:martin.lau@linux.dev,m:song@kernel.org,m:mark.rutland@arm.com,m:mathieu.desnoyers@efficios.com,m:dietmar.eggemann@arm.com,m:void@manifault.com,m:rostedt@goodmis.org,m:audit@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,m:netdev@vger.kernel.org,m:cgroups@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-perf-users@vger.kernel.org,m:linux-trace-kernel@vger.kernel.org,m:kexec@lists.infradead.org,m:live-patching@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-pm@vger.kernel.org,m:rcu@vger.kernel.org,m:sched-ext@lists.linux.dev,m:llvm@lists.linux.dev,m:chengkaitao@kylino
+ s.cn,m:martin.lau@kernel.org,m:yonghong.song@linux.dev,m:clm@meta.com,m:ihor.solodrai@linux.dev,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[linux.dev,paul-moore.com,redhat.com,kernel.org,iogearbox.net,gmail.com,davemloft.net,cmpxchg.org,suse.com,lankhorst.se,gmx.de,infradead.org,linux.ibm.com,linux-foundation.org,soleen.com,suse.cz,google.com,secunet.com,oracle.com,stgolabs.net,joshtriplett.org,nvidia.com,linaro.org,linutronix.de,arm.com,efficios.com,manifault.com,goodmis.org];
+	DKIM_TRACE(0.00)[kernel.org:-];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+];
+	RCPT_COUNT_GT_50(0.00)[93];
 	ALIAS_RESOLVED(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	R_DKIM_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[]
+	FROM_NO_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.kernel.org:mid,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 01C316ACCC7
+X-Rspamd-Queue-Id: 9453F6ACBAC
 
-https://sashiko.dev/#/patchset/20260620181635.299364-1-youngjun.park@lge.com?part=3
+--===============3341382443539626176==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 
-Regarding the Sashiko review comment, I don't think this needs to be
-fixed. It is acceptable for the effective_mask to be stale on a zombie
-memcg.
+> diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
+> index c4dfbc293bae..9e076106bee7 100644
+> --- a/kernel/trace/trace_dynevent.c
+> +++ b/kernel/trace/trace_dynevent.c
 
-The zombie memcg LRU is already reparented by the following patchset.
-https://lore.kernel.org/all/cover.1772711148.git.zhengqi.arch@bytedance.com/
+[ ... ]
 
-the effective_mask is only needed on the swap path. Since
-swap I/O rarely (if ever) happens on a zombie memcg, leaving the stale
-mask should not cause issues.
+> @@ -100,7 +100,7 @@ int dyn_event_release(const char *raw_command, struct dyn_event_operations *type
+>  		return -EINVAL;
+>
+>  	mutex_lock(&event_mutex);
+> -	for_each_dyn_event_safe(pos, n) {
+> +	for_each_dyn_event_safe(pos) {
+>  		if (type && type != pos->ops)
+>  			continue;
+>  		if (!pos->ops->match(system, event,
 
-(As I mentioned above, there is no need to fix as I think.
-But somehow if we needed to fix this, there would be two alternatives.
+Does this leave the variable n unused? Looking at the function
+declaration around line 74, it still has:
 
-1. Fix it at offline time by setting it to SWAP_TIER_ALL_MASK. However,
-   this approach would break the parent tier relationship.
-2. Change the memcg iteration routine to use css_for_each_descendant_pre
-   to explicitly handle the zombie memcg case. This approach would
-   safely preserve the parent tier relationship.
-)
+	struct dyn_event *pos, *n;
+
+but after this change n is no longer passed to for_each_dyn_event_safe().
+The macro now hides the temporary cursor internally, so n appears to be
+dead code. This would trigger -Wunused-variable warnings and break builds
+with CONFIG_WERROR=y.
+
+For comparison, the sibling change at line 219 (dyn_events_release_all)
+correctly removed the *tmp variable from its declaration.
+
+> diff --git a/kernel/trace/trace_dynevent.h b/kernel/trace/trace_dynevent.h
+> index beee3f8d7544..a4dc0812284f 100644
+> --- a/kernel/trace/trace_dynevent.h
+> +++ b/kernel/trace/trace_dynevent.h
+> @@ -115,10 +115,9 @@ int dyn_event_create(const char *raw_command, struct dyn_event_operations *type)
+>  /*
+>   * for_each_dyn_event	-	iterate over the dyn_event list safely
+>   * @pos:	the struct dyn_event * to use as a loop cursor
+> - * @n:		the struct dyn_event * to use as temporary storage
+>   */
+> -#define for_each_dyn_event_safe(pos, n)	\
+> -	list_for_each_entry_safe(pos, n, &dyn_event_list, list)
+> +#define for_each_dyn_event_safe(pos)	\
+> +	list_for_each_entry_mutable(pos, &dyn_event_list, list)
+
+
+---
+AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
+See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
+
+CI run summary: https://github.com/kernel-patches/bpf/actions/runs/27930295027
+--===============3341382443539626176==--
 
