@@ -1,208 +1,240 @@
-Return-Path: <cgroups+bounces-17149-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17150-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id k2zeIleHOWpguwcAu9opvQ
-	(envelope-from <cgroups+bounces-17149-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 21:04:55 +0200
+	id EJ5zJdiQOWq3vAcAu9opvQ
+	(envelope-from <cgroups+bounces-17150-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 21:45:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1E306B1FA3
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 21:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E071F6B221C
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 21:45:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=LFiZE21b;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17149-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17149-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=gv0ULkR7;
+	dkim=pass header.d=redhat.com header.s=google header.b=ej27qgex;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17150-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17150-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 44106303CD2D
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 19:03:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CBFBF3038AD8
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 19:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91A29348C5C;
-	Mon, 22 Jun 2026 19:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF1D349CFC;
+	Mon, 22 Jun 2026 19:43:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dy1-f174.google.com (mail-dy1-f174.google.com [74.125.82.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F7621C2324
-	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 19:03:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DA5349CFD
+	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 19:43:27 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782155035; cv=none; b=YiYNTf5dN+roZxFkshOknICJtn47cccdC6p6MnVswMo5UEZHB0owqujCVZXSztWctVCrCaYq62S6Ufr4QRJn2qD2+iMSvRMFq36g8c2OvxxK1jGHCShfnGgbljkOFLXDl4ZBm/dl1rdYXjFKxxmqANiIVKAEqe/3SvROW9vZU1U=
+	t=1782157409; cv=none; b=iq9apHkvNZY+bTv+zBNcbFXHy3diDJLe/vm2crwvIOObGzQMyyGqR6sDnMvAeWTETJehs8oasq7EcLwhnTGoJTGuTspALTlzG+KH0V2tgbeG8GhRVLZf68qxwJVDN8VcyuhD9PboEkHMPRpu233aH046eg+t4BmvuorXrv0/9Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782155035; c=relaxed/simple;
-	bh=uM6rjwv+rWrcNEl8KjTKnVcDSG3oUNpsPUMqnFOcLeE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=F8XfVL0JZ538CgPlZZ6gTwgXnmVB9ai4mZT3t1gMO6BPYUtw2388vIUWmpZznH1Dj0dJogIn7puvJzwM7ArdqI14JFbleRUG40v5PtlDBJDSbFM/mh/AiYWjjSf/czbsoV88jOVeZmoTT46RlJfsfymDWqgeShcCXivAPi2Q/gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LFiZE21b; arc=none smtp.client-ip=74.125.82.174
-Received: by mail-dy1-f174.google.com with SMTP id 5a478bee46e88-3042a388168so186233eec.1
-        for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 12:03:54 -0700 (PDT)
+	s=arc-20240116; t=1782157409; c=relaxed/simple;
+	bh=Kk3o03hgyW8kM5/HNI84/GHxr++YhhzFEuplQ1IujJA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tgDkem5BS4dJSZrEDadlMM9hFHz1y6Fdw9KQrmRF/R9FQ5WOynQNAvqEvvj3gG4X9sElA5mNaROXKyY36ZDFSbra/HOnadmbM9OH0mRrXGY4UMGC/4glp3YpwFZmk4EDqQ96YQ2RbJ0OBA7L4Fob1r9UhKQkcwChIRBkK0dA+gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gv0ULkR7; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ej27qgex; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1782157407;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HoMUloaAKg8ODmRbwKoyKyJ1xKK05TMqALvJhnJx1T4=;
+	b=gv0ULkR7a8fs+zKK8je6CIyUbzzHyj3Mh9LdV5lqWWg7RUHgfhK4A07ElCOSHB3Ric/KY2
+	h/ighOSyJvgZDJCunSMINZgPSw8IO+RGybRSM/qyyT/HZMdDtavcOBL5WhbrHOoKNazKrT
+	ONfVSMXOhATkeisSUCvZjBd2Ri/WOfQ=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-161-FgdhNz-oNFqiOeUcljGXPg-1; Mon, 22 Jun 2026 15:43:25 -0400
+X-MC-Unique: FgdhNz-oNFqiOeUcljGXPg-1
+X-Mimecast-MFC-AGG-ID: FgdhNz-oNFqiOeUcljGXPg_1782157405
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-92158791d14so341478285a.2
+        for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 12:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782155033; x=1782759833; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uM6rjwv+rWrcNEl8KjTKnVcDSG3oUNpsPUMqnFOcLeE=;
-        b=LFiZE21bJOd27mvhUeQY65zQorGfroSNylZhnl5pr3qjxqG/eN1p6cReYMi7Y8XHb0
-         7P2yUKScTc7SL9KBMwdl8WT1nEKnGZf9ur45NKJJuEmRNsVr4TarSwghnJCBC39U5FT/
-         hbLMbAuZB7Uhid7P768tqQ5oB5rNa0UgEghjqL8I6E/OiecFdkW7XXJUCVzAvM2Bcvqj
-         aAAg70ofC8G+A3+uW7Vx2nk3e0tc12ATFJvEbWA6+4EjPe4CrUqJXP2Emg2HT57KZ67b
-         LsX6aiKqdjYFThFXLMKvM5eHENHiOf+kS4D8rdkQabgcObx3aWN/R9FVWrU0LGgqTlRe
-         mYGw==
+        d=redhat.com; s=google; t=1782157405; x=1782762205; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HoMUloaAKg8ODmRbwKoyKyJ1xKK05TMqALvJhnJx1T4=;
+        b=ej27qgextzr67ahtxU+KCPt/ouirG7ZlzjFtiWyGSlr68PvdjEJtdMHOhdQE3x6vRM
+         TXxSVmh9+PnPZAim8d8S08n2nqs4iRRPUr1G/wmyciy4WiwzbBQhST1rOXcxqn75y63+
+         ekEwpwxJwzFk3+kR/ad2qiRLG6/jofrrywsnfrIvMvDjYhyWHL2JGGtVve89DcwX3RHo
+         Swe+wtV2Ypi9VrZR4h/jm2QhYv9PRVXGbHTV5XsYBp2VmxTwCe3LRP17aydNNYUA/naH
+         iZoiVxoi8NHIRZ19RfRSjO2BZDES+14SjkR4cTSN2veGAgcL5H3Ts3QOv7UXMUh7OHj6
+         yh5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782155033; x=1782759833;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uM6rjwv+rWrcNEl8KjTKnVcDSG3oUNpsPUMqnFOcLeE=;
-        b=APR/m0XQ0/rLON8F2YoeTfuhuVnC+i1bHDBGUbEMxbATM/o+Zd2XQovxWjroPuGaUD
-         r58FMd5M5dmyrlSQr4C2JqAeWsF7jTct0XvaysfWAmPmO9oe+ePaF0OH077ANo2ca7Cf
-         r/AY3uMGTcLXWFY0s8Sc3ApydZWbBv3zF1/sdaKp5k61RBtQ1B0Log0ppf4tPVrgZwAB
-         dires44FPIAD3rYLLI6AkfQ0fMRE3x1RUp8vxgEXDku0pEDuCKrCb24O8eE4Th7j2skZ
-         EVNTj4MP2sIvKt02Sf4H5fPPMaAM7+QzGTcfddGI+9iJZijKUcuauPsnYVoOsGgU8H3s
-         bNdw==
-X-Forwarded-Encrypted: i=1; AHgh+RqEPoXT0a98AKfu0xZSmaS461nBJHtXtjV8IiC5q1cltpjpTF/aK10jMth02HUowtNS6kgH8q0t@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8Q/j3IKE+I1b/FW/bb0U5R1Idc7grGLKeqCATzooO+c+MzSqW
-	eHc839IYcv+n3kt1/N3P5L1uTcqtVJsn7zO6EiRezp+CQDAG3laTi10Q
-X-Gm-Gg: AfdE7ckwQqo/CiEHplBZKsKceRawIAQISAk0wN4/7g4kKcmFDjhZdTfofgFnzeRcsj8
-	4jCKFCa7gXeSmyWIK+nesmqtUoy8p1l844k5fJ6jxnFjkBAVjKfJsOkojiwOnGsijmC25AB+prH
-	tLUNt+osQ6xH1RALJHX/6Fhvr4PCQUtpcU+g/BFkMmvWNrSjhutaoklI5NDlHlI9oexnpgg0UZU
-	YO177v7lurBYa7DVrdxxAWXsvTOdOVJPRFmI9FmAQXVz4tc9uqxj47Na2DBgLZJjDA19ZFGADPC
-	5dF4TtbUIpYM+/8ZOjZTDSuSNZtNRCmZIuTBQxX8/70Qhc/bIG6Oh2XiaXM7SPcwzEerOLEnCIS
-	a/mWnNevSFhIFO+44HbJUGHQ/yRrpxE6apN7WCrNtNlkZlIay0R47e46yZR1IzEOzEW3gWKfY67
-	Gpz7Huzmk0U92WoN2T8W3PoJIpvvB+ZcbhB0kI4JFsjv31UNNI4ONcpxBmFUCXnwVi3pQ=
-X-Received: by 2002:a05:693c:2887:b0:30b:cc4e:6396 with SMTP id 5a478bee46e88-30c5553b105mr382073eec.7.1782155033135;
-        Mon, 22 Jun 2026 12:03:53 -0700 (PDT)
-Received: from ?IPv6:2a03:83e0:115c:1:6e2:c699:67c:63fe? ([2620:10d:c090:500::1:5387])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c1be4967fsm10549199eec.26.2026.06.22.12.03.47
+        d=1e100.net; s=20251104; t=1782157405; x=1782762205;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HoMUloaAKg8ODmRbwKoyKyJ1xKK05TMqALvJhnJx1T4=;
+        b=LX3YbDPrDVYe6E+Ry7A/UgZLU8xZeXFebkSQ+/+XkO5ZG1Q6IuVrX6V5kLf/LnQzvC
+         7xuK97ULD4SzNqbb2zsJx/YCgXxWlQ+IwfWckiudKgwGgLjsNuydz8bLISeGt5QaqqWo
+         BLkIEgiKt8Bc5+rvd+6m3hQ/fAyNn2uVz7u2x+9z9xAYvWeXECcReQBRMLSfjKN49vrN
+         gN5Tk/OGJKO7uCwUBA9LVqsRIxHs7XD6H5pJ6Aa/13Vb/r2nfE9FrJS4MV48kXxj8zCO
+         UNM4mBscEqIq+t8ud1kgLcx5L7g/eNzgJYu0DW6CLsDjnqPT1qEhB6oD6gsZb6m3uK31
+         Vj8A==
+X-Forwarded-Encrypted: i=1; AFNElJ8SkvttiLRtSBCaqUR2jChCL/8hR1cfxeYMjx04SBv1NBJWtylUce6U8qCvbjf0OpDE6Knz3Oji@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxfu1AxlY8LcqfZ8vT3ANvy5sNu4IhZhRrrbr2UmF8XrS2Av9DU
+	IC4/k8kL/PClPcs28f3seGGFGs+CCxjgU927zi2B1qU0tDem9veUgy2HtcvTl7bnrL+PwTWdeNL
+	Eevj3LlL0QIq6//UzY7CI3c4Z14y4DxO9AA6+NMgLyYdj/g00pEWs31yw+wk=
+X-Gm-Gg: AfdE7ck1XZy+LGdsckHNRXfV/6yoN03kMW4hJ7dumEAA6qFqg6nKs6Q4Ii/fZDUx6vS
+	ug2/Nse+1A2qWdulWIIH6RAPdO6GnXrK4YId16+FlkDCvh1KnXLpwS1UjmclBso3pLoTJYQLgNc
+	nMkJUH52mCAdm/WUL52TnMVLRj2Imk8VlalHfTVHmcZ1lvCEo0sqyfhK0lBX5CWpkll8R8IekAt
+	xREvb/V+UURPDCofH1EHt6xO26AV7K/p8FV0nhkbpsSRXbF2GKcImWDiLNzMfDNEor5TEkCwQcg
+	WYcSYjsyWexK1FzB7r2vmVHXqCBJ8peRGDuGW2+XrudaruRuygjVq8yxhlb44uPDYyvR4IqqjQg
+	0+KuTKHDhOtvTTAkXVQWbZJgTAWnk4D4s/g==
+X-Received: by 2002:a05:620a:2592:b0:922:92b1:9dfc with SMTP id af79cd13be357-92292b1aff4mr1606116885a.14.1782157404786;
+        Mon, 22 Jun 2026 12:43:24 -0700 (PDT)
+X-Received: by 2002:a05:620a:2592:b0:922:92b1:9dfc with SMTP id af79cd13be357-92292b1aff4mr1606108685a.14.1782157404145;
+        Mon, 22 Jun 2026 12:43:24 -0700 (PDT)
+Received: from oak (c-73-148-124-98.hsd1.va.comcast.net. [73.148.124.98])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-926000c1c39sm61506485a.26.2026.06.22.12.43.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2026 12:03:52 -0700 (PDT)
-Message-ID: <1979fc81ae7bdaabda8616cd9698a40ef8bbfaee.camel@gmail.com>
-Subject: Re: [PATCH v3 5/7] kernel: Use mutable list iterators
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kaitao Cheng <kaitao.cheng@linux.dev>, Paul Moore <paul@paul-moore.com>,
-  Eric Paris <eparis@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann	 <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski	 <kuba@kernel.org>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend	
- <john.fastabend@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner	
- <hannes@cmpxchg.org>, Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, 
- Maarten Lankhorst	 <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
- Natalie Vock	 <natalie.vock@gmx.de>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar	 <mingo@redhat.com>, Arnaldo Carvalho de Melo
- <acme@kernel.org>, Namhyung Kim	 <namhyung@kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Oleg Nesterov	 <oleg@redhat.com>, Peter
- Oberparleiter <oberpar@linux.ibm.com>, Andrew Morton	
- <akpm@linux-foundation.org>, Baoquan He <baoquan.he@linux.dev>, Mike
- Rapoport	 <rppt@kernel.org>, Pasha Tatashin <pasha.tatashin@soleen.com>,
- Pratyush Yadav	 <pratyush@kernel.org>, Naveen N Rao <naveen@kernel.org>,
- Josh Poimboeuf	 <jpoimboe@kernel.org>, Jiri Kosina <jikos@kernel.org>,
- Miroslav Benes	 <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Will
- Deacon <will@kernel.org>,  Boqun Feng <boqun@kernel.org>, Luis Chamberlain
- <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,  Daniel Gomez
- <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>, Steffen
- Klassert	 <steffen.klassert@secunet.com>, Daniel Jordan
- <daniel.m.jordan@oracle.com>,  "Rafael J. Wysocki"	 <rafael@kernel.org>,
- Davidlohr Bueso <dave@stgolabs.net>, "Paul E. McKenney"	
- <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>, Frederic
- Weisbecker <frederic@kernel.org>, Neeraj Upadhyay
- <neeraj.upadhyay@kernel.org>, Joel Fernandes	 <joelagnelf@nvidia.com>,
- Uladzislau Rezki <urezki@gmail.com>, Juri Lelli	 <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Kees Cook <kees@kernel.org>,
- Balbir Singh <bsingharora@gmail.com>, Anna-Maria Behnsen	
- <anna-maria@linutronix.de>, Thomas Gleixner <tglx@kernel.org>, John Stultz	
- <jstultz@google.com>, KP Singh <kpsingh@kernel.org>, Matt Bobrowski	
- <mattbobrowski@google.com>, Nathan Chancellor <nathan@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>,  Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, David Vernet	 <void@manifault.com>, Steven
- Rostedt <rostedt@goodmis.org>
-Cc: audit@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, 	netdev@vger.kernel.org, cgroups@vger.kernel.org,
- dri-devel@lists.freedesktop.org, 	linux-perf-users@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, 	kexec@lists.infradead.org,
- live-patching@vger.kernel.org, 	linux-modules@vger.kernel.org,
- linux-crypto@vger.kernel.org, 	linux-pm@vger.kernel.org,
- rcu@vger.kernel.org, sched-ext@lists.linux.dev, 	llvm@lists.linux.dev,
- Kaitao Cheng <chengkaitao@kylinos.cn>
-Date: Mon, 22 Jun 2026 12:03:46 -0700
-In-Reply-To: <20260622042811.31684-1-kaitao.cheng@linux.dev>
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
-	 <20260622042811.31684-1-kaitao.cheng@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.60.1 (3.60.1-1.fc44) 
+        Mon, 22 Jun 2026 12:43:23 -0700 (PDT)
+From: Joe Simmons-Talbott <joest@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Joe Simmons-Talbott <joest@redhat.com>,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests/cgroup: Adjust cpu.max quota based on HZ
+Date: Mon, 22 Jun 2026 15:43:04 -0400
+Message-ID: <20260622194305.601392-1-joest@redhat.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17149-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:kaitao.cheng@linux.dev,m:paul@paul-moore.com,m:eparis@redhat.com,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:memxor@gmail.com,m:davem@davemloft.net,m:kuba@kernel.org,m:hawk@kernel.org,m:john.fastabend@gmail.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:dev@lankhorst.se,m:mripard@kernel.org,m:natalie.vock@gmx.de,m:peterz@infradead.org,m:mingo@redhat.com,m:acme@kernel.org,m:namhyung@kernel.org,m:mhiramat@kernel.org,m:oleg@redhat.com,m:oberpar@linux.ibm.com,m:akpm@linux-foundation.org,m:baoquan.he@linux.dev,m:rppt@kernel.org,m:pasha.tatashin@soleen.com,m:pratyush@kernel.org,m:naveen@kernel.org,m:jpoimboe@kernel.org,m:jikos@kernel.org,m:mbenes@suse.cz,m:pmladek@suse.com,m:will@kernel.org,m:boqun@kernel.org,m:mcgrof@kernel.org,m:petr.pavlu@suse.com,m:da.gomez@kernel.org,m:samitolvanen@google.com,m:steffen.klassert@secunet.com,m:daniel.m.jordan@oracle.com,m:rafael@kernel.org,m:dave@stgolabs.net,m:paulmck@kernel.org,m:josh@joshtri
- plett.org,m:frederic@kernel.org,m:neeraj.upadhyay@kernel.org,m:joelagnelf@nvidia.com,m:urezki@gmail.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:kees@kernel.org,m:bsingharora@gmail.com,m:anna-maria@linutronix.de,m:tglx@kernel.org,m:jstultz@google.com,m:kpsingh@kernel.org,m:mattbobrowski@google.com,m:nathan@kernel.org,m:martin.lau@linux.dev,m:song@kernel.org,m:mark.rutland@arm.com,m:mathieu.desnoyers@efficios.com,m:dietmar.eggemann@arm.com,m:void@manifault.com,m:rostedt@goodmis.org,m:audit@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,m:netdev@vger.kernel.org,m:cgroups@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-perf-users@vger.kernel.org,m:linux-trace-kernel@vger.kernel.org,m:kexec@lists.infradead.org,m:live-patching@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-pm@vger.kernel.org,m:rcu@vger.kernel.org,m:sched-ext@lists.linux.dev,m:llvm@lists.linux.dev,m:chengkaitao@kylinos.cn,m:johnfastabend
- @gmail.com,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[eddyz87@gmail.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[linux.dev,paul-moore.com,redhat.com,kernel.org,iogearbox.net,gmail.com,davemloft.net,cmpxchg.org,suse.com,lankhorst.se,gmx.de,infradead.org,linux.ibm.com,linux-foundation.org,soleen.com,suse.cz,google.com,secunet.com,oracle.com,stgolabs.net,joshtriplett.org,nvidia.com,linaro.org,linutronix.de,arm.com,efficios.com,manifault.com,goodmis.org];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[eddyz87@gmail.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17150-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:joest@redhat.com,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[joest@redhat.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[joest@redhat.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[84];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E1E306B1FA3
+X-Rspamd-Queue-Id: E071F6B221C
 
-On Mon, 2026-06-22 at 12:28 +0800, Kaitao Cheng wrote:
-> From: Kaitao Cheng <chengkaitao@kylinos.cn>
->=20
-> The safe list iteration helpers require callers to provide a temporary
-> cursor even when the cursor is only used internally by the loop. This
-> leaves many functions with otherwise unused variables whose only purpose
-> is to satisfy the old iterator interface.
->=20
-> Use the mutable list iteration helpers for those cases. The mutable
-> helpers keep the same removal-safe traversal semantics, while allowing
-> the temporary cursor to be internal to the macro when the caller does
-> not need to observe it.
->=20
-> Convert list, hlist and llist users under kernel/ where the temporary
-> cursor is not used outside the iteration. Keep the explicit cursor form
-> where the next entry is still needed by the surrounding code.
->=20
-> No functional change intended.
->=20
-> Signed-off-by: Kaitao Cheng <chengkaitao@kylinos.cn>
-> ---
+For lower HZ values a quota of 1000us is much lower than the amount
+of microseconds per tick which makes the tests test_cpucg_max and
+test_cpugc_max_nested fail. Use the amount of microseconds per tick
+as the quota value.
 
-Beside the fact that this does not apply,
-I don't see a reason why is this needed for BPF sub-tree.
+Signed-off-by: Joe Simmons-Talbott <joest@redhat.com>
+---
+changes since v1:
+- Try checking /proc/config.gz to get the actual kernel HZ value and
+  fallback to 1000 if the value cannot be determined.
 
-[...]
+ tools/testing/selftests/cgroup/test_cpu.c | 33 +++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index 7a40d76b9548..65e09555309f 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -639,6 +639,29 @@ test_cpucg_nested_weight_underprovisioned(const char *root)
+ 	return run_cpucg_nested_weight_test(root, false);
+ }
+ 
++/*
++ * Best effort attempt to get the kernel's HZ value from the config.
++ * Return the HZ value if found otherwise return -1 to indicate failure.
++ */
++static long
++_get_config_hz(void)
++{
++	long hz = -1;
++	FILE *f;
++	char cmd[256] = "zcat /proc/config.gz 2>/dev/null | grep '^CONFIG_HZ='";
++
++	f = popen(cmd, "r");
++
++	if (!f)
++		goto out;
++
++	fscanf(f, "CONFIG_HZ=%ld", &hz);
++
++out:
++	pclose(f);
++	return hz;
++}
++
+ /*
+  * This test creates a cgroup with some maximum value within a period, and
+  * verifies that a process in the cgroup is not overscheduled.
+@@ -646,7 +669,8 @@ test_cpucg_nested_weight_underprovisioned(const char *root)
+ static int test_cpucg_max(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+-	long quota_usec = 1000;
++	long hz = _get_config_hz();
++	long quota_usec;
+ 	long default_period_usec = 100000; /* cpu.max's default period */
+ 	long duration_seconds = 1;
+ 
+@@ -655,6 +679,8 @@ static int test_cpucg_max(const char *root)
+ 	char *cpucg;
+ 	char quota_buf[32];
+ 
++	quota_usec = hz != -1 ? USEC_PER_SEC / hz : 1000;
++
+ 	snprintf(quota_buf, sizeof(quota_buf), "%ld", quota_usec);
+ 
+ 	cpucg = cg_name(root, "cpucg_test");
+@@ -710,7 +736,8 @@ static int test_cpucg_max(const char *root)
+ static int test_cpucg_max_nested(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+-	long quota_usec = 1000;
++	long quota_usec;
++	long hz = _get_config_hz();
+ 	long default_period_usec = 100000; /* cpu.max's default period */
+ 	long duration_seconds = 1;
+ 
+@@ -719,6 +746,8 @@ static int test_cpucg_max_nested(const char *root)
+ 	char *parent, *child;
+ 	char quota_buf[32];
+ 
++	quota_usec = hz != -1 ? USEC_PER_SEC / hz : 1000;
++
+ 	snprintf(quota_buf, sizeof(quota_buf), "%ld", quota_usec);
+ 
+ 	parent = cg_name(root, "cpucg_parent");
+-- 
+2.54.0
+
 
