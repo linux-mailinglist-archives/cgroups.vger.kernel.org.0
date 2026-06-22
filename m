@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-17139-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17140-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id stD5GVwcOWoJnAcAu9opvQ
-	(envelope-from <cgroups+bounces-17139-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 13:28:28 +0200
+	id bBKBAVUrOWplnwcAu9opvQ
+	(envelope-from <cgroups+bounces-17140-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 14:32:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 137C86AF10A
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 13:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 607B06AF747
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 14:32:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=NP5vIVfj;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17139-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17139-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Yq6Bpl9x;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17140-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17140-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5534B303024C
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 11:27:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 71E2D30347E4
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 12:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4423A3A6B6A;
-	Mon, 22 Jun 2026 11:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B56443AA517;
+	Mon, 22 Jun 2026 12:31:44 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF753A4F47;
-	Mon, 22 Jun 2026 11:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAAF3A9D9C;
+	Mon, 22 Jun 2026 12:31:43 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782127669; cv=none; b=eVZH/Zgg4diWX7A/vL3ZM6uOVUNs8pT0j/SkTQFOGa4nttJDYAzZ1tNHNj9BbowU657N/sBrd02KpbdAMq5ICKU1evE98i+LuoBSxd/vJjNFw0Uz6vDHy+31UMYdiFcaOkPb/LZe/PAd5h7L01K8P8lvZ2ZREaTEPDNsWLbGh+s=
+	t=1782131504; cv=none; b=VXIuJe3mknMu8tAu6ZY8dv3OIhBXgQj+HpOX2/h/rPdQxxod2XXScb7pn5DPzOTKSlNb5lY6V5Cmn+lQ2mlRy16UUKUez5Om+HuNsCA048gy6thvVT6GUssdFQr3K/SOd/Tgq7gK7+Y0N/+tPz0+GFxJ5D9tPRyeu+9+u/2cAzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782127669; c=relaxed/simple;
-	bh=N/vuDHI9SQW1janB0j5sO1lsg3p3zPSFITHHbgn1I9o=;
+	s=arc-20240116; t=1782131504; c=relaxed/simple;
+	bh=cZea8u201/KNpcJN/7HBfbqx3/twPSpuO7D46mqtqY4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N6BSQiUlze+NFvrkVh5/fninGhgV2NrV1roGLM0qGbypx0hb7Z0Kf/1BM9MBGcyUjr8tbjJqaA7Tg4JzDhDs5ZyVqzzLxKsB7548qWFBecXGhk6lOxjaf7mAlCtlp1XBCsQfx+aPtIXP0JU5aLOwIuhHjj9lxRfMN1yAk95Q6zI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NP5vIVfj; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AED81F000E9;
-	Mon, 22 Jun 2026 11:27:35 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=qKP7bP9bqPcgGoyyyYUbOf3ZA+aAwnqoujCVeeplpQolejITeK/6SAFLO8tBpZKLVBz7Khlq5OFHk+vTdwqY8emzbJhIdpM4aKSGhMFiYsRjldof3i1+QyX4EL0ts6IYVA7ERW0foXj63neTlUpdw4CgQkX+2zNbjNGOMMsAFbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Yq6Bpl9x; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E0ED1F000E9;
+	Mon, 22 Jun 2026 12:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782127667;
-	bh=CxKnwWbJ6o3Gp2gCYHflIyVCw0BGlYpweEWWlR7Zxlc=;
+	s=k20260515; t=1782131503;
+	bh=mv1TDIjJmBLfFfHDh7TWc3Ec+yFIfWNb9f4z3gl0gSU=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=NP5vIVfjsp4feyIcuAfoiRvYPwPZKLTXzyb0N0wUNoKxJZDnW14mB+Ksso1zMBEZX
-	 fUxTpjrKClw00GwNOT/ge4xL2rriBHbh5PxOP732GJlaoArFBmxyEOXdYsklIEobB9
-	 /pFQVIcOni9/exs8OPh0iGTCF0YrB1elReGRM0Pk+0VV64ksMWO5Yff5O4AFlcbETU
-	 7oQHcuU8AyNBq9zKQ3Q/5sFiPWawUkfJJPp52WQ+UesWgVbFX7LlIhxh77+4lU8xhN
-	 0Mxv8uME2L+nRo7wVhECL6694CE+9AKg1Xt97qlcIjmOAoH39Xw4JyyfVaAkL3HiaO
-	 P5VjuChOEJC/w==
-Message-ID: <8f98a3a6-f97b-4673-964f-fb09c8879e2e@kernel.org>
-Date: Mon, 22 Jun 2026 13:27:34 +0200
+	b=Yq6Bpl9xNgG8eaRATgdPo0E6+dJzOGDQdCno3iqmf9KIjIyllG26382Fr+fu01Xf9
+	 bUxEbSPKJ8PlEknLGKhUqgRA61PAmFzSJyc1PboFoovpAJAw/XooS3FS6ehllQovLR
+	 lZjaUXJqM2NijaocEgvjjV0L0wYR640roDVz94qNQodlQ/fWv/DAdDjodvjLDklrZs
+	 5/kg/o5GRcSCI3UnWdBn5hE0/Yxen3qdzKU4Pv1QmF/0aj1G+OQ+VuKGt8hcVDMbXm
+	 6CrJEankWsCzYKYacNiCs0vkPokNkFSC7JFUDLoURnu1O0TSFTiyMNn3+RaT36bGsh
+	 H6c0z304WZg0A==
+Message-ID: <6b22698c-ac2e-4c71-9448-50f073b4efc6@kernel.org>
+Date: Mon, 22 Jun 2026 14:31:24 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,96 +55,92 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/7] Prepare mutable list iterators to cache cursor
- state
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Kaitao Cheng <kaitao.cheng@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
- Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Paul Moore <paul@paul-moore.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- David Howells <dhowells@redhat.com>, Simona Vetter <simona.vetter@ffwll.ch>,
- Randy Dunlap <rdunlap@infradead.org>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
- linux-ntfs-dev@lists.sourceforge.net,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
- io-uring <io-uring@vger.kernel.org>, audit@vger.kernel.org,
- bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
- dri-devel@lists.freedesktop.org,
- "linux-perf-use." <linux-perf-users@vger.kernel.org>,
- linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
- kexec@lists.infradead.org, live-patching@vger.kernel.org,
- linux-modules@vger.kernel.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- Linux Power Management <linux-pm@vger.kernel.org>, rcu@vger.kernel.org,
- sched-ext@lists.linux.dev, linux-mm <linux-mm@kvack.org>,
- virtualization@lists.linux.dev, damon@lists.linux.dev,
- clang-built-linux <llvm@lists.linux.dev>,
- chengkaitao <chengkaitao@kylinos.cn>
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
- <CAADnVQJmPWFT01b7DuLdtafv=8FyB84GYHNZ8zSTck+9Aw0JpA@mail.gmail.com>
-From: "David Hildenbrand (Arm)" <david@kernel.org>
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory
+ Nodes (w/ Compressed RAM)
 Content-Language: en-US
-Autocrypt: addr=david@kernel.org; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzS5EYXZpZCBIaWxk
- ZW5icmFuZCAoQ3VycmVudCkgPGRhdmlkQGtlcm5lbC5vcmc+wsGQBBMBCAA6AhsDBQkmWAik
- AgsJBBUKCQgCFgICHgUCF4AWIQQb2cqtc1xMOkYN/MpN3hD3AP+DWgUCaYJt/AIZAQAKCRBN
- 3hD3AP+DWriiD/9BLGEKG+N8L2AXhikJg6YmXom9ytRwPqDgpHpVg2xdhopoWdMRXjzOrIKD
- g4LSnFaKneQD0hZhoArEeamG5tyo32xoRsPwkbpIzL0OKSZ8G6mVbFGpjmyDLQCAxteXCLXz
- ZI0VbsuJKelYnKcXWOIndOrNRvE5eoOfTt2XfBnAapxMYY2IsV+qaUXlO63GgfIOg8RBaj7x
- 3NxkI3rV0SHhI4GU9K6jCvGghxeS1QX6L/XI9mfAYaIwGy5B68kF26piAVYv/QZDEVIpo3t7
- /fjSpxKT8plJH6rhhR0epy8dWRHk3qT5tk2P85twasdloWtkMZ7FsCJRKWscm1BLpsDn6EQ4
- jeMHECiY9kGKKi8dQpv3FRyo2QApZ49NNDbwcR0ZndK0XFo15iH708H5Qja/8TuXCwnPWAcJ
- DQoNIDFyaxe26Rx3ZwUkRALa3iPcVjE0//TrQ4KnFf+lMBSrS33xDDBfevW9+Dk6IISmDH1R
- HFq2jpkN+FX/PE8eVhV68B2DsAPZ5rUwyCKUXPTJ/irrCCmAAb5Jpv11S7hUSpqtM/6oVESC
- 3z/7CzrVtRODzLtNgV4r5EI+wAv/3PgJLlMwgJM90Fb3CB2IgbxhjvmB1WNdvXACVydx55V7
- LPPKodSTF29rlnQAf9HLgCphuuSrrPn5VQDaYZl4N/7zc2wcWM7BTQRVy5+RARAA59fefSDR
- 9nMGCb9LbMX+TFAoIQo/wgP5XPyzLYakO+94GrgfZjfhdaxPXMsl2+o8jhp/hlIzG56taNdt
- VZtPp3ih1AgbR8rHgXw1xwOpuAd5lE1qNd54ndHuADO9a9A0vPimIes78Hi1/yy+ZEEvRkHk
- /kDa6F3AtTc1m4rbbOk2fiKzzsE9YXweFjQvl9p+AMw6qd/iC4lUk9g0+FQXNdRs+o4o6Qvy
- iOQJfGQ4UcBuOy1IrkJrd8qq5jet1fcM2j4QvsW8CLDWZS1L7kZ5gT5EycMKxUWb8LuRjxzZ
- 3QY1aQH2kkzn6acigU3HLtgFyV1gBNV44ehjgvJpRY2cC8VhanTx0dZ9mj1YKIky5N+C0f21
- zvntBqcxV0+3p8MrxRRcgEtDZNav+xAoT3G0W4SahAaUTWXpsZoOecwtxi74CyneQNPTDjNg
- azHmvpdBVEfj7k3p4dmJp5i0U66Onmf6mMFpArvBRSMOKU9DlAzMi4IvhiNWjKVaIE2Se9BY
- FdKVAJaZq85P2y20ZBd08ILnKcj7XKZkLU5FkoA0udEBvQ0f9QLNyyy3DZMCQWcwRuj1m73D
- sq8DEFBdZ5eEkj1dCyx+t/ga6x2rHyc8Sl86oK1tvAkwBNsfKou3v+jP/l14a7DGBvrmlYjO
- 59o3t6inu6H7pt7OL6u6BQj7DoMAEQEAAcLBfAQYAQgAJgIbDBYhBBvZyq1zXEw6Rg38yk3e
- EPcA/4NaBQJonNqrBQkmWAihAAoJEE3eEPcA/4NaKtMQALAJ8PzprBEXbXcEXwDKQu+P/vts
- IfUb1UNMfMV76BicGa5NCZnJNQASDP/+bFg6O3gx5NbhHHPeaWz/VxlOmYHokHodOvtL0WCC
- 8A5PEP8tOk6029Z+J+xUcMrJClNVFpzVvOpb1lCbhjwAV465Hy+NUSbbUiRxdzNQtLtgZzOV
- Zw7jxUCs4UUZLQTCuBpFgb15bBxYZ/BL9MbzxPxvfUQIPbnzQMcqtpUs21CMK2PdfCh5c4gS
- sDci6D5/ZIBw94UQWmGpM/O1ilGXde2ZzzGYl64glmccD8e87OnEgKnH3FbnJnT4iJchtSvx
- yJNi1+t0+qDti4m88+/9IuPqCKb6Stl+s2dnLtJNrjXBGJtsQG/sRpqsJz5x1/2nPJSRMsx9
- 5YfqbdrJSOFXDzZ8/r82HgQEtUvlSXNaXCa95ez0UkOG7+bDm2b3s0XahBQeLVCH0mw3RAQg
- r7xDAYKIrAwfHHmMTnBQDPJwVqxJjVNr7yBic4yfzVWGCGNE4DnOW0vcIeoyhy9vnIa3w1uZ
- 3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
- CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
- qIws/H2t
-In-Reply-To: <CAADnVQJmPWFT01b7DuLdtafv=8FyB84GYHNZ8zSTck+9Aw0JpA@mail.gmail.com>
+To: Gregory Price <gourry@gourry.net>
+Cc: "David Hildenbrand (Arm)" <david@kernel.org>,
+ Balbir Singh <balbirs@nvidia.com>, lsf-pc@lists.linux-foundation.org,
+ linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+ kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+ dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+ dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com,
+ ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com,
+ akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+ joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+ ying.huang@linux.alibaba.com, apopple@nvidia.com, axelrasmussen@google.com,
+ yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+ linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+ baolin.wang@linux.alibaba.com, npache@redhat.com, ryan.roberts@arm.com,
+ dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+ muchun.song@linux.dev, xu.xin16@zte.com.cn, chengming.zhou@linux.dev,
+ jannh@google.com, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
+ pfalcato@suse.de, rientjes@google.com, shakeel.butt@linux.dev,
+ riel@surriel.com, harry.yoo@oracle.com, cl@gentwo.org,
+ roman.gushchin@linux.dev, chrisl@kernel.org, kasong@tencent.com,
+ shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+ zhengqi.arch@bytedance.com, terry.bowman@amd.com,
+ Matthew Wilcox <willy@infradead.org>
+References: <aik_ddHymus2DJ6D@gourry-fedora-PF4VCD3F>
+ <c1b66e7a-bb95-4295-8193-55ceadaaa578@kernel.org>
+ <aimSzvoJDrpeQsmM@gourry-fedora-PF4VCD3F>
+ <d01fb1ed-2418-42ee-aea2-37f9a5c5729c@kernel.org>
+ <ainFROZ3WrGioyuY@gourry-fedora-PF4VCD3F>
+ <aiwl4kCG814dpX7L@gourry-fedora-PF4VCD3F>
+ <9f1815b0-896b-44ab-9e6d-9316d8f11033@kernel.org>
+ <fdbdc9f7-d142-4880-b429-065d5056cabb@kernel.org>
+ <ajAcIwBAnqgEEWSD@gourry-fedora-PF4VCD3F>
+ <90418cd3-751f-439d-83ed-a0c33517c3bd@kernel.org>
+ <ajPS3AKrZEbZbXBw@gourry-fedora-PF4VCD3F>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Autocrypt: addr=vbabka@kernel.org; keydata=
+ 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
+In-Reply-To: <ajPS3AKrZEbZbXBw@gourry-fedora-PF4VCD3F>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
@@ -156,23 +152,23 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17140-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17139-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:alexei.starovoitov@gmail.com,m:kaitao.cheng@linux.dev,m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:tj@kernel.org,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:hannes@cmpxchg.org,m:peterz@infradead.org,m:mingo@redhat.com,m:acme@kernel.org,m:namhyung@kernel.org,m:tglx@kernel.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:paul@paul-moore.com,m:andriy.shevchenko@linux.intel.com,m:paulmck@kernel.org,m:shakeel.butt@linux.dev,m:christian.koenig@amd.com,m:dhowells@redhat.com,m:simona.vetter@ffwll.ch,m:rdunlap@infradead.org,m:luca.ceresoli@bootlin.com,m:phasta@kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-ntfs-dev@lists.sourceforge.net,m:linux-fsdevel@vger.kernel.org,m:io-uring@vger.kernel.org,m:audit@vger.kernel.org,m:bpf@vger.kernel.org,m:netdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-perf-users@vger.kernel.org
- ,m:linux-trace-kernel@vger.kernel.org,m:kexec@lists.infradead.org,m:live-patching@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-pm@vger.kernel.org,m:rcu@vger.kernel.org,m:sched-ext@lists.linux.dev,m:linux-mm@kvack.org,m:virtualization@lists.linux.dev,m:damon@lists.linux.dev,m:llvm@lists.linux.dev,m:chengkaitao@kylinos.cn,m:alexeistarovoitov@gmail.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,linux.dev];
-	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[kernel.org,nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,infradead.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:gourry@gourry.net,m:david@kernel.org,m:balbirs@nvidia.com,m:lsf-pc@lists.linux-foundation.org,m:linux-kernel@vger.kernel.org,m:linux-cxl@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-trace-kernel@vger.kernel.org,m:damon@lists.linux.dev,m:kernel-team@meta.com,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:dakr@kernel.org,m:dave@stgolabs.net,m:jonathan.cameron@huawei.com,m:dave.jiang@intel.com,m:alison.schofield@intel.com,m:vishal.l.verma@intel.com,m:ira.weiny@intel.com,m:dan.j.williams@intel.com,m:longman@redhat.com,m:akpm@linux-foundation.org,m:lorenzo.stoakes@oracle.com,m:Liam.Howlett@oracle.com,m:vbabka@suse.cz,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:osalvador@suse.de,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:joshua.hahnjy@gmail.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:yury.norov@gmai
+ l.com,m:linux@rasmusvillemoes.dk,m:mhiramat@kernel.org,m:mathieu.desnoyers@efficios.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:jackmanb@google.com,m:sj@kernel.org,m:baolin.wang@linux.alibaba.com,m:npache@redhat.com,m:ryan.roberts@arm.com,m:dev.jain@arm.com,m:baohua@kernel.org,m:lance.yang@linux.dev,m:muchun.song@linux.dev,m:xu.xin16@zte.com.cn,m:chengming.zhou@linux.dev,m:jannh@google.com,m:linmiaohe@huawei.com,m:nao.horiguchi@gmail.com,m:pfalcato@suse.de,m:rientjes@google.com,m:shakeel.butt@linux.dev,m:riel@surriel.com,m:harry.yoo@oracle.com,m:cl@gentwo.org,m:roman.gushchin@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:zhengqi.arch@bytedance.com,m:terry.bowman@amd.com,m:willy@infradead.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
+	RCPT_COUNT_GT_50(0.00)[76];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
@@ -180,218 +176,142 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:email,kylinos.cn:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 137C86AF10A
+X-Rspamd-Queue-Id: 607B06AF747
 
-On 6/22/26 07:28, Alexei Starovoitov wrote:
-> On Sun, Jun 21, 2026 at 9:06 PM Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
+On 6/18/26 13:13, Gregory Price wrote:
+> On Thu, Jun 18, 2026 at 10:21:30AM +0200, Vlastimil Babka (SUSE) wrote:
+>> On 6/15/26 17:37, Gregory Price wrote:
+>> > 
+>> > One thought would be a way to switch what fallback list is used, and
+>> > then have specific fallback lists for certain contexts.
+>> > 
+>> > Right now there is a single example of this: __GFP_THISNODE
+>> >   |= __GFP_THISNODE   =>  NOFALLBACK
+>> >   &= ~__GFP_THISNODE  =>  FALLBACK
+>> > 
+>> > We could add an interface with the desired fallback list based as an
+>> > argument, and let get_page_from_freelist to prefer that over the default
+>> > global lists.
+>> 
+>> Does it mean a new argument in a number of functions in the page allocator,
+>> or can it be mapped to alloc_flags (at least internally?), because the
+>> number of possible fallback lists is small enough?
 >>
->> From: chengkaitao <chengkaitao@kylinos.cn>
->>
->> The list_for_each*_safe() helpers are used when the loop body may remove
->> the current entry.  Their current interface, however, forces every caller
->> to define a temporary cursor outside the macro and pass it in, even when
->> the caller never uses that cursor directly.  For most call sites this
->> extra cursor is just boilerplate required by the macro implementation.
->>
->> This is awkward because the saved next pointer is an internal detail of
->> the iteration.  Callers that only remove or move the current entry do not
->> need to spell it out.
->>
->> The _safe() suffix has also caused confusion.  Christian Koenig pointed
->> out that the name is easy to read as a thread-safe variant, especially
->> for beginners, even though it only means that the iterator keeps enough
->> state to tolerate removal of the current entry.  He suggested _mutable()
->> as a clearer description of what the loop permits.
->>
->> Add *_mutable() iterator variants for list, hlist and llist.  The new
->> helpers are variadic and support both forms.  In the common case, the
->> caller omits the temporary cursor and the macro creates a unique internal
->> cursor with typeof(pos) and __UNIQUE_ID().  If a loop really needs an
->> explicit temporary cursor, the caller can still pass it and the helper
->> keeps the existing *_safe() behaviour.
->>
->> For example, a call site may use the shorter form:
->>
->>   list_for_each_entry_mutable(pos, head, member)
->>
->> or keep the explicit temporary cursor form:
->>
->>   list_for_each_entry_mutable(pos, tmp, head, member)
->>
->> The existing *_safe() helpers remain available for compatibility.  This
->> series only converts users in mm, block, kernel, init and io_uring.  If
->> this approach looks acceptable, the remaining users can be converted in
->> follow-up series.
->>
->> Changes in v3 (Christian König, Andy Shevchenko):
->> - Convert safe list walks to mutable iterators
->>
->> Changes in v2 (Muchun Song, Andy Shevchenko):
->> - Drop the list_for_each_entry_mutable*() helpers from v1 and make the
->>   cursor change directly in the existing list_for_each_entry*() helpers.
->> - Open-code special list walks that rely on updating the loop cursor in
->>   the body, preserving their existing traversal semantics.
->>
->> Link to v2:
->> https://lore.kernel.org/all/20260609061347.93688-1-kaitao.cheng@linux.dev/
->>
->> Link to v1:
->> https://lore.kernel.org/all/20260529082149.76764-1-kaitao.cheng@linux.dev/
->>
->> Kaitao Cheng (7):
->>   list: Add mutable iterator variants
->>   llist: Add mutable iterator variants
->>   mm: Use mutable list iterators
->>   block: Use mutable list iterators
->>   kernel: Use mutable list iterators
->>   initramfs: Use mutable list iterator
->>   io_uring: Use mutable list iterators
->>
->>  block/bfq-iosched.c                 |  17 +-
->>  block/blk-cgroup.c                  |  12 +-
->>  block/blk-flush.c                   |   4 +-
->>  block/blk-iocost.c                  |  18 +-
->>  block/blk-mq.c                      |   8 +-
->>  block/blk-throttle.c                |   4 +-
->>  block/kyber-iosched.c               |   4 +-
->>  block/partitions/ldm.c              |   8 +-
->>  block/sed-opal.c                    |   4 +-
->>  include/linux/list.h                | 269 ++++++++++++++++++++++++----
->>  include/linux/llist.h               |  81 +++++++--
->>  init/initramfs.c                    |   5 +-
->>  io_uring/cancel.c                   |   6 +-
->>  io_uring/poll.c                     |   3 +-
->>  io_uring/rw.c                       |   4 +-
->>  io_uring/timeout.c                  |   8 +-
->>  io_uring/uring_cmd.c                |   3 +-
->>  kernel/audit_tree.c                 |   4 +-
->>  kernel/audit_watch.c                |  16 +-
->>  kernel/auditfilter.c                |   4 +-
->>  kernel/auditsc.c                    |   4 +-
->>  kernel/bpf/arena.c                  |  10 +-
->>  kernel/bpf/arraymap.c               |   8 +-
->>  kernel/bpf/bpf_local_storage.c      |   3 +-
->>  kernel/bpf/bpf_lru_list.c           |  25 ++-
->>  kernel/bpf/btf.c                    |  18 +-
->>  kernel/bpf/cgroup.c                 |   7 +-
->>  kernel/bpf/cpumap.c                 |   4 +-
->>  kernel/bpf/devmap.c                 |  10 +-
->>  kernel/bpf/helpers.c                |   8 +-
->>  kernel/bpf/local_storage.c          |   4 +-
->>  kernel/bpf/memalloc.c               |  16 +-
->>  kernel/bpf/offload.c                |   8 +-
->>  kernel/bpf/states.c                 |   4 +-
->>  kernel/bpf/stream.c                 |   4 +-
->>  kernel/bpf/verifier.c               |   6 +-
->>  kernel/cgroup/cgroup-v1.c           |   4 +-
->>  kernel/cgroup/cgroup.c              |  54 +++---
->>  kernel/cgroup/dmem.c                |  12 +-
->>  kernel/cgroup/rdma.c                |   8 +-
->>  kernel/events/core.c                |  44 +++--
->>  kernel/events/uprobes.c             |  12 +-
->>  kernel/exit.c                       |   8 +-
->>  kernel/fail_function.c              |   4 +-
->>  kernel/gcov/clang.c                 |   4 +-
->>  kernel/irq_work.c                   |   4 +-
->>  kernel/kexec_core.c                 |   4 +-
->>  kernel/kprobes.c                    |  16 +-
->>  kernel/livepatch/core.c             |   4 +-
->>  kernel/livepatch/core.h             |   4 +-
->>  kernel/liveupdate/kho_block.c       |   4 +-
->>  kernel/liveupdate/luo_flb.c         |   4 +-
->>  kernel/locking/rwsem.c              |   2 +-
->>  kernel/locking/test-ww_mutex.c      |   2 +-
->>  kernel/module/main.c                |  11 +-
->>  kernel/padata.c                     |   4 +-
->>  kernel/power/snapshot.c             |   8 +-
->>  kernel/power/wakelock.c             |   4 +-
->>  kernel/printk/printk.c              |  11 +-
->>  kernel/ptrace.c                     |   4 +-
->>  kernel/rcu/rcutorture.c             |   3 +-
->>  kernel/rcu/tasks.h                  |   9 +-
->>  kernel/rcu/tree.c                   |   6 +-
->>  kernel/resource.c                   |   4 +-
->>  kernel/sched/core.c                 |   4 +-
->>  kernel/sched/ext.c                  |  22 +--
->>  kernel/sched/fair.c                 |  28 +--
->>  kernel/sched/topology.c             |   4 +-
->>  kernel/sched/wait.c                 |   4 +-
->>  kernel/seccomp.c                    |   4 +-
->>  kernel/signal.c                     |  11 +-
->>  kernel/smp.c                        |   4 +-
->>  kernel/taskstats.c                  |   8 +-
->>  kernel/time/clockevents.c           |   6 +-
->>  kernel/time/clocksource.c           |   4 +-
->>  kernel/time/posix-cpu-timers.c      |   4 +-
->>  kernel/time/posix-timers.c          |   3 +-
->>  kernel/torture.c                    |   3 +-
->>  kernel/trace/bpf_trace.c            |   4 +-
->>  kernel/trace/ftrace.c               |  49 +++--
->>  kernel/trace/ring_buffer.c          |  25 ++-
->>  kernel/trace/trace.c                |  12 +-
->>  kernel/trace/trace_dynevent.c       |   6 +-
->>  kernel/trace/trace_dynevent.h       |   5 +-
->>  kernel/trace/trace_events.c         |  35 ++--
->>  kernel/trace/trace_events_filter.c  |   4 +-
->>  kernel/trace/trace_events_hist.c    |   8 +-
->>  kernel/trace/trace_events_trigger.c |  17 +-
->>  kernel/trace/trace_events_user.c    |  16 +-
->>  kernel/trace/trace_stat.c           |   4 +-
->>  kernel/user-return-notifier.c       |   3 +-
->>  kernel/workqueue.c                  |  16 +-
->>  mm/backing-dev.c                    |   8 +-
->>  mm/balloon.c                        |   8 +-
->>  mm/cma.c                            |   4 +-
->>  mm/compaction.c                     |   4 +-
->>  mm/damon/core.c                     |   4 +-
->>  mm/damon/sysfs-schemes.c            |   4 +-
->>  mm/dmapool.c                        |   4 +-
->>  mm/huge_memory.c                    |   8 +-
->>  mm/hugetlb.c                        |  56 +++---
->>  mm/hugetlb_vmemmap.c                |  16 +-
->>  mm/khugepaged.c                     |  14 +-
->>  mm/kmemleak.c                       |   7 +-
->>  mm/ksm.c                            |  25 +--
->>  mm/list_lru.c                       |   4 +-
->>  mm/memcontrol-v1.c                  |   8 +-
->>  mm/memory-failure.c                 |  12 +-
->>  mm/memory-tiers.c                   |   4 +-
->>  mm/migrate.c                        |  23 ++-
->>  mm/mmu_notifier.c                   |   9 +-
->>  mm/page_alloc.c                     |   8 +-
->>  mm/page_reporting.c                 |   2 +-
->>  mm/percpu.c                         |  11 +-
->>  mm/pgtable-generic.c                |   4 +-
->>  mm/rmap.c                           |  10 +-
->>  mm/shmem.c                          |   9 +-
->>  mm/slab_common.c                    |  14 +-
->>  mm/slub.c                           |  33 ++--
->>  mm/swapfile.c                       |   4 +-
->>  mm/userfaultfd.c                    |  12 +-
->>  mm/vmalloc.c                        |  24 +--
->>  mm/vmscan.c                         |   7 +-
->>  mm/zsmalloc.c                       |   4 +-
->>  124 files changed, 875 insertions(+), 681 deletions(-)
 > 
-> Not sure what you were thinking, but this diff stat
-> is not landable.
+> What I ended up with was adding a single page_alloc.c external interface
+> that allows you define the zonelist via an enum, and then an internal
+> selector resolution in prepare_alloc_pages() stored in alloc_context
 
-Agreed. If we decide we want this, I guess we should target per-subsystem
-conversions.
+OK. Since it's in alloc_context then there should be no parameter bloat
+inside page allocator. And for the single external entry point it's better
+to be explicit.
 
-If this goes through the MM tree, I would even appreciate doing this on a per-MM
-component granularity.
+> 
+> eg:
+> 
+> static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+>                 int preferred_nid, nodemask_t *nodemask,
+>                 struct alloc_context *ac, gfp_t *alloc_gfp,
+>                 unsigned int *alloc_flags)
+> {       
+>         ac->highest_zoneidx = gfp_zone(gfp_mask);
+>         ac->zonelist = select_zonelist(preferred_nid, gfp_mask, ac->zlsel);
+> 	... snip ...
+> }
+> 
+> struct folio *__folio_alloc_zonelist_noprof(gfp_t gfp, unsigned int order,
+>                 int preferred_nid, nodemask_t *nodemask,
+>                 enum alloc_zonelist zlsel);
+> 
+> 
+> The original __folio_alloc* functions just add a DEFAULT - which tells
+> select_zonelist() to base the decision on __GFP_THISNODE.
+> 
+> 
+> struct folio *__folio_alloc_noprof(gfp_t gfp, unsigned int order, int preferred_nid,
+>                 nodemask_t *nodemask)
+> {
+>         return __folio_alloc_core(gfp, order, preferred_nid, nodemask,
+>                                   ALLOC_ZONELIST_DEFAULT);
+> }
+> EXPORT_SYMBOL(__folio_alloc_noprof);
+> 
+> 
+> This does a few things
+>   - The isolation is structural, there is no way to accidentally
+>     allocate private memory without passing ALLOC_ZONELIST_PRIVATE
+> 
+>   - The isolation forces folios - there are no non-folio interfaces
+>     which allow zonelist selection
+> 
+>   - The zonelist selection is confined to this allocation context,
+>     so no inheritence is possible.
+> 
 
-(unless we have some magic "Linus converts all of them" script, which I doubt we
-will have)
+Ack.
 
-Is there a way forward to replace list_for_each_*_safe entirely, possibly just
-reusing the old name but simply the parameter?
+> 
+> I tried to avoid using an ALLOC_ flag so we can avoid yet another flag
+> crunch, but there certainly are few enough zonelists that we could
+> encode it there and expose it.  I know Brendan was looking at plumbing
+> alloc flags out to an interface, so i'm open to that.
+> 
+> Externally the way I determine what zonelist to use is a lookup based on
+> reason - letting the node filter.  This is really only needed in a
+> couple spots:
+> 
+> mm/khugepaged.c:  enum alloc_zonelist zlsel = alloc_zonelist_for_node(node, NODE_ALLOC_RECLAIM);
+> mm/vmscan.c:      mtc->zlsel = alloc_zonelist_for_nodemask(mtc->nmask, NODE_ALLOC_TIERING);
+> mm/migrate.c:     .zlsel = alloc_zonelist_for_node(node, NODE_ALLOC_USER_MIGRATE),
+> 
+> static inline enum alloc_zonelist
+> alloc_zonelist_for_node(int nid, enum node_alloc_reason reason)
+> {
+>         bool ok;
+> 
+>         if (!node_state(nid, N_MEMORY_PRIVATE))
+>                 return ALLOC_ZONELIST_DEFAULT;
+>         switch (reason) {
+>         case NODE_ALLOC_RECLAIM:
+>                 ok = node_is_reclaimable(nid);
+>                 break;
+>         case NODE_ALLOC_TIERING:
+>                 ok = node_allows_tiering(nid);
+>                 break;
+>         case NODE_ALLOC_USER_MIGRATE:
+>                 ok = node_allows_user_migrate(nid);
+>                 break;
+>         default:
+>                 ok = false;
+>         }
+>         return ok ? ALLOC_ZONELIST_PRIVATE : ALLOC_ZONELIST_DEFAULT;
+> }
+> 
+> Otherwise... everything is now a mempolicy w/ MPOL_F_BIND and all the
+> handling goes through the normal fault-paths :]
+> 
+> static struct page *__alloc_pages_mpol(gfp_t gfp, unsigned int order,
+>                 struct mempolicy *pol, pgoff_t ilx, int nid)
+> {
+>         nodemask_t *nodemask;
+>         struct page *page;
+>         enum alloc_zonelist zlsel = (pol->flags & MPOL_F_PRIVATE) ?
+>                 ALLOC_ZONELIST_PRIVATE : ALLOC_ZONELIST_DEFAULT;
+> ...
+>         if (pol->mode == MPOL_PREFERRED_MANY)
+>                 return alloc_pages_preferred_many(gfp, order, nid, nodemask,
+>                                                   zlsel);
+> ...
+> }
+> 
+> 
+> Switching to an alloc_flag would probably be trivially if that's really
+> wanted
 
--- 
-Cheers,
+I guess not. Thanks for the explanation!
 
-David
+> ~Gregory
+
 
