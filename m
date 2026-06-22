@@ -1,204 +1,160 @@
-Return-Path: <cgroups+bounces-17146-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17145-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id HgsSFWlUOWrHqgcAu9opvQ
-	(envelope-from <cgroups+bounces-17146-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 17:27:37 +0200
+	id +fFYGFVVOWr8qgcAu9opvQ
+	(envelope-from <cgroups+bounces-17145-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 17:31:33 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588226B0B68
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 17:27:36 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A635B6B0BEF
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 17:31:32 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=GYEhX3sV;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17146-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17146-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=fail ("headers rsa verify failed") header.d=igalia.com header.s=20170329 header.b=ToA3PaPb;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17145-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17145-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed)" header.from=igalia.com (policy=none);
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 83F41300A262
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 15:27:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DFE44303010E
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 15:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32CE83911B5;
-	Mon, 22 Jun 2026 15:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F055376A17;
+	Mon, 22 Jun 2026 15:27:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yx1-f48.google.com (mail-yx1-f48.google.com [74.125.224.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46B9376A10
-	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 15:27:30 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782142051; cv=pass; b=ZXaZT9OadJ5wA3n4b0pn2jSVYHPTR8ZBYvhBM6i1p6ChJvdw1mgA5BMjByC7g8DJLoXR5l5NRhrtYW7QgN0CrwkWwpIBMjhUaAlCEak3EAfL3tRIYdWPzORz0DA07G6oQ7gaTQy0gGpZXWNjan4IAUVAE/AFjSp7rjuZf2+Sxbc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782142051; c=relaxed/simple;
-	bh=2uv6gQ7GKYPkzFwi4lxaTpmi5E/Y2YNpE6234rGNOfk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sZTxP22NI+9dBCf1QBhcrQ6BJukDg+3hKV9W/lmLjJ9YGVE2mlmzj+J5cYAkz+KM/GIa2GsnvK59OTfkywmDCLDSj1TYNchkVugQaSd0WwozRnbNHuam83nhaXclUL6v9aWhIZurK8LYGww0xFFosKgxoTseZ5Nq0Co8YVqluLo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GYEhX3sV; arc=pass smtp.client-ip=74.125.224.48
-Received: by mail-yx1-f48.google.com with SMTP id 956f58d0204a3-662ba4d33ecso325577d50.3
-        for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 08:27:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1782142050; cv=none;
-        d=google.com; s=arc-20240605;
-        b=WUHSl+Cr9tT8jBzhlEaW4Yx1dY4I7KSup9AVUMqURfsrcWy7yiOPVtmg07lzI9hE06
-         p/EB0b3MuVqNyVl/AoEFM2ODW/yd0tfmCaQTcZBTQzLtfufwDH6AqKj56sXkjDP4HMtz
-         YBixJbyshj12SqC54sgx2O/S2hVtm/9JmyP4IZHdJTSwRisC/1mGfd5Bc+ME+U76zEgN
-         h9d3KWOJAB4xn8DQVQ+w0AS0C2pGlk3IoFM/7Dy1MgBR2aRECB7PSyv2G8jRrluQ9vA9
-         HR9vASRjZbSMKFjsxsyKGQE8vVf/PXZ0C8HWjgZlwUDtHNeok+9wthOfEuZqhU40otZw
-         mWsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:dkim-signature;
-        bh=pGyvBAk8euMcJ38wECstDr/70ytuyfnKpcrUWwgIxnU=;
-        fh=7ONBPvd+fzjlu1iivyFttcVlDtg1OXHsX3IOrkTM99Q=;
-        b=jIxSWbne79ebv9IxXhzSGBxsZdqH1jBfMbqiE9Q/U3M6YY/obpjs+QXboYvN4bt7v9
-         +AosJw+L3UbR90hU7KRjsNjsTP6V8QX46ekfbpjlSLamcHUhyZgvUfeF28hNJyeYP1jY
-         x5JXmR2rnsSzFcHxJP4+CHCyW/PK6G0EmrdYOYi3pYpFDcQ9adS2p+pYB7Fr1FGPyZL1
-         yulMRZU1YU5HEp32Rx2MmSpPXC1HeGS7ud7gIVcFqqKySSRG/qH7ix5VHFTUJLUJvVPd
-         pcCxlaMcsOceeULmAPMbh/1wXGn8MpaHJpKDXMm2neqS15q5E0RfIPrISNnTAJZSMeVQ
-         SqVA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782142050; x=1782746850; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pGyvBAk8euMcJ38wECstDr/70ytuyfnKpcrUWwgIxnU=;
-        b=GYEhX3sVHL3rM6tBpinPUWu00QMXv99i2sjPddxIFpMtJchiznyFJAqPKoqMbvcfwZ
-         f+Hf9o0MXtBBNswhl7Jay4zf+RRz6abK6N5ozwlcgMc+Ll6+RnKfjRKyIgCZjP1xhV+C
-         5qYjH5QtgadYmcuPVIeRd2HhFuHnq7RdDlOefxJslBsPFQTERAuQl+fDs65Z2fbiGJP/
-         X4v7WnC/F+bkIYD60YT/gmbhPI/PGTlkTyUjAiZm6IkybUVtborawCp1amccTlorImRD
-         F71JJ+uJx9nOu26SUF/MuOsjIfnEo8rAjGVv1GU7yCCbGRlpOoNIWeVvTT74Yf+wYo2d
-         /loQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782142050; x=1782746850;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pGyvBAk8euMcJ38wECstDr/70ytuyfnKpcrUWwgIxnU=;
-        b=MH7nr+9cfrC8iucgLtJgXwFc3CYkM+b6AGoO65OMELLElZP8k5U22i38VlmZ6QT/r/
-         1UYyoO6Pb6mOI1WgnM54dEb/5hx/0ZFXI/g8YPEAEt4q2wvnwrYaW5X8e+qeifAIgJy6
-         6tpagj+Afa6Ur45PP99LyXQ1zgXZZHmJpOHqFjGY1ciUhyTIxmvsnw9fxq4xcc7Cbw9Z
-         vibjxk2thEXy4FhSnIRnAfZ56ZVgjMuEYrt/Ru1qwUh8dmSiG/RaZVZA2Yv763Io+y4a
-         F532M7evleRrwItm8IwgmMw5pLEbfbP+u5mByxni8gaWYgaHZ2EbR/pNvq2IwlMYfQ3E
-         W5xA==
-X-Forwarded-Encrypted: i=1; AHgh+RrtlfXKYxuJH9zTaWOgsxM4uWMqyAeAMLu9OFVc+ZY8GDKj11VlEzuR4tLUDco6K3+G32ltwlcn@vger.kernel.org
-X-Gm-Message-State: AOJu0YzGgzmb6BsxSo6m0GCTAOcqR1oo0rHhGMRPLQz6SysNljaZ4d9h
-	BgX6FszQTyIObaUbbyTyzIgGj2bnNpOWCmGMkIAO/QkiS2xrShT5SglJvXN7uTW0BHBC4LycJaS
-	EaSv8fSEjjn+Vta/cYHKnievAk4M4tvc=
-X-Gm-Gg: AfdE7cli1W6fVCwC4t2ZFEqC+p0I+USpYvc8K0W8FqWP7oODevGBZuAoLKoAGLx/62A
-	zYGFoSIfT8XdLGOXg5d7Q+kv5Dj4F3a6DFiQsnOil8gR4n5Rt2SeKq3HaDYiUgWqBWh1vnJwa/9
-	fqisnZTJjrE/RJaB+fWgg49vVABU/m/h1MSts1UzDWwID+GePEHVgwZPXq3SgQ9C+u8G9H+/pUB
-	UJ2gZ8FDDxuzw0WplI1GDODTqXWAB0RabyC7jHF1QuiPHwTYav5jrUIkF6AmTEb1rMUxEfAM4At
-	/yUdkpuYCK+oOZlRWyWlEIUVBT+QRWWfbZVpKuDlZQ+Amo/zhhTzbrDeeVGTNg==
-X-Received: by 2002:a05:690e:150b:b0:651:e194:5d07 with SMTP id
- 956f58d0204a3-66350b6eea1mr765486d50.7.1782142049628; Mon, 22 Jun 2026
- 08:27:29 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F15F375F87;
+	Mon, 22 Jun 2026 15:27:17 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782142039; cv=none; b=XQ1XUWSntcSWG6XRxTcEG/26eQjhH/T3jVnKpdUV0wwUrNGIUx0hkVAgOm9E6dNk0iIwXHLkpa83y9YSrrsPZz0915lGU1e3POa3t2SfjahDUlynXb17uixO80isZZ82L074kmC0PuRfvPMSVMQfe6buEwlPqgaBnx1pK8JOLA4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782142039; c=relaxed/simple;
+	bh=YKqcE4eMhIkP1iQW7SP7TbVcdSm7U/l/ik71O3oFPdg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u9lLO4s/IBw3rF33Lldjp3X1zeD8KQaNNCg0QWzm5MnMSA6tcw11sSlcgYQE7HroBI/mysOD+bPAx5OzdNv6bE0A84RtP+lZmq01xLczQCRCIrUnWwubJBudq8SPFVCmmiL1QyK1RxJ4bZhNespWSN32bsMT7rMGmFb7Os8HVWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=ToA3PaPb; arc=none smtp.client-ip=213.97.179.56
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=PQvYmdv7l/ESIGmByUEb2vrNIzMYdcuiCUtVuj30ZX4=; b=ToA3PaPbYJbNs2g90uuncz9Dw4
+	2ZbWq0EWGQzrURDbsgz57RWBkFx6e0lQQPO+i6jdclcsL/GRhethVLN7qLtrb+E9/u27a9da9OOxB
+	0Xtm+MER55DGbLpaUk1Ly+TnBsSVdpcCVcsw78CJWNb1wWWKYbqec6dtnqvMl59VkJ9oB5PYCKk00
+	bY/EpdRn1lzhZQsR5F1iYDRFsxLL1VoNQ51Msn9wuZRw7ZvvoFsjJR9GpK8c3bg3l2ZN3XG9OAh+u
+	bMRnJvfy5qykiZw/5DpKixYTPdUGNu1BHMCykDnrDpI7W4WoTXOhOOm9fTx58PvxteyhmtjtCGE7/
+	r2L1xIeA==;
+Received: from 179-125-64-254-dinamico.pombonet.net.br ([179.125.64.254] helo=quatroqueijos.cascardo.eti.br)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1wbgYB-003nTK-5L; Mon, 22 Jun 2026 17:27:03 +0200
+Date: Mon, 22 Jun 2026 12:26:54 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, Natalie Vock <natalie.vock@gmx.de>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Simona Vetter <simona@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/6] [PATCH v6 0/6] Add reclaim to the dmem cgroup
+ controller
+Message-ID: <ajlUPmaMsa2gxOLg@quatroqueijos.cascardo.eti.br>
+References: <20260611173301.17473-1-thomas.hellstrom@linux.intel.com>
+ <ajBJU-Jp2QVy14qt@slm.duckdns.org>
+ <ajBLAsNoKesXmFcs@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260620122751.388770-1-doehyunbaek@gmail.com> <ajlLhFnMZGoVxLE6@localhost.localdomain>
-In-Reply-To: <ajlLhFnMZGoVxLE6@localhost.localdomain>
-From: Doehyun Baek <doehyunbaek@gmail.com>
-Date: Mon, 22 Jun 2026 17:26:53 +0200
-X-Gm-Features: AVVi8CdlAu8C4EXvmIAbRj4BjT5WXnuOSLLYU3ZpM_yDiQWBdekM0ERXYkiczxY
-Message-ID: <CAN-j9Upy=thswORWaU+QxuO2i8uJKrZxcLpt5umP5QGRhpwqaQ@mail.gmail.com>
-Subject: Re: [PATCH] Docs/admin-guide/cgroup-v2: fix memory.stat doc details
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Yosry Ahmed <yosry@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ajBLAsNoKesXmFcs@slm.duckdns.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17146-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:mkoutny@suse.com,m:tj@kernel.org,m:corbet@lwn.net,m:hannes@cmpxchg.org,m:akpm@linux-foundation.org,m:shakeel.butt@linux.dev,m:roman.gushchin@linux.dev,m:yosry@kernel.org,m:nphamcs@gmail.com,m:cgroups@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:thomas.hellstrom@linux.intel.com,m:intel-xe@lists.freedesktop.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:christian.koenig@amd.com,m:alexander.deucher@amd.com,m:rodrigo.vivi@intel.com,m:dri-devel@lists.freedesktop.org,m:amd-gfx@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17145-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[doehyunbaek@gmail.com,cgroups@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,lwn.net,cmpxchg.org,linux-foundation.org,linux.dev,gmail.com,vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[linux.intel.com,lists.freedesktop.org,gmx.de,cmpxchg.org,suse.com,vger.kernel.org,amd.com,intel.com,kernel.org,suse.de,ffwll.ch,gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[doehyunbaek@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	DKIM_TRACE(0.00)[igalia.com:-];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,igalia.com:from_mime,quatroqueijos.cascardo.eti.br:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 588226B0B68
+X-Rspamd-Queue-Id: A635B6B0BEF
 
-> ...but what do you mean by this?
-> As I'm looking at the code in obj_cgroup_charge_zswap() and
-> memcg_page_state_output_unit(), I'd say those are pages and the docs is
-> thus alright.
->
-> Thanks,
-> Michal
+On Mon, Jun 15, 2026 at 08:57:06AM -1000, Tejun Heo wrote:
+> On Mon, Jun 15, 2026 at 08:49:55AM -1000, Tejun Heo wrote:
+> > The canonical behavior for cgroup2 would be not failing the write at all
+> > even when the usage can't be brought down below the new max. Updating the
+> > target configuration and tracking the current usage are separate operations.
+> > The former should just set max and trigger reclaim and a writer should not
+> > assume that a successful write indicates that the usage is below the written
+> > max value.
+> 
+> Sent too early. One of the reasons is that cgroup is hierarchical and there
+> can be multiple delegation layers and if you tie application of configuration
+> to immediate enforcement, some hierarchical control actions become racy and
+> awkward.
+> 
+> Here's an example: Imagine a system agent trying to lower usage in a subtree
+> which contains multiple delegated containers. If max can be set below what
+> reclaim can achieve immediately, it can just set the max and if the usage is
+> still too high, can go around and e.g. kill some of the containers. If max
+> write fails, it'd have to kill and then try again and inbetween someone else
+> might push up the usage.
+> 
+> Thanks.
+> 
+> -- 
+> tejun
 
-Thanks for taking a look.
+Hi, Tejun.
 
-I agree that the counters are pages internally. I was talking about what
-gets printed in memory.stat.
+As far as I understood the patchset, it doesn't fail the write if it fails
+to reclaim. It sets the new max, then, if the write is blocking, starts
+reclaim and eventually returns after multiple attempts. But it still
+returns success.
 
-The internal updates are page-count based:
+So I believe this is behaving as you would expect.
 
-    mod_memcg_state(memcg, MEMCG_ZSWAPPED, 1);
-    if (size == PAGE_SIZE)
-        mod_memcg_state(memcg, MEMCG_ZSWAP_INCOMP, 1);
-
-However, both zswapped and zswap_incomp are memory_stats[] entries, so
-memory.stat prints them through memcg_page_state_output(). Since
-MEMCG_ZSWAP_INCOMP is not special-cased as a raw count, the stored page
-count is multiplied by the default PAGE_SIZE unit and exported as bytes.
-
-    unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item)
-    {
-        return memcg_page_state(memcg, item) *
-        memcg_page_state_output_unit(item);
-    }
-
-Separately, this matches the existing documentation style for zswapped,
-whose exported value is described as a memory amount:
-
-    zswapped
-        Amount of application memory swapped out to zswap.
-
-Since zswap_incomp follows the same memory.stat output path, I think its
-documentation should describe the exported value as a memory amount too.
-
-I also boot-tested this in QEMU with the current tree and zswap enabled.
-With incompressible pages pushed into zswap, memory.stat showed:
-
-    zswap 87822336
-    zswapped 87822336
-    zswap_incomp 87822336
-
-The zswap_incomp value there is byte-valued; it is not a plain page
-count. It also matches zswapped in this all-incompressible case, which
-is consistent with both being exported as memory amounts.
-
-Best,
-Doehyun Baek
+Regards.
+Cascardo.
 
