@@ -1,373 +1,361 @@
-Return-Path: <cgroups+bounces-17125-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17127-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id dpzOFyHIOGoQiAcAu9opvQ
-	(envelope-from <cgroups+bounces-17125-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 07:29:05 +0200
+	id 5cpwOoDPOGrBiQcAu9opvQ
+	(envelope-from <cgroups+bounces-17127-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 08:00:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B8016ACC1C
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 07:29:04 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE6B6ACDAD
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 08:00:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=oeYv79Ts;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17125-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17125-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=intel.com header.s=Intel header.b=Z3ILcLIQ;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17127-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17127-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=intel.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E6EBC3006D52
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 05:28:58 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8FA5730011AF
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 06:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E18E635C197;
-	Mon, 22 Jun 2026 05:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9372D7DE9;
+	Mon, 22 Jun 2026 06:00:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91A1A359A81
-	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 05:28:52 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782106134; cv=pass; b=krlvekFRHBGlNRSxyfG4LQSUhInM23ja3rX6eWka+4aJP6ZRCWBQrEMK0B8O/nT6c6qqtGVCxrWvee5frXXq+8xbRRVYP04Xo5w6x5brB9lyQkVrH/AxcDQCiKsP+SJBvmj2ZLDjWxzNI1WA137wODlGgMVfS5P647KIVorfUec=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782106134; c=relaxed/simple;
-	bh=AVkOkRTtOGmOYW1/Vsdb3Eh/mWt3+SXrUWDOYCxFRJI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c2LEpMJ+JldEsPX2H5uDdbo9iOMaXhboyVJ/5hQZ3Yz/19RCS99RZisXwcxcatv4mz2nAtIqburkN62lyUcAIcQP+hiAKcF5E1XKKUJq8QVmdFbxYY36DpGc/vAFMa2Wfgpet+xV3K3aVmjrjjra1JWPD4FMbKs3SD4Eh7l4qRE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=oeYv79Ts; arc=pass smtp.client-ip=209.85.215.173
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-c8ce8f2e235so675330a12.2
-        for <cgroups@vger.kernel.org>; Sun, 21 Jun 2026 22:28:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1782106132; cv=none;
-        d=google.com; s=arc-20240605;
-        b=l2/k55Zu/pKM3gbOuGe+kf3/6MBrw3DbKO5WNSn/VtK/87mat8Gv7DnCxk6fnrZU8M
-         G7gOfWkrgwQi6FAkhoaEE9PYE107xJ/i6Ji5v6UknptJkl7ryDQQCZo4D+5S9lEyzEIw
-         lWO2WSQo9rm24oUbB81kuqTy6X5YHTYXGcH4FVif6NtLP4lQfzcZDmMnknaeMbOTUwcC
-         SzTQlRJqxRRkaP5dkah9TOBXMv2Wtmh/qDda/jS9DuA46DbMBuV1N8CH6I8pOr3j6eZs
-         ew5Zg6cbY5dLf6+4zvmFoobBNvTqUL1S1F1NcpqOVTskrN0eGqapGP/z3g49Qn4m2TNm
-         B8xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=5KNOLAwZyaBThMY1NJgMdUSjBoVwiFJr4CThsL0B6VY=;
-        fh=TIq1tAdnKU3eW8DZoIs5fzC8lVwuip4ZDPGjkJ6zOm0=;
-        b=Eb6YLkg+b67AqQ45fufw2sZxZjxKcHFgUHLiF3vwFJ0Z405cSIMICwqK+EjOOVvlFH
-         5sDj19LxAn6P4Fzq6epG5mLdCr6ruZJpIYYBKF2l9yCOeX0ydPgnJRXBB2N6+mcg5dCt
-         YnhDD9XFaRH6p2jRNzGCriJOJ2EjHhdj2/BP9Jkinu7b2PhMEftdTVVBQGgl65y5IwlJ
-         lciDKUoCttX2/N/37ZzJl2GexorG7hrUdClgG3kSTtwA8wKP6qbr17MIIsmbwISRG/lX
-         A4nIctPG/RY0rCiDluBeTfWszMZx/73WMIrQiKIVZ5l034a976MuMwIuQfMip4tP3fkx
-         t0EA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782106132; x=1782710932; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5KNOLAwZyaBThMY1NJgMdUSjBoVwiFJr4CThsL0B6VY=;
-        b=oeYv79Tsn+qrKAgZY7z2kKZ/F5iVQ7fxdrCLTzHZMdKcAhFNnU/LhmEKscP5KSm7rU
-         VIY/N5GiLu1Gxs8T3o/5LwrAOssUtzJ3QLjTVpXH19TUjCQ01tZi0sehg82Hl97Ac/Kv
-         l5+iX4sQv17oWCxI0DvogCG3NASCrY6gdlfDpH6xCj5CABo8ImN+a6xSe9DzkQA+Q+z3
-         dJ1GksqpeYLNEcvCmiY0ExyB/5dq/RhVYE//ZeykE4wohNBEVooOBO+nPKkZa98zsRPw
-         lj+Vr/Sd9wRzhQN5O6C1m7GwL8Jn6m8Rw6lb86x83ZuZNL6JDfQ7bXiZwUU2b7j3O+2e
-         lndQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782106132; x=1782710932;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=5KNOLAwZyaBThMY1NJgMdUSjBoVwiFJr4CThsL0B6VY=;
-        b=rh3JJxMvGbLA+I0uiLN22Ixim9PyqILhNpNuSNeCv5iSlVuCac8PhoPWGyYbTep9c2
-         B07r2ENdjyPBrBeei1eehsx61v1/LNT42sVqb5MhX7eaeIfW/iH6EedFtdE3dxtloTlX
-         elLjqMTQXRj4sEIT0m3hjfXhg84qdNxhDOdEAtPoE/Q2EmtrAq3Pe4AI7+RZmXBHApY/
-         eeJ0Te+vqYUtD5CBjhs9vwX1Rm+3vKGNTNlX9LHSx4fNtfTLO15K3FwrH2Iwr5q9TIuK
-         mi5gFRdu/k6Lzmhi1ppt9oqmEvzgSQLV0/cY2YNjzUYrrIu/Jx6lc43unt0fesKCBU80
-         ZxFg==
-X-Forwarded-Encrypted: i=1; AFNElJ/0XXaDBYjvE6mOX3zdRQlOs2L0XmWiM/ICM2apA9ixpGrwsspdHMBf8XeC94jU1Ku5QP759qQi@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5gU2TObGip6SUqdXHyz5RZqyNTBMBhzm/axE4WC1tAdo/545E
-	WhaQMAU27iZzih/YvN+xtpH2oBy0Lnt6f8rV/BQfz+hGkH4ao07AeuYcXuLMq0NjnsPYh4MmrKI
-	YWBJXbG4IL5BiEiYMXF/ifYVrXKh4/u0=
-X-Gm-Gg: AfdE7ckDRP8ekDXjEEExkXCoF0iwA/x4UQs9jk7eX4hgoolOoA3PTQ7p0XxlR8eFNjr
-	IhrNi6S6FEStz2XI6aIFuxLuzfuWoVxlM7lRcGaoFhCVkeqZqoLvqT8T/N8FT9cMzxTsk/N5/Ya
-	KtHlMZvsn4UqBSW8xLs0XEssH2O6eDhLG1hcKD4UPIupZUAHWQePUQ920oAGkwsqBvRtBj7j0Cf
-	ASs8uINmcF7ka3cZlc95FSay1ugoffilsY7p54+36IfM2+K2TvywOs0WoXNQeENM4fPGFHVd9QS
-	/HgME/o7uK9I4M1Tjkd8kc/DX1wrpb2CaJQoebYdd9fGT7muoPGA9GxNVUSfrVI5j822k8fwIYd
-	dsCFHYD4xKwvnyd1Hgs717zBI
-X-Received: by 2002:a05:6a21:9102:b0:3b7:b328:4c8b with SMTP id
- adf61e73a8af0-3bb3241d5bemr15602261637.19.1782106131632; Sun, 21 Jun 2026
- 22:28:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC961A275
+	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 06:00:24 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782108026; cv=none; b=W74Ip7i8XCozg1R6bSHpQ9JJFInLZKOBJzRLEtDwpn+SCSEGtd5k30LldAi089hVvpgwl3j4CM3aUa0/oLzrSfswXT70FOTtSQz0pFMTcWveRxR/Us4uSbhgQq8ceU4JicYa546lwcEqbJ5DzFkvt/BFcI2iGDtp7AIvJRwMXwI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782108026; c=relaxed/simple;
+	bh=HWOF5ciQkUQd5adg10wwHlFigHHz660v14MoDHt7HRM=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=USKaeHH9eGeypPWGBbytr/wEfkIeBAIBHB0kKAeZD/HOTaA5oBz1tVq3zIoXs7AamTTnKuZxHVcSCdRnnC1oMP9chLR6ZQXS80M6ch7kz1PEOK8rGigC+Geep6G1gW07LSVlg6081aAG14vNkGCsFKGWWPGqljihXqwiul6KXlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Z3ILcLIQ; arc=none smtp.client-ip=192.198.163.10
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1782108024; x=1813644024;
+  h=date:from:to:cc:subject:message-id;
+  bh=HWOF5ciQkUQd5adg10wwHlFigHHz660v14MoDHt7HRM=;
+  b=Z3ILcLIQvmnwWWgyFYwy6kVDweIEsT1XRJMEEmGd+K28fahhoiLT7HJZ
+   lByZbZyuv9xHyKAViV/Aa1MLcJTt9dHv8u9NoryOCNMChEVsxbH3O68qE
+   Qv/aYOxrtW2KNNYQkXiryGZ8pYMmF3gZb8eKgAAVS6VUQ766IqoHWxxXI
+   hEf7kAxMM2Em+dL3pG2rkr0yM+BtBWK8LNAbWtoigpNQ45/OOhwsnfHg4
+   4RTFlAdRwcldmlgLKPL0PKiqXYNuoNN1t4Ub/P6E33CM1YWYH7NlXO+nI
+   bQrdPPdl2KmTaN5J4JVpOL7ZKMO+5yIgUQYfQ2qbsRrPNgFk/+k60kD5c
+   w==;
+X-CSE-ConnectionGUID: qQ1gj3FyRqOh0R5un4NEfg==
+X-CSE-MsgGUID: nC13dOAISESLRDQF+P35/Q==
+X-IronPort-AV: E=McAfee;i="6800,10657,11824"; a="94221888"
+X-IronPort-AV: E=Sophos;i="6.24,218,1774335600"; 
+   d="scan'208";a="94221888"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2026 23:00:23 -0700
+X-CSE-ConnectionGUID: 8VOSYTs8RrGpkOGta/a9/A==
+X-CSE-MsgGUID: wGtB/pPfQButohtH7zqwYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.24,218,1774335600"; 
+   d="scan'208";a="273204850"
+Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 21 Jun 2026 23:00:22 -0700
+Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wbXhj-000000000Y8-43rL;
+	Mon, 22 Jun 2026 06:00:19 +0000
+Date: Mon, 22 Jun 2026 13:54:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:test-merge-for-7.2] BUILD SUCCESS
+ b62299084fb88382321b5eed2edef2a0d0cdf117
+Message-ID: <202606221306.xt1JY2nG-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
-In-Reply-To: <20260622040533.29824-1-kaitao.cheng@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 21 Jun 2026 22:28:40 -0700
-X-Gm-Features: AVVi8CdydPWkgrsWeukABG1V_xsA12RL457Ae_ewOX27KaNNGTwhs0J8OHNbSBg
-Message-ID: <CAADnVQJmPWFT01b7DuLdtafv=8FyB84GYHNZ8zSTck+9Aw0JpA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/7] Prepare mutable list iterators to cache cursor state
-To: Kaitao Cheng <kaitao.cheng@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Paul Moore <paul@paul-moore.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	David Howells <dhowells@redhat.com>, Simona Vetter <simona.vetter@ffwll.ch>, 
-	Randy Dunlap <rdunlap@infradead.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, linux-ntfs-dev@lists.sourceforge.net, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, io-uring <io-uring@vger.kernel.org>, 
-	audit@vger.kernel.org, bpf <bpf@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, dri-devel@lists.freedesktop.org, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, kexec@lists.infradead.org, 
-	live-patching@vger.kernel.org, linux-modules@vger.kernel.org, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, 
-	Linux Power Management <linux-pm@vger.kernel.org>, rcu@vger.kernel.org, sched-ext@lists.linux.dev, 
-	linux-mm <linux-mm@kvack.org>, virtualization@lists.linux.dev, damon@lists.linux.dev, 
-	clang-built-linux <llvm@lists.linux.dev>, chengkaitao <chengkaitao@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17125-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:kaitao.cheng@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:axboe@kernel.dk,m:tj@kernel.org,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:hannes@cmpxchg.org,m:peterz@infradead.org,m:mingo@redhat.com,m:acme@kernel.org,m:namhyung@kernel.org,m:tglx@kernel.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:paul@paul-moore.com,m:andriy.shevchenko@linux.intel.com,m:paulmck@kernel.org,m:shakeel.butt@linux.dev,m:christian.koenig@amd.com,m:dhowells@redhat.com,m:simona.vetter@ffwll.ch,m:rdunlap@infradead.org,m:luca.ceresoli@bootlin.com,m:phasta@kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-ntfs-dev@lists.sourceforge.net,m:linux-fsdevel@vger.kernel.org,m:io-uring@vger.kernel.org,m:audit@vger.kernel.org,m:bpf@vger.kernel.org,m:netdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-perf-users@vger.kernel.org,m:linux-tra
- ce-kernel@vger.kernel.org,m:kexec@lists.infradead.org,m:live-patching@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-pm@vger.kernel.org,m:rcu@vger.kernel.org,m:sched-ext@lists.linux.dev,m:linux-mm@kvack.org,m:virtualization@lists.linux.dev,m:damon@lists.linux.dev,m:llvm@lists.linux.dev,m:chengkaitao@kylinos.cn,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17127-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,mail.gmail.com:mid,vger.kernel.org:from_smtp,linux.dev:email,kylinos.cn:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5B8016ACC1C
+X-Rspamd-Queue-Id: 6FE6B6ACDAD
 
-On Sun, Jun 21, 2026 at 9:06=E2=80=AFPM Kaitao Cheng <kaitao.cheng@linux.de=
-v> wrote:
->
-> From: chengkaitao <chengkaitao@kylinos.cn>
->
-> The list_for_each*_safe() helpers are used when the loop body may remove
-> the current entry.  Their current interface, however, forces every caller
-> to define a temporary cursor outside the macro and pass it in, even when
-> the caller never uses that cursor directly.  For most call sites this
-> extra cursor is just boilerplate required by the macro implementation.
->
-> This is awkward because the saved next pointer is an internal detail of
-> the iteration.  Callers that only remove or move the current entry do not
-> need to spell it out.
->
-> The _safe() suffix has also caused confusion.  Christian Koenig pointed
-> out that the name is easy to read as a thread-safe variant, especially
-> for beginners, even though it only means that the iterator keeps enough
-> state to tolerate removal of the current entry.  He suggested _mutable()
-> as a clearer description of what the loop permits.
->
-> Add *_mutable() iterator variants for list, hlist and llist.  The new
-> helpers are variadic and support both forms.  In the common case, the
-> caller omits the temporary cursor and the macro creates a unique internal
-> cursor with typeof(pos) and __UNIQUE_ID().  If a loop really needs an
-> explicit temporary cursor, the caller can still pass it and the helper
-> keeps the existing *_safe() behaviour.
->
-> For example, a call site may use the shorter form:
->
->   list_for_each_entry_mutable(pos, head, member)
->
-> or keep the explicit temporary cursor form:
->
->   list_for_each_entry_mutable(pos, tmp, head, member)
->
-> The existing *_safe() helpers remain available for compatibility.  This
-> series only converts users in mm, block, kernel, init and io_uring.  If
-> this approach looks acceptable, the remaining users can be converted in
-> follow-up series.
->
-> Changes in v3 (Christian K=C3=B6nig, Andy Shevchenko):
-> - Convert safe list walks to mutable iterators
->
-> Changes in v2 (Muchun Song, Andy Shevchenko):
-> - Drop the list_for_each_entry_mutable*() helpers from v1 and make the
->   cursor change directly in the existing list_for_each_entry*() helpers.
-> - Open-code special list walks that rely on updating the loop cursor in
->   the body, preserving their existing traversal semantics.
->
-> Link to v2:
-> https://lore.kernel.org/all/20260609061347.93688-1-kaitao.cheng@linux.dev=
-/
->
-> Link to v1:
-> https://lore.kernel.org/all/20260529082149.76764-1-kaitao.cheng@linux.dev=
-/
->
-> Kaitao Cheng (7):
->   list: Add mutable iterator variants
->   llist: Add mutable iterator variants
->   mm: Use mutable list iterators
->   block: Use mutable list iterators
->   kernel: Use mutable list iterators
->   initramfs: Use mutable list iterator
->   io_uring: Use mutable list iterators
->
->  block/bfq-iosched.c                 |  17 +-
->  block/blk-cgroup.c                  |  12 +-
->  block/blk-flush.c                   |   4 +-
->  block/blk-iocost.c                  |  18 +-
->  block/blk-mq.c                      |   8 +-
->  block/blk-throttle.c                |   4 +-
->  block/kyber-iosched.c               |   4 +-
->  block/partitions/ldm.c              |   8 +-
->  block/sed-opal.c                    |   4 +-
->  include/linux/list.h                | 269 ++++++++++++++++++++++++----
->  include/linux/llist.h               |  81 +++++++--
->  init/initramfs.c                    |   5 +-
->  io_uring/cancel.c                   |   6 +-
->  io_uring/poll.c                     |   3 +-
->  io_uring/rw.c                       |   4 +-
->  io_uring/timeout.c                  |   8 +-
->  io_uring/uring_cmd.c                |   3 +-
->  kernel/audit_tree.c                 |   4 +-
->  kernel/audit_watch.c                |  16 +-
->  kernel/auditfilter.c                |   4 +-
->  kernel/auditsc.c                    |   4 +-
->  kernel/bpf/arena.c                  |  10 +-
->  kernel/bpf/arraymap.c               |   8 +-
->  kernel/bpf/bpf_local_storage.c      |   3 +-
->  kernel/bpf/bpf_lru_list.c           |  25 ++-
->  kernel/bpf/btf.c                    |  18 +-
->  kernel/bpf/cgroup.c                 |   7 +-
->  kernel/bpf/cpumap.c                 |   4 +-
->  kernel/bpf/devmap.c                 |  10 +-
->  kernel/bpf/helpers.c                |   8 +-
->  kernel/bpf/local_storage.c          |   4 +-
->  kernel/bpf/memalloc.c               |  16 +-
->  kernel/bpf/offload.c                |   8 +-
->  kernel/bpf/states.c                 |   4 +-
->  kernel/bpf/stream.c                 |   4 +-
->  kernel/bpf/verifier.c               |   6 +-
->  kernel/cgroup/cgroup-v1.c           |   4 +-
->  kernel/cgroup/cgroup.c              |  54 +++---
->  kernel/cgroup/dmem.c                |  12 +-
->  kernel/cgroup/rdma.c                |   8 +-
->  kernel/events/core.c                |  44 +++--
->  kernel/events/uprobes.c             |  12 +-
->  kernel/exit.c                       |   8 +-
->  kernel/fail_function.c              |   4 +-
->  kernel/gcov/clang.c                 |   4 +-
->  kernel/irq_work.c                   |   4 +-
->  kernel/kexec_core.c                 |   4 +-
->  kernel/kprobes.c                    |  16 +-
->  kernel/livepatch/core.c             |   4 +-
->  kernel/livepatch/core.h             |   4 +-
->  kernel/liveupdate/kho_block.c       |   4 +-
->  kernel/liveupdate/luo_flb.c         |   4 +-
->  kernel/locking/rwsem.c              |   2 +-
->  kernel/locking/test-ww_mutex.c      |   2 +-
->  kernel/module/main.c                |  11 +-
->  kernel/padata.c                     |   4 +-
->  kernel/power/snapshot.c             |   8 +-
->  kernel/power/wakelock.c             |   4 +-
->  kernel/printk/printk.c              |  11 +-
->  kernel/ptrace.c                     |   4 +-
->  kernel/rcu/rcutorture.c             |   3 +-
->  kernel/rcu/tasks.h                  |   9 +-
->  kernel/rcu/tree.c                   |   6 +-
->  kernel/resource.c                   |   4 +-
->  kernel/sched/core.c                 |   4 +-
->  kernel/sched/ext.c                  |  22 +--
->  kernel/sched/fair.c                 |  28 +--
->  kernel/sched/topology.c             |   4 +-
->  kernel/sched/wait.c                 |   4 +-
->  kernel/seccomp.c                    |   4 +-
->  kernel/signal.c                     |  11 +-
->  kernel/smp.c                        |   4 +-
->  kernel/taskstats.c                  |   8 +-
->  kernel/time/clockevents.c           |   6 +-
->  kernel/time/clocksource.c           |   4 +-
->  kernel/time/posix-cpu-timers.c      |   4 +-
->  kernel/time/posix-timers.c          |   3 +-
->  kernel/torture.c                    |   3 +-
->  kernel/trace/bpf_trace.c            |   4 +-
->  kernel/trace/ftrace.c               |  49 +++--
->  kernel/trace/ring_buffer.c          |  25 ++-
->  kernel/trace/trace.c                |  12 +-
->  kernel/trace/trace_dynevent.c       |   6 +-
->  kernel/trace/trace_dynevent.h       |   5 +-
->  kernel/trace/trace_events.c         |  35 ++--
->  kernel/trace/trace_events_filter.c  |   4 +-
->  kernel/trace/trace_events_hist.c    |   8 +-
->  kernel/trace/trace_events_trigger.c |  17 +-
->  kernel/trace/trace_events_user.c    |  16 +-
->  kernel/trace/trace_stat.c           |   4 +-
->  kernel/user-return-notifier.c       |   3 +-
->  kernel/workqueue.c                  |  16 +-
->  mm/backing-dev.c                    |   8 +-
->  mm/balloon.c                        |   8 +-
->  mm/cma.c                            |   4 +-
->  mm/compaction.c                     |   4 +-
->  mm/damon/core.c                     |   4 +-
->  mm/damon/sysfs-schemes.c            |   4 +-
->  mm/dmapool.c                        |   4 +-
->  mm/huge_memory.c                    |   8 +-
->  mm/hugetlb.c                        |  56 +++---
->  mm/hugetlb_vmemmap.c                |  16 +-
->  mm/khugepaged.c                     |  14 +-
->  mm/kmemleak.c                       |   7 +-
->  mm/ksm.c                            |  25 +--
->  mm/list_lru.c                       |   4 +-
->  mm/memcontrol-v1.c                  |   8 +-
->  mm/memory-failure.c                 |  12 +-
->  mm/memory-tiers.c                   |   4 +-
->  mm/migrate.c                        |  23 ++-
->  mm/mmu_notifier.c                   |   9 +-
->  mm/page_alloc.c                     |   8 +-
->  mm/page_reporting.c                 |   2 +-
->  mm/percpu.c                         |  11 +-
->  mm/pgtable-generic.c                |   4 +-
->  mm/rmap.c                           |  10 +-
->  mm/shmem.c                          |   9 +-
->  mm/slab_common.c                    |  14 +-
->  mm/slub.c                           |  33 ++--
->  mm/swapfile.c                       |   4 +-
->  mm/userfaultfd.c                    |  12 +-
->  mm/vmalloc.c                        |  24 +--
->  mm/vmscan.c                         |   7 +-
->  mm/zsmalloc.c                       |   4 +-
->  124 files changed, 875 insertions(+), 681 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test-merge-for-7.2
+branch HEAD: b62299084fb88382321b5eed2edef2a0d0cdf117  Merge branch 'for-7.2' into test-merge-for-7.2
 
-Not sure what you were thinking, but this diff stat
-is not landable.
+elapsed time: 6339m
 
-pw-bot: cr
+configs tested: 230
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig    gcc-16.1.0
+alpha                            allyesconfig    gcc-16.1.0
+alpha                               defconfig    gcc-16.1.0
+arc                              allmodconfig    clang-23
+arc                              allmodconfig    gcc-16.1.0
+arc                               allnoconfig    gcc-16.1.0
+arc                              allyesconfig    clang-23
+arc                              allyesconfig    gcc-16.1.0
+arc                                 defconfig    gcc-16.1.0
+arc                   randconfig-001-20260618    gcc-15.2.0
+arc                   randconfig-002-20260618    gcc-15.2.0
+arc                   randconfig-002-20260618    gcc-8.5.0
+arm                               allnoconfig    clang-17
+arm                               allnoconfig    gcc-16.1.0
+arm                              allyesconfig    clang-23
+arm                              allyesconfig    gcc-16.1.0
+arm                                 defconfig    gcc-16.1.0
+arm                          pxa3xx_defconfig    clang-17
+arm                   randconfig-001-20260618    gcc-10.5.0
+arm                   randconfig-001-20260618    gcc-15.2.0
+arm                   randconfig-002-20260618    clang-17
+arm                   randconfig-002-20260618    gcc-15.2.0
+arm                   randconfig-003-20260618    gcc-13.4.0
+arm                   randconfig-003-20260618    gcc-15.2.0
+arm                   randconfig-004-20260618    gcc-15.2.0
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-16.1.0
+arm64                               defconfig    gcc-16.1.0
+arm64                 randconfig-001-20260618    gcc-15.2.0
+arm64                 randconfig-002-20260618    gcc-15.2.0
+arm64                 randconfig-003-20260618    gcc-15.2.0
+arm64                 randconfig-004-20260618    gcc-15.2.0
+csky                             allmodconfig    gcc-16.1.0
+csky                              allnoconfig    gcc-16.1.0
+csky                                defconfig    gcc-16.1.0
+csky                  randconfig-001-20260618    gcc-15.2.0
+csky                  randconfig-002-20260618    gcc-15.2.0
+hexagon                          allmodconfig    clang-23
+hexagon                          allmodconfig    gcc-16.1.0
+hexagon                           allnoconfig    clang-23
+hexagon                           allnoconfig    gcc-16.1.0
+hexagon                             defconfig    gcc-16.1.0
+hexagon               randconfig-001-20260618    clang-17
+hexagon               randconfig-001-20260618    clang-23
+hexagon               randconfig-002-20260618    clang-23
+i386                             allmodconfig    clang-22
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                              allnoconfig    gcc-16.1.0
+i386                             allyesconfig    clang-22
+i386        buildonly-randconfig-001-20260618    gcc-14
+i386        buildonly-randconfig-002-20260618    gcc-14
+i386        buildonly-randconfig-003-20260618    gcc-14
+i386        buildonly-randconfig-004-20260618    gcc-14
+i386        buildonly-randconfig-005-20260618    gcc-14
+i386        buildonly-randconfig-006-20260618    gcc-14
+i386                                defconfig    gcc-16.1.0
+i386                  randconfig-001-20260618    clang-22
+i386                  randconfig-002-20260618    clang-22
+i386                  randconfig-003-20260618    clang-22
+i386                  randconfig-004-20260618    clang-22
+i386                  randconfig-005-20260618    clang-22
+i386                  randconfig-006-20260618    clang-22
+i386                  randconfig-007-20260618    clang-22
+i386                  randconfig-011-20260618    clang-22
+i386                  randconfig-012-20260618    clang-22
+i386                  randconfig-013-20260618    clang-22
+i386                  randconfig-014-20260618    clang-22
+i386                  randconfig-014-20260618    gcc-14
+i386                  randconfig-015-20260618    clang-22
+i386                  randconfig-016-20260618    clang-22
+i386                  randconfig-017-20260618    clang-22
+loongarch                        allmodconfig    clang-19
+loongarch                        allmodconfig    clang-23
+loongarch                         allnoconfig    clang-20
+loongarch                         allnoconfig    gcc-16.1.0
+loongarch                           defconfig    clang-23
+loongarch             randconfig-001-20260618    clang-23
+loongarch             randconfig-002-20260618    clang-23
+loongarch             randconfig-002-20260618    gcc-16.1.0
+m68k                             allmodconfig    gcc-16.1.0
+m68k                              allnoconfig    gcc-16.1.0
+m68k                             allyesconfig    clang-23
+m68k                             allyesconfig    gcc-16.1.0
+m68k                                defconfig    clang-23
+m68k                                defconfig    gcc-16.1.0
+microblaze                        allnoconfig    gcc-16.1.0
+microblaze                       allyesconfig    gcc-16.1.0
+microblaze                          defconfig    clang-23
+microblaze                          defconfig    gcc-16.1.0
+mips                             allmodconfig    gcc-16.1.0
+mips                              allnoconfig    gcc-16.1.0
+mips                             allyesconfig    gcc-16.1.0
+mips                         cobalt_defconfig    gcc-16.1.0
+nios2                            allmodconfig    clang-20
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    clang-23
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    clang-23
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20260618    clang-23
+nios2                 randconfig-001-20260618    gcc-8.5.0
+nios2                 randconfig-002-20260618    clang-23
+nios2                 randconfig-002-20260618    gcc-11.5.0
+openrisc                         allmodconfig    clang-20
+openrisc                         allmodconfig    gcc-16.1.0
+openrisc                          allnoconfig    clang-23
+openrisc                          allnoconfig    gcc-16.1.0
+openrisc                            defconfig    gcc-16.1.0
+parisc                           allmodconfig    gcc-16.1.0
+parisc                            allnoconfig    clang-23
+parisc                            allnoconfig    gcc-16.1.0
+parisc                           allyesconfig    clang-17
+parisc                           allyesconfig    gcc-16.1.0
+parisc                              defconfig    gcc-16.1.0
+parisc                randconfig-001-20260618    gcc-14.3.0
+parisc                randconfig-001-20260618    gcc-16.1.0
+parisc                randconfig-002-20260618    gcc-16.1.0
+parisc64                            defconfig    clang-23
+parisc64                            defconfig    gcc-16.1.0
+powerpc                          allmodconfig    gcc-16.1.0
+powerpc                           allnoconfig    clang-23
+powerpc                           allnoconfig    gcc-16.1.0
+powerpc               randconfig-001-20260618    gcc-16.1.0
+powerpc               randconfig-001-20260618    gcc-8.5.0
+powerpc               randconfig-002-20260618    gcc-11.5.0
+powerpc               randconfig-002-20260618    gcc-16.1.0
+powerpc64             randconfig-001-20260618    gcc-16.1.0
+powerpc64             randconfig-001-20260618    gcc-8.5.0
+powerpc64             randconfig-002-20260618    clang-17
+powerpc64             randconfig-002-20260618    gcc-16.1.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    clang-23
+riscv                             allnoconfig    gcc-16.1.0
+riscv                            allyesconfig    clang-23
+riscv                               defconfig    gcc-16.1.0
+riscv                 randconfig-001-20260618    gcc-11.5.0
+riscv                 randconfig-001-20260618    gcc-13.4.0
+riscv                 randconfig-002-20260618    clang-20
+riscv                 randconfig-002-20260618    gcc-13.4.0
+s390                             allmodconfig    clang-17
+s390                             allmodconfig    clang-23
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-16.1.0
+s390                                defconfig    gcc-16.1.0
+s390                  randconfig-001-20260618    clang-23
+s390                  randconfig-001-20260618    gcc-13.4.0
+s390                  randconfig-002-20260618    clang-23
+s390                  randconfig-002-20260618    gcc-13.4.0
+sh                               allmodconfig    gcc-16.1.0
+sh                                allnoconfig    clang-23
+sh                                allnoconfig    gcc-16.1.0
+sh                               allyesconfig    clang-17
+sh                               allyesconfig    gcc-16.1.0
+sh                         ap325rxa_defconfig    gcc-16.1.0
+sh                                  defconfig    gcc-14
+sh                                  defconfig    gcc-16.1.0
+sh                        edosk7760_defconfig    gcc-16.1.0
+sh                    randconfig-001-20260618    gcc-13.4.0
+sh                    randconfig-002-20260618    gcc-13.4.0
+sh                    randconfig-002-20260618    gcc-16.1.0
+sh                           se7619_defconfig    gcc-16.1.0
+sparc                             allnoconfig    clang-23
+sparc                             allnoconfig    gcc-16.1.0
+sparc                               defconfig    gcc-16.1.0
+sparc                 randconfig-001-20260618    gcc-14.3.0
+sparc                 randconfig-002-20260618    gcc-14.3.0
+sparc64                          allmodconfig    clang-20
+sparc64                             defconfig    clang-23
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20260618    gcc-14.3.0
+sparc64               randconfig-002-20260618    gcc-14.3.0
+um                               allmodconfig    clang-17
+um                                allnoconfig    clang-17
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-14
+um                               allyesconfig    gcc-16.1.0
+um                                  defconfig    clang-23
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260618    gcc-14.3.0
+um                    randconfig-002-20260618    gcc-14.3.0
+um                           x86_64_defconfig    clang-23
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-22
+x86_64                            allnoconfig    clang-22
+x86_64                            allnoconfig    clang-23
+x86_64                           allyesconfig    clang-22
+x86_64      buildonly-randconfig-001-20260618    clang-22
+x86_64      buildonly-randconfig-002-20260618    clang-22
+x86_64      buildonly-randconfig-003-20260618    clang-22
+x86_64      buildonly-randconfig-004-20260618    clang-22
+x86_64      buildonly-randconfig-005-20260618    clang-22
+x86_64      buildonly-randconfig-006-20260618    clang-22
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-22
+x86_64                randconfig-001-20260618    clang-22
+x86_64                randconfig-002-20260618    clang-22
+x86_64                randconfig-002-20260618    gcc-14
+x86_64                randconfig-003-20260618    clang-22
+x86_64                randconfig-004-20260618    clang-22
+x86_64                randconfig-005-20260618    clang-22
+x86_64                randconfig-005-20260618    gcc-14
+x86_64                randconfig-006-20260618    clang-22
+x86_64                randconfig-011-20260618    clang-22
+x86_64                randconfig-011-20260618    gcc-14
+x86_64                randconfig-012-20260618    gcc-14
+x86_64                randconfig-013-20260618    gcc-14
+x86_64                randconfig-014-20260618    gcc-14
+x86_64                randconfig-015-20260618    clang-22
+x86_64                randconfig-015-20260618    gcc-14
+x86_64                randconfig-016-20260618    gcc-14
+x86_64                randconfig-071-20260618    clang-22
+x86_64                randconfig-072-20260618    clang-22
+x86_64                randconfig-073-20260618    clang-22
+x86_64                randconfig-074-20260618    clang-22
+x86_64                randconfig-075-20260618    clang-22
+x86_64                randconfig-076-20260618    clang-22
+x86_64                               rhel-9.4    clang-22
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-22
+x86_64                    rhel-9.4-kselftests    clang-22
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-22
+xtensa                            allnoconfig    clang-23
+xtensa                            allnoconfig    gcc-16.1.0
+xtensa                           allyesconfig    clang-20
+xtensa                randconfig-001-20260618    gcc-14.3.0
+xtensa                randconfig-002-20260618    gcc-14.3.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
