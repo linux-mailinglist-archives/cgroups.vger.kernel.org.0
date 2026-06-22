@@ -1,162 +1,247 @@
-Return-Path: <cgroups+bounces-17154-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17155-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id nrh6F46xOWrAwQcAu9opvQ
-	(envelope-from <cgroups+bounces-17154-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 00:05:02 +0200
+	id Y9IWMOqyOWrrwQcAu9opvQ
+	(envelope-from <cgroups+bounces-17155-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 00:10:50 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DB8F6B290D
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 00:05:01 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 639776B2945
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 00:10:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel-dk.20251104.gappssmtp.com header.s=20251104 header.b=OsTU8y12;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17154-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17154-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=L42WL6BK;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17155-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17155-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 845103078374
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 22:01:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 44F353012C4C
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2026 22:10:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6CA370D63;
-	Mon, 22 Jun 2026 22:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B16737B40B;
+	Mon, 22 Jun 2026 22:10:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A3E37BE7B
-	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 22:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6569F379980
+	for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 22:10:40 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782165686; cv=none; b=eg+xaEUyEUahMIG5uqhhlkpbtCSKmKh4aJaJ1bKbbjXN7L2tdX3MI7m+jSnbIOl3x3IQ32CunixJ4hEFil75MJ+qfx6m1Ysf83KZEpq2M0Ur/UX4g/2FDAcTP6KD3i1CwnTS1mRFcYCycM0xY3/+AisdwyGrcX8FE7Xw5yJfXkg=
+	t=1782166242; cv=none; b=bNlDtbCdq7mARFfk5mVQGm14BJeRvQ7t7V8mqqk8y6edzzZnA1DQ9fFM+Ef0lnuiPcU0YOii8aQJQNlGUlVsOrofpS9S5A8aJed11FR7ppeX9aDxEjj7sw5/GILJCzQPQ0A8VHG9rjL9JnbpjYBJvQvSsm+IijTUvm2oxV3Ml+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782165686; c=relaxed/simple;
-	bh=pw5rgiM42z9+JBpwIt2H1ljq/Yya2FexrtMFO0dWt34=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=LnC1TnEBF1dPUObNFc8qby2V1WHjysOdIkVZ+3aHElKrfrSpzFBVzazMMLiIovifkRMg2MEyenUOu31DrsONDfrvw9w5xngSHD0+Lxi8mwZIOlcaymGS52yaUQnMFB3aOkdek2hRIjftKISkAuTZ3wMLMN5/6lwab9ZKH9rGCEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=OsTU8y12; arc=none smtp.client-ip=209.85.221.171
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-5bbca605be3so242729e0c.1
-        for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 15:01:24 -0700 (PDT)
+	s=arc-20240116; t=1782166242; c=relaxed/simple;
+	bh=PX27CGIChTktajqQRqdehsvfssAJs/ydFa86KHvUuzU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RYr3iQIM58G5CsJ3c5MkXT78DsE/CqXyctF7NV/aNYREjayuqvddm1qBIxl2sry5qpkd7KF1KbbyWj1A3MR0mlZmeTcTwJ8TQ8IMNIkMb1ZNr5T7GF4EnFjtyJ/7rwLbl40pCsL7r3QOYmTJmaygdpF5hVGQlqBoOov5+DqDlik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L42WL6BK; arc=none smtp.client-ip=209.85.161.47
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-6a0eb989530so1203961eaf.0
+        for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 15:10:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1782165683; x=1782770483; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1782166239; x=1782771039; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AlBCKHTgRWvnY8xmPasPUtWMx6sHe4epc0vhl27EoaM=;
-        b=OsTU8y12MtR99HtRIrn6bqnYyNaVf9im0qmZ7+WTfIr7kKbPBrkV8atjAKDQGlrQ/2
-         TYYKDLRnlIkwnxMqynMn2xOujZIpVbI9pkYJ65jEw3ZuPUeqoJGLfGhkt0lESbDZ1uci
-         kB/LW+5aAJ43kDCJe++a7gc322ttfLY7bvlb3tdfCZAmaypMseakJ82KptJLeOQjkMYg
-         Q3twJApRBVkRwS0zQS6bRABn1aW7waUa4G1HuDxV9ulscKRSg7MbrQklroAqfJeRz/UW
-         NWMCUWxOqJ/61PQ9RJFqnBY0K5cAZkeT5wUYChpMc5+U0tx+IaexgbJpA5JZg+9lwA8s
-         31oQ==
+        bh=/lWcRJ9xv3vj+kuUslXqTMu2ZS1PDN9hlN/ZqmuvJzU=;
+        b=L42WL6BKh/4Ouo6mVBE+q0FXy32aKOMBm2W9GqLrNtjrUgJgD7fOSbQd1W4VBBGbiS
+         HOfNPGt83JHLSau6DbQRQ72uq2vfSxzeEzJOetnXKNbNNKwl44rVgRuIRQq3uIdru3vE
+         BW3ywQy0nq7hn8mdiVmT9oxH6q31n1eEo5BzE1K9nwuOvfkTtfECdp4riuduJkh6Dd42
+         0/UScIbelH/UX0ajgGV1XjzbnBVSRw+RiyyAzyYZ/beVx3gSW3ZcwzjAN7zEFHBnoTwB
+         GXk3plMLm6zP9GGAk05JFmtaoH8UcC5iRJZVmuLICKv09jNtlhZyN3Iuc6iv84vLcHYC
+         sbvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782165683; x=1782770483;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20251104; t=1782166239; x=1782771039;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=AlBCKHTgRWvnY8xmPasPUtWMx6sHe4epc0vhl27EoaM=;
-        b=W6dygYuR2vOeNV3/ymtzmvnZHALan5CTYY5UAuy1EK0McNPHY7VsWsZ6ZXV/Yar9Mp
-         S4mq7yfnV3HH3ozud0Q28NWNXwD6g8Anah9Ebwztu05W8wH7yLtTFmxspX5F+8RQfe5Y
-         jojYmPtCjYEiFxQ+AA+OBgCuCBEPruPAcRARxGKLkqEJCljB2HAxaj+XfLeafiD9ybQ7
-         zRcfZkXoeZUepYoPQ4YagrMCb7Jyg6jcSvvIeq5hu0aL0rZUuKg+XKBnPX0OoFoW+ciC
-         E/sNrWEbOEgQScJx0VKl9ZUYU4a5B1WZZ3+4vgMnv49v4d99pEuarzP5Pjvf1WRlKPMe
-         LpOA==
-X-Gm-Message-State: AOJu0YxenNnbaD9w9I8QHCj3F5d++w9zd3ug/tl7ApgOxOE0qnnDkx8x
-	zAokn+u9TNQJJPJztNIh5gD9HWQ5choLWDqaifWiWYxUNS075sz/nc+1GteCRwyYxk4=
-X-Gm-Gg: AfdE7cnYo3SmE9tNS0CV9YVYjGlsqAXu7m3rxOQMhd7vwU0ylPUaqLazDkfTsFtyEY9
-	/EqE7pKf1sQVWL08hQ2bkQMKUb0tBzZaWMIFO8Wrk9pV/PvlCPT55bGcfLizPAXftX8ezRu6sZv
-	b0x1hRKzRY2BIe6mI+4mmsOxNhCT8VxLgbfrLXjLL9zBW8iS2sJMfDTxaI/xtnlmmIsSb+beBWx
-	tKo1e6lgl/dsJOWS7DK0PDk1qNsVkeC/Cl5DKQbe0E36j0+HZEvORR5qjCKUKzZodTdHLdaqHrK
-	zRidAl6SnfFjfK5zRktoodMsxcd/tqf7uTwQVS4Lf6yTktee43abU7wra2Lkmi9QrGvWxgZHeN1
-	ntlzaNnooR2cKvZUW7bn6D5g2F/JGNKrrcsyU1hs5+AHmerco+GXQA9up/0SJ2aV1GsXs7vlp13
-	AtWMB/e2d+wNyKS5biPxnr410YrzT2fYCtXOc=
-X-Received: by 2002:a05:6122:4895:b0:5bb:fa79:56dd with SMTP id 71dfb90a1353d-5bc2ad5d404mr736786e0c.7.1782165681330;
-        Mon, 22 Jun 2026 15:01:21 -0700 (PDT)
-Received: from [127.0.0.1] ([99.196.128.58])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8df7f018898sm106932496d6.7.2026.06.22.15.01.12
+        bh=/lWcRJ9xv3vj+kuUslXqTMu2ZS1PDN9hlN/ZqmuvJzU=;
+        b=beLF8G+lM3Ps9G9QaVTVmuk/Hx8/fvrJJnCrFO+a3/3FxkqQIr+lEW/5VrUkY1SYY9
+         bHNYz8upaqlBJZorf0sa4Lns55UgSjx/eSwSHNU6eUeeBn6SE4oyvJEirbSrZ9qlinl/
+         UkvXcz2elIgwJpucqsD87rxCRdPRKMBdupA6FmIvRd//rwSWqefMtatVmkinYxFk5GbT
+         SHZLCqkp11HFQYjLS90iNfjhkLBJnoD0ms2kzajjjPJLHQO1YUWy8Cg+yuLtW26tHTr9
+         NJriCmzZNdzEvkJR0Z9kVU2UrLemO6lTeWfmfs9FdBEL2cyPZt7s1gZQ2hZYsTF/l+4D
+         IFXQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+7Lsnx7zi/rFEnB5OaLznUigRZKgQVjPnwLW/63JrT5uJHMilDtg9W3AfMKGjUBKbsyDJeNV/O@vger.kernel.org
+X-Gm-Message-State: AOJu0YzPBpSnn5YnDCGGi8IdJcrQV1Dk67/zMCemRWAM4gVSkLBSc2LQ
+	OI9vabTDiNEoxUDG2HGIP+R5tkqd0QO0n4KOVpW4iY5k9Fm2DufowR47
+X-Gm-Gg: AfdE7cnGY4cgfXAxhhUaRpnZQCtBypjzD6WxiFQhHP34Mqs3BlDcebwVnP5UmMCHl3u
+	EbCbcZ1psYAG8qukBUYjMCLq/nFp2zdp35X8jWlEfai7h+l/rc/z8IadEDKSMToYM5M1RW8zzyo
+	suw+Dt7NrgGXwUd4Xxre/Dh0Yl80BOcro/RwK4z//XtB7nznZAHVdVdXDrJCZg6HGmJPCZ/5iGz
+	1VESY3kRYdMDZEYtLOnUMSutA9HQspO4h3R3YKC4TnbkuZ286E04DnBg3DIaWhTFbU621BVMeGl
+	11nI6IYSs496Zda88LZxDSJpLNrZ8DoPsN3QPFKjNrhCc7XBCsJ7qpp8VUPL0hvw1XNmNJCSGVW
+	oGhI2rJwYJbSz2vqMvGzUL79n4KgqOQ+IS5nFZEWK02EUUssxYo2a+3u0nFtmU4lM17plF99Gzw
+	2P18cU++GbaHEDzy8PhCAIACji9tT0kUn6mgPqhBF0nOv52nZ6rSx2VQ==
+X-Received: by 2002:a05:6820:c85:b0:6a0:f323:e967 with SMTP id 006d021491bc7-6a0f323ea6fmr9372385eaf.55.1782166239358;
+        Mon, 22 Jun 2026 15:10:39 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:71::])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6a0e9f77720sm5727019eaf.6.2026.06.22.15.10.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2026 15:01:20 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: tj@kernel.org, josef@toxicpanda.com, linux-block@vger.kernel.org, 
- Zizhi Wo <wozizhi@huaweicloud.com>
-Cc: cgroups@vger.kernel.org, yangerkun@huawei.com, chengzhihao1@huawei.com, 
- houtao1@huawei.com, yukuai@fygo.io
-In-Reply-To: <20260616011746.2451461-1-wozizhi@huaweicloud.com>
-References: <20260616011746.2451461-1-wozizhi@huaweicloud.com>
-Subject: Re: [PATCH V3] blk-cgroup: defer blkcg css_put until blkg is
- unlinked from queue
-Message-Id: <178216567226.110437.9780532607179300407.b4-ty@b4>
-Date: Mon, 22 Jun 2026 16:01:12 -0600
+        Mon, 22 Jun 2026 15:10:39 -0700 (PDT)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Yosry Ahmed <yosry@kernel.org>
+Cc: Youngjun Park <her0gyugyu@gmail.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	akpm@linux-foundation.org,
+	chrisl@kernel.org,
+	youngjun.park@lge.com,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kasong@tencent.com,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	shikemeng@huaweicloud.com,
+	nphamcs@gmail.com,
+	baoquan.he@linux.dev,
+	baohua@kernel.org,
+	gunho.lee@lge.com,
+	taejoon.song@lge.com,
+	hyungjun.cho@lge.com,
+	mkoutny@suse.com,
+	baver.bae@lge.com,
+	matia.kim@lge.com
+Subject: Re: [PATCH v9 3/6] mm: memcontrol: add interface for swap tier selection
+Date: Mon, 22 Jun 2026 15:10:34 -0700
+Message-ID: <20260622221037.255359-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <CAO9r8zNjyW1rh26vv2vavCM_2-r70EuynU+-7XdEmrBdLL=TkQ@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15.2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel-dk.20251104.gappssmtp.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:josef@toxicpanda.com,m:linux-block@vger.kernel.org,m:wozizhi@huaweicloud.com,m:cgroups@vger.kernel.org,m:yangerkun@huawei.com,m:chengzhihao1@huawei.com,m:houtao1@huawei.com,m:yukuai@fygo.io,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[kernel.dk];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17154-lists,cgroups=lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17155-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:yosry@kernel.org,m:her0gyugyu@gmail.com,m:shakeel.butt@linux.dev,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:youngjun.park@lge.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:gunho.lee@lge.com,m:taejoon.song@lge.com,m:hyungjun.cho@lge.com,m:mkoutny@suse.com,m:baver.bae@lge.com,m:matia.kim@lge.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel-dk.20251104.gappssmtp.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[gmail.com,linux.dev,linux-foundation.org,kernel.org,lge.com,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,huaweicloud.com,suse.com];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,kernel-dk.20251104.gappssmtp.com:dkim,kernel.dk:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:email,lge.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9DB8F6B290D
+X-Rspamd-Queue-Id: 639776B2945
 
+On Mon, 22 Jun 2026 14:21:30 -0700 Yosry Ahmed <yosry@kernel.org> wrote:
 
-On Tue, 16 Jun 2026 09:17:46 +0800, Zizhi Wo wrote:
-> [BUG]
-> Our fuzz testing triggered a blkcg use-after-free issue:
+> On Sat, Jun 20, 2026 at 11:17 AM Youngjun Park <her0gyugyu@gmail.com> wrote:
+> >
+> > Introduce memory.swap.tiers.max, a flat-keyed file listing each
+> > tier defined in /sys/kernel/mm/swap/tiers with its state, "max"
+> > (allowed, the default) or "0" (disabled).  A tier is one bit in the
+> > cgroup's tier mask, so writing "<tier> max" or "<tier> 0" sets or
+> > clears that bit.
+> >
+> > Since the current use case lacks amount control, it only supports
+> > "max" (on) and "0" (off). Therefore, it does not track per-tier swap
+> > usage, relying instead on a fast runtime bitmask check.
+> >
+> > We maintain both `mask` and `effective_mask`. The `effective_mask` is
+> > strictly bounded by the parent (e.g., if a parent is "0", the child's
+> > effective state is "0" even if its `mask` is "max"). Maintaining this
+> > separately avoids costly cgroup tree traversals to check ancestors at
+> > runtime.
+> >
+> > Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > Suggested-by: Yosry Ahmed <yosry@kernel.org>
+> > Signed-off-by: Youngjun Park <youngjun.park@lge.com>
+> > ---
+> >  Documentation/admin-guide/cgroup-v2.rst |  20 +++++
+> >  Documentation/mm/swap-tier.rst          |   9 +++
+> >  include/linux/memcontrol.h              |   5 ++
+> >  mm/memcontrol.c                         |  67 ++++++++++++++++
+> >  mm/swap_state.c                         |   5 +-
+> >  mm/swap_tier.c                          | 102 +++++++++++++++++++++++-
+> >  mm/swap_tier.h                          |  57 +++++++++++--
+> >  7 files changed, 255 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> > index 6efd0095ed99..4843ffcfd110 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1850,6 +1850,26 @@ The following nested keys are defined.
+> >         Swap usage hard limit.  If a cgroup's swap usage reaches this
+> >         limit, anonymous memory of the cgroup will not be swapped out.
+> >
+> > +  memory.swap.tiers.max
+> > +       A read-write flat-keyed file which exists on non-root
+> > +       cgroups.  The default is "max" for every tier.
+
+Hi Yosry,
+
+Sorry, I feel like I'm joining the party late. Apologies if I'm missing
+some context or repeating a discussion that's already been had.
+Please let me know if that is the case.
+
+One quick tangent:
+I was chatting with Nhat last week about swap tiers and its relation to
+memory tiering. Nhat brought up a good point, which is that while both
+swap tiers and memory tiers provide a clear hierarchy of performance,
+only memory tiering allows for movement between the tiers.
+AFAICT, swap tiering does not allow for direct migration from a higher
+tier swap backend to a lower tier swap backend if the higher tier
+backend runs out of memory.
+
+In that sense, I'm not entirely sure if we need to enforce similar
+semantics across swap tiering and memory tiering; it seems like there
+are some fundamental differences anyways to how we treat these tiers.
+
+> I wonder what should the default behavior be if memory.swap.max is set
+> to a value other than "max". Should the limits in
+> memory.swap.tiers.max auto-scale or remain as "max"? We probably want
+> to keep the behavior consistent with memory tiering.
 > 
->   BUG: KASAN: slab-use-after-free in _raw_spin_lock+0x75/0xe0
->   Call Trace:
->   ...
->   blkcg_deactivate_policy+0x244/0x4d0
->   ioc_rqos_exit+0x44/0xe0
->   rq_qos_exit+0xba/0x120
->   __del_gendisk+0x50b/0x800
->   del_gendisk+0xff/0x190
->   ...
-> 
-> [...]
+> Shakeel/Joshua, WDYT?
 
-Applied, thanks!
+I think that the motivation behind these tiers is different for swap
+and memory. Tiered memory limits is motivated by preventing one
+workload from conusming all of a valuable resource, while swap tiers
+seems more to do with excluding certain workloads from using performant
+tiers and ensuring other workloads stay on those performant tiers.
 
-[1/1] blk-cgroup: defer blkcg css_put until blkg is unlinked from queue
-      commit: 3ed9b4779a4aa3f44cd9f78627498d7adac40daa
+IOW memory tiers exist for fairness, but it seems like swap tiers exist
+for workload performance tiering. But maybe there's a usecase out there
+that would want fairness to apply in the swap tiers as well that I am
+not seeing.
 
-Best regards,
--- 
-Jens Axboe
+If that is the case, I think auto-scaling makes sense but can be a bit
+tricky, since there is no universal tiered ratio; each workload will
+have different tiers it can swap to, so they will all have to calculate
+their own ratios. Tiered memory limits escapes this difficulty since we
+assume all memory can be placed on all tiers, so we have a system-wide
+ratio : -)
 
-
-
+Let me know what you think! Have a great day :D
+Joshua
 
