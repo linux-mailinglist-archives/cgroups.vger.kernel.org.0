@@ -1,380 +1,215 @@
-Return-Path: <cgroups+bounces-17193-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17196-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hhg+KRPKOmonHAgAu9opvQ
-	(envelope-from <cgroups+bounces-17193-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 20:01:55 +0200
+	id qjOqOSrMOmryHAgAu9opvQ
+	(envelope-from <cgroups+bounces-17196-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 20:10:50 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218CF6B957F
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 20:01:55 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 503EA6B9604
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 20:10:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=MAiI6vVp;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17193-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17193-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=X1nRv515;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17196-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17196-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CF83E3099E2F
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 18:01:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B766730443F1
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 18:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7479139184A;
-	Tue, 23 Jun 2026 18:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32586391E58;
+	Tue, 23 Jun 2026 18:10:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999113911CF
-	for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 18:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29A8390239
+	for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 18:10:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782237696; cv=none; b=U9d68dMlYFRgd4MM27nlwlAwyMHZ62BzfV+LFVZ6TRT0gCeL2bj3KVFkNWNwMD4ET1UaWA2VtFTvGCUg+6+Mrn/wKWp5HsZdrm+B539fg0n8RlGtZuBYwwd1PSEDdGnE8I4yAG2/M3KOvo4IWf7NtcUTUdosfZYkU3KFpVhclpk=
+	t=1782238246; cv=none; b=Pa++pnsHXW4pOVYeweWKEN6vwXJY9ejua/WYjPpP1zd7b/0eqjEUYLVYWOd5Gm1VezYkIBR0XygugCcPrOd7oEETSSef8+a3NNJRvvmAkHlCwUeeRZYYmsHxZ5UydRBThnaRQ4Y7OicfqV0lqvEWQAtRh0oBGi9NhialcTZeXOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782237696; c=relaxed/simple;
-	bh=K6gS/X2YrKn9d5QZUeR/ZfHv71hXucHz9Qvun4pzJJg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bjiHFwQDXP6MPhQT2JFb+IgtHOlhEy4oGYaBWfJOkVQhpPBLkYmDDw0taV4QUSVoHTJiRVUD8MP3mHQguLcJ5Fso1BRIOYjMqaaYSn0S/h7SPc/qu8Vj7H23Vn+jg5/65eZqlQNWVribqnAfPh//1EpNEP08dk7MtbKmPBP5tkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MAiI6vVp; arc=none smtp.client-ip=209.85.210.53
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-7e6e9408e30so169137a34.2
-        for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 11:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782237694; x=1782842494; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AV1AMv1DdRElmEAq04xArjlt0DIa0cx6rlJTbGmfpe8=;
-        b=MAiI6vVpQWBkjEAdx7v/2j8WXva/obHQXBOGEVcQ69Vpvnj0HPaZ7exGqRSGcyWuPK
-         lm8EC+QoQ8b0s52oBY/YrTkFi2aIRWDcUydTFCJhuMfnXtx/F5ADPoozfSJqV8RVUnP2
-         QYU40uF3CxtXUOK8peD6X1up3WBy1uGtusvZ8A552ApK+LE486nG2REkdOdQUZ1cd3HV
-         ncUW8fxpS8gcnJsC+kOB01gH+zKvrPiqX4ZHm4roCqdWcK5f9lsjYi7j9xKz08vNSQKs
-         z0xPuEL3MRHnDbnnXih1v9FcMAd6AVyfOqSjEAq7wZPxLd+voNVxhrM0j+vX1Jlnrcrf
-         DDSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782237694; x=1782842494;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=AV1AMv1DdRElmEAq04xArjlt0DIa0cx6rlJTbGmfpe8=;
-        b=HJOVTCnsw7as1/ce9VXwhyYouFY1tIDHTYgxK/FVj6YjXEk45J5iwAO5GVZ4q/xR5j
-         XJGZ+B8jxo8NgcFCeQqX7zrx++fYXc+RzZrX9KdiA3MdYy7LHWNYHYoZGDkDdxdbJUD6
-         VH1jLSKOLN4zpWSMxmm2FggNRY2SqTn1wv+vlZEJ6coKdWubepnvE9kVGxwESyrEEK0U
-         kN8DLI0pqN8xMlx647uKSc8aI3vPZ9Lb5CH5Z3cIPzVp0Jtc4zgrmzEUGaAqHD6b85ER
-         3a4HHcJ9ON9EwuQIf2BLFLnWLuhy2a2YdpAvwp406//WNXdG36VNPrC9BHzhi68rkoMS
-         yLkQ==
-X-Forwarded-Encrypted: i=1; AFNElJ93eN+rXtm/OBp61cRl2SsR/aDFo6VOHKrufj1xMy3Au+BEPTcKLr3KfQUmokbpdNxX7AQC2xK1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy3+rNDXpemR9AfTzprjlm8Gicb9XcpnxhNeMgclJ8x8ZlE0v0V
-	vjfFQVSPUatpkCokkExSwo7y8LtKkdm58QMu1rUbJ6qIQXKi3P6n5GXt
-X-Gm-Gg: AfdE7clg3zraTHYSUP+CEDhDChgP4ptJpvPc4AFxjTXgvMucbi0PEYazSffljYKnveN
-	0GQNG8NMzCXK+K1zCz9I8vS098wDQtAFvInr+kEco3gUAomGhuOu8qHYcro2JwkRBf6LnrnZ0Jh
-	vu+PMIs52I+naqJWja9+ZJWtievMY6J4BGgVtN8RwD8TR0JOluoWNygc0TdTzWhJHYBe263jnmN
-	rqZDOjuwHPQt6vCiUyqanL+eRERHOWQu/d6XXiu+Lr9dV9n0skh1YVLVJKTFLDXGw45baE7DhSG
-	nBSIJk9ZneT+OR/z+h/MJPHaKpOtV0OjeD2Gkz4sRxlwkUZvMleo6S2mM2jrxZubqkuvMsAkp27
-	4oQ04ZXbKt40R+JYuhZvS2RVQ5iQzvzQb66fqj4d5ZG0tu1H95cQJqjNXdS2U4FA5NmsFTzxSy7
-	kuJwKHj7tf8GAtQMBpSM8PLALuy2Ocb8LqSISi3q64nQ==
-X-Received: by 2002:a05:6830:7109:b0:7dc:c7aa:22d4 with SMTP id 46e09a7af769-7e9867c537fmr179348a34.1.1782237692753;
-        Tue, 23 Jun 2026 11:01:32 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:c::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7e944296d7asm9374720a34.19.2026.06.23.11.01.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2026 11:01:32 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R . Howlett" <liam.howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v4 5/5] mm/memcontrol: remove unused memcg_stock code
-Date: Tue, 23 Jun 2026 11:01:23 -0700
-Message-ID: <20260623180124.868655-6-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260623180124.868655-1-joshua.hahnjy@gmail.com>
-References: <20260623180124.868655-1-joshua.hahnjy@gmail.com>
+	s=arc-20240116; t=1782238246; c=relaxed/simple;
+	bh=tq05N2NyBqQ5JGKENo2Kp7YwhqEkQubdotmf3YJrnZA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BWx4cadiKixIze+P35dM4d9iqYZghEtTbFOzaVyQIYVapZIm7v99lUD/f6S5byDmEpLzAp+3V27oLfRQleAL/EGql4XTEo88kVQ3aVAnaGv/ZH3Dxw7xBaAqkLUrA/rsPUaFabBXWYhQV2h7/VaoKivtE5sWbqG7sNW8L9x31bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X1nRv515; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CFDF1F0155A
+	for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 18:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782238244;
+	bh=tq05N2NyBqQ5JGKENo2Kp7YwhqEkQubdotmf3YJrnZA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=X1nRv515Stl6t4+NoB6Qix0fteA6CssGL7EH+pwMSccY3Ak5P6yAKM3Rb1l7XfVdy
+	 v+rjOF+lidhUlZzT/l/FcWlaf5yW+kdLDq2udjVAy7ShamhhQi8M+hnKRKc26pU2J6
+	 POo+qIaI234y7ErtLkXgInDdKbOMmMjHb4yqEnu7fuo6SYwct2Zt9egfwfKQ24+0pS
+	 kfZ8LOVHfXwTpumpK6tm0tr6F+CxnSzaFL6C7cPG/O25/MAm49C2grq0mitD8CL6Xh
+	 denrmS3s46mguFUWhQ6E9jlCirsGKXLiGX9co3tIUNMYuVIzJDNON+/IpaB4oYMaUL
+	 +X16byTeHjz0A==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-697dc263e5fso158215a12.2
+        for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 11:10:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ86pZCmzwIrUFydAiatBOpVB/iOzhNe5KcoOF6yGv/1GVd6AQoIEbJpI6vZB6kaOUZ+Y6D1T1P3@vger.kernel.org
+X-Gm-Message-State: AOJu0YweVk16fuu2jWVZgUIZnE8YLHX/kJ0P+bDwNAeq2YqEtegFcjze
+	xVDCOE5rsw+7BY6qbCs5z2eHHfmSTzpVQmzrKYoVJbwgfVgBRHdirrmLjTFNhv4IkfdF1yvhjIh
+	DixigXxNT0bkFLfqQcIycECsLLOJ01Jk=
+X-Received: by 2002:a17:906:9f8a:b0:c0e:4007:8d94 with SMTP id
+ a640c23a62f3a-c108ecfa2b1mr236060766b.43.1782238243526; Tue, 23 Jun 2026
+ 11:10:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <ajnIasdb6j6yDUdy@google.com> <20260623004018.1864121-1-joshua.hahnjy@gmail.com>
+In-Reply-To: <20260623004018.1864121-1-joshua.hahnjy@gmail.com>
+From: Yosry Ahmed <yosry@kernel.org>
+Date: Tue, 23 Jun 2026 11:10:32 -0700
+X-Gmail-Original-Message-ID: <CAO9r8zOQQwDxmHGsRw_9k2eu6r=HU_HiXxbB4cbpwhc1GGgHOw@mail.gmail.com>
+X-Gm-Features: AVVi8CeHkJg-OCEUnLamzkS0g71Y0U9F0-dgswBYdQt5v8lrD2Rr2s34MhEXIG4
+Message-ID: <CAO9r8zOQQwDxmHGsRw_9k2eu6r=HU_HiXxbB4cbpwhc1GGgHOw@mail.gmail.com>
+Subject: Re: [PATCH v9 3/6] mm: memcontrol: add interface for swap tier selection
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Youngjun Park <her0gyugyu@gmail.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	akpm@linux-foundation.org, chrisl@kernel.org, youngjun.park@lge.com, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kasong@tencent.com, hannes@cmpxchg.org, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, muchun.song@linux.dev, shikemeng@huaweicloud.com, 
+	nphamcs@gmail.com, baoquan.he@linux.dev, baohua@kernel.org, gunho.lee@lge.com, 
+	taejoon.song@lge.com, hyungjun.cho@lge.com, mkoutny@suse.com, 
+	baver.bae@lge.com, matia.kim@lge.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-17193-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam.howlett@oracle.com,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:kernel-team@meta.com,s:lists@lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17196-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:joshua.hahnjy@gmail.com,m:her0gyugyu@gmail.com,m:shakeel.butt@linux.dev,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:youngjun.park@lge.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:gunho.lee@lge.com,m:taejoon.song@lge.com,m:hyungjun.cho@lge.com,m:mkoutny@suse.com,m:baver.bae@lge.com,m:matia.kim@lge.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,linux.dev,linux-foundation.org,kernel.org,lge.com,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,huaweicloud.com,suse.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,cmpxchg.org:email,vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 218CF6B957F
+X-Rspamd-Queue-Id: 503EA6B9604
 
-Now that all memcg_stock logic has been moved to page_counter_stock, we
-can remove all code related to handling memcg_stock. Note that obj_stock
-is untouched and is still needed. FLUSHING_CACHED_CHARGE is preserved
-so that it can be used by obj_stock as well.
+On Mon, Jun 22, 2026 at 5:40=E2=80=AFPM Joshua Hahn <joshua.hahnjy@gmail.co=
+m> wrote:
+>
+> On Mon, 22 Jun 2026 23:46:31 +0000 Yosry Ahmed <yosry@kernel.org> wrote:
+>
+> > > > > If that is the case, I think auto-scaling makes sense but can be =
+a bit
+> > > > > tricky, since there is no universal tiered ratio; each workload w=
+ill
+> > > > > have different tiers it can swap to, so they will all have to cal=
+culate
+> > > > > their own ratios. Tiered memory limits escapes this difficulty si=
+nce we
+> > > > > assume all memory can be placed on all tiers, so we have a system=
+-wide
+> > > > > ratio : -)
+> > > >
+> > > > Hmm I don't follow. It's also possible (maybe not initially) that a
+> > > > memcg cannot use specific memory tiers, right? I am not sure what t=
+he
+> > > > difference is.
+> > >
+> > > You're right, I was speaking more to the current state of memory tier=
+s.
+> > > The majority of the feedack I received was that we already have too
+> > > many memcg knobs, so I just opted to make tiered memcg limits a
+> > > cgroup mount, with no ability for individual memcgs to tune their
+> > > limits or opt-in/out.
+> >
+> > Right, I think this is similar to the approach taken here. We have a
+> > single interface for per-tier limits. The main difference is that we're
+> > allowing 0/max values to disable/enable different swap tiers per-memcg,
+> > as there's a use case for that.
+> >
+> > Seems like for memory tiering there's no use case for that yet.
+>
+> Yes, I would agree with that.
+>
+> > > What do you think Yosry? Would it make sense for us to be able to
+> > > tune these values? Personally I think it makes sense but just wanted =
+to
+> > > make the basic features merged before I went to push for making those
+> > > knobs tunable.
+> >
+> > Right now we're not proposing to allow tuning swap tier limits either,
+> > just enable or disable a tier. My main question is about the default
+> > values.
+> >
+> > IIUC, for memory tiering, if you set memory.max, then the limits for
+> > tiers are auto-scaled. I think it makes sense to do the same for swap
+> > tiers for cosnsitency. Or am I wrong about the memory tiering limits
+> > behavior?
+>
+> No, you're right about that. Sorry for steering the thread to my
+> series ; -)
+>
+> To get back to the question of how the auto-tuning should work, the
+> main question is to which ratio we scale the swap limits to.
+> Do we set the swap limits proportional to how much swap is present
+> in the system, or how much swap is available to the cgroup?
+>
+> So if we have 3 swap tiers A, B, C, with 50G, 30G, and 20G capacity
+> respectively, how much should a cgroup with swap.max =3D 10G have if
+> it is limited to tiers A and B?
+>
+> This is what I was getting at earlier when I said we have to calculate
+> different ratios for different cgroups, based on what tiers they have
+> access to.
 
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
----
- mm/memcontrol.c | 186 ------------------------------------------------
- 1 file changed, 186 deletions(-)
+That's a good question. I think the case that is particularly
+interesting is whether or not the limits of other tiers should change
+when another tier is disabled/enabled.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 846800917af49..762fb8914c308 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1998,25 +1998,7 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
- 	pr_cont(" are going to be killed due to memory.oom.group set\n");
- }
- 
--/*
-- * The value of NR_MEMCG_STOCK is selected to keep the cached memcgs and their
-- * nr_pages in a single cacheline. This may change in future.
-- */
--#define NR_MEMCG_STOCK 7
- #define FLUSHING_CACHED_CHARGE	0
--struct memcg_stock_pcp {
--	local_trylock_t lock;
--	uint8_t nr_pages[NR_MEMCG_STOCK];
--	struct mem_cgroup *cached[NR_MEMCG_STOCK];
--
--	struct work_struct work;
--	unsigned long flags;
--	uint8_t drain_idx;
--};
--
--static DEFINE_PER_CPU_ALIGNED(struct memcg_stock_pcp, memcg_stock) = {
--	.lock = INIT_LOCAL_TRYLOCK(lock),
--};
- 
- /*
-  * NR_OBJ_STOCK is sized so the entire hot path of obj_stock_pcp
-@@ -2065,47 +2047,6 @@ static void drain_obj_stock(struct obj_stock_pcp *stock);
- static bool obj_stock_flush_required(struct obj_stock_pcp *stock,
- 				     struct mem_cgroup *root_memcg);
- 
--/**
-- * consume_stock: Try to consume stocked charge on this cpu.
-- * @memcg: memcg to consume from.
-- * @nr_pages: how many pages to charge.
-- *
-- * Consume the cached charge if enough nr_pages are present otherwise return
-- * failure. Also return failure for charge request larger than
-- * MEMCG_CHARGE_BATCH or if the local lock is already taken.
-- *
-- * returns true if successful, false otherwise.
-- */
--static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
--{
--	struct memcg_stock_pcp *stock;
--	uint8_t stock_pages;
--	bool ret = false;
--	int i;
--
--	if (nr_pages > MEMCG_CHARGE_BATCH ||
--	    !local_trylock(&memcg_stock.lock))
--		return ret;
--
--	stock = this_cpu_ptr(&memcg_stock);
--
--	for (i = 0; i < NR_MEMCG_STOCK; ++i) {
--		if (memcg != READ_ONCE(stock->cached[i]))
--			continue;
--
--		stock_pages = READ_ONCE(stock->nr_pages[i]);
--		if (stock_pages >= nr_pages) {
--			WRITE_ONCE(stock->nr_pages[i], stock_pages - nr_pages);
--			ret = true;
--		}
--		break;
--	}
--
--	local_unlock(&memcg_stock.lock);
--
--	return ret;
--}
--
- static void memcg_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages)
- {
- 	page_counter_uncharge(&memcg->memory, nr_pages);
-@@ -2113,51 +2054,6 @@ static void memcg_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages)
- 		page_counter_uncharge(&memcg->memsw, nr_pages);
- }
- 
--/*
-- * Returns stocks cached in percpu and reset cached information.
-- */
--static void drain_stock(struct memcg_stock_pcp *stock, int i)
--{
--	struct mem_cgroup *old = READ_ONCE(stock->cached[i]);
--	uint8_t stock_pages;
--
--	if (!old)
--		return;
--
--	stock_pages = READ_ONCE(stock->nr_pages[i]);
--	if (stock_pages) {
--		memcg_uncharge(old, stock_pages);
--		WRITE_ONCE(stock->nr_pages[i], 0);
--	}
--
--	css_put(&old->css);
--	WRITE_ONCE(stock->cached[i], NULL);
--}
--
--static void drain_stock_fully(struct memcg_stock_pcp *stock)
--{
--	int i;
--
--	for (i = 0; i < NR_MEMCG_STOCK; ++i)
--		drain_stock(stock, i);
--}
--
--static void drain_local_memcg_stock(struct work_struct *dummy)
--{
--	struct memcg_stock_pcp *stock;
--
--	if (WARN_ONCE(!in_task(), "drain in non-task context"))
--		return;
--
--	local_lock(&memcg_stock.lock);
--
--	stock = this_cpu_ptr(&memcg_stock);
--	drain_stock_fully(stock);
--	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
--
--	local_unlock(&memcg_stock.lock);
--}
--
- static void drain_local_obj_stock(struct work_struct *dummy)
- {
- 	struct obj_stock_pcp *stock;
-@@ -2174,88 +2070,6 @@ static void drain_local_obj_stock(struct work_struct *dummy)
- 	local_unlock(&obj_stock.lock);
- }
- 
--static void refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
--{
--	struct memcg_stock_pcp *stock;
--	struct mem_cgroup *cached;
--	uint8_t stock_pages;
--	bool success = false;
--	int empty_slot = -1;
--	int i;
--
--	/*
--	 * For now limit MEMCG_CHARGE_BATCH to 127 and less. In future if we
--	 * decide to increase it more than 127 then we will need more careful
--	 * handling of nr_pages[] in struct memcg_stock_pcp.
--	 */
--	BUILD_BUG_ON(MEMCG_CHARGE_BATCH > S8_MAX);
--
--	VM_WARN_ON_ONCE(mem_cgroup_is_root(memcg));
--
--	if (nr_pages > MEMCG_CHARGE_BATCH ||
--	    !local_trylock(&memcg_stock.lock)) {
--		/*
--		 * In case of larger than batch refill or unlikely failure to
--		 * lock the percpu memcg_stock.lock, uncharge memcg directly.
--		 */
--		memcg_uncharge(memcg, nr_pages);
--		return;
--	}
--
--	stock = this_cpu_ptr(&memcg_stock);
--	for (i = 0; i < NR_MEMCG_STOCK; ++i) {
--		cached = READ_ONCE(stock->cached[i]);
--		if (!cached && empty_slot == -1)
--			empty_slot = i;
--		if (memcg == READ_ONCE(stock->cached[i])) {
--			stock_pages = READ_ONCE(stock->nr_pages[i]) + nr_pages;
--			WRITE_ONCE(stock->nr_pages[i], stock_pages);
--			if (stock_pages > MEMCG_CHARGE_BATCH)
--				drain_stock(stock, i);
--			success = true;
--			break;
--		}
--	}
--
--	if (!success) {
--		i = empty_slot;
--		if (i == -1) {
--			i = stock->drain_idx++;
--			if (stock->drain_idx == NR_MEMCG_STOCK)
--				stock->drain_idx = 0;
--			drain_stock(stock, i);
--		}
--		css_get(&memcg->css);
--		WRITE_ONCE(stock->cached[i], memcg);
--		WRITE_ONCE(stock->nr_pages[i], nr_pages);
--	}
--
--	local_unlock(&memcg_stock.lock);
--}
--
--static bool is_memcg_drain_needed(struct memcg_stock_pcp *stock,
--				  struct mem_cgroup *root_memcg)
--{
--	struct mem_cgroup *memcg;
--	bool flush = false;
--	int i;
--
--	rcu_read_lock();
--	for (i = 0; i < NR_MEMCG_STOCK; ++i) {
--		memcg = READ_ONCE(stock->cached[i]);
--		if (!memcg)
--			continue;
--
--		if (READ_ONCE(stock->nr_pages[i]) &&
--		    mem_cgroup_is_descendant(memcg, root_memcg)) {
--			flush = true;
--			break;
--		}
--	}
--	rcu_read_unlock();
--	return flush;
--}
--
- static void schedule_drain_work(int cpu, struct work_struct *work)
- {
- 	/*
--- 
-2.53.0-Meta
+So basically in your example, assuming everything starts as "max",
+when swap.max is set to 10G, the autoscaled limits would be: (tier A,
+5G), (tier B, 3G), (tier C, 2G). Now the question becomes, if
+userspace sets the limit of tier C to 0, should the limits for tiers A
+and B change?
 
+On one hand, it's simpler to just keep the autoscaled limits unchanged
+in this case. However, this means that the effective swap limit is now
+8G, which is not great :/
+
+The alternative is to recalculate all the limits when one of them
+changes, in which case the limits of A and B would change to 6.25G and
+3.75G. But I don't know if this will work well if we allow custom
+limits. What happens if the limit of tier C is written as 1 (or 4096)
+instead of 0? It's effectively the same scenario, but the tier is
+technically allowed.
+
+The more I think about it, the more I realize it may be best to drop
+the autoscaling thing. I imagine memory tiering might run into similar
+issues too :/
 
