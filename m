@@ -1,207 +1,239 @@
-Return-Path: <cgroups+bounces-17174-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17177-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id O9gcL6QgOmrI1wcAu9opvQ
-	(envelope-from <cgroups+bounces-17174-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 07:59:00 +0200
+	id BPLPIrEnOmqQ2wcAu9opvQ
+	(envelope-from <cgroups+bounces-17177-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 08:29:05 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB196B4520
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 07:59:00 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B87D6B4795
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 08:29:04 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=DZhzIxK1;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17174-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17174-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=IdTW5MBS;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17177-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17177-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 65524301724C
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 05:58:52 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E2B5230151D0
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 06:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBB43AB27B;
-	Tue, 23 Jun 2026 05:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860063C3452;
+	Tue, 23 Jun 2026 06:28:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2D33446A7
-	for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 05:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8903B9935
+	for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 06:28:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782194328; cv=none; b=tC+sajpMV5nAU3w+FQXwciCY3+oXP7DRywGuZizrSpf1Zo1L87EZwYJewNrJv4/PO0JtHZH6OhcAf+2jRJ1zdGF51Z9T94rOC34Xp9Qfwr3+w1N2m9qFwhtXEzHWmOr2ZUGZYIW+PfZ+cFDrT0LXpJbLYkUyjC2HuGHIjqMma+k=
+	t=1782196137; cv=none; b=LC9giK2zx6GIWcctowI0yuHKzpsf2F5s9eog5c3K/RWv7i2WmFFMaAFeAK/uEwv9VpYaMn/3vpInoE6oe1CEqFHHrV+o5TQ3k+zdGvU+Os3BzmUVU1BtpiIEffCM2eerizXoz/bagxET/QW7a6iyfxmtjvaoI2J9Ov1yRsA7Wzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782194328; c=relaxed/simple;
-	bh=AlU4gtFEKhlfSxIcTjRL4e5qmxfg+fDinLPn8byO1XM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rG1qVqYRuN8UCNsCQxTtTp3n9+iQdZbqVXe9jB97YaiHoUDo/D6vfCkvCpjFu6NHE8oRpEdB8Jr0eLF+V33u49Z8x1I3O9Gw8sTeSd51Bluv1OiCRwcg5DUGBwE2/cmjePm+wuPQ/6BASbVYccvCw7vOAcrr/u89QOPYigpah3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DZhzIxK1; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1782194325;
+	s=arc-20240116; t=1782196137; c=relaxed/simple;
+	bh=VCguBDvHAvuVWf4nyW9f2ZN6GnenYj5/QONWunLTJe0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FCZ4TmuZA9lU/IcPsCPe2lAUDpSfnz1CiF2Iq3w/y1b9mLJkKvTwscsSX2gFIZKPTUr3/c/UQbUqI7B3xc3yzf6fc3RGbhyQgPZfcmT1XqD4o/Z5vWnf8H3s+44PaIDqXeJHJnj8Uva9wjy/URFC3Azq5DUUWQaGN3ZGpqpg+Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IdTW5MBS; arc=none smtp.client-ip=95.215.58.188
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782196123;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IRi8GfAYniLHbjGZFFwKyffd57VQQpHVn1aSTa2bqtc=;
-	b=DZhzIxK1s6Ee9WgNA7KnsAqoYwZjDqkTPUyiNzPap+UHQvs3t13LiRcx87zS+Fk+mBVlVB
-	d4yR+Qe4KdXGLyK9El0awg7sqMJ0jUNVRju1byxjpxSl631dIHv2ErHZrWYxuvOg4w8p+Q
-	cdbEWQ1/J85ms9FXC8oHf4EBcrtGkQA=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-272-loA_pPl1MIKCMNAT0kst6g-1; Tue,
- 23 Jun 2026 01:58:44 -0400
-X-MC-Unique: loA_pPl1MIKCMNAT0kst6g-1
-X-Mimecast-MFC-AGG-ID: loA_pPl1MIKCMNAT0kst6g_1782194322
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F3E29180064A;
-	Tue, 23 Jun 2026 05:58:41 +0000 (UTC)
-Received: from [10.2.16.35] (unknown [10.2.16.35])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A040D1956041;
-	Tue, 23 Jun 2026 05:58:39 +0000 (UTC)
-Message-ID: <74bd7410-7c57-41dc-911e-99969282893e@redhat.com>
-Date: Tue, 23 Jun 2026 01:58:38 -0400
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=E6PGLy8bRZ4LM0S8hHpE/Y/YUCNvl+OFBFABUP2H23E=;
+	b=IdTW5MBSADxS8XZ0gHcWA1wGgaLk8bwhNf/HRGpWJAGM5WPrWEGrPy/z3rQlH52bjeGixp
+	XWpMTvaaA/ZVCWTwd12p7mbJDZXrwx2CAvKFxNfnFWfLas9Tv/u08dxgnFqGD9040mBWsk
+	HVmeFbXjuySevsa+5qOTMe/t+YUJpfU=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: linux-mm@kvack.org
+Cc: yingfu.zhou@shopee.com,
+	jiayuan.chen@linux.dev,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kairui Song <kasong@tencent.com>,
+	Qi Zheng <qi.zheng@linux.dev>,
+	Barry Song <baohua@kernel.org>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>,
+	Wei Xu <weixugc@google.com>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] memcg: bail out reclaim when memcg is dying
+Date: Tue, 23 Jun 2026 14:27:53 +0800
+Message-ID: <20260623062800.298514-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Avoid unnecessary cpus & mems update
- in cpuset_hotplug_update_tasks()
-To: Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org
-References: <20260622224509.1927419-1-longman@redhat.com>
- <e24b8145-7a67-4cc0-8ba0-24bd89243c04@linux.dev>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <e24b8145-7a67-4cc0-8ba0-24bd89243c04@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17174-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	TAGGED_FROM(0.00)[bounces-17177-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:linux-mm@kvack.org,m:yingfu.zhou@shopee.com,m:jiayuan.chen@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:baohua@kernel.org,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:david@kernel.org,m:ljs@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_SENDER(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4EB196B4520
+X-Rspamd-Queue-Id: 7B87D6B4795
 
-On 6/22/26 9:14 PM, Ridong Chen wrote:
->
->
-> On 6/23/2026 6:45 AM, Waiman Long wrote:
->> As reported by sashiko [1], cpuset_hotplug_update_tasks() may perform
->> unnecessary task iteration and updating of tasks' CPU and node masks
->> when mems_allowed and/or cpus_allowed are not set in cpuset v2. It is
->> due to the fact that the temporary new_cpus and new_mems masks do not
->> inherit parent's effective_cpus/mems when they are empty which is the
->> expected behavior for cpuset v2 since commit 4ec22e9c5a90 ("cpuset:
->> Enable cpuset controller in default hierarchy").
->>
->> Fix that and avoid unnecessay work by adding the empty mask checks and
->> inheriting the parent's versions if empty.
->>
->> [1] 
->> https://sashiko.dev/#/patchset/20260621032816.1806773-1-longman%40redhat.com
->>
->> Fixes: 4ec22e9c5a90 ("cpuset: Enable cpuset controller in default 
->> hierarchy")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   kernel/cgroup/cpuset.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index aff86acea701..bc0207fd6e57 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -3925,6 +3925,14 @@ static void cpuset_hotplug_update_tasks(struct 
->> cpuset *cs, struct tmpmasks *tmp)
->>       compute_effective_cpumask(&new_cpus, cs, parent);
->>       nodes_and(new_mems, cs->mems_allowed, parent->effective_mems);
->>   +    if (is_in_v2_mode()) {
->> +        /* Inherit parent's effective_cpus/mems if empty */
->> +        if (cpumask_empty(&new_cpus))
->> +            cpumask_copy(&new_cpus, parent->effective_cpus);
->> +        if (nodes_empty(new_mems))
->> +            new_mems = parent->effective_mems;
->> +    }
->> +
->>       if (!tmp || !cs->partition_root_state)
->>           goto update_tasks;
->
-> I noticed that compute_effective_cpumask(...) is called in several 
-> places, so I think the logic should be consolidated into that function.
->
-> ```
-> static void compute_effective_cpumask(struct cpumask *new_cpus,
->                       struct cpuset *cs, struct cpuset *parent)
-> {
->     cpumask_and(new_cpus, cs->cpus_allowed, parent->effective_cpus);
->     if (cpumask_empty(&new_cpus) && is_in_v2_mode())
->         cpumask_copy(&new_cpus, parent->effective_cpus);
-> }
->
-> ```
->
-> Similarly, for new_mems, should we introduce a dedicated helper like 
-> compute_effective_nodemask? The same fallback logic is needed in 
-> update_nodemasks_hier:
->
->
-> ```
-> static void update_nodemasks_hier(struct cpuset *cs, nodemask_t 
-> *new_mems)
-> {
-> ...
->         bool has_mems = nodes_and(*new_mems, cp->mems_allowed, 
-> parent->effective_mems);
->
->         /*
->          * If it becomes empty, inherit the effective mask of the
->          * parent, which is guaranteed to have some MEMs.
->          */
->         if (is_in_v2_mode() && !has_mems)
->             *new_mems = parent->effective_mems;
-> ...
-> ```
->
-Yes, that makes sense. Will adopt this approach in the next version.
 
-Cheers,
-Longman
+Hi,
+
+This series mitigates a system-wide stall we hit when a cgroup is
+removed while one of its memory control files is doing synchronous
+reclaim.
+
+Problem Description
+===================
+
+Writing to memory.high, memory.max or memory.reclaim runs reclaim
+synchronously in the writer's context, looping until the usage drops
+below the target (or, for memory.reclaim, until the requested amount has
+been reclaimed). On a large cgroup this can take a long time. The
+latency is especially bad when reclaim has to perform swap I/O, where it
+is bound by the swap device write bandwidth, and under thrashing it is
+effectively unbounded - each round reclaims a few pages that the
+workload immediately faults back in, so the loop keeps making "progress"
+and never converges.
+
+These writes go through cgroup_file_write(), which does not take
+cgroup_mutex and does not pin the css. Instead, kernfs guarantees the
+node (and thus the css) stays alive for the duration of the operation by
+holding an active reference. So while the reclaim loop runs, the active
+reference on the file is held.
+
+If another task removes the same cgroup in parallel, cgroup_rmdir()
+takes cgroup_mutex and then blocks in kernfs_drain() waiting for that
+active reference to drain. Because cgroup_mutex is held throughout the
+wait, every other task that needs it piles up behind the remover - in
+our case the whole machine ground to a halt, with hung_task reports for
+the remover and for unrelated tasks merely reading /proc/<pid>/cgroup:
+
+INFO: task cgdelete:366634 blocked for more than 159 seconds.
+      Not tainted 6.6.102+ #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call Trace:
+ <TASK>
+ __schedule+0x3da/0x1650
+ schedule+0x58/0x100
+ kernfs_drain+0xe6/0x150
+ __kernfs_remove.part.0+0xd0/0x200
+ kernfs_remove_by_name_ns+0x75/0xd0
+ cgroup_addrm_files+0x325/0x410
+ css_clear_dir+0x50/0xf0
+ cgroup_destroy_locked+0xdf/0x1e0
+ cgroup_rmdir+0x2d/0xd0
+ kernfs_iop_rmdir+0x53/0x90
+ vfs_rmdir+0x98/0x240
+ do_rmdir+0x172/0x1b0
+ __x64_sys_rmdir+0x42/0x70
+ x64_sys_call+0xeb0/0x2210
+ do_syscall_64+0x56/0x90
+ entry_SYSCALL_64_after_hwframe+0x78/0xe2
+
+
+INFO: task systemd-journal:2352 blocked for more than 182 seconds.
+      Not tainted 6.6.102+ #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call Trace:
+ <TASK>
+ __schedule+0x3da/0x1650
+ schedule+0x58/0x100
+ schedule_preempt_disabled+0xe/0x20
+ __mutex_lock.constprop.0+0x3bb/0x640
+ __mutex_lock_slowpath+0x13/0x20
+ mutex_lock+0x3c/0x50
+ proc_cgroup_show+0x4d/0x380
+ proc_single_show+0x53/0xe0
+ seq_read_iter+0x12f/0x4b0
+ seq_read+0xcd/0x110
+ vfs_read+0xb1/0x360
+ ? __seccomp_filter+0x368/0x590
+ ksys_read+0x73/0x100
+ __x64_sys_read+0x19/0x30
+ x64_sys_call+0x18d3/0x2210
+ do_syscall_64+0x56/0x90
+ entry_SYSCALL_64_after_hwframe+0x78/0xe2
+
+The system recovers only once the reclaim finally finishes and releases
+the active reference. The reclaim itself is pointless here: the cgroup
+is being torn down and its remaining pages will be reparented to the
+parent anyway.
+
+Even though we check signal_pending(current) in the reclaim loop, the
+typical symptom is that cat /proc/<pid>/cgroup gets stuck.
+By the time someone looks for which task is actually stuck in reclaim,
+the hung task timeout has already been hit. This makes the problem
+particularly nasty to debug from a hung-task report alone, because the
+blocked tasks shown are often the victims, not the reclaim writer itself.
+
+Our Mitigation
+==============
+
+cgroup destruction sets CSS_DYING in kill_css_sync() *before*
+css_clear_dir() triggers the kernfs_drain() that blocks the remover. The
+in-flight reclaim loop is therefore guaranteed to observe it. This series
+checks memcg_is_dying() in the three reclaim loops (memory.high,
+memory.max and proactive reclaim) and bails out early, so the writer
+drops the active reference promptly and the remover can make progress.
+
+Unlike the no-progress guard (MAX_RECLAIM_RETRIES), which only fires when
+reclaim makes zero progress, the dying check also covers the slow swap
+I/O and thrashing cases, where reclaim keeps succeeding a little and the
+loop would otherwise never converge.
+
+This is orthogonal to commit c8e6002bd611 ("memcg: introduce
+non-blocking limit setting option"): O_NONBLOCK lets a caller avoid the
+synchronous reclaim up front, while this series handles the case where
+reclaim is already running when the cgroup starts being removed.
+
+The legacy (v1) reclaim loops in mem_cgroup_force_empty() and
+mem_cgroup_resize_max() share the same pattern but are left out for now.
+
+Jiayuan Chen (3):
+  memcg: bail out memory.high when memcg is dying
+  memcg: bail out memory.max when memcg is dying
+  memcg: bail out proactive reclaim when memcg is dying
+
+ mm/memcontrol.c | 6 ++++++
+ mm/vmscan.c     | 3 +++
+ 2 files changed, 9 insertions(+)
+
+-- 
+2.43.0
 
 
