@@ -1,176 +1,204 @@
-Return-Path: <cgroups+bounces-17172-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17173-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id HwHKHWQNOmqb0gcAu9opvQ
-	(envelope-from <cgroups+bounces-17172-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 06:36:52 +0200
+	id JUC7EHAaOmr91QcAu9opvQ
+	(envelope-from <cgroups+bounces-17173-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 07:32:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9EB86B4042
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 06:36:51 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16BD96B4301
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 07:32:30 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b="tAtYyk7/";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17172-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17172-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=Pk3sAxNj;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17173-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17173-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A3C60302C5E9
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 04:36:49 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 251DA300BEB7
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2026 05:32:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DCC3A3E73;
-	Tue, 23 Jun 2026 04:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B75E331230;
+	Tue, 23 Jun 2026 05:32:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9482C21C7
-	for <cgroups@vger.kernel.org>; Tue, 23 Jun 2026 04:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2973C1547C0;
+	Tue, 23 Jun 2026 05:32:21 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782189408; cv=none; b=AI6XDPZLuhggiuFi3kwxYQmPYN8baKUGPOxEl8z4GwdQDQU9GmZHCiSxhxGP5wXBiho2pVgu1Ni6O9033jgJVA4M9/cxc7Zl3dkmVWoVl4k7ZVzj4Jm14R5fbdAWvTdPawHOF0sFkt1NLrCqo+V7YWV32yMTXJutA7+sAzunDbQ=
+	t=1782192745; cv=none; b=qUyDtwr9BgwWxxciN/i7s193kgfHc+3SEeqNzlPGZcAG1r2KDueNdcuNd3Z1MlbeEKwiiawyErvSxhxFqpgn+1Hj+cBZ1sxQ1+DuCPCaChPmuzodHdBvGE7Leh3J1qTPAuHK7OhwqW4VD29xsVp5U+cnyQcHTZSW6nGRNqYYlXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782189408; c=relaxed/simple;
-	bh=n6nMMARM0X6AABdVweeX9/aLBCR+hwEeVXpsktkO1TA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BigH/2NVE9f4HU/CmcIQDALcB2kD+ket5yb7JUDRGPgnNAlXBk12+Kk82sXQppmYzAyGm2J5Ln2kzw3FdA40db7fYlN0n2sl93eNPFWzly71MZIjlggwb0mkF6CgNIbmeXtR1lTcw9rv+3s7mcMd1bBKruVtpvYSTSPlv2xGANE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=tAtYyk7/; arc=none smtp.client-ip=209.85.210.176
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-84232e83ca9so2145962b3a.2
-        for <cgroups@vger.kernel.org>; Mon, 22 Jun 2026 21:36:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782189407; x=1782794207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dt3pySXLLxRAVS12q4gDT3vSD9nb/FdqPRExCFEr4zc=;
-        b=tAtYyk7/kwuY6U6b/kwSJDbPDhSOeps5/twIX/P0H+K5XKpOMaM4DyI9JqkbugTZht
-         lJfAT7x5l9mF5tgorMwaBNNy19L4/arNBlTuX9Dre6bGsdait44MK5qpExj3QEc3jIWb
-         +c5YHo5IwhARGyIwEs0kdS4libgpgHzB6my9Zo47UN6CuPJ76F+C4GZM9xip90laapBu
-         /64sAug3fjM8YKTNUnQgvpeBd2bpMPw4RwMHKlVDo3znnewHlHg9QgwBmmV/f2lfgm0h
-         A5AkeDtv5gHduQLRjSDR1djwjl0mrhXls0+q/NlqLBvfr2V2yGu0dxuKnvZtq6R32qId
-         TDaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782189407; x=1782794207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Dt3pySXLLxRAVS12q4gDT3vSD9nb/FdqPRExCFEr4zc=;
-        b=kMbWKUuMwa1Ss+8MYCGUrHVHjHQ8XXvm+ob6gj+EcPbXwqBKwH/R02W/mWOaUirGSO
-         X/3dUmQloeIaW0dQjdFeqt+MjzFo2z4fKIkCHCCTpEUOtxwy9uaEpjojnPusXsQ5VLfb
-         ogJLNXcxiR9eB2SeUEyvaMhiBPUz25nCwtB+ykbp+9efvIDXfFlZOFdj8ZRzy4LfQKiE
-         bqi8ljZwu7xqlUsNHJWYYwOoBCZ0q1rxFYXxicZuGqFWoxg/EBe6W8rKrBRzw1NSoVd4
-         s6bIAZfqSc7M+mNviOXW5zeLwXBKRpvJ+2iqsXuPomY7+h4mSX9nkrdKPzIC5WKORvKI
-         V8aQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8nYDjIoFkCKvPEWGQC5jp52VGeWVq2tjXej4AhUqfA+D9P3zoPBe8Ljed+g59tn3YUK3TGIYC3@vger.kernel.org
-X-Gm-Message-State: AOJu0YxnADVYPFlhKgfFW+h2etK11OR2W9CXVh7Ai2fJuJkehQr+T1oM
-	f5e9RG3TRizJK+5gzUXSdKbKTWWlDdvVtiGQAlSpkenl9sKv1LURqs0t
-X-Gm-Gg: AfdE7cn5aigDNashIy4kgKOqMwYW5ovQBzcXhjXLu2iEpnLIvYIQgABM5vHTsaIqxZJ
-	E/D4lVwDxHjGAOxlM/GwNOlLaCHV3CYYwfjPq8NHBuGPgW2wVBsuD20ToL6otSyt5nQpbAbOUR+
-	VPdqQaBUzWXg+AIwykUN6nLG9lXKo/HIiwxpVUm4ikRmGGqkPbqQU/KuCefkh1x633nhUnC8gjS
-	Hep73G2OcozQuHedXleJwLWwfg2T3MTg3GVytT0HOKSuOWKuYbdOEBkLQpbaZHAyjDNfEcBORCM
-	IoVV0LEY/B6fSDLXn40YBw8OT7MrN9vYS+IXGV3ilYeQf1sa5S2rhFGHdOjWf1gZS2m22e2kOM0
-	rmTtJZFifl472IeoPVPNiEurMgp9viiQjFK4lYFyYwDv8WFDnZs+v/tFJodWa+3b3i7Bki1VTu+
-	O9jtk+zic=
-X-Received: by 2002:a05:6a00:f0d:b0:842:5ea5:5ff8 with SMTP id d2e1a72fcca58-845954402fbmr1535070b3a.42.1782189406881;
-        Mon, 22 Jun 2026 21:36:46 -0700 (PDT)
-Received: from ubuntu.. ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84564d6c2cesm11059604b3a.2.2026.06.22.21.36.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2026 21:36:46 -0700 (PDT)
-From: Jing Wu <realwujing@gmail.com>
-To: Thomas Gleixner <tglx@kernel.org>
-Cc: Jing Wu <realwujing@gmail.com>,
-	Waiman Long <longman@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Qiliang Yuan <yuanql9@chinatelecom.cn>
-Subject: Re: [PATCH v3 08/13] genirq: Add explicit housekeeping callback for managed IRQ migration
-Date: Tue, 23 Jun 2026 12:36:41 +0800
-Message-ID: <20260623043641.2391662-1-realwujing@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <87cxxnegqa.ffs@fw13>
-References: <87cxxnegqa.ffs@fw13>
+	s=arc-20240116; t=1782192745; c=relaxed/simple;
+	bh=WjgemQKk8VvtW4p3u+TSCBp7n51QPrPM3uFj0rPy9sc=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=DRud2ZmhaqfeF4QQtJiTx5cANYM9TJPNbr58/Wd2PuaEEm5upGq/09McBKFtJ+HLEuESdgHP4w7AC4ojGvP+vQ3vT9lsL99iHSs9XvfU9Urn5XC30o+yh53XGnvvxeV1umlD4DVvVG7FgVoGA28uNjacEuFkMNezWFXTx9qqga4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Pk3sAxNj; arc=none smtp.client-ip=91.218.175.186
+Message-ID: <d8bdf9ef-a393-4734-8639-308ac3eaa05c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782192739;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T0uys3soVbuibRlNP9S0ARwcaMI6iOsJGPYrN8ZQRpI=;
+	b=Pk3sAxNj1QkhNWvYXZ8vXg+ZsJdtuWM1WEK5s9S1eaex4kZGAPHRqk1ZUyxJfoWnHl+rwC
+	hhLuVuCGP/z1Sv3sCdh+M/o5zNf//ix6Z7P/PNO6SAcgxpqSSmVvQzkxBqYQohsWqEFlqx
+	xaAj60vLA3g/4Df2yjdob0Doy1o15JU=
+Date: Tue, 23 Jun 2026 13:32:08 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Cc: cui.tao@linux.dev, cgroups@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] selftests/cgroup: Adjust cpu.max quota based on HZ
+To: Joe Simmons-Talbott <joest@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Shuah Khan <shuah@kernel.org>
+References: <20260622194305.601392-1-joest@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Tao Cui <cui.tao@linux.dev>
+In-Reply-To: <20260622194305.601392-1-joest@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,vger.kernel.org,chinatelecom.cn];
-	TAGGED_FROM(0.00)[bounces-17172-lists,cgroups=lfdr.de];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17173-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tglx@kernel.org,m:realwujing@gmail.com,m:longman@redhat.com,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:cui.tao@linux.dev,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:joest@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A9EB86B4042
+X-Rspamd-Queue-Id: 16BD96B4301
 
-On Thu, Jun 18 2026 at 22:27, Thomas Gleixner wrote:
-> While this series might work for you by some definition of "works",
-> it's broken beyond repair [...]
-> Please coordinate with Waiman or whoever is working on it at RH right now.
 
-Thank you for the detailed review. I want to clarify the timeline and
-highlight a key distinction before proceeding with v4.
+Hi Joe,
 
-DHM was posted as RFC on 2026-02-06 [1], v1 on 2026-03-25 [2], and v2
-on 2026-04-13 [3]. Waiman Long's series was posted on 2026-04-20 [4],
-seven days after DHM v2. The development appears to have been parallel.
+One comment on the fallback:
 
-More importantly, DHM and Waiman's series differ in a key requirement:
-Waiman's series requires "nohz_full=" to be present at boot (even with
-an empty CPU list) to opt into runtime updates. DHM's goal is to enable
-CPU noise isolation at runtime on systems where no nohz_full= was
-configured at boot — a use case his series does not cover.
+  quota_usec = hz != -1 ? USEC_PER_SEC / hz : 1000;
 
-That said, I fully accept the architectural feedback: the on-the-fly
-subsystem modification approach in v3 is wrong, and v4 should use the
-CPU hotplug machinery.
+When HZ can't be determined (no CONFIG_IKCONFIG_PROC, or zcat missing),
+the fallback to 1000 is the exact value that fails at low HZ — so this
+doesn't actually fix such kernels. A larger fallback (e.g. 10000, the
+HZ=100 equivalent) would make the tests robust regardless of whether the
+config is exposed.
 
-We are open to coordinating with Waiman on a unified approach that
-covers both use cases. Before starting v4, two questions:
+在 2026/6/23 03:43, Joe Simmons-Talbott 写道:
+> For lower HZ values a quota of 1000us is much lower than the amount
+> of microseconds per tick which makes the tests test_cpucg_max and
+> test_cpugc_max_nested fail. Use the amount of microseconds per tick
+> as the quota value.
+> 
+> Signed-off-by: Joe Simmons-Talbott <joest@redhat.com>
+> ---
+> changes since v1:
+> - Try checking /proc/config.gz to get the actual kernel HZ value and
+>   fallback to 1000 if the value cannot be determined.
+> 
+>  tools/testing/selftests/cgroup/test_cpu.c | 33 +++++++++++++++++++++--
+>  1 file changed, 31 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+> index 7a40d76b9548..65e09555309f 100644
+> --- a/tools/testing/selftests/cgroup/test_cpu.c
+> +++ b/tools/testing/selftests/cgroup/test_cpu.c
+> @@ -639,6 +639,29 @@ test_cpucg_nested_weight_underprovisioned(const char *root)
+>  	return run_cpucg_nested_weight_test(root, false);
+>  }
+>  
+> +/*
+> + * Best effort attempt to get the kernel's HZ value from the config.
+> + * Return the HZ value if found otherwise return -1 to indicate failure.
+> + */
+> +static long
+> +_get_config_hz(void)
+> +{
+> +	long hz = -1;
+> +	FILE *f;
+> +	char cmd[256] = "zcat /proc/config.gz 2>/dev/null | grep '^CONFIG_HZ='";
+> +
+> +	f = popen(cmd, "r");
+> +
+> +	if (!f)
+> +		goto out;
+> +
+> +	fscanf(f, "CONFIG_HZ=%ld", &hz);
+> +
+> +out:
+> +	pclose(f);
+> +	return hz;
+> +}
+> +
+>  /*
+>   * This test creates a cgroup with some maximum value within a period, and
+>   * verifies that a process in the cgroup is not overscheduled.
+> @@ -646,7 +669,8 @@ test_cpucg_nested_weight_underprovisioned(const char *root)
+>  static int test_cpucg_max(const char *root)
+>  {
+>  	int ret = KSFT_FAIL;
+> -	long quota_usec = 1000;
+> +	long hz = _get_config_hz();
+> +	long quota_usec;
+>  	long default_period_usec = 100000; /* cpu.max's default period */
+>  	long duration_seconds = 1;
+>  
+> @@ -655,6 +679,8 @@ static int test_cpucg_max(const char *root)
+>  	char *cpucg;
+>  	char quota_buf[32];
+>  
+> +	quota_usec = hz != -1 ? USEC_PER_SEC / hz : 1000;
+> +
+>  	snprintf(quota_buf, sizeof(quota_buf), "%ld", quota_usec);
+>  
+>  	cpucg = cg_name(root, "cpucg_test");
+> @@ -710,7 +736,8 @@ static int test_cpucg_max(const char *root)
+>  static int test_cpucg_max_nested(const char *root)
+>  {
+>  	int ret = KSFT_FAIL;
+> -	long quota_usec = 1000;
+> +	long quota_usec;
+> +	long hz = _get_config_hz();
+>  	long default_period_usec = 100000; /* cpu.max's default period */
+>  	long duration_seconds = 1;
+>  
+> @@ -719,6 +746,8 @@ static int test_cpucg_max_nested(const char *root)
+>  	char *parent, *child;
+>  	char quota_buf[32];
+>  
+> +	quota_usec = hz != -1 ? USEC_PER_SEC / hz : 1000;
+> +
+>  	snprintf(quota_buf, sizeof(quota_buf), "%ld", quota_usec);
+>  
+>  	parent = cg_name(root, "cpucg_parent");
 
-  1. Is the "no boot parameter required" use case worth pursuing
-     independently, or should it be folded into Waiman's series?
-
-  2. For the hotplug path: is CPU-by-CPU offline/online the expected
-     mechanism, given that you rejected the cpuhp_offline_cb() bulk
-     approach in Waiman's v1?
-
-[1] https://lore.kernel.org/r/20260206-feature-dynamic_isolcpus_dhei-v1-0-00a711eb0c74@gmail.com
-[2] https://lore.kernel.org/r/20260325-dhei-v12-final-v1-0-919cca23cadf@gmail.com
-[3] https://lore.kernel.org/r/20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com
-[4] https://lore.kernel.org/r/20260421030351.281436-1-longman@redhat.com
-
-Jing Wu <realwujing@gmail.com>
 
