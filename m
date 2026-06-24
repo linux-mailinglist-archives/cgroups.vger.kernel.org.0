@@ -1,154 +1,181 @@
-Return-Path: <cgroups+bounces-17230-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id izFROPzQO2qedggAu9opvQ
-	(envelope-from <cgroups+bounces-17230-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 14:43:40 +0200
+	id cy6RKmDTO2ojdwgAu9opvQ
+	(envelope-from <cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 14:53:52 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A4BB6BE3AD
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 14:43:40 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BAC06BE495
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 14:53:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel-dk.20251104.gappssmtp.com header.s=20251104 header.b=NdQ49Otm;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17230-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17230-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel-dk.20251104.gappssmtp.com header.s=20251104 header.b=iKR9o3Qw;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CCC34300A3A8
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 12:43:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 98E143016BB1
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 12:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7BA30E0D5;
-	Wed, 24 Jun 2026 12:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226713AFD17;
+	Wed, 24 Jun 2026 12:53:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49B62D780C
-	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 12:43:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8EC3AFCE8
+	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 12:53:44 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782305007; cv=none; b=ZqItA8I96AeebZAFKx/6WwhS20YaNrxOmQLBkLsYSjSq5gqSuJqk5r5szkh1d46gcPc+SFGuYpm5SjoozvTQ65xE623VXv89Q+oGboY+UmeXmblJ9nIfTIgCBxIucU0sCTCmFbl8i/6iQ7tI7mg77aoNIWusnSwgIPaqyPnMFrU=
+	t=1782305626; cv=none; b=jA70gyPsDBVzGlOGbq8cIdd9Ld3X2KakaB3IJ+ZC+Z9mTmq75IqAc5n+sn+1G6Ir0JUptBB+k2KlwkNR4/j/SInd4wPngNLfONH6caT6/AYTxCMROe/tUBKlG1rvVorpVINMhKbRBRMcwhzUj7CYPLPNxdO+3W6BDl8PlWwWqkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782305007; c=relaxed/simple;
-	bh=1wS2Dp0j8j7U51hcsEcED+6qZEgOqRZvoSwj5zOBI+8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qspm4NAlpRQvbSgDEYFYwlzC3gjHEwkMPNFeAPkmLr7/r9wCEqrFrzASgsXyTZ2wK2baWJGB+VofB9zyVJo1GeEeB+WIw8slGy1P6e/TxsOzjyl3C27sliFDSUFCp33I5sGZR+fqmoZSBbJ4ggdjYG/ijAczZSssBZ50JnKKuQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=NdQ49Otm; arc=none smtp.client-ip=209.85.161.54
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-69ec2ebec61so622797eaf.3
-        for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 05:43:25 -0700 (PDT)
+	s=arc-20240116; t=1782305626; c=relaxed/simple;
+	bh=PD5G12xOLAzov5JHtwUfORhnpKpMIKv8xa6F4df83q4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=n9UpMTxJbNWGWbN1tkLJMCWWwo5JymtXc0Qc7AoxxOQbjCUPEsdisAwq+26bcsCCLOxfFLs/BQZoy6oAp1X+m6YVoViZT2BqrjoR4K1GQP5ivb4Y0WVI0pMu4TxTdKxcFJnh3U01Jw/bXBuEXjai3mBVA0LHlV+rT24oL4J5Mf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=iKR9o3Qw; arc=none smtp.client-ip=209.85.161.48
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-69d7e72b052so841016eaf.2
+        for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 05:53:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1782305005; x=1782909805; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3vBqNWysPNQvqkzsE4GQXCpY5+Q5GT/QhxmkZJrUXw8=;
-        b=NdQ49OtmMM6pTd932PgSzQLVlQLQia8eFx+1H4eJV+FY5ycGnb4e391PH51FCCO9nH
-         tXdBfux67ra5F0bf5duaGfi6R6UDw8/cA5JFdDfuu5mbFvkB+TT+TaVUx95lCYEKBfNt
-         yPpioPJ/yNsEWOpZd31galaxrw9F+dlq76DnZIP1WCl21JUVPiG87mzpC0VioHrA18Nc
-         /tHqbEPoYT8jGENF/wGUf3RicpBZzGbo3/WZyhHqp8w42gKMqqN9/VCuShmYARsU7G0X
-         /KZat0YH00vALmDihnkwflZLb8iPcu1NlJu/G99LUKCH3+VH4TdRtUCLSlojvS1jGlkW
-         /Cog==
+        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1782305624; x=1782910424; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yyUeAUZQ6VzVD4aBIbLL3a1KL2Cf5FHGMKxIglpvK8o=;
+        b=iKR9o3QwbepTq/2a2Wp5FqxlB6hzT5IufFFzkhh+DcF7ep3phwz+eGSmNbSIIBMVhX
+         9kPvG5ntkzZqWL2AZk3Ft6zHIhd8Unk8SMtM3noB6aL1SjZOuT6+/+Oq8N3f6eZHfsPk
+         2xPZJ9b4IPcR56Gv+LK5/73JLPdaL31MIm9JwYeDw3nGELuyTV51Gay0HTDTvGjwyNMq
+         JFIQDSMhUgJJZMKRFTviNYIenQnQ5AwVJa0t71HjxXuWokZjwm5gePgRxQdyYOJByXkY
+         NC9HbJNXhFiGo4H8OHHhbJurhKF+kNNUrMvMiNhPZ4tNz6Ws1LmzTseJSnjNLs9W0pn+
+         nGwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782305005; x=1782909805;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3vBqNWysPNQvqkzsE4GQXCpY5+Q5GT/QhxmkZJrUXw8=;
-        b=Bct5u4w0vbB+dEsGIvl5u7uN5CZQ4PolMSg7EPX7GoYRrWOK4ZsHCePCaAtbGKpLQ/
-         33zyQJa6PEWkxxXElCrtilB4s2lJ1cko9ssorDmhlRYXNtYB5Ql0MgBnyKlQpHY76iEf
-         4oUhK37PTnpg6RvPUrJDpGS907M4dImoaTTaszNW1qwHiRnZxNY8htTIL3HbrfdD9cCW
-         VNHqrgXCCY4bt4VMNAgkxTC1Fv9x/od4GBDccYxkj2JyQpAYpFl7JYd1/WFl837cmcE8
-         nDpt3Y797lRiQE57pp3GtD5noNsKSybYohOhDo+JhWXqq836V7gHg905IRZ2ODr7+yOP
-         d6ww==
-X-Forwarded-Encrypted: i=1; AFNElJ/JXBkkzzfpIl4Cp7Ho73wjAG0pH44dh6fmqIEnn80JdJHc2+skoHHrlgr9NvdRxqH7OlkioLbX@vger.kernel.org
-X-Gm-Message-State: AOJu0YwCck3yMSXyjlegSZD3pBbTIIqlJvJ1aXOQCad05hdxku7OA37d
-	/+GbE5Lgksfd96MTkz8eNc9+t2EldII3LNJUafWy4z7HOlHie+iva/nwGBx0DO26D0I=
-X-Gm-Gg: AfdE7clsdmAYV56waiIIMaEukNC5+uql+wPJC+OG4IIjpT1e5E57Lj5+TL+JR9ZBbIA
-	OiB+S0IVLHcV/OdX2ERFGYMvSuFSF/pboGQmNUejfGuq+LXuQhsYuKh6iXxW723K9eNYec0k+A8
-	dfqQ66867/DH/Erh7I90F8t1x5ETRy5PjtBidq0l0chuNbeLKUKB6ka8RGMySl7/OE5t1cvYGPL
-	fmQMJiA2gArEtSASPklazsaaRCWbYs3sm3PvQsiikC43hjH1SflwrGrXcrwQJDrwwk66gEhkoaZ
-	PpjljHlORSSNjjQZ3hfe28q4Gru4NnRAAVrDjORVKyyv/iBnLsSImFhlcdV4Tpz/JR7thGjksvz
-	fIjNwEnVmPpppu/Bw+pAcCKz9bthDNI5Svwq2yO1xPW9XYf1Vq/cUiSo81RDHLxHSoPy8eHyxCs
-	ORSl/WhOPOtfI2HDA6nktuklN1PvNq7uIiTyyPudJLtuzPFrhEbx2nsSHTxwjUcV/0J1d35u0=
-X-Received: by 2002:a05:6820:2110:b0:6a1:20d6:ccd9 with SMTP id 006d021491bc7-6a123020da0mr1995384eaf.49.1782305004833;
-        Wed, 24 Jun 2026 05:43:24 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4472f0464a6sm10164438fac.15.2026.06.24.05.43.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2026 05:43:24 -0700 (PDT)
-Message-ID: <34d48fb5-4952-4a48-b92a-f189bc3edd0b@kernel.dk>
-Date: Wed, 24 Jun 2026 06:43:22 -0600
+        d=1e100.net; s=20251104; t=1782305624; x=1782910424;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=yyUeAUZQ6VzVD4aBIbLL3a1KL2Cf5FHGMKxIglpvK8o=;
+        b=R7o32NdUEBdWash7g7Yr4gJ+MvjaU2YzqybOEj6+o5v7CTF1UghLawrYK6CIQOeuDU
+         f8fmSDbBu3oFeWq3R/af7ojrvcIpa+FiwPoCXU0G1EaIUneAu6bihEqx8ZGiHe27Uu17
+         0rQx9kYsjCXKVBB3jqoUk/kr7ScFMIJh30IDaCXdS3M/r2o6BOK4tNgA0qsjbABCgid+
+         uENIDhpDsG2ulmPGioBnGPgvboCIS0MWUBpNeqV28FnbiJvAAlFU29SO6Ob5iLe+A+MY
+         rbMlAQjYHTldVl18SsFx0V3e97yK18XTpc8JfpDiDCmIJz93Kw48GDkTZarMRMshihMS
+         wNMQ==
+X-Forwarded-Encrypted: i=1; AFNElJ8ybTka5o6DoYUA07Kq3U6n82IkORKuZuAN6tWW+wA3ggAFgNJzl35qnpAoOksoOAes+Pe0GI98@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywj9h0GF1w+0x25dGCiC0v7NCbRh2KiZavj2tOuUnZGQRipmvUR
+	TADiG7/eylynNWmRutAjB0kivNv2HEirK0uUFBqCAsGkMIHEZQPs75NWndL47mXdlDA=
+X-Gm-Gg: AfdE7cmG1vCeUSoizo2Qj8/ydP4monsHen802/Zhrp9S8EJAMsCoG8swAGOz8n5yQtM
+	Ma+ILIDwc9OvQ1cv3NMKo3NBTxudnfKfUIWC3IKGr7oJWTnkTxD2ZWdQB+5Ew9FlBoBLwWXdRLl
+	NtRIU8wwm8u21m3GhuW7tHxdlLXJA0Ggy6+z+WVoy2LhfIyDNUktQ6S+igtKf3gxA655m6vTD9Q
+	xHUDuAgg/4euqcoaA86W2yPDWel1De0RbtCvk8/VklEqziFcU615iCIv0DvY+cC9gwWBgF6SxDl
+	3H9OwjOMB7x5olpSTKnWSdKBB9vwaJZc1Us821AQHBY18y3Hzfszzh3mLkQKt/k+qX95OlJqbms
+	ZOgDq3546EH0pazBVBJiR6GQQSOUVC7ZqEkLVgjL7yF9cBdoS9Pm1TBqE/19slZRnaMmd0VlBbx
+	LrSk93VNivAdx15WL4SOsNILIAeSPDUdaVzS4Hjsr0TfBEwnaV4js2pwZ9xYO86z9ihA==
+X-Received: by 2002:a05:6820:2222:b0:69e:9c80:2fa0 with SMTP id 006d021491bc7-6a1230575c0mr1922407eaf.17.1782305624088;
+        Wed, 24 Jun 2026 05:53:44 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6a0e9faf29asm9264161eaf.8.2026.06.24.05.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2026 05:53:42 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: nilay@linux.ibm.com, tom.leiming@gmail.com, bvanassche@acm.org, 
+ tj@kernel.org, josef@toxicpanda.com, yukuai@fygo.io, 
+ Yu Kuai <yukuai@kernel.org>
+Cc: akpm@linux-foundation.org, chrisl@kernel.org, kasong@tencent.com, 
+ shikemeng@huaweicloud.com, nphamcs@gmail.com, baohua@kernel.org, 
+ youngjun.park@lge.com, cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ Baoquan He <baoquan.he@linux.dev>
+In-Reply-To: <cover.1780621988.git.yukuai@fygo.io>
+References: <cover.1780621988.git.yukuai@fygo.io>
+Subject: Re: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg
+ paths
+Message-Id: <178230562124.29628.5186654393991521598.b4-ty@b4>
+Date: Wed, 24 Jun 2026 06:53:41 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg
- paths
-To: yukuai@fygo.io, Yu Kuai <yukuai@kernel.org>, nilay@linux.ibm.com,
- tom.leiming@gmail.com, bvanassche@acm.org, tj@kernel.org,
- josef@toxicpanda.com
-Cc: akpm@linux-foundation.org, chrisl@kernel.org, kasong@tencent.com,
- shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
- baohua@kernel.org, youngjun.park@lge.com, cgroups@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <cover.1780621988.git.yukuai@fygo.io>
- <1c739fcc-5132-4cb2-bf34-cec94de26509@fygo.io>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <1c739fcc-5132-4cb2-bf34-cec94de26509@fygo.io>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.15.2
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel-dk.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17230-lists,cgroups=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:yukuai@kernel.org,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:baoquan.he@linux.dev,m:tomleiming@gmail.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:yukuai@fygo.io,m:yukuai@kernel.org,m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:tomleiming@gmail.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[fygo.io,kernel.org,linux.ibm.com,gmail.com,acm.org,toxicpanda.com];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[linux.ibm.com,gmail.com,acm.org,kernel.org,toxicpanda.com,fygo.io];
 	FORGED_SENDER(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	DMARC_NA(0.00)[kernel.dk];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,vger.kernel.org,kvack.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17231-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[kernel-dk.20251104.gappssmtp.com:+];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel-dk.20251104.gappssmtp.com:+];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,lge.com,vger.kernel.org,kvack.org,linux.dev];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,kernel-dk.20251104.gappssmtp.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,kernel.dk:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8A4BB6BE3AD
+X-Rspamd-Queue-Id: 1BAC06BE495
 
-On 6/24/26 12:57 AM, yu kuai wrote:
-> Friendly ping ...
+
+On Mon, 08 Jun 2026 11:42:41 +0800, Yu Kuai wrote:
+> This series is the follow-up blk-cgroup locking cleanup on top of the
+> earlier blkg-list protection fixes, and prepares blk-cgroup to stop using
+> q->queue_lock as the global blkg lifetime/iteration lock.
 > 
-> This set can still be applied cleanly for block-7.2 branch.
+> The current queue_lock based protection is hard to maintain because
+> queue_lock is used from hardirq and softirq completion paths, while some
+> blkcg cgroup file paths also need to iterate blkgs, print policy data, or
+> create blkgs from RCU-protected contexts.  This series first tightens the
+> blkcg-side lifetime rules:
+> 
+> [...]
 
-Not sure how you checked that, because patch 3 very much needs some
-manual attention to get applied. I have applied it now.
+Applied, thanks!
 
+[1/8] blk-cgroup: protect iterating blkgs with blkcg->lock in blkcg_print_stat()
+      commit: 25656304dabd26198ec69460c594a19d086ef099
+[2/8] blk-cgroup: delay freeing policy data after rcu grace period
+      commit: 0af3fedb8c8ed3c07b4f76927bd7fc88f6f82efb
+[3/8] blk-cgroup: don't nest queue_lock under rcu in blkcg_print_blkgs()
+      commit: 56cc24f59c145ce6938959f792df04b8a4f5a4d8
+[4/8] blk-cgroup: don't nest queue_lock under rcu in blkg_lookup_create()
+      commit: 9327a865e395a53f67dffac4710beb1d4730495e
+[5/8] blk-cgroup: don't nest queue_lock under rcu in bio_associate_blkg()
+      commit: 457d3c4f0fdd6cf8a4bd8115bf470809984a9f02
+[6/8] blk-cgroup: don't nest queue_lock under blkcg->lock in blkcg_destroy_blkgs()
+      commit: 4cfd7c1cff8f4c863b99d420cdbe0563802a9e80
+[7/8] mm/page_io: don't nest queue_lock under rcu in bio_associate_blkg_from_page()
+      commit: f928145cbcb52544203808f159461d0a25543df7
+[8/8] block, bfq: don't grab queue_lock to initialize bfq
+      commit: 3ca4f4e3ae811d414076a491cbf0dfcdae0dc01e
+
+Best regards,
 -- 
 Jens Axboe
+
+
 
 
