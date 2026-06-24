@@ -1,260 +1,227 @@
-Return-Path: <cgroups+bounces-17210-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17211-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id MQhMNExLO2rCVggAu9opvQ
-	(envelope-from <cgroups+bounces-17210-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 05:13:16 +0200
+	id AaHHDNVdO2orWwgAu9opvQ
+	(envelope-from <cgroups+bounces-17211-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 06:32:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CE316BB0BF
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 05:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DE5C6BB41C
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 06:32:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17210-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17210-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="OI/OFz9D";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17211-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17211-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5B18030B2271
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 03:12:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3B164302926C
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 04:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A1C30ACF1;
-	Wed, 24 Jun 2026 03:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF083090D4;
+	Wed, 24 Jun 2026 04:32:18 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A2D6305699;
-	Wed, 24 Jun 2026 03:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545352609EE;
+	Wed, 24 Jun 2026 04:32:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782270720; cv=none; b=PUapFakAwUjCGn7358VeVCgfjEkNZ0ld42kRyZ5nChUl2yHn84a4qQ+SsJVZKn/U2lsBUiFB/jolX1bWIL9iNA9rXCT2IGM+IzLs2jRXhoBW4k9D24aqNt8yLjF6Pfn0sNCnaTE1HfxJ8QfoaowJoEfzJUATpmkljDxQx+iM3TQ=
+	t=1782275538; cv=none; b=c1QMXuw3U0B9WDzgSOSPZkVSrSXXQ2af+r9Pj0LKsz5gpOiHnyt8Yh7B2j17AI2GsMwS3dmJGGIaFnIIveaWetmLYnCucipFaXvgM7wMF7sKxTr1xdZUyBkm0Hzft5aLe6ldUf8VZIv1lIQW6CTqNW1VSLHW6Fpj674vx2GzhKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782270720; c=relaxed/simple;
-	bh=JdtE9Xz96GG+EHD8dfofoRF3gyFyNgYRVXos3jUb+G8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HnfiftogAIHTUfbJBIkWfN0Ba4xVUqwqYiNbMNYmhggq7q2gyTaj+Tqf/3k75t9wfqFgTTrxI9goVhXD2Q2h7pf6u4/hnDnesiFHzoyoaNNv86BFL3D87HNpwCNq4FK2YgbcI4tRhUH/S7i8rgyPwAwAU/FqooqO1XSUD36xZuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-X-UUID: 7405c4f86f7a11f1aa26b74ffac11d73-20260624
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:bdff6945-937d-4e63-b654-f929663874c6,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:bdff6945-937d-4e63-b654-f929663874c6,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:836d8f13f4505d5698e1a3767275bdb6,BulkI
-	D:2606241111567D7I5HI8,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|81|82|10
-	2|127|850|865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:ni
-	l,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,
-	BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 7405c4f86f7a11f1aa26b74ffac11d73-20260624
-X-User: lihongfu@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <lihongfu@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 642929655; Wed, 24 Jun 2026 11:11:54 +0800
-From: Hongfu Li <lihongfu@kylinos.cn>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	corbet@lwn.net,
-	skhan@linuxfoundation.org,
-	dev@lankhorst.se,
-	mripard@kernel.org,
-	natalie.vock@gmx.de
-Cc: cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Hongfu Li <lihongfu@kylinos.cn>
-Subject: [PATCH 2/2] cgroup/dmem: introduce dmem.events.local for local counts
-Date: Wed, 24 Jun 2026 11:11:07 +0800
-Message-Id: <20260624031107.667253-3-lihongfu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260624031107.667253-1-lihongfu@kylinos.cn>
-References: <20260624031107.667253-1-lihongfu@kylinos.cn>
+	s=arc-20240116; t=1782275538; c=relaxed/simple;
+	bh=MaGlivGFSzOdBp6Y7/8vEL3ekTgG1EOiUnycebev6+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wv1CiOrPSnTT8W/vnknbzp+UcczPPkNdjkHMnqu3cIduhaBATkCjRcVxUVr10i7ya4I2VzYPEeFkeMprHzGgip5LTD4tZU9BXCyaW27FWhIWYlVMRCmfausG5ocI3oTiAQ8/zzRDI/7WZU7OCf037nzMS6RbJ4OkRnCzF54uehE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OI/OFz9D; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63BA01F000E9;
+	Wed, 24 Jun 2026 04:32:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782275537;
+	bh=LBhmepcwPAdQionL9hmPZMgzcc89UpJpdK93qrjxZJo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=OI/OFz9DymW+iYnLZeYRRldiKNHw0HgtGF2VlN4i5hyPAVwJe+ax1XsOyElWBq/aS
+	 U7rq4r8fhPlyoIrJydvW6RGcIywyyj2L79UgobqC1ckM/VGQ6caHxeef6n7HGFpIbk
+	 Nhvx2luzsJbOQMsiAHbHXyEjKfKS8Mi/gnI40pLklfLuRoAbrX+F652MWVp2PWrxCI
+	 zk7IEcI1E+Yn7Os6gUiz2tzGST3u4ZEwX49xcKc2AtnbUugo00+Fjrb0MoDCtsx2G8
+	 xjd4GMt6eldAY+RFljA354JxREf70W+lAlFg4CYlgIJwf7SskbkPVPEaVZ36kQcHXc
+	 9Fr0klbnH5fNA==
+Message-ID: <a3393f60-4ada-4768-a369-900350c97cf6@kernel.org>
+Date: Wed, 24 Jun 2026 13:32:09 +0900
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: memcg: remove stray text from obj_stock_pcp comment
+To: Guopeng Zhang <zhangguopeng@kylinos.cn>,
+ Guopeng Zhang <guopeng.zhang@linux.dev>, Johannes Weiner
+ <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20260623082614.81621-1-guopeng.zhang@linux.dev>
+ <82703e62-4061-4241-b12b-c46b927cc67d@kernel.org>
+ <5be54565-00be-4c05-91ca-0825fa925167@kylinos.cn>
+Content-Language: en-US
+From: Harry Yoo <harry@kernel.org>
+In-Reply-To: <5be54565-00be-4c05-91ca-0825fa925167@kylinos.cn>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------9edyMpZu0YLeoI6wTH0LWs7N"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-7.26 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:dev@lankhorst.se,m:mripard@kernel.org,m:natalie.vock@gmx.de,m:cgroups@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:lihongfu@kylinos.cn,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17211-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,lankhorst.se,gmx.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FORGED_SENDER(0.00)[lihongfu@kylinos.cn,cgroups@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-17210-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lihongfu@kylinos.cn,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+	FORGED_RECIPIENTS(0.00)[m:zhangguopeng@kylinos.cn,m:guopeng.zhang@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	HAS_ATTACHMENT(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,dmem.events:url,kylinos.cn:email,kylinos.cn:mid,kylinos.cn:from_mime,vger.kernel.org:from_smtp]
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6CE316BB0BF
+X-Rspamd-Queue-Id: 7DE5C6BB41C
 
-Add dmem.events.local for local-only low/max event counts per DMEM
-region.  Refactor the shared events show logic used by dmem.events.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------9edyMpZu0YLeoI6wTH0LWs7N
+Content-Type: multipart/mixed; boundary="------------QRl4NJCYxXXLAPrioGkZRTFF";
+ protected-headers="v1"
+From: Harry Yoo <harry@kernel.org>
+To: Guopeng Zhang <zhangguopeng@kylinos.cn>,
+ Guopeng Zhang <guopeng.zhang@linux.dev>, Johannes Weiner
+ <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Message-ID: <a3393f60-4ada-4768-a369-900350c97cf6@kernel.org>
+Subject: Re: [PATCH] mm: memcg: remove stray text from obj_stock_pcp comment
+References: <20260623082614.81621-1-guopeng.zhang@linux.dev>
+ <82703e62-4061-4241-b12b-c46b927cc67d@kernel.org>
+ <5be54565-00be-4c05-91ca-0825fa925167@kylinos.cn>
+In-Reply-To: <5be54565-00be-4c05-91ca-0825fa925167@kylinos.cn>
 
-Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
----
- Documentation/admin-guide/cgroup-v2.rst |  5 ++--
- kernel/cgroup/dmem.c                    | 32 +++++++++++++++++++++----
- 2 files changed, 31 insertions(+), 6 deletions(-)
+--------------QRl4NJCYxXXLAPrioGkZRTFF
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index afc924539a41..5e4dbe4a75c6 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2881,7 +2881,7 @@ DMEM Interface Files
- 	  drm/0000:03:00.0/vram0 12550144
- 	  drm/0000:03:00.0/stolen 8650752
- 
--  dmem.events
-+  dmem.events, dmem.events.local
- 	A read-only file that reports the number of times each cgroup
- 	has hit its configured memory limits.  The format lists each
- 	region on a single line, followed by the event counters::
-@@ -2894,7 +2894,8 @@ DMEM Interface Files
- 	``max`` counts how many times an allocation failed because the
- 	cgroup or one of its ancestors hit ``dmem.max``.
- 
--	``dmem.events`` contains hierarchical counts.  This file exists
-+	``dmem.events`` contains hierarchical counts.  ``dmem.events.local``
-+	contains counts for only the cgroup itself.  These files exist
- 	for all cgroups except root.
- 
- HugeTLB
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 79d4c5d0a046..29f8719561e6 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -60,6 +60,7 @@ struct dmemcg_state {
- 	struct list_head pools;
- 
- 	struct cgroup_file events_file;
-+	struct cgroup_file events_local_file;
- };
- 
- enum dmemcg_memory_event {
-@@ -84,6 +85,7 @@ struct dmem_cgroup_pool_state {
- 	struct dmem_cgroup_pool_state *parent;
- 
- 	atomic_long_t events[DMEMCG_NR_EVENTS];
-+	atomic_long_t events_local[DMEMCG_NR_EVENTS];
- 
- 	refcount_t ref;
- 	bool inited;
-@@ -196,6 +198,9 @@ static u64 get_resource_current(struct dmem_cgroup_pool_state *pool)
- static void dmemcg_memory_event(struct dmem_cgroup_pool_state *pool,
- 				enum dmemcg_memory_event event)
- {
-+	atomic_long_inc(&pool->events_local[event]);
-+	cgroup_file_notify(&pool->cs->events_local_file);
-+
- 	for (; pool; pool = pool->parent) {
- 		atomic_long_inc(&pool->events[event]);
- 		cgroup_file_notify(&pool->cs->events_file);
-@@ -203,11 +208,14 @@ static void dmemcg_memory_event(struct dmem_cgroup_pool_state *pool,
- }
- 
- static long dmemcg_get_event(struct dmem_cgroup_pool_state *pool,
--			     enum dmemcg_memory_event event)
-+			     enum dmemcg_memory_event event, bool local)
- {
- 	if (!pool)
- 		return 0;
- 
-+	if (local)
-+		return atomic_long_read(&pool->events_local[event]);
-+
- 	return atomic_long_read(&pool->events[event]);
- }
- 
-@@ -874,7 +882,7 @@ static int dmem_cgroup_region_max_show(struct seq_file *sf, void *v)
- 	return dmemcg_limit_show(sf, v, get_resource_max);
- }
- 
--static int dmem_cgroup_region_events_show(struct seq_file *sf, void *v)
-+static int dmemcg_events_show(struct seq_file *sf, void *v, bool local)
- {
- 	struct dmemcg_state *dmemcs = css_to_dmemcs(seq_css(sf));
- 	struct dmem_cgroup_region *region;
-@@ -885,14 +893,24 @@ static int dmem_cgroup_region_events_show(struct seq_file *sf, void *v)
- 
- 		seq_puts(sf, region->name);
- 		seq_printf(sf, " low %ld max %ld\n",
--			   dmemcg_get_event(pool, DMEMCG_LOW),
--			   dmemcg_get_event(pool, DMEMCG_MAX));
-+			   dmemcg_get_event(pool, DMEMCG_LOW, local),
-+			   dmemcg_get_event(pool, DMEMCG_MAX, local));
- 	}
- 	rcu_read_unlock();
- 
- 	return 0;
- }
- 
-+static int dmem_cgroup_region_events_show(struct seq_file *sf, void *v)
-+{
-+	return dmemcg_events_show(sf, v, false);
-+}
-+
-+static int dmem_cgroup_region_events_local_show(struct seq_file *sf, void *v)
-+{
-+	return dmemcg_events_show(sf, v, true);
-+}
-+
- static ssize_t dmem_cgroup_region_max_write(struct kernfs_open_file *of,
- 				      char *buf, size_t nbytes, loff_t off)
- {
-@@ -933,6 +951,12 @@ static struct cftype files[] = {
- 		.file_offset = offsetof(struct dmemcg_state, events_file),
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 	},
-+	{
-+		.name = "events.local",
-+		.seq_show = dmem_cgroup_region_events_local_show,
-+		.file_offset = offsetof(struct dmemcg_state, events_local_file),
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
- 	{ } /* Zero entry terminates. */
- };
- 
--- 
-2.25.1
 
+
+On 6/23/26 6:02 PM, Guopeng Zhang wrote:
+> =E5=9C=A8 2026/6/23 16:42, Harry Yoo =E5=86=99=E9=81=93:
+>>
+>> On 6/23/26 5:26 PM, Guopeng Zhang wrote:
+>>> From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+>>>
+>>> A patch filename was accidentally inserted into the comment describin=
+g
+>>> the nr_bytes field of struct obj_stock_pcp. Remove it.
+>> nit: perhaps add something like
+>> "Fix a typo in the comment (target -> targets)"?
+> Hi Harry,
+
+Hi Guopeng,
+
+> Thanks for the review and the Ack.
+>=20
+> Yes, I also fixed the "target -> targets" typo, but missed mentioning i=
+t
+> in the commit message.
+
+No worries :)
+It's not a big deal, just wanted to mention.
+
+> I'll be more careful about describing all changes
+> clearly next time.
+
+Thanks!
+
+> If a respin is needed, I'll add it to the commit
+> message and carry your Acked-by.
+
+I guess it's okay to not respin for this.
+
+Thanks!
+
+> Thanks,
+> Guopeng
+>=20
+>>> No functional change.
+>>>
+>>> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+>>> ---
+>> FWIW,
+>> Acked-by: Harry Yoo (Oracle) <harry@kernel.org>
+>>
+>> Thanks!
+>>
+>>>  mm/memcontrol.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>> index 6dc4888a90f3..3eedfc4e84a0 100644
+>>> --- a/mm/memcontrol.c
+>>> +++ b/mm/memcontrol.c
+>>> @@ -2039,7 +2039,7 @@ struct obj_stock_pcp {
+>>>  	/*
+>>>  	 * On rare archs with 256KiB base page size (hexagon and powerpc 44=
+x)
+>>>  	 * keep nr_bytes to unsigned int as uint16_t cannot represent the f=
+ull
+>>> -e patches/memcg-uint16_t-for-nr_bytes-in-obj_stock_pcp.patch	 * sub-=
+page remainder. Such archs are not cacheline optimization target.
+>>> +	 * sub-page remainder. Such archs are not cacheline optimization ta=
+rgets.
+>>>  	 */
+>>>  	unsigned int nr_bytes[NR_OBJ_STOCK];
+>>>  #else
+
+--=20
+Cheers,
+Harry / Hyeonggon
+
+--------------QRl4NJCYxXXLAPrioGkZRTFF--
+
+--------------9edyMpZu0YLeoI6wTH0LWs7N
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQQQ1ub6gR5ogjaKRmOGXBN6rc5S1gUCajtdyQAKCRCGXBN6rc5S
+1vnvAP9byEYeRrjQ2Dz1Xv7nHkARJWKR43ZTTZCNji2vF2IMAAEAloDAjd2BL2GK
+jiEpldoBcQUH1F0yDwUYGCFqNNuI6wI=
+=MgY7
+-----END PGP SIGNATURE-----
+
+--------------9edyMpZu0YLeoI6wTH0LWs7N--
 
