@@ -1,181 +1,362 @@
-Return-Path: <cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17232-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cy6RKmDTO2ojdwgAu9opvQ
-	(envelope-from <cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 14:53:52 +0200
+	id tDn2N3jWO2oDeAgAu9opvQ
+	(envelope-from <cgroups+bounces-17232-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 15:07:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BAC06BE495
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 14:53:52 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF62F6BE6D2
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 15:07:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel-dk.20251104.gappssmtp.com header.s=20251104 header.b=iKR9o3Qw;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17231-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=NfHfWAOU;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17232-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17232-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 98E143016BB1
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 12:53:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2D7253073EBC
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 12:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 226713AFD17;
-	Wed, 24 Jun 2026 12:53:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59B703B6C14;
+	Wed, 24 Jun 2026 12:59:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8EC3AFCE8
-	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 12:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033873B47E6;
+	Wed, 24 Jun 2026 12:59:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782305626; cv=none; b=jA70gyPsDBVzGlOGbq8cIdd9Ld3X2KakaB3IJ+ZC+Z9mTmq75IqAc5n+sn+1G6Ir0JUptBB+k2KlwkNR4/j/SInd4wPngNLfONH6caT6/AYTxCMROe/tUBKlG1rvVorpVINMhKbRBRMcwhzUj7CYPLPNxdO+3W6BDl8PlWwWqkc=
+	t=1782305967; cv=none; b=ljmnyvKJrHlfqofDh7RnvpqQvvRiLso1PLHN6HTfy8D0Gi5bsp6m5sNWiOJjly0ostP+/3CvHouxACYt6HBoAX964uhvdSHFVLJK4WVYoQYGP8L2UOFxJFB7g9H8j74vN1En6KHVD+n/FbssXh8F5ViIAHbcb8drZqB+r7fA1rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782305626; c=relaxed/simple;
-	bh=PD5G12xOLAzov5JHtwUfORhnpKpMIKv8xa6F4df83q4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=n9UpMTxJbNWGWbN1tkLJMCWWwo5JymtXc0Qc7AoxxOQbjCUPEsdisAwq+26bcsCCLOxfFLs/BQZoy6oAp1X+m6YVoViZT2BqrjoR4K1GQP5ivb4Y0WVI0pMu4TxTdKxcFJnh3U01Jw/bXBuEXjai3mBVA0LHlV+rT24oL4J5Mf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20251104.gappssmtp.com header.i=@kernel-dk.20251104.gappssmtp.com header.b=iKR9o3Qw; arc=none smtp.client-ip=209.85.161.48
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-69d7e72b052so841016eaf.2
-        for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 05:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20251104.gappssmtp.com; s=20251104; t=1782305624; x=1782910424; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yyUeAUZQ6VzVD4aBIbLL3a1KL2Cf5FHGMKxIglpvK8o=;
-        b=iKR9o3QwbepTq/2a2Wp5FqxlB6hzT5IufFFzkhh+DcF7ep3phwz+eGSmNbSIIBMVhX
-         9kPvG5ntkzZqWL2AZk3Ft6zHIhd8Unk8SMtM3noB6aL1SjZOuT6+/+Oq8N3f6eZHfsPk
-         2xPZJ9b4IPcR56Gv+LK5/73JLPdaL31MIm9JwYeDw3nGELuyTV51Gay0HTDTvGjwyNMq
-         JFIQDSMhUgJJZMKRFTviNYIenQnQ5AwVJa0t71HjxXuWokZjwm5gePgRxQdyYOJByXkY
-         NC9HbJNXhFiGo4H8OHHhbJurhKF+kNNUrMvMiNhPZ4tNz6Ws1LmzTseJSnjNLs9W0pn+
-         nGwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782305624; x=1782910424;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=yyUeAUZQ6VzVD4aBIbLL3a1KL2Cf5FHGMKxIglpvK8o=;
-        b=R7o32NdUEBdWash7g7Yr4gJ+MvjaU2YzqybOEj6+o5v7CTF1UghLawrYK6CIQOeuDU
-         f8fmSDbBu3oFeWq3R/af7ojrvcIpa+FiwPoCXU0G1EaIUneAu6bihEqx8ZGiHe27Uu17
-         0rQx9kYsjCXKVBB3jqoUk/kr7ScFMIJh30IDaCXdS3M/r2o6BOK4tNgA0qsjbABCgid+
-         uENIDhpDsG2ulmPGioBnGPgvboCIS0MWUBpNeqV28FnbiJvAAlFU29SO6Ob5iLe+A+MY
-         rbMlAQjYHTldVl18SsFx0V3e97yK18XTpc8JfpDiDCmIJz93Kw48GDkTZarMRMshihMS
-         wNMQ==
-X-Forwarded-Encrypted: i=1; AFNElJ8ybTka5o6DoYUA07Kq3U6n82IkORKuZuAN6tWW+wA3ggAFgNJzl35qnpAoOksoOAes+Pe0GI98@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywj9h0GF1w+0x25dGCiC0v7NCbRh2KiZavj2tOuUnZGQRipmvUR
-	TADiG7/eylynNWmRutAjB0kivNv2HEirK0uUFBqCAsGkMIHEZQPs75NWndL47mXdlDA=
-X-Gm-Gg: AfdE7cmG1vCeUSoizo2Qj8/ydP4monsHen802/Zhrp9S8EJAMsCoG8swAGOz8n5yQtM
-	Ma+ILIDwc9OvQ1cv3NMKo3NBTxudnfKfUIWC3IKGr7oJWTnkTxD2ZWdQB+5Ew9FlBoBLwWXdRLl
-	NtRIU8wwm8u21m3GhuW7tHxdlLXJA0Ggy6+z+WVoy2LhfIyDNUktQ6S+igtKf3gxA655m6vTD9Q
-	xHUDuAgg/4euqcoaA86W2yPDWel1De0RbtCvk8/VklEqziFcU615iCIv0DvY+cC9gwWBgF6SxDl
-	3H9OwjOMB7x5olpSTKnWSdKBB9vwaJZc1Us821AQHBY18y3Hzfszzh3mLkQKt/k+qX95OlJqbms
-	ZOgDq3546EH0pazBVBJiR6GQQSOUVC7ZqEkLVgjL7yF9cBdoS9Pm1TBqE/19slZRnaMmd0VlBbx
-	LrSk93VNivAdx15WL4SOsNILIAeSPDUdaVzS4Hjsr0TfBEwnaV4js2pwZ9xYO86z9ihA==
-X-Received: by 2002:a05:6820:2222:b0:69e:9c80:2fa0 with SMTP id 006d021491bc7-6a1230575c0mr1922407eaf.17.1782305624088;
-        Wed, 24 Jun 2026 05:53:44 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6a0e9faf29asm9264161eaf.8.2026.06.24.05.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2026 05:53:42 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: nilay@linux.ibm.com, tom.leiming@gmail.com, bvanassche@acm.org, 
- tj@kernel.org, josef@toxicpanda.com, yukuai@fygo.io, 
- Yu Kuai <yukuai@kernel.org>
-Cc: akpm@linux-foundation.org, chrisl@kernel.org, kasong@tencent.com, 
- shikemeng@huaweicloud.com, nphamcs@gmail.com, baohua@kernel.org, 
- youngjun.park@lge.com, cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
- Baoquan He <baoquan.he@linux.dev>
-In-Reply-To: <cover.1780621988.git.yukuai@fygo.io>
-References: <cover.1780621988.git.yukuai@fygo.io>
-Subject: Re: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg
- paths
-Message-Id: <178230562124.29628.5186654393991521598.b4-ty@b4>
-Date: Wed, 24 Jun 2026 06:53:41 -0600
+	s=arc-20240116; t=1782305967; c=relaxed/simple;
+	bh=Hp21DabkdJmBrm5olpg71oNYzii2pCB3Ctg0A3bYMZg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mjk6g1RoVFmyfu+F9wlV1mox+rwt4eNP7vLwQr+9SVXlfWf7YRfUSX3zvJRsYGDhJeeyii2rLOT4zGTcfVMqaK6KZ4bHnXaVzAWyXxvZ/PKOmL+obLdtZwGNkNp4R4afAQNj/6m2CaZSdddYbfa55MRElJeUueFx3V6mgCsId5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NfHfWAOU; arc=none smtp.client-ip=95.215.58.171
+Message-ID: <dbfce6fd-1a70-49e4-84f0-f8abe0b0686d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782305952;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=w7mwncPJFc52L9GcJuLCemWszY1t/5oa8NDDGKNs5Xo=;
+	b=NfHfWAOUjme+ZS3K2cqW3zzBU9DDghXYBUACVwF1DP1IhHC7OpK5Dg+VG056EyHSeeXnq+
+	d2hck8f1B4+5aF6WEjOXUu98tizJ3d/dkoetmJwOT+C8sRL9MoCoWbRSgtT56dE5GZhUKK
+	23iu6/01orE+jSg9Lvj5Ccw4UnfNStE=
+Date: Wed, 24 Jun 2026 20:58:49 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.15.2
+Subject: Re: [PATCH v3 0/7] Prepare mutable list iterators to cache cursor
+ state
+To: "David Hildenbrand (Arm)" <david@kernel.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
+ Tejun Heo <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Paul Moore <paul@paul-moore.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Shakeel Butt <shakeel.butt@linux.dev>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ David Howells <dhowells@redhat.com>, Simona Vetter <simona.vetter@ffwll.ch>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+ linux-ntfs-dev@lists.sourceforge.net,
+ Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+ io-uring <io-uring@vger.kernel.org>, audit@vger.kernel.org,
+ bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ dri-devel@lists.freedesktop.org,
+ "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>,
+ kexec@lists.infradead.org, live-patching@vger.kernel.org,
+ linux-modules@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Linux Power Management <linux-pm@vger.kernel.org>, rcu@vger.kernel.org,
+ sched-ext@lists.linux.dev, linux-mm <linux-mm@kvack.org>,
+ virtualization@lists.linux.dev, damon@lists.linux.dev,
+ clang-built-linux <llvm@lists.linux.dev>,
+ chengkaitao <chengkaitao@kylinos.cn>
+References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
+ <CAADnVQJmPWFT01b7DuLdtafv=8FyB84GYHNZ8zSTck+9Aw0JpA@mail.gmail.com>
+ <8f98a3a6-f97b-4673-964f-fb09c8879e2e@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kaitao Cheng <kaitao.cheng@linux.dev>
+In-Reply-To: <8f98a3a6-f97b-4673-964f-fb09c8879e2e@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel-dk.20251104.gappssmtp.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:yukuai@kernel.org,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:baoquan.he@linux.dev,m:tomleiming@gmail.com,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[linux.ibm.com,gmail.com,acm.org,kernel.org,toxicpanda.com,fygo.io];
-	FORGED_SENDER(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	DMARC_NA(0.00)[kernel.dk];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17232-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-17231-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[kernel-dk.20251104.gappssmtp.com:+];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[axboe@kernel.dk,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,lge.com,vger.kernel.org,kvack.org,linux.dev];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:david@kernel.org,m:alexei.starovoitov@gmail.com,m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:tj@kernel.org,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:hannes@cmpxchg.org,m:peterz@infradead.org,m:mingo@redhat.com,m:acme@kernel.org,m:namhyung@kernel.org,m:tglx@kernel.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:paul@paul-moore.com,m:andriy.shevchenko@linux.intel.com,m:paulmck@kernel.org,m:shakeel.butt@linux.dev,m:christian.koenig@amd.com,m:dhowells@redhat.com,m:simona.vetter@ffwll.ch,m:rdunlap@infradead.org,m:luca.ceresoli@bootlin.com,m:phasta@kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-ntfs-dev@lists.sourceforge.net,m:linux-fsdevel@vger.kernel.org,m:io-uring@vger.kernel.org,m:audit@vger.kernel.org,m:bpf@vger.kernel.org,m:netdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-perf-users@vger.kernel.org,m:lin
+ ux-trace-kernel@vger.kernel.org,m:kexec@lists.infradead.org,m:live-patching@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-pm@vger.kernel.org,m:rcu@vger.kernel.org,m:sched-ext@lists.linux.dev,m:linux-mm@kvack.org,m:virtualization@lists.linux.dev,m:damon@lists.linux.dev,m:llvm@lists.linux.dev,m:chengkaitao@kylinos.cn,m:alexeistarovoitov@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[kaitao.cheng@linux.dev,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[kernel.org,gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[52];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[kaitao.cheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,kernel.dk:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1BAC06BE495
+X-Rspamd-Queue-Id: DF62F6BE6D2
 
 
-On Mon, 08 Jun 2026 11:42:41 +0800, Yu Kuai wrote:
-> This series is the follow-up blk-cgroup locking cleanup on top of the
-> earlier blkg-list protection fixes, and prepares blk-cgroup to stop using
-> q->queue_lock as the global blkg lifetime/iteration lock.
+
+在 2026/6/22 19:27, David Hildenbrand (Arm) 写道:
+> On 6/22/26 07:28, Alexei Starovoitov wrote:
+>> On Sun, Jun 21, 2026 at 9:06 PM Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
+>>>
+>>> From: chengkaitao <chengkaitao@kylinos.cn>
+>>>
+>>> The list_for_each*_safe() helpers are used when the loop body may remove
+>>> the current entry.  Their current interface, however, forces every caller
+>>> to define a temporary cursor outside the macro and pass it in, even when
+>>> the caller never uses that cursor directly.  For most call sites this
+>>> extra cursor is just boilerplate required by the macro implementation.
+>>>
+>>> This is awkward because the saved next pointer is an internal detail of
+>>> the iteration.  Callers that only remove or move the current entry do not
+>>> need to spell it out.
+>>>
+>>> The _safe() suffix has also caused confusion.  Christian Koenig pointed
+>>> out that the name is easy to read as a thread-safe variant, especially
+>>> for beginners, even though it only means that the iterator keeps enough
+>>> state to tolerate removal of the current entry.  He suggested _mutable()
+>>> as a clearer description of what the loop permits.
+>>>
+>>> Add *_mutable() iterator variants for list, hlist and llist.  The new
+>>> helpers are variadic and support both forms.  In the common case, the
+>>> caller omits the temporary cursor and the macro creates a unique internal
+>>> cursor with typeof(pos) and __UNIQUE_ID().  If a loop really needs an
+>>> explicit temporary cursor, the caller can still pass it and the helper
+>>> keeps the existing *_safe() behaviour.
+>>>
+>>> For example, a call site may use the shorter form:
+>>>
+>>>   list_for_each_entry_mutable(pos, head, member)
+>>>
+>>> or keep the explicit temporary cursor form:
+>>>
+>>>   list_for_each_entry_mutable(pos, tmp, head, member)
+>>>
+>>> The existing *_safe() helpers remain available for compatibility.  This
+>>> series only converts users in mm, block, kernel, init and io_uring.  If
+>>> this approach looks acceptable, the remaining users can be converted in
+>>> follow-up series.
+>>>
+>>> Changes in v3 (Christian König, Andy Shevchenko):
+>>> - Convert safe list walks to mutable iterators
+>>>
+>>> Changes in v2 (Muchun Song, Andy Shevchenko):
+>>> - Drop the list_for_each_entry_mutable*() helpers from v1 and make the
+>>>   cursor change directly in the existing list_for_each_entry*() helpers.
+>>> - Open-code special list walks that rely on updating the loop cursor in
+>>>   the body, preserving their existing traversal semantics.
+>>>
+>>> Link to v2:
+>>> https://lore.kernel.org/all/20260609061347.93688-1-kaitao.cheng@linux.dev/
+>>>
+>>> Link to v1:
+>>> https://lore.kernel.org/all/20260529082149.76764-1-kaitao.cheng@linux.dev/
+>>>
+>>> Kaitao Cheng (7):
+>>>   list: Add mutable iterator variants
+>>>   llist: Add mutable iterator variants
+>>>   mm: Use mutable list iterators
+>>>   block: Use mutable list iterators
+>>>   kernel: Use mutable list iterators
+>>>   initramfs: Use mutable list iterator
+>>>   io_uring: Use mutable list iterators
+>>>
+>>>  block/bfq-iosched.c                 |  17 +-
+>>>  block/blk-cgroup.c                  |  12 +-
+>>>  block/blk-flush.c                   |   4 +-
+>>>  block/blk-iocost.c                  |  18 +-
+>>>  block/blk-mq.c                      |   8 +-
+>>>  block/blk-throttle.c                |   4 +-
+>>>  block/kyber-iosched.c               |   4 +-
+>>>  block/partitions/ldm.c              |   8 +-
+>>>  block/sed-opal.c                    |   4 +-
+>>>  include/linux/list.h                | 269 ++++++++++++++++++++++++----
+>>>  include/linux/llist.h               |  81 +++++++--
+>>>  init/initramfs.c                    |   5 +-
+>>>  io_uring/cancel.c                   |   6 +-
+>>>  io_uring/poll.c                     |   3 +-
+>>>  io_uring/rw.c                       |   4 +-
+>>>  io_uring/timeout.c                  |   8 +-
+>>>  io_uring/uring_cmd.c                |   3 +-
+>>>  kernel/audit_tree.c                 |   4 +-
+>>>  kernel/audit_watch.c                |  16 +-
+>>>  kernel/auditfilter.c                |   4 +-
+>>>  kernel/auditsc.c                    |   4 +-
+>>>  kernel/bpf/arena.c                  |  10 +-
+>>>  kernel/bpf/arraymap.c               |   8 +-
+>>>  kernel/bpf/bpf_local_storage.c      |   3 +-
+>>>  kernel/bpf/bpf_lru_list.c           |  25 ++-
+>>>  kernel/bpf/btf.c                    |  18 +-
+>>>  kernel/bpf/cgroup.c                 |   7 +-
+>>>  kernel/bpf/cpumap.c                 |   4 +-
+>>>  kernel/bpf/devmap.c                 |  10 +-
+>>>  kernel/bpf/helpers.c                |   8 +-
+>>>  kernel/bpf/local_storage.c          |   4 +-
+>>>  kernel/bpf/memalloc.c               |  16 +-
+>>>  kernel/bpf/offload.c                |   8 +-
+>>>  kernel/bpf/states.c                 |   4 +-
+>>>  kernel/bpf/stream.c                 |   4 +-
+>>>  kernel/bpf/verifier.c               |   6 +-
+>>>  kernel/cgroup/cgroup-v1.c           |   4 +-
+>>>  kernel/cgroup/cgroup.c              |  54 +++---
+>>>  kernel/cgroup/dmem.c                |  12 +-
+>>>  kernel/cgroup/rdma.c                |   8 +-
+>>>  kernel/events/core.c                |  44 +++--
+>>>  kernel/events/uprobes.c             |  12 +-
+>>>  kernel/exit.c                       |   8 +-
+>>>  kernel/fail_function.c              |   4 +-
+>>>  kernel/gcov/clang.c                 |   4 +-
+>>>  kernel/irq_work.c                   |   4 +-
+>>>  kernel/kexec_core.c                 |   4 +-
+>>>  kernel/kprobes.c                    |  16 +-
+>>>  kernel/livepatch/core.c             |   4 +-
+>>>  kernel/livepatch/core.h             |   4 +-
+>>>  kernel/liveupdate/kho_block.c       |   4 +-
+>>>  kernel/liveupdate/luo_flb.c         |   4 +-
+>>>  kernel/locking/rwsem.c              |   2 +-
+>>>  kernel/locking/test-ww_mutex.c      |   2 +-
+>>>  kernel/module/main.c                |  11 +-
+>>>  kernel/padata.c                     |   4 +-
+>>>  kernel/power/snapshot.c             |   8 +-
+>>>  kernel/power/wakelock.c             |   4 +-
+>>>  kernel/printk/printk.c              |  11 +-
+>>>  kernel/ptrace.c                     |   4 +-
+>>>  kernel/rcu/rcutorture.c             |   3 +-
+>>>  kernel/rcu/tasks.h                  |   9 +-
+>>>  kernel/rcu/tree.c                   |   6 +-
+>>>  kernel/resource.c                   |   4 +-
+>>>  kernel/sched/core.c                 |   4 +-
+>>>  kernel/sched/ext.c                  |  22 +--
+>>>  kernel/sched/fair.c                 |  28 +--
+>>>  kernel/sched/topology.c             |   4 +-
+>>>  kernel/sched/wait.c                 |   4 +-
+>>>  kernel/seccomp.c                    |   4 +-
+>>>  kernel/signal.c                     |  11 +-
+>>>  kernel/smp.c                        |   4 +-
+>>>  kernel/taskstats.c                  |   8 +-
+>>>  kernel/time/clockevents.c           |   6 +-
+>>>  kernel/time/clocksource.c           |   4 +-
+>>>  kernel/time/posix-cpu-timers.c      |   4 +-
+>>>  kernel/time/posix-timers.c          |   3 +-
+>>>  kernel/torture.c                    |   3 +-
+>>>  kernel/trace/bpf_trace.c            |   4 +-
+>>>  kernel/trace/ftrace.c               |  49 +++--
+>>>  kernel/trace/ring_buffer.c          |  25 ++-
+>>>  kernel/trace/trace.c                |  12 +-
+>>>  kernel/trace/trace_dynevent.c       |   6 +-
+>>>  kernel/trace/trace_dynevent.h       |   5 +-
+>>>  kernel/trace/trace_events.c         |  35 ++--
+>>>  kernel/trace/trace_events_filter.c  |   4 +-
+>>>  kernel/trace/trace_events_hist.c    |   8 +-
+>>>  kernel/trace/trace_events_trigger.c |  17 +-
+>>>  kernel/trace/trace_events_user.c    |  16 +-
+>>>  kernel/trace/trace_stat.c           |   4 +-
+>>>  kernel/user-return-notifier.c       |   3 +-
+>>>  kernel/workqueue.c                  |  16 +-
+>>>  mm/backing-dev.c                    |   8 +-
+>>>  mm/balloon.c                        |   8 +-
+>>>  mm/cma.c                            |   4 +-
+>>>  mm/compaction.c                     |   4 +-
+>>>  mm/damon/core.c                     |   4 +-
+>>>  mm/damon/sysfs-schemes.c            |   4 +-
+>>>  mm/dmapool.c                        |   4 +-
+>>>  mm/huge_memory.c                    |   8 +-
+>>>  mm/hugetlb.c                        |  56 +++---
+>>>  mm/hugetlb_vmemmap.c                |  16 +-
+>>>  mm/khugepaged.c                     |  14 +-
+>>>  mm/kmemleak.c                       |   7 +-
+>>>  mm/ksm.c                            |  25 +--
+>>>  mm/list_lru.c                       |   4 +-
+>>>  mm/memcontrol-v1.c                  |   8 +-
+>>>  mm/memory-failure.c                 |  12 +-
+>>>  mm/memory-tiers.c                   |   4 +-
+>>>  mm/migrate.c                        |  23 ++-
+>>>  mm/mmu_notifier.c                   |   9 +-
+>>>  mm/page_alloc.c                     |   8 +-
+>>>  mm/page_reporting.c                 |   2 +-
+>>>  mm/percpu.c                         |  11 +-
+>>>  mm/pgtable-generic.c                |   4 +-
+>>>  mm/rmap.c                           |  10 +-
+>>>  mm/shmem.c                          |   9 +-
+>>>  mm/slab_common.c                    |  14 +-
+>>>  mm/slub.c                           |  33 ++--
+>>>  mm/swapfile.c                       |   4 +-
+>>>  mm/userfaultfd.c                    |  12 +-
+>>>  mm/vmalloc.c                        |  24 +--
+>>>  mm/vmscan.c                         |   7 +-
+>>>  mm/zsmalloc.c                       |   4 +-
+>>>  124 files changed, 875 insertions(+), 681 deletions(-)
+>>
+>> Not sure what you were thinking, but this diff stat
+>> is not landable.
 > 
-> The current queue_lock based protection is hard to maintain because
-> queue_lock is used from hardirq and softirq completion paths, while some
-> blkcg cgroup file paths also need to iterate blkgs, print policy data, or
-> create blkgs from RCU-protected contexts.  This series first tightens the
-> blkcg-side lifetime rules:
+> Agreed. If we decide we want this, I guess we should target per-subsystem
+> conversions.
 > 
-> [...]
+> If this goes through the MM tree, I would even appreciate doing this on a per-MM
+> component granularity.
+> 
+> (unless we have some magic "Linus converts all of them" script, which I doubt we
+> will have)
 
-Applied, thanks!
+I strongly agree with the point above.
 
-[1/8] blk-cgroup: protect iterating blkgs with blkcg->lock in blkcg_print_stat()
-      commit: 25656304dabd26198ec69460c594a19d086ef099
-[2/8] blk-cgroup: delay freeing policy data after rcu grace period
-      commit: 0af3fedb8c8ed3c07b4f76927bd7fc88f6f82efb
-[3/8] blk-cgroup: don't nest queue_lock under rcu in blkcg_print_blkgs()
-      commit: 56cc24f59c145ce6938959f792df04b8a4f5a4d8
-[4/8] blk-cgroup: don't nest queue_lock under rcu in blkg_lookup_create()
-      commit: 9327a865e395a53f67dffac4710beb1d4730495e
-[5/8] blk-cgroup: don't nest queue_lock under rcu in bio_associate_blkg()
-      commit: 457d3c4f0fdd6cf8a4bd8115bf470809984a9f02
-[6/8] blk-cgroup: don't nest queue_lock under blkcg->lock in blkcg_destroy_blkgs()
-      commit: 4cfd7c1cff8f4c863b99d420cdbe0563802a9e80
-[7/8] mm/page_io: don't nest queue_lock under rcu in bio_associate_blkg_from_page()
-      commit: f928145cbcb52544203808f159461d0a25543df7
-[8/8] block, bfq: don't grab queue_lock to initialize bfq
-      commit: 3ca4f4e3ae811d414076a491cbf0dfcdae0dc01e
+> Is there a way forward to replace list_for_each_*_safe entirely, possibly just
+> reusing the old name but simply the parameter?
 
-Best regards,
+David Laight, Christian König, and Jani Nikula do not agree with using
+clever macro syntax to support both calling forms at the same time,
+so for now it is not possible to keep the original macro name and only
+simplify the parameter. I may revert to the v1 version and ask everyone
+for their opinions again.
+
 -- 
-Jens Axboe
-
-
+Thanks
+Kaitao Cheng
 
 
