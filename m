@@ -1,151 +1,204 @@
-Return-Path: <cgroups+bounces-17226-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17227-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id QsshIvuXO2qAaAgAu9opvQ
-	(envelope-from <cgroups+bounces-17226-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 10:40:27 +0200
+	id F6ksGvqyO2onbggAu9opvQ
+	(envelope-from <cgroups+bounces-17227-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 12:35:38 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8786BC9E1
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 10:40:26 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AF2D6BD6B2
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 12:35:37 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b=xmu7RoUE;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17226-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17226-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=mailbox.org;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=RR85Reox;
+	dkim=pass header.d=redhat.com header.s=google header.b=NRJwlZvv;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17227-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17227-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1792330258B9
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 08:40:25 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C3517300372C
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 10:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ABD139769B;
-	Wed, 24 Jun 2026 08:40:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE6D285CA4;
+	Wed, 24 Jun 2026 10:35:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807C038C2A0;
-	Wed, 24 Jun 2026 08:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A454E28469B
+	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 10:35:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782290421; cv=none; b=LUjp2NbWbz+TP6QjXZCPKsAmk4YOc04wTCzpOUFWPyk0fnqoWs7nSHA4jsAeOgWocXessPGrV2qxGJBXwm066z3HmWbFa1Qr92IgFQTAHf+SrfaTx0m6Y0gqq2cEBd1S876r7+0Ki1CnwVWrDS0ywEZ4i/iWF1om4Xv1x7A22fU=
+	t=1782297325; cv=none; b=BzMKtv7VqQjX8xsyO/NP/mjIL+EppSTZ7ltqa/gFu6+HdOBlZj60PXnVy1iE1etf/dBdL9B5RVQl+dZ2ufrDOie/PPxc3jUOUSyCE5ghcOuJnukdHtwL+veIMbMECskrrH1AFQoVZBRyvGoNCZTXsvbMLrDAvyfAyoS1B9hRwTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782290421; c=relaxed/simple;
-	bh=P39lXRa2jz3MWWU850wkJGkTqFPcGPr0sHxBte23N+k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l1HJjqcOuLeiULUO3Aio8mGAkzr8n7Da5vMdNOI1MocVZWXCWup1jO9zcvtKbdwsXXq0Yb/rqvrtdkEUWa3T2rxT6G7nelwXrAgieclAENvcOHIRK3WrRgLTEKY+fx0mWfK0HilNRvmcCSDvf3ZDTdSxA8ac9w6/1DbnoIsclq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=xmu7RoUE; arc=none smtp.client-ip=80.241.56.152
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4glb3h3Qpyz9vHW;
-	Wed, 24 Jun 2026 10:40:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1782290416;
+	s=arc-20240116; t=1782297325; c=relaxed/simple;
+	bh=HIaYRlugnYrnIAEZ7/D3scwdn/jpoj1NmRTr10PelGk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eBKdKcYnVlmM7JNV5Brutz074ZScD5g7pHqDsrNQ+IWu6RPEStpfvFzz4iJqYfXfJOAkGd85mFNX6iFtMGl7Wp0vSACZct/3LuPB0iQ3ogECEh0xBO22zl2X7nVgRlw6PCYwHrsDO/iD34EFKYua8U/0kA569LlF8CMeTTfEL3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RR85Reox; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=NRJwlZvv; arc=none smtp.client-ip=170.10.133.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1782297323;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=P39lXRa2jz3MWWU850wkJGkTqFPcGPr0sHxBte23N+k=;
-	b=xmu7RoUEfspa3pQuaYW/w4no6pnLUSB8p9wUfW4w0C1l0umHYgWWvmiQQu+yxXYo4u9sKo
-	rtg8qjgD9eh5m757sWm0MLp4XavglYqGAoUVnL5cfCaPWpah3lms09u8q16oMxXeZg5fHb
-	RP7QJO4NIlcw9Hz5+GkZwrhoS7ddk9QYOXe5AcLb2GamZhS8BcCcbHy0Dq92mo+D0zADib
-	jb/552KEPSPlsql8Lcdc82JdAAcMqMEV009IiK+a6+8CELqc9nW4tfoKEc5ihq/0x3XLDU
-	CsXn0KyWZgwOx07MlKiMt6Cm5+zUx7FTYySzERFaRW7B9VpCn7H2EgjJg5DakA==
-Message-ID: <6fff0fe73bd8a3e45a96034a2251c7e0ca7de5c4.camel@mailbox.org>
-Subject: Re: [PATCH v2 1/2] cgroup/cpuset: Avoid unnecessary cpus & mems
- update in cpuset_hotplug_update_tasks()
-From: Manuel Ebner <manuelebner@mailbox.org>
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes
- Weiner <hannes@cmpxchg.org>, Michal =?ISO-8859-1?Q?Koutn=FD?=
- <mkoutny@suse.com>, Ridong Chen	 <ridong.chen@linux.dev>, Jonathan Corbet
- <corbet@lwn.net>, Shuah Khan	 <skhan@linuxfoundation.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Date: Wed, 24 Jun 2026 10:40:04 +0200
-In-Reply-To: <20260623230413.1984188-2-longman@redhat.com>
-References: <20260623230413.1984188-1-longman@redhat.com>
-	 <20260623230413.1984188-2-longman@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	bh=TquLabB3IWUoIxIeapfjmriI8BBgvu3sn49zWkWYrOA=;
+	b=RR85ReoxJJgj9kY/osOpYDIgVlhTlkBsc+C13qFfZYNYpMl2eQA5gJBNieVNBEUZSBycBb
+	/hreRWE62KZgu6ZZ+v+Lfr2PDCKxiri3NX6IWVh1e1qo9xcxnZj3nVMf6aVVGQewF2PBGD
+	5hEqXLANUSNHw4mSCkxsxCBRvPora+Q=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-152-ybd7a6_1MgOAPFCHH58QIg-1; Wed, 24 Jun 2026 06:35:22 -0400
+X-MC-Unique: ybd7a6_1MgOAPFCHH58QIg-1
+X-Mimecast-MFC-AGG-ID: ybd7a6_1MgOAPFCHH58QIg_1782297321
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-4639f122c38so616178f8f.1
+        for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 03:35:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1782297321; x=1782902121; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TquLabB3IWUoIxIeapfjmriI8BBgvu3sn49zWkWYrOA=;
+        b=NRJwlZvvI0Nam4tW04F9KpWLy3foVaKnbEIdy9cF+F43jlx0KealUkBvaqNe7iHfhY
+         t6LJ8UDG1uDrsovvl7WMs62K/ztfIxQh7PqLuE04BLXO89lzShaX1h//PmkDgjE9wUVQ
+         xx1dkElhn0LOer0yxlMuHIfezJFJjpc4ThzZCjUF+jaWivqd59NHKk9NLPGJSCAIrZQ8
+         jTlXkHzFDRAz8byTuQecPjGg87t1rpFT//dEAPbZsyKrYxTUha65Oe0VtJzoL9fQlbR8
+         9CNZNQjACpKR+opIDzu62OoShYjJJPLygPrOwT/UCZPigJytf2w5C+KXJPbvfporCFuO
+         WEvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782297321; x=1782902121;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TquLabB3IWUoIxIeapfjmriI8BBgvu3sn49zWkWYrOA=;
+        b=CQI2jpsTsULZXFb8hlSZ7VfWmIEWSJC9QCJGvVyzrZYJExY+/IRSLnba15lPuVJKok
+         D4GV6G4LzRd1/Rg3x8J7nDcrNe3Zr5t0gtgsJatM0OUF24dvyf6WxWTLWSYZqB6KhuBG
+         Bw3otzzMr9AuBZBfcrRr4MzUSl9/vIDAx1DqdUMjm34CtJ6LokuHKDoJy7/tzcgPcdgw
+         iDNPMbPNFuF+OpazkNTK4zE4AdUGtoT6gcts0ZADkQoapGaeOKX6S7sfzB0OBq2qDT3o
+         2aUMQSSdCOpqXHjiaUhgMVp9ydLlvfXd22Q1b6uGaLso7yvaFq1vHdTE5SN6x44ujnyg
+         aNeg==
+X-Forwarded-Encrypted: i=1; AFNElJ9LMWe124phM5FWIgFkfi29Ea3GsIPXz+enZSLe6PK/KXdzwjDE9p2j0vKQOHe0fyn6QMs2H1qk@vger.kernel.org
+X-Gm-Message-State: AOJu0YyhHUe0eETblK2UdCRaoINbnREScv/60BlP7OEC7MYkFM917LFg
+	H56MfbxITj2pRlIDETrv5vXZ2OaD/z9+YkrxYblIpdNTaPTZUKRXhSRIBIwG8+z7RnQFn4Yh8ys
+	rinGZEUSBb1+q9A1f8qtslh+cjOYIei5xWq/l5liwZ5XKyN9pjuHQRPifTDQ=
+X-Gm-Gg: AfdE7clzrNtLa2ts4JVJFwvmdJuVzA9af1L/Qos4kngds8sVqkL22V4lhk8CsjMZQ17
+	8zxvU0uRw29DV8+ksNkLyeaEUmpJiwSIYe7AXHWGrKXdhXamuxrL3CIvL1/eo/UTO/T2zPujIxe
+	Rw85NMkw6hFhjrpa8wf1mEQAHt5I72aZO9Kn5cFDJepOIQsPrX7EpL8O8SzDTFwa3kgsgssQdoy
+	mZNNYwcQ4LBXWabSRKXFyOgrzoSvY1DD/6wgnGLyiWkvr7LNwHFuIFXkdkBsl/wOe4Qc/mIrAl9
+	LpSwrRvHPkFmqLNyNNq7pdnPM7U9Dqm4tDhEsQcu5ra7/YRzjdwwYjM66JAd/tkt+y2ZkDilj5Y
+	qbgUULanOJwLiPBEHnYQDwyvOtDuWdk2BVDqpCbvn7Q==
+X-Received: by 2002:a05:600c:c0c5:b0:492:4ff5:fb9e with SMTP id 5b1f17b1804b1-4924ff5fe1fmr187065815e9.37.1782297320960;
+        Wed, 24 Jun 2026 03:35:20 -0700 (PDT)
+X-Received: by 2002:a05:600c:c0c5:b0:492:4ff5:fb9e with SMTP id 5b1f17b1804b1-4924ff5fe1fmr187065395e9.37.1782297320627;
+        Wed, 24 Jun 2026 03:35:20 -0700 (PDT)
+Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.133.86])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4923fc47720sm782135435e9.0.2026.06.24.03.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2026 03:35:19 -0700 (PDT)
+Date: Wed, 24 Jun 2026 12:35:17 +0200
+From: Juri Lelli <juri.lelli@redhat.com>
+To: luca abeni <luca.abeni@santannapisa.it>
+Cc: Yuri Andriaccio <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>
+Subject: Re: [RFC PATCH v6 00/25] Hierarchical Constant Bandwidth Server
+Message-ID: <ajuy5TDGckfXjpET@jlelli-thinkpadt14gen4.remote.csb>
+References: <20260608121546.69910-1-yurand2000@gmail.com>
+ <ajpcrDn2g2G9mGKp@jlelli-thinkpadt14gen4.remote.csb>
+ <20260624091912.4fca8428@nowhere>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MBO-RS-ID: b6772ffac49364ddedf
-X-MBO-RS-META: zpbdbadoti536qbhst7wsuo7h1on8h5b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260624091912.4fca8428@nowhere>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[mailbox.org,reject];
-	R_DKIM_ALLOW(-0.20)[mailbox.org:s=mail20150812];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17226-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17227-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,redhat.com,infradead.org,linaro.org,arm.com,goodmis.org,google.com,suse.de,kernel.org,cmpxchg.org,suse.com,vger.kernel.org,santannapisa.it];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[manuelebner@mailbox.org,cgroups@vger.kernel.org];
+	FORGED_SENDER(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FORGED_RECIPIENTS(0.00)[m:luca.abeni@santannapisa.it,m:yurand2000@gmail.com,m:mingo@redhat.com,m:peterz@infradead.org,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yuri.andriaccio@santannapisa.it,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:ridong.chen@linux.dev,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kselftest@vger.kernel.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[mailbox.org:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[manuelebner@mailbox.org,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mailbox.org:dkim,mailbox.org:mid,mailbox.org:from_mime,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[juri.lelli@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EA8786BC9E1
+X-Rspamd-Queue-Id: 5AF2D6BD6B2
 
-On Tue, 2026-06-23 at 19:04 -0400, Waiman Long wrote:
-> As reported by sashiko [1], cpuset_hotplug_update_tasks() may perform
-> unnecessary task iteration and updating of tasks' CPU and node masks
-> when mems_allowed and/or cpus_allowed are not set in cpuset v2. It is
-> due to the fact that the temporary new_cpus and new_mems masks do not
-> inherit parent's effective_cpus/mems when they are empty which is the
-> expected behavior for cpuset v2 since commit 4ec22e9c5a90 ("cpuset:
-> Enable cpuset controller in default hierarchy").
->=20
-> Fix that and avoid unnecessay work by enhancing
-> compute_effective_cpumask() to add the empty cpumask check
-> and inheriting the parent's versions if empty when in v2. A new
-> compute_effective_nodemask() helper is also added to perform similar
-> function for new effective_mems.
+Hi Luca,
 
-perform a similar function
-or
-perform similar functions
-
+On 24/06/26 09:19, luca abeni wrote:
+> Hi Juri,
+> 
+> very interesting demo, thanks!
+> 
+> On Tue, 23 Jun 2026 12:15:08 +0200
+> Juri Lelli <juri.lelli@redhat.com> wrote:
 > [...]
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index aff86acea701..044ddbf66f8e 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1094,12 +1094,35 @@ void cpuset_update_tasks_cpumask(struct cpuset *c=
-s, struct
-> cpumask *new_cpus)
-> =C2=A0 * @cs: the cpuset the need to recompute the new effective_cpus mas=
-k
-> =C2=A0 * @parent: the parent cpuset
-> =C2=A0 *
-> + * For v2, the parent's effective_cpus is inherited if cpumask empty.
+> >  - At 1ms task periods, the dl-server period is the critical tuning
+> >    parameter, less the bandwidth. A 10ms dl-server with 60% bandwidth
+> >    caused ~10% miss rates because the worst-case throttle gap (4ms)
+> >    spanned multiple 1ms deadlines. Switching to a 2ms dl-server period
+> >    at just 30% bandwidth eliminated all misses.
+> > 
+> >  - A simple Rule of thumb might be to set the dl-server period to at
+> >    most 2x the shortest task period in the cgroup (e.g., 2ms dl-server
+> >    for 1ms tasks, 10ms for 10ms tasks). Would you (and Luca?) agree or
+> >    would you suggest something different?
+> 
+> With one single RT task in the cgroup (or with multiple synchronized RT
+> tasks having the same period), I agree... Technically, the cgroup period
+> P should be such that P - Q = T - WCET (where "Q" is the cgroup's
+> runtime and "T" is the period of the task), but to see missed deadlines
+> you need a relevant competing deadline (or HCBS) workload.
+> 
+> So, yes, I agree with your findings above.
 
-+ * For v2, the parent's effective_cpus is inherited if cpumask is empty.
+Great, thanks a lot for taking a look!
 
-Thanks
- Manuel
+> If we consider multi-core analysis, or multiple RT threads with
+> different, non synchronized, periods, then analysis tool by Yuri
+> (leveraging CSF analysis from real-time literature) is needed... But
+> that is pretty pessimistic. The rule you suggest above is a better
+> starting point in practical situations.
+
+Indeed. I actually wonder if it would make sense to "extract" that tool
+from the test suite and package it somehow so that it's easier for end
+users to design their interfaces.
+
+Best,
+Juri
+
 
