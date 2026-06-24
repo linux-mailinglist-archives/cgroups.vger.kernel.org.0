@@ -1,181 +1,217 @@
-Return-Path: <cgroups+bounces-17223-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17224-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id XzxMOhyCO2r1YwgAu9opvQ
-	(envelope-from <cgroups+bounces-17223-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 09:07:08 +0200
+	id y9CtCweFO2qbZAgAu9opvQ
+	(envelope-from <cgroups+bounces-17224-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 09:19:35 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40C256BC036
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 09:07:08 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 209886BC195
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 09:19:34 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=fygo-io.20200929.dkim.larksuite.com header.s=s1 header.b=ko+peYdW;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17223-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17223-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=fygo.io (policy=quarantine);
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=santannapisa.it header.s=selector1 header.b=cXF82ap0;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17224-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17224-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=santannapisa.it;
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1A2A3303B6D6
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 06:58:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3C443300531F
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 07:19:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976DF38BF70;
-	Wed, 24 Jun 2026 06:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560DB3911D3;
+	Wed, 24 Jun 2026 07:19:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from va-2-49.ptr.blmpb.com (va-2-49.ptr.blmpb.com [209.127.231.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from OSPPR02CU001.outbound.protection.outlook.com (mail-norwayeastazon11023126.outbound.protection.outlook.com [40.107.159.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB84B38A726
-	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 06:58:16 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782284298; cv=none; b=RK2XQ938IM4W9deEEZXrAB6d78il9oO1sdJt1DiCwpCGWPaJcYIDstw0iEFw71+lS6FauNuJk4lcXhHMajbWhqbEIXmKtGUalrOyU6MwsrZW9eng/JQ6Yg758mjNutA0YRIVfJ8QDN/1GnD+2bIerlTTDBBTXQhQy2vzsvO9IsQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782284298; c=relaxed/simple;
-	bh=rJseISap9xBx1TIEdDPlKtfLclHaCWHTrvJEL4F1BII=;
-	h=To:Cc:References:Subject:In-Reply-To:Date:Message-Id:Mime-Version:
-	 From:Content-Type; b=ehOz8i8DfNX+k0t4AiTkJdGt1ELqgm63PLW/eWZVSmnceR8aEIk7Ug+TNfaVipla2N4yQcpHm1jBwu/U/G408UfAgoirbwd6gxKLloONdhuO6whY5OlyIn+t9k/isy35BcujrRByCUfqa53htv8YbvewmcN2AO5XnIPmJmfwkVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fygo.io; spf=pass smtp.mailfrom=fygo.io; dkim=pass (2048-bit key) header.d=fygo-io.20200929.dkim.larksuite.com header.i=@fygo-io.20200929.dkim.larksuite.com header.b=ko+peYdW; arc=none smtp.client-ip=209.127.231.49
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=fygo-io.20200929.dkim.larksuite.com; t=1782284286;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=FMKsX1oqr9cJS0GXtzM8Ok+fkwH2kagCOdyTihBZHlM=;
- b=ko+peYdWhkBC6Z2+M+DAnl+DHsw7wlKUYcGNSanD0QdqHL8kOGNHfy5JdHfFOLwBitSHLK
- EK6pLRNFI2Ud7COX476laUs/Yn9twDwM6BzwU5ay+45/RPsZvLd2zVcfwbj3e8/Oh8o6Qh
- 51b1/iIv5qImhJBjy9SAtaeR3IiSjddbeFzYvyuiv9VOVVgPqb8e0c6pncmMnr8S7IziS1
- bRaHq/Eeyn+vdDxSEw1TIBPEMAo4KrGVeqjBoeJepRYhI8QA0h9N/pIA84fxdaAnw/4KBM
- RdiUXkYUQnjnDCgCUCNCg2y4JhTuJcX8KFuo5Ck1jX6/L9Z0UVAbsh/6OJ/rQw==
-To: "Yu Kuai" <yukuai@kernel.org>, <nilay@linux.ibm.com>, 
-	<tom.leiming@gmail.com>, <bvanassche@acm.org>, <tj@kernel.org>, 
-	<josef@toxicpanda.com>, <axboe@kernel.dk>
-Cc: <akpm@linux-foundation.org>, <chrisl@kernel.org>, <kasong@tencent.com>, 
-	<shikemeng@huaweicloud.com>, <nphamcs@gmail.com>, <bhe@redhat.com>, 
-	<baohua@kernel.org>, <youngjun.park@lge.com>, <cgroups@vger.kernel.org>, 
-	<linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
-	<linux-mm@kvack.org>, <yukuai@fygo.io>
-References: <cover.1780621988.git.yukuai@fygo.io>
-Content-Transfer-Encoding: quoted-printable
-Reply-To: yukuai@fygo.io
-Subject: Re: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg paths
-X-Lms-Return-Path: <lba+26a3b7ffd+6e4f90+vger.kernel.org+yukuai@fygo.io>
-In-Reply-To: <cover.1780621988.git.yukuai@fygo.io>
-Date: Wed, 24 Jun 2026 14:57:59 +0800
-Message-Id: <1c739fcc-5132-4cb2-bf34-cec94de26509@fygo.io>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738A03911CD;
+	Wed, 24 Jun 2026 07:19:22 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782285567; cv=fail; b=JxOIqAd/EhXOmyao3NPBs/0Kjq6g0+w69hf0EBDPMnG8VyXW1EUrl/SHqUzvBSo6CraO2uGOr+LPgq/ApsyyZUbrSS6u8e2XFgx+h0wlgDupVGvDEbVbQYTonXxfcW4loSOKxShUtdLsaszpNUsKVTNyEmrk573slRVMIw2R8lc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782285567; c=relaxed/simple;
+	bh=mVRVS1DBWnejjEayP5lA4j2UP72wJgzoJeH8XTOBOlU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KurWk+aiFJGBKIeQX9LADPc8MgJO+spzsB5JuGHcj0oEfAoMvQjmItv0jXR9octrEsb7zW/8kENwaU+JC8cZh0iDIhxhVgUur4Ln6I06jvz5jfdPaLy165bF5YpZjFOyPtDN7+IaT7iD7mJ7xMHMsj1W645xsxRjIRU4br0RuVk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=cXF82ap0; arc=fail smtp.client-ip=40.107.159.126
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=UAOMzRg4pXW9AZ2zM6yYxeE4dGStmY7qMcyeyfHkYFk9rhHP7AKQjOEpFeWi86LabOKf7JR6zukKlwjRiyf/VZZatQ6jJWvSj3T3h5EVPKLck96ALyj7HwbEczJeDvz1hX7SziF95dk7nZGIB3a1ebKs0DDkclgp4NJoK7UwmT2L19EfmAgggUAD6AKqoWZTclsWfFsyeBnu2IXRW/st9wYPykLsnRfcT9n52gRaG5Y30X2Y3Ws6cTXlkmR8LCgrXH/DBXclbUQO+6WWnPAJZiuSjJGAvJITdFkj7xeSjBGVHKElG7wq/ONWU3voHQ9DOeZVVq4Zo87b1Ah+ld0ELw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VMxM+3z3aoULnrq6FB46LN7J7+GA4qXQJCM7VGiQgD0=;
+ b=j/LJtndpqLVg63cb9jMU+8dcL+2HilIeB81H4FVsG9hXCdDr5JZ7l4I6G7nCxx6eOGEp8B87Lq/IzafdnQ3KqEZ7sZAh/yNL39Lkq2JAlVuD1NRO2ScKFRYxEsEDLMVeZoeD7Ea9h35TRXpL0MpK5yyspPpp6L4tioMLR1Bc6VXOHoBAz/vUs3qgJv1DnVR+5WVL20cqR/TgxOCMYd6bO/fjPb6P1Qzn8MGLRoMc2PVSXPTZODkpJhPUa20Z8urX7XmKikXPtjzZGDjrww/TO1oixmXAaj7aOJ02iIfPGU9/Jy8kFheqglrkDGMKYPNJr1kjwtVlMF3MbvuQdd+04w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=santannapisa.it; dmarc=pass action=none
+ header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VMxM+3z3aoULnrq6FB46LN7J7+GA4qXQJCM7VGiQgD0=;
+ b=cXF82ap0eOZrHuUIqslHpvhWynoOyq3rM2kkBJyY+EJHjaUbBsDlTSgqnd6rgXnMdiv9V3/VthXFK4GUF3eOrLC/dhKBQZFIpdvaYcJ8u6893esPUik+ilylsck5DnesSXuF6VKLDZKV3hgzrbmkRNV00lGtFfxY+AV6bpPrQSU=
+Received: from PAVPR03MB8969.eurprd03.prod.outlook.com (2603:10a6:102:32e::7)
+ by PA6PR03MB10493.eurprd03.prod.outlook.com (2603:10a6:102:3c6::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.159.13; Wed, 24 Jun
+ 2026 07:19:16 +0000
+Received: from PAVPR03MB8969.eurprd03.prod.outlook.com
+ ([fe80::26c1:111c:f60d:f9b9]) by PAVPR03MB8969.eurprd03.prod.outlook.com
+ ([fe80::26c1:111c:f60d:f9b9%6]) with mapi id 15.21.0139.018; Wed, 24 Jun 2026
+ 07:19:16 +0000
+Date: Wed, 24 Jun 2026 09:19:12 +0200
+From: luca abeni <luca.abeni@santannapisa.it>
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: Yuri Andriaccio <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
+ Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, Tejun
+ Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal
+ =?UTF-8?B?S291dG7DvQ==?= <mkoutny@suse.com>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Yuri Andriaccio
+ <yuri.andriaccio@santannapisa.it>
+Subject: Re: [RFC PATCH v6 00/25] Hierarchical Constant Bandwidth Server
+Message-ID: <20260624091912.4fca8428@nowhere>
+In-Reply-To: <ajpcrDn2g2G9mGKp@jlelli-thinkpadt14gen4.remote.csb>
+References: <20260608121546.69910-1-yurand2000@gmail.com>
+	<ajpcrDn2g2G9mGKp@jlelli-thinkpadt14gen4.remote.csb>
+Organization: Scuola Superiore Sant'Anna
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.52; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: ZR2P278CA0022.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:46::7) To PAVPR03MB8969.eurprd03.prod.outlook.com
+ (2603:10a6:102:32e::7)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Original-From: yu kuai <yukuai@fygo.io>
-From: "yu kuai" <yukuai@fygo.io>
-Received: from [192.168.1.104] ([39.182.0.148]) by smtp.larksuite.com with ESMTPS; Wed, 24 Jun 2026 06:58:04 +0000
-User-Agent: Mozilla Thunderbird
-Content-Type: text/plain; charset=UTF-8
-X-Rspamd-Action: add header
-X-Spamd-Result: default: False [10.84 / 15.00];
-	URIBL_BLACK(7.50)[fygo.io:replyto,fygo.io:email,fygo.io:mid,fygo.io:from_mime];
-	SUSPICIOUS_RECIPS(1.50)[];
-	DMARC_POLICY_QUARANTINE(1.50)[fygo.io : SPF not aligned (relaxed), DKIM not aligned (relaxed),quarantine];
-	MV_CASE(0.50)[];
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAVPR03MB8969:EE_|PA6PR03MB10493:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f536dd9-3bdd-456f-0896-08ded1c0e6a2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|786006|376014|366016|7416014|23010399003|10070799003|18002099003|22082099003|56012099006|11063799006|4143699003;
+X-Microsoft-Antispam-Message-Info:
+	OhJqkXAiGx8LyVBD+p+f0U8Tp0TnfiLSKXdBgn6l4wrK9FkIpa/vegwUGAwAvBFS/QeeE1oL0u4dDOehLDtdUEWbDbg1MroSZB/AR0jAat6i6rkVV8oJI9bgmAa27E2dV+L4SreJXlOje7OE8D2ICu684K+QmyKJ5eyEfwkGBu9xTNyz8EzCKbL850DsTnEJmUpzOQ4Q2j4mAMuBgskNkXcZQcZr4krOJVhXI8aX76hbti0RLwSqlji+o5VjxdHlanZWIUeKCclrElFEhOUOwsxc1Q9NqTTw92nlJjjTVwkGllNEaFR27y9HhhuHFdSnK2W/5sAmk+evC7QnAfo3aJbLx6HrceyYG4ZzEaJ4CKXZCHoxHOk7C19/aNITwQtt4X3DOJwCJcrPC529BG7WaU1qPoNKc+DcqfnABdYbNDy57vdQA+/aRB1ZJCh0/9yWqfpdHjKtt2oo18m6SLlyOvdRKs0+HaftaMrWXdWZ3HDn5aontuU/w8FPckikzZHK0NdKCDy01CqzEZgr18wzaSniqgy1o84FIpYhyfyyGjYpt2jPt/eLz7RBPdWloAdklsjbo1LbAqOYNaQSgNrTgvH7QirvZ5oEC6j/Wv0PrlstwBn+WoJqWhPoATvdvSeWTa5YktTcbW8I2JAmitiIXBvb4LmF/6lFbJGSFVAtzuc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAVPR03MB8969.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(786006)(376014)(366016)(7416014)(23010399003)(10070799003)(18002099003)(22082099003)(56012099006)(11063799006)(4143699003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VrqW/NbsEpq/Zh9cLQ/KdcwcY59S5pjVWJuyIuVEeb7EgdPoKrdr4iW2S6kV?=
+ =?us-ascii?Q?UfO99pxfOUt0Y6CmniMnt152zAbCwEPXkbWBMGBw3OkyMUcgh+GhlLaneOkl?=
+ =?us-ascii?Q?8oTG/6qx61D1wmflD/pzgJDZru/5ijHd43zsRIjx2kJ7vbwUDtu4W0zy7lps?=
+ =?us-ascii?Q?e38h31qgT/L75RxEd1jiC7JSgRXzqvKh5K4idhPHfpveQpYxzO5hY5OzjktK?=
+ =?us-ascii?Q?9c+tPMjFBTnZclmS3MpTGBIi7Dn1zl8y8o4jjHqOVb6dkIOycHs9veY/Mg49?=
+ =?us-ascii?Q?ngkQHuWX4CJ6qK34dNOgin8OlhM2WFwi7tUhzwc+hCqNuzEQev4Eb1cMtVpR?=
+ =?us-ascii?Q?tKfM2GQv2SKUE4apm6BBsXKBOI7xt8N7+5BnV6UWAGRHMrJ6tGimnuuD0WMX?=
+ =?us-ascii?Q?AnSfI2X7lEbe8N6dWfTMalswlGE2b41Ewsi6kxeOE8Y2P37D2MXSpVzPReg3?=
+ =?us-ascii?Q?O+ZzPCZoQ4/TmNsGrvl0Wmj1Pdmap6qAn1SH+ppL4lB9oJpueq6o0xl6wjQd?=
+ =?us-ascii?Q?0T66cUcxta73oVGAj6yTX43E2OEVSjnATQQ2J/QKdhW6GBoytzeZ12ndU/9X?=
+ =?us-ascii?Q?PqdnhHindg7jW25g+HA0tFAgYoHvmoAE528k4UDJToElNp0Bdm9e7F9iXni4?=
+ =?us-ascii?Q?Fv5RzDLA7CwmzemKQHutKnpOqoTsv8HvedsL0az5Tw8JyffRJXXlR/3lvdeT?=
+ =?us-ascii?Q?NFkthXrlZXnzaBtoDjyURGCM+iTrDePVcc8RBd3zNzgxksxWSNuldgjUl50p?=
+ =?us-ascii?Q?Y5rrWavmfRB5QMuOkPJrqRY4Dvn/10Ng03tL/zJrpkRGZgMmOITmkfFbTR0S?=
+ =?us-ascii?Q?yqCQ7WUfOKk4XULHb9jJCKqN7P2iYDYFWPNL1CCYJbu1bwMLAKmhHMH5Klj3?=
+ =?us-ascii?Q?vB6fbtYmiePRjBCTPL9bTxR2WfQt2KsMv0enZIKBp+4IES3YvsywxF05G9eA?=
+ =?us-ascii?Q?qLEh8seJb19WeovSr09b97FKEf/A/ojv+3inOujaX50T3q2/ORkPs+XJMy4A?=
+ =?us-ascii?Q?ZdOCPecgyR7i+7cDoBlC+HB3mpjrEr3pnAOJol6ItwVj2oLwjusspyxQ3WxG?=
+ =?us-ascii?Q?4C/Cpm9ymBO5XQfNXIjUCLfOITTMenPLeGCkk1R0sndfdXB94zR1c2Euwuxu?=
+ =?us-ascii?Q?nzOBQWWBHNguTjA7PxP6PpGn7u07EXAbh5PJSn+gjUFfDtpR8pTH7LtpWK3h?=
+ =?us-ascii?Q?v43XNd/baC3CRoU1yLqlG+NWF0QI2UTS2UKIS6EPOkZqCEm46Zq2Ylj4sj6M?=
+ =?us-ascii?Q?3/FsKNAk8kh2k/KoyNcL14gnRZsyxtWVGWxC3/qLhlh7K0+A1zg73XbUD35V?=
+ =?us-ascii?Q?gRBgtLzDMn0QhTY7IukS/ZX19bPZPLoB3CI4hLdnM+Kzoqv4dzZYDOsPNL9V?=
+ =?us-ascii?Q?AGsGCaps0ie/8xLjKPymkg+QyJQprKwaWkkLqP6bG2igr24P3ActLNbmFiKu?=
+ =?us-ascii?Q?557bX/CDtTxUDuPcxoevX1AvMEnbdYNxIWcV4G7gzQqulXl5sM9nj9b6/d+d?=
+ =?us-ascii?Q?ztrPS33oopuy5bYRy98XBI3tfSlbQD9buJB8fdkN65PqDMhVLnZc4YSPU5AL?=
+ =?us-ascii?Q?BJEJNfbAUDdtOa4/Kl4bYKywmIj8JYA7ufdI6/5Y4M7nVv0OE/pq8O+1PoQb?=
+ =?us-ascii?Q?mvDTyu/fHxzDG26rvHwrSCWK7gRechdoHiEuxDg97ojoMthVNOdIzs39PbPr?=
+ =?us-ascii?Q?J3O/4+6b9Ye0elGcmI3ZUdV4dkVNIWX77flDgMuPsFiJzFmyD+QlG4Uj5mEN?=
+ =?us-ascii?Q?J6M5bS4GuXJ5QuReIbVBkbmIFQ2D8vh9siY/EoC/vg/aLYtmA9KFGnehJ0q5?=
+X-MS-Exchange-AntiSpam-MessageData-1: uYYJanmk9VOhmE6yGp1SNAwoBcZOnIDeTjM=
+X-OriginatorOrg: santannapisa.it
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f536dd9-3bdd-456f-0896-08ded1c0e6a2
+X-MS-Exchange-CrossTenant-AuthSource: PAVPR03MB8969.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2026 07:19:16.8215
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XB5nYKI4tjC/OxiuxAnbY9qMNi6b/cSK5U9Yxj2xH493S4iGgV4GTIWIcTCP68I+rW2cN74WK2PA+F+0iOZ0s9AcRJ/eThRPbNzyezlv+gQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA6PR03MB10493
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [0.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[santannapisa.it,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[santannapisa.it:s=selector1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:yukuai@kernel.org,m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:axboe@kernel.dk,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:yukuai@fygo.io,m:tomleiming@gmail.com,s:lists@lfdr.de];
-	R_DKIM_ALLOW(0.00)[fygo-io.20200929.dkim.larksuite.com:s=s1];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[kernel.org,linux.ibm.com,gmail.com,acm.org,toxicpanda.com,kernel.dk];
-	FORGED_SENDER(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17223-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	TO_DN_SOME(0.00)[];
-	GREYLIST(0.00)[pass,body];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17224-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:juri.lelli@redhat.com,m:yurand2000@gmail.com,m:mingo@redhat.com,m:peterz@infradead.org,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:yuri.andriaccio@santannapisa.it,s:lists@lfdr.de];
+	HAS_ORG_HEADER(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FORGED_SENDER(0.00)[luca.abeni@santannapisa.it,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[fygo-io.20200929.dkim.larksuite.com:+];
-	HAS_REPLYTO(0.00)[yukuai@fygo.io];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,vger.kernel.org,kvack.org,fygo.io];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	R_SPF_ALLOW(0.00)[+ip4:172.234.253.10:c];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FREEMAIL_CC(0.00)[gmail.com,redhat.com,infradead.org,linaro.org,arm.com,goodmis.org,google.com,suse.de,kernel.org,cmpxchg.org,suse.com,vger.kernel.org,santannapisa.it];
+	DKIM_TRACE(0.00)[santannapisa.it:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,fygo.io:replyto,fygo.io:email,fygo.io:mid,fygo.io:from_mime,fygo-io.20200929.dkim.larksuite.com:dkim]
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[luca.abeni@santannapisa.it,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 40C256BC036
-X-Spam: Yes
+X-Rspamd-Queue-Id: 209886BC195
 
-Friendly ping ...
+Hi Juri,
 
-This set can still be applied cleanly for block-7.2 branch.
+very interesting demo, thanks!
 
-=E5=9C=A8 2026/6/8 11:42, Yu Kuai =E5=86=99=E9=81=93:
-> From: Yu Kuai <yukuai@fygo.io>
->
-> Hi,
->
-> This series is the follow-up blk-cgroup locking cleanup on top of the
-> earlier blkg-list protection fixes, and prepares blk-cgroup to stop using
-> q->queue_lock as the global blkg lifetime/iteration lock.
->
-> The current queue_lock based protection is hard to maintain because
-> queue_lock is used from hardirq and softirq completion paths, while some
-> blkcg cgroup file paths also need to iterate blkgs, print policy data, or
-> create blkgs from RCU-protected contexts.  This series first tightens the
-> blkcg-side lifetime rules:
->
-> - blkcg_print_stat() iterates blkgs under blkcg->lock with IRQs disabled.
-> - policy data freeing is delayed past an RCU grace period.
-> - blkcg_print_blkgs(), blkg lookup/create, bio association, page-IO
->    association, blkg destruction, and BFQ initialization stop nesting
->    queue_lock under RCU or blkcg->lock.
->
-> Using blkcg->lock and RCU for blkcg-owned lists/data keeps the lock order
-> local to blk-cgroup and avoids extending queue_lock into cgroup file
-> iteration paths.  It also makes the subsequent conversion to q->blkcg_mut=
-ex
-> possible without carrying forward queue_lock's interrupt-context
-> constraints.
->
-> Yu Kuai (8):
->    blk-cgroup: protect iterating blkgs with blkcg->lock in
->      blkcg_print_stat()
->    blk-cgroup: delay freeing policy data after rcu grace period
->    blk-cgroup: don't nest queue_lock under rcu in blkcg_print_blkgs()
->    blk-cgroup: don't nest queue_lock under rcu in blkg_lookup_create()
->    blk-cgroup: don't nest queue_lock under rcu in bio_associate_blkg()
->    blk-cgroup: don't nest queue_lock under blkcg->lock in
->      blkcg_destroy_blkgs()
->    mm/page_io: don't nest queue_lock under rcu in
->      bio_associate_blkg_from_page()
->    block, bfq: don't grab queue_lock to initialize bfq
->
->   block/bfq-cgroup.c        |  17 ++++-
->   block/bfq-iosched.c       |   5 --
->   block/blk-cgroup-rwstat.c |  15 ++--
->   block/blk-cgroup.c        | 151 ++++++++++++++++++++++----------------
->   block/blk-cgroup.h        |   8 +-
->   block/blk-iocost.c        |  22 ++++--
->   block/blk-iolatency.c     |  10 ++-
->   block/blk-throttle.c      |  13 +++-
->   mm/page_io.c              |   7 +-
->   9 files changed, 158 insertions(+), 90 deletions(-)
->
->
-> base-commit: b23df513de562739af61fa61ba80ef5e8059a636
+On Tue, 23 Jun 2026 12:15:08 +0200
+Juri Lelli <juri.lelli@redhat.com> wrote:
+[...]
+>  - At 1ms task periods, the dl-server period is the critical tuning
+>    parameter, less the bandwidth. A 10ms dl-server with 60% bandwidth
+>    caused ~10% miss rates because the worst-case throttle gap (4ms)
+>    spanned multiple 1ms deadlines. Switching to a 2ms dl-server period
+>    at just 30% bandwidth eliminated all misses.
+> 
+>  - A simple Rule of thumb might be to set the dl-server period to at
+>    most 2x the shortest task period in the cgroup (e.g., 2ms dl-server
+>    for 1ms tasks, 10ms for 10ms tasks). Would you (and Luca?) agree or
+>    would you suggest something different?
 
---=20
-Thanks,
-Kuai
+With one single RT task in the cgroup (or with multiple synchronized RT
+tasks having the same period), I agree... Technically, the cgroup period
+P should be such that P - Q = T - WCET (where "Q" is the cgroup's
+runtime and "T" is the period of the task), but to see missed deadlines
+you need a relevant competing deadline (or HCBS) workload.
+
+So, yes, I agree with your findings above.
+
+If we consider multi-core analysis, or multiple RT threads with
+different, non synchronized, periods, then analysis tool by Yuri
+(leveraging CSF analysis from real-time literature) is needed... But
+that is pretty pessimistic. The rule you suggest above is a better
+starting point in practical situations.
+
+
+
+				Luca
 
