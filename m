@@ -1,164 +1,201 @@
-Return-Path: <cgroups+bounces-17249-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17250-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ilPaGhkGPGoaiwgAu9opvQ
-	(envelope-from <cgroups+bounces-17249-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 18:30:17 +0200
+	id 2xU1KeIKPGp6jAgAu9opvQ
+	(envelope-from <cgroups+bounces-17250-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 18:50:42 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EF26BFF9D
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 18:30:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08ADB6C0191
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 18:50:42 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b="crhrza/W";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17249-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17249-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=c4KpaYcG;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17250-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17250-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 74383300AC81
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 16:30:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7DED930FA71C
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jun 2026 16:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B749B30C156;
-	Wed, 24 Jun 2026 16:30:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07CFC333429;
+	Wed, 24 Jun 2026 16:44:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BD2233923
-	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 16:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D52E334C39
+	for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 16:44:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782318612; cv=none; b=j3xbP29HCWk2vfl/CvZe2Vj0Ad3p2Os9tCkQ0IWw51srbxFVeZGYaDQzZVm9vOkMtbrlI1+FXTMwMZO5RUWnXG7HW2tsv2cjKVMdBQiiFlDgf7HFkrRLQc/GIxJp+Fn/05Lg4xBJUtn8hgIMvfAOx6iSHwKlysDExWF5WLrFiDc=
+	t=1782319466; cv=none; b=QB3PzRdUOCvBKdRYqV8RWg1VMw/ehMPqcGzdj8Ym/HPvX20eVGXWDGgSRQZcVdHOmNc5+pF8AYmF3quaBYncXls0wnY8F4flttY0Alfmoc1rVA6BZorRG4vpSyIbYA3lU4tL+QEK9MgppJclwdko07mJ5HgmVpoki6IzzYoSiLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782318612; c=relaxed/simple;
-	bh=f4Q5tTzUw3dIHq5IKDitX92kWGt0Qu9vdWkJH7Q35Jk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=J/k7X69W1Ie+KPPLF2j+adZOOsh3YM+F5OSLWTbDQRgr4W7I36q+YJVhh8CdWrBz0qVGE0Zq4g76aD0jV9iIfAUjGpaCNbBFVbsEu6IJlgI/DgHm6muamUaJ17H2P8uWnTz5iqz2MQPUgZQvrW4HhNwMu//yLEvzfvaZfPgpv28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=crhrza/W; arc=none smtp.client-ip=209.85.160.44
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-43d3a0dabb0so907067fac.1
-        for <cgroups@vger.kernel.org>; Wed, 24 Jun 2026 09:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782318610; x=1782923410; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f4Q5tTzUw3dIHq5IKDitX92kWGt0Qu9vdWkJH7Q35Jk=;
-        b=crhrza/WLbngnIdRw1HQJ79XUYHZFtLWbF0EM6sZ/LoOZmBi6ofUu9+JNlpZ/zmgc+
-         7xXmTqgsKxkzc96de9zXLHYR+aiFYHVxbjsryE/PjvrUZXHVYsCu/wIPXoqu/PiSKYIt
-         SidqLIkqaVLKz9rvu6VPB87BMQ+/TYGjg/kH6M/QJsY+WkJIJDNq61KtC795r4xgbIAr
-         1otyGQ14zLVmWV3GtNwvSwsNde8J8c6fULMHYAR1QGFd6z47Rkl38GeUPDMcUWceg4Y9
-         abg+mck+Dks+FhHACpBA9b4QDXyXOj3gKLOwGw7xdRvEDKRd9Zm/Oa9cjKTp3o+CLMxe
-         N/2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782318610; x=1782923410;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f4Q5tTzUw3dIHq5IKDitX92kWGt0Qu9vdWkJH7Q35Jk=;
-        b=Mqsea5OUku42QxgcKwZiP6PC7VLqTBddKLvia8yxELGoB8PKCyHO5kjy3YA4lQRXOJ
-         W8lwDdbe5QFif459YjflXSmx8zDNHpo3UlmUmN61iHxXWxg9t6H2KWpjV2bjLNqBSHlP
-         /QIcHLdoCmiqqpXvXE4hYAEiiOt976f7AD8CO4OjdY8Q7uifK5CW6WJip2qCs+naDmn5
-         AjvoYBltxC1PMhGiGY+2AIW14MGcsqLuiOjECI1BwuW2RIZGQTc83lEpbDMDt9rVWHZP
-         hU2tKqznkJp+Z9w0zvWFVdgm7CDOkHzszyaR6Ox0h2JTx8bT35zXKaXTgS/kAUA+AfD9
-         nheA==
-X-Gm-Message-State: AOJu0YxvcA9jCCCo24IuLcxbur6omg+zjCvzoOg0Ti3Q8v488azIJgfk
-	FOpdZcNj9mP44ljth9m044+tZx311+z3OUgm8cqTJEb3V8a6/dRqcrpZ
-X-Gm-Gg: AfdE7cm5JzSKwEAfoHP+fwSTGW8DQM4Oh36sM9Ub4O/zbh6STGg1NDewI35+i9RWYWW
-	eKIx5WcuYk6n30ypgM69In+1o3fq9cGkW4tG7eJ9Gh1/uTYe4bbC+3obsk942jemtIJa7cS9Ztw
-	C4oilB60yYvjuT0Btjlb0yaQnC2hPmOhkwFjbO0gDhbhlzqZN3EI0ZOvPcmVS2s6A/VL70bf3dq
-	LxfyXD3sDNJhHRJnhBezqmMg5V72F+/2eOQM4W/3V5pKlEceFMRWLWK3lPX53ya3kMDIzEE0lol
-	H42M9NctK5XlBGL7D/Y0a9hwJqG+6FH9y/qqcbcewhRhurZPCtMiQZmuNwwXIiLM61WUT4Xuo+V
-	0Eu/t4AFK0QXGGvrRUXlJ8pRXLNTTnkfkzhZD2O/OJpVIVknPg5bXoWFYg0QhvdlSqRszpTYIzd
-	m5YFVdqSJEcIh78YxE5Otr2LcGYSk3ZA8uFaIVqSL6aoSE2r6cMop8aevaYZHibjq/2ZgjH45FJ
-	XmL7TE=
-X-Received: by 2002:a05:6820:906:b0:696:1e45:9011 with SMTP id 006d021491bc7-6a1231f9adbmr2366325eaf.28.1782318610157;
-        Wed, 24 Jun 2026 09:30:10 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:70::])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6a0e9faf29asm9654118eaf.8.2026.06.24.09.30.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2026 09:30:08 -0700 (PDT)
+	s=arc-20240116; t=1782319466; c=relaxed/simple;
+	bh=OEYGblbT9PjP9KwnT8iS6u6ZU659hdzc5BhhFdZylRQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CTqMdt4iCHMRBOZIMO2kCowbpBfZUWstxTGSazn/IOYJ0PqnvFU7U6Y+Ka0a56DiPTIiqH0a/OJZ6x9GV9UgPonTvMifCDqD/LCIK0Xl4uckSNQOjF65zdvDYyl3xktXAf03IVa3IUBRanCS35Evn+/yFE8jbRkaVsl3RH2UkgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c4KpaYcG; arc=none smtp.client-ip=95.215.58.173
+Message-ID: <120367a5-0a3c-40ba-a821-f46f8494ef85@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782319462;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nf45tH+DZxDmO3Xa8ocD4s3OrE54bf3xPt2q+j677fQ=;
+	b=c4KpaYcGLpCl50YxEoCnwFd4Lo6D9bMArzTKSQ6bqq7KH+Es0YpHgnF8/5t9/egp5Qikeq
+	UP7tnUOU72oz76r6+m98C/WFMvQd7o0fM4iDOyBu+UOp4P5jHBbzTYhEZcqCeFT3ZBFQsE
+	z2SzxS1mc4zxpdgiDD8ceOUNzqKqKVA=
+Date: Wed, 24 Jun 2026 17:43:56 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Subject: Re: [PATCH v4 4/5] mm/memcontrol: convert memcg to use
+ page_counter_stock
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R . Howlett" <liam.howlett@oracle.com>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, cgroups@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+References: <20260624152331.2228828-1-joshua.hahnjy@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Usama Arif <usama.arif@linux.dev>
+In-Reply-To: <20260624152331.2228828-1-joshua.hahnjy@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 24 Jun 2026 09:30:05 -0700
-Message-Id: <DJHF7S039QNX.KNVMFISSMLMU@gmail.com>
-Subject: Re: [PATCH RFC 0/4] memcg,slab: kmalloc_nolock() fixes
-From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-To: "Harry Yoo (Oracle)" <harry@kernel.org>, "Johannes Weiner"
- <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Roman Gushchin"
- <roman.gushchin@linux.dev>, "Shakeel Butt" <shakeel.butt@linux.dev>,
- "Muchun Song" <muchun.song@linux.dev>, "Andrew Morton"
- <akpm@linux-foundation.org>, "Vlastimil Babka" <vbabka@kernel.org>, "Hao
- Li" <hao.li@linux.dev>, "Christoph Lameter" <cl@gentwo.org>, "David
- Rientjes" <rientjes@google.com>, "Alexei Starovoitov" <ast@kernel.org>,
- "Pedro Falcato" <pfalcato@suse.de>
-Cc: <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
- <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-X-Mailer: aerc
-References: <20260624-kmalloc-nolock-fixes-v1-0-fdf4d17351dd@kernel.org>
-In-Reply-To: <20260624-kmalloc-nolock-fixes-v1-0-fdf4d17351dd@kernel.org>
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.65 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:joshua.hahnjy@gmail.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam.howlett@oracle.com,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:kernel-team@meta.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17250-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
 	RCPT_COUNT_TWELVE(0.00)[17];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:vbabka@kernel.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:ast@kernel.org,m:pfalcato@suse.de,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17249-lists,cgroups=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alexeistarovoitov@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 07EF26BFF9D
+X-Rspamd-Queue-Id: 08ADB6C0191
 
-On Wed Jun 24, 2026 at 6:11 AM PDT, Harry Yoo (Oracle) wrote:
->
-> Bug 1 was reported by lockdep, and bugs 2 [2] and 3 [3] were
-> reported by Sashiko.
 
-... and in fixes for sashiko complains sashiko finds more issues.
-I don't think it will ever end. I suggest to fix realistic scenarios
-instead of one out of billion cases that sashiko think is plausible
-but will never be hit in reality. The chance of server crashing
-due to cosmic rays are higher than such bugs. Hence do not fix them.
 
-> To BPF folks: do we need to backport kmalloc_nolock() support
-> for architectures without __CMPXCHG_DOUBLE to v6.18?
+On 24/06/2026 16:23, Joshua Hahn wrote:
+> On Wed, 24 Jun 2026 07:43:47 -0700 Usama Arif <usama.arif@linux.dev> wrote:
+> 
+>> On Tue, 23 Jun 2026 11:01:22 -0700 Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
+> 
+> Hello Usama!!
+> 
+> Thank you for reviewing the patch : -)
+> 
+> [...snip...]
+> 
+>>> @@ -2595,7 +2596,6 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
+>>>  static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>>>  			    unsigned int nr_pages)
+>>>  {
+>>> -	unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
+>>>  	int nr_retries = MAX_RECLAIM_RETRIES;
+>>>  	struct mem_cgroup *mem_over_limit;
+>>>  	struct page_counter *counter;
+>>> @@ -2606,36 +2606,30 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>>>  	bool raised_max_event = false;
+>>>  	unsigned long pflags;
+>>>  	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
+>>> +	unsigned long nr_charged = 0;
+>>>  
+>>>  retry:
+>>> -	if (consume_stock(memcg, nr_pages))
+>>> -		return 0;
+>>> -
+>>> -	if (!allow_spinning)
+>>> -		/* Avoid the refill and flush of the older stock */
+>>> -		batch = nr_pages;
+>>> -
+>>>  	reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
+>>>  	if (do_memsw_account() &&
+>>> -	    !page_counter_try_charge(&memcg->memsw, batch, &counter)) {
+>>> +	    !page_counter_try_charge_stock(&memcg->memsw, nr_pages,
+>>> +					   &counter, NULL)) {
+>>>  		mem_over_limit = mem_cgroup_from_counter(counter, memsw);
+>>>  		reclaim_options &= ~MEMCG_RECLAIM_MAY_SWAP;
+>>>  		goto reclaim;
+>>>  	}
+>>>  
+>>> -	if (page_counter_try_charge(&memcg->memory, batch, &counter))
+>>> -		goto done_restock;
+>>> +	if (page_counter_try_charge_stock(&memcg->memory, nr_pages,
+>>> +					  &counter, &nr_charged)) {
+>>> +		if (!nr_charged)
+>>> +			return 0;
+>>> +		goto handle_high;
+>>> +	}
+>>>  
+>>>  	if (do_memsw_account())
+>>> -		page_counter_uncharge(&memcg->memsw, batch);
+>>> +		page_counter_uncharge(&memcg->memsw, nr_pages);
+>>
+>> This needs a transactional rollback. page_counter_try_charge_stock() can
+>> succeed by consuming memsw stock and charging 0 new pages, but the
+>> memory-failure path unconditionally uncharges nr_pages from memsw.
+>> That turns a failed allocation into a real memsw usage decrement.
+> 
+> Hmmmmmmmmmm....... I'm not sure.
+> 
+> At this point in the code, we are either (1) using cgroup v1 with memsw
+> and charged successfully, or (2) not using cgroup v1 with memsw. So I'm
+> not sure if this really is unconditional, we're just distinguishing
+> between cases (1) and (2) by checking if we're using cgroupv1.
+> 
+> Or is your concern with taking a charge via stock, but uncharging with
+> a hierarchical page_counter walk?
 
-nope.
+This was my concern. But I re-read the page_counter stock invariant,
+and the stock-hit case is not an undercount? Consuming stock transfers
+already-charged credit to the pending allocation; if the later memory charge
+fails, page_counter_uncharge() discards that consumed credit from the
+hierarchy. That should keeps usage equal to real charges plus remaining stock?
 
-> There are still few users in v6.18, but I can't tell whether it is
-> necessary to backport it to v6.18 (hopefully not as urgent as other
-> bugfixes).
-
-imo none of these 'fixes' are necessary. Humans are not hitting them.
+> If so, I think there's a case to be
+> made here with just simply returning the stock. I just wanted to keep
+> it consistent with the original memcontrol code, which only used
+> stock to fulfill charges, not uncharges, since this could make the
+> stock grow without bound.
+> 
+> What do you think? Thanks again for reviewing Usama, I hope you have a
+> great day!!!
+> Joshua
 
 
