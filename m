@@ -1,160 +1,136 @@
-Return-Path: <cgroups+bounces-17270-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id QEFoEBaHPGpXpAgAu9opvQ
-	(envelope-from <cgroups+bounces-17270-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 03:40:38 +0200
+	id 7tltDWuIPGqZpAgAu9opvQ
+	(envelope-from <cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 03:46:19 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 897E76C22B9
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 03:40:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7277C6C2377
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 03:46:18 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=IGvAtgeP;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17270-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17270-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=fygo-io.20200929.dkim.larksuite.com header.s=s1 header.b=fMfJFJyT;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=fygo.io (policy=quarantine);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 289FB3035831
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 01:40:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 727A6307B0BE
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 01:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560FB371CE0;
-	Thu, 25 Jun 2026 01:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCA5374192;
+	Thu, 25 Jun 2026 01:42:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from va-2-47.ptr.blmpb.com (va-2-47.ptr.blmpb.com [209.127.231.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5417936F903
-	for <cgroups@vger.kernel.org>; Thu, 25 Jun 2026 01:40:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDB0374745
+	for <cgroups@vger.kernel.org>; Thu, 25 Jun 2026 01:42:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782351619; cv=none; b=dl69oLH/P+sIe+WClpJOqvzMyKpqppPW0K6LaB4r3OW425k/Q7dv4N25sCQOKMh08Sk2Qpsw7TKjnxbyp0zV2EB6Q7jMRBKZts62NLjbptNzHcsaBL3a19GOuLNOJVN0BvcOxdp9B3b4dGWWcyI1Pd089exWz02MdxKg47P6srg=
+	t=1782351739; cv=none; b=HGo+7Oy+665lYGrDT4nFbUhnw+IssSUQw1R4GWnanzawPSg1zMQ1vmJC1wiRSSC11f70htBwhIdglYq3Bqkmy8BeszB8na2PD2yg4ciYPxzPIQ/9X5cBkProb3pw0ZRgKnvIYzXLJdahql9T9DzalqlwD6CHGsFIttP7ito567s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782351619; c=relaxed/simple;
-	bh=fPhN981ckT3rUIhIn6KiI0pbCWI6O0di8aALFAO9cZk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oc/OmhGj9rfYrSWzZXatPUV0yLhdroG3h8YGIvRZf2cmZ6T1t2K9X7/99VIHvPBidtrKyzTMID3hPTD+Uan/SKhxPTBOaIJRtyevGuGLhkQu1KL9zLi4/fcyO36JtotqL8PLI4tJ2WImijLpTxPFwlBvemairhyPRFZLQpFoRAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IGvAtgeP; arc=none smtp.client-ip=95.215.58.180
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782351615;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=xGIrBsFuNOVmgLTC8zjUtqhGy8UPNF0ZVG8X2zk14ds=;
-	b=IGvAtgePFLzTm91D7bWag3fvj2QlfaEO2Rnn4BA5c1jzVAt/1+hADMXFA+clpWqFVr+Vy2
-	zFip62SLLNmjGLTuTWwcNCsjhbYnn6K/DO4BamsY7Gxabi7/Jm1REoOm4QvM36ds7Uf10o
-	qFnJftJSMqq+9IHBqNdbYE9f1TmJFmo=
-From: Guopeng Zhang <guopeng.zhang@linux.dev>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guopeng Zhang <zhangguopeng@kylinos.cn>
-Subject: [PATCH v2] cgroup: Use data_race() for task->flags in task_css_set_check()
-Date: Thu, 25 Jun 2026 09:39:44 +0800
-Message-Id: <20260625013944.253318-1-guopeng.zhang@linux.dev>
+	s=arc-20240116; t=1782351739; c=relaxed/simple;
+	bh=w4j8f6uFb433Grb8B0eRcI7+Ke5YL/rbbA2Y0K+GuCg=;
+	h=Subject:Date:Message-Id:Cc:In-Reply-To:Content-Type:From:
+	 Mime-Version:References:To; b=agqz4KdOrRFvvNZ/rrxraWn0Bpml8ljAUZKba1CgnlY/Azqa+gVtlOhQxdjclfGzJvaM2r0gv07UwCuCohRCeNCCR/1IKEEjZJpUNSCaTUI476zQENvK75Mmw4EyVwKOXvaxXZRQQ3Ol24bAwEbgioCWygIhJPVLHgNqRx5qyoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fygo.io; spf=pass smtp.mailfrom=fygo.io; dkim=pass (2048-bit key) header.d=fygo-io.20200929.dkim.larksuite.com header.i=@fygo-io.20200929.dkim.larksuite.com header.b=fMfJFJyT; arc=none smtp.client-ip=209.127.231.47
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=s1; d=fygo-io.20200929.dkim.larksuite.com; t=1782351728;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=w4j8f6uFb433Grb8B0eRcI7+Ke5YL/rbbA2Y0K+GuCg=;
+ b=fMfJFJyT58AGjKzbG4LBJYi/Ehgens5KdI2jxzQS81BZNn0UA1zTA3A4qAHXSndya/Sno7
+ 70AT6VxXyZLVQhs0GEVbQLd7J9HOUDuuzz7d/0594l4+jbua6O1Ne7gAT69RuJY+M1XGO0
+ sWGdTmHodHUtx6Iosj8F1dCkXtEeW0yGYetnKwRP0E7YIBI3f8yYrm2UkqwcdQ1b7+DLx7
+ mU4CEYcroDUxWhHYpK1yvvXey3mEhO/2Zw+dzGCabbedrz8H14LzkIaKNhHStNhXAYXVaL
+ pyRxMmB/h3Vr3FAL8gAbNLRMNsvH5FWX/XHWhVW6L1Tz4kBSJ5JpdxnNx+Q8Ew==
+Subject: Re: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg paths
+Date: Thu, 25 Jun 2026 09:42:02 +0800
+Message-Id: <727c7d76-ba00-4905-b64f-e954392b346c@fygo.io>
+Content-Transfer-Encoding: quoted-printable
+Cc: <akpm@linux-foundation.org>, <chrisl@kernel.org>, <kasong@tencent.com>, 
+	<shikemeng@huaweicloud.com>, <nphamcs@gmail.com>, <bhe@redhat.com>, 
+	<baohua@kernel.org>, <youngjun.park@lge.com>, <cgroups@vger.kernel.org>, 
+	<linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
+	<linux-mm@kvack.org>
+User-Agent: Mozilla Thunderbird
+In-Reply-To: <34d48fb5-4952-4a48-b92a-f189bc3edd0b@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+X-Original-From: yu kuai <yukuai@fygo.io>
+From: "yu kuai" <yukuai@fygo.io>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Received: from [192.168.1.104] ([39.182.0.148]) by smtp.larksuite.com with ESMTPS; Thu, 25 Jun 2026 01:42:06 +0000
+X-Lms-Return-Path: <lba+26a3c876f+2849a5+vger.kernel.org+yukuai@fygo.io>
+References: <cover.1780621988.git.yukuai@fygo.io> <1c739fcc-5132-4cb2-bf34-cec94de26509@fygo.io> <34d48fb5-4952-4a48-b92a-f189bc3edd0b@kernel.dk>
+Reply-To: yukuai@fygo.io
+To: "Jens Axboe" <axboe@kernel.dk>, <yukuai@fygo.io>, <nilay@linux.ibm.com>, 
+	<tom.leiming@gmail.com>, <bvanassche@acm.org>, <tj@kernel.org>, 
+	<josef@toxicpanda.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [1.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	DMARC_POLICY_QUARANTINE(1.50)[fygo.io : SPF not aligned (relaxed), DKIM not aligned (relaxed),quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[fygo-io.20200929.dkim.larksuite.com:s=s1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17270-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:zhangguopeng@kylinos.cn,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[guopeng.zhang@linux.dev,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:axboe@kernel.dk,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:tomleiming@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17271-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[kernel.dk,fygo.io,linux.ibm.com,gmail.com,acm.org,kernel.org,toxicpanda.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[guopeng.zhang@linux.dev,cgroups@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[fygo-io.20200929.dkim.larksuite.com:+];
+	PRECEDENCE_BULK(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,vger.kernel.org,kvack.org];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,kylinos.cn:email,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime]
+	HAS_REPLYTO(0.00)[yukuai@fygo.io];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[fygo.io:replyto,fygo.io:mid,fygo.io:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,fygo-io.20200929.dkim.larksuite.com:dkim,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 897E76C22B9
+X-Rspamd-Queue-Id: 7277C6C2377
 
-From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+Hi,
 
-task_css_set_check() uses rcu_dereference_check() to verify that
-task->cgroups can be dereferenced. One accepted condition is that the
-task is already exiting, tested by checking PF_EXITING in task->flags.
+=E5=9C=A8 2026/6/24 20:43, Jens Axboe =E5=86=99=E9=81=93:
+> On 6/24/26 12:57 AM, yu kuai wrote:
+>> Friendly ping ...
+>>
+>> This set can still be applied cleanly for block-7.2 branch.
+> Not sure how you checked that, because patch 3 very much needs some
+> manual attention to get applied. I have applied it now.
 
-This check is only part of the CONFIG_PROVE_RCU lockdep predicate. This
-was found by KCSAN during fuzz testing. KCSAN can report a data race
-when another task flag bit is updated concurrently. One report shows
-pids_release() reading task->flags through task_css_set_check() while
-do_task_dead() sets PF_NOFREEZE:
+Thanks!
 
-  KCSAN: data-race in task_css() [inline]
-  KCSAN: data-race in pids_release()
+This was build on the top of my other set:
+blk-cgroup: fix blkg list and policy data races
 
-  task_css()
-  pids_release()
-  cgroup_release()
-  release_task()
-  wait_task_zombie()
+I'll rebase and resend this set :)
 
-  value changed: 0x0040004c -> 0x0040804c
-
-The changed bit is PF_NOFREEZE, not PF_EXITING. PF_EXITING remains set
-before and after the update, so the task_css_set_check() condition does
-not change. This is not a race on task->cgroups and does not indicate
-incorrect pids charging or uncharging.
-
-tools/memory-model/Documentation/access-marking.txt recommends
-data_race() for data-racy loads used only for diagnostic purposes. Use
-data_race() here to mark the intended diagnostic-only access.
-
-No functional change intended.
-
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
----
-Changes in v2:
-- Use data_race() instead of READ_ONCE() for the diagnostic-only
-  CONFIG_PROVE_RCU predicate, as suggested by Tejun.
-- Update the changelog to match access-marking.txt guidance.
-
- include/linux/cgroup.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index f2aa46a4f871..b905208942bf 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -480,7 +480,7 @@ static inline void cgroup_unlock(void)
- 		rcu_read_lock_sched_held() ||				\
- 		lockdep_is_held(&cgroup_mutex) ||			\
- 		lockdep_is_held(&css_set_lock) ||			\
--		((task)->flags & PF_EXITING) || (__c))
-+		(data_race((task)->flags) & PF_EXITING) || (__c))
- #else
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference((task)->cgroups)
--- 
-2.25.1
+>
+--=20
+Thanks,
+Kuai
 
