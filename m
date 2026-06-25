@@ -1,408 +1,399 @@
-Return-Path: <cgroups+bounces-17286-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17287-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id FjGsKNcKPWo6wQgAu9opvQ
-	(envelope-from <cgroups+bounces-17286-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 13:02:47 +0200
+	id BDUVItIVPWo6wwgAu9opvQ
+	(envelope-from <cgroups+bounces-17287-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 13:49:38 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29ED16C4EF6
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 13:02:47 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C976C543E
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 13:49:37 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=Ft52+1SA;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17286-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17286-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=intel.com header.s=Intel header.b=LmoOGNNI;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17287-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17287-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=intel.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 369A0303B148
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 11:01:01 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F0572301B154
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 11:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1A13AB292;
-	Thu, 25 Jun 2026 11:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8DC34753A;
+	Thu, 25 Jun 2026 11:49:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C9973A960F;
-	Thu, 25 Jun 2026 11:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF16C38422D
+	for <cgroups@vger.kernel.org>; Thu, 25 Jun 2026 11:49:32 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782385257; cv=none; b=gy3zmA9rq19Ifz1kgvRzpAFdluze481e/k+uH2t6uAeVyzKhKoYxJbqT3rQA2MTGr3WaJMfR1wjAD2Nk4nRgX2Oug4Ysz4XQsjaV9Woddub4m2gQUMN8ch/DsC8ssYxuf8jCrWjDbXU1lWp49ZQnm50llimyyY3wTm9OKfwdzeY=
+	t=1782388174; cv=none; b=J/p6/qzwkoC1bNFtxrV5OvrRpALxRgiJCjBC28TvLJv+zGVWwmU2ZmhYs5eyqHOA8KpooARdKa28mOvhLoN+m78vg8GLNmhasmDHCs1RP9kbzixD4VLBbGMoKqtnJuPU/JkXV5M5E671Ll+zt1qdf88GivrOrWV6XIxL7Lpsaeg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782385257; c=relaxed/simple;
-	bh=vUCknLxuUl+l9swTriiC6ceqP2YAiFjd4mW5kfnFb/U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iByqunH8HDRVjjf7KQRNwxjDiznJGJ1BgWHRuG+ivFRxfa1Z3pIKaRw1rslP+YPl94o6mZl1UCL0Y58mUmAWWt3C6c2Xgfc+hFjH/ntElQ71RFSOmjzeoQTZb1dcI+lvcjWfJ6VMjlonBe5kLfkccZigzE+nF7xZ7D2rAWwUARk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ft52+1SA; arc=none smtp.client-ip=198.175.65.15
+	s=arc-20240116; t=1782388174; c=relaxed/simple;
+	bh=2gvEwTfdu2E9y4N7/XQsR5AnZDlm54XtAIU1iV7KIKk=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ZnuZ/2N7xgLGVacTQIg9Ys2icfngW3rR50uDY1ZhkQd1vt45mxBv+cXGa177Du/xd0jPQGExtnkclCqvFckiSdHVokUbiR9NrrJS7KH0S/aq33+1kG/Imfu4eZEYE8VLV7VF4GztT/HmqQfWXO1E3djh6pg+1ntcmlYfrhrbHD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LmoOGNNI; arc=none smtp.client-ip=192.198.163.15
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782385256; x=1813921256;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=vUCknLxuUl+l9swTriiC6ceqP2YAiFjd4mW5kfnFb/U=;
-  b=Ft52+1SATq1u9siZpCOShDXPUvQAEG9ceDn7d9ZMPuM0nNyneHaVsdhA
-   8PEM0RUVdQ2PaDACVwhwaAFzd7noGS03jnog8lD3zVPxeY7okREDQEVxE
-   qP9mAd3ifJyapa+aBDMAlWpOlGaiqn2rJCoVw5DJLjtx+ecHuzin0SWW3
-   4tR/vC28360JA6YUveloUPYzjUc2LWb5VZVZQNDNCOds2CJ6zGcjXzptW
-   JokMDaD019UtCfYUSjYdHqFr5zuA/Ug897IFsMtYRA7yxs2parB9ogQJR
-   izsOSKsHwdKywvHy89LMPAiQ9RRyCClmtT/a3AH4RExovS5Dt/1btygar
+  t=1782388173; x=1813924173;
+  h=date:from:to:cc:subject:message-id;
+  bh=2gvEwTfdu2E9y4N7/XQsR5AnZDlm54XtAIU1iV7KIKk=;
+  b=LmoOGNNIUPWngELN7s9+uP+SGOU4SiE8Tgt7eigigolqWtzkSy437Am/
+   I1lL5Th2QAa0vhGybpaj4Mo+0dRCB9xKTz9zIkCiPSH53fwoBXfwh3cVV
+   3SAD3gxXZsJ9YIJsY5YvfTCYeLYMZT2AR4F/glKr777sb8PsJ4njeHNZb
+   Y2884upyd3QE13BoDvK5/UeV20gqyqA9s65abEt+cb64wuYhtIulZOf2Z
+   7s7qpUv1dThfCt5Pgdj0lEq0Y/E4T6z+yGiTautFU2bQYnQ1KZXtxtFSU
+   Vp1MPpUItzBpiovR1PPeekPIckE4bg9j/1Vntea+DU5XRPQB6bowvXp/V
    w==;
-X-CSE-ConnectionGUID: 2PvImUdiS8WGFHJi5Pa1Xw==
-X-CSE-MsgGUID: dIvq8SOKTQqtsgS9xAYFeA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11827"; a="86838512"
+X-CSE-ConnectionGUID: 4j9vhQVrSXGurwt6qSU6aw==
+X-CSE-MsgGUID: DNEKdh/XQjqmA5Fo+lH5/w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11827"; a="83285053"
 X-IronPort-AV: E=Sophos;i="6.24,224,1774335600"; 
-   d="scan'208";a="86838512"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:00:55 -0700
-X-CSE-ConnectionGUID: vmMDYz3IR0yKtgcbLjpOxw==
-X-CSE-MsgGUID: owF9N6AWRaOmSHlf6kHSKg==
+   d="scan'208";a="83285053"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:49:32 -0700
+X-CSE-ConnectionGUID: xeE8/j/iRHiCS9pueVlIpw==
+X-CSE-MsgGUID: hX0z2kupRC2bYH5f3R4Iqg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.24,224,1774335600"; 
-   d="scan'208";a="254729051"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO localhost) ([10.245.245.126])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2026 04:00:42 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Kaitao Cheng <kaitao.cheng@linux.dev>, David Laight
- <david.laight.linux@gmail.com>, Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>, "David Hildenbrand (Arm)" <david@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand
- <david@kernel.org>, Jens Axboe <axboe@kernel.dk>, Tejun Heo
- <tj@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian
- Brauner <brauner@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim
- <namhyung@kernel.org>, Thomas Gleixner <tglx@kernel.org>, Juri Lelli
- <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
- Paul Moore <paul@paul-moore.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, David Howells
- <dhowells@redhat.com>, Simona Vetter <simona.vetter@ffwll.ch>, Randy
- Dunlap <rdunlap@infradead.org>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Philipp Stanner <phasta@kernel.org>, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- io-uring@vger.kernel.org, audit@vger.kernel.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-perf-users@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- kexec@lists.infradead.org, live-patching@vger.kernel.org,
- linux-modules@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-pm@vger.kernel.org, rcu@vger.kernel.org, sched-ext@lists.linux.dev,
- linux-mm@kvack.org, virtualization@lists.linux.dev, damon@lists.linux.dev,
- llvm@lists.linux.dev, Kaitao Cheng <chengkaitao@kylinos.cn>, Muchun Song
- <muchun.song@linux.dev>
-Subject: Re: [PATCH v3 1/7] list: Add mutable iterator variants
-In-Reply-To: <0ed6b5c3-e955-46e2-9fc6-075a0dfd1c4f@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park,
- 6 krs Bertel Jungin Aukio 5, 02600 Espoo, Finland
-References: <20260622040533.29824-1-kaitao.cheng@linux.dev>
- <20260622040533.29824-2-kaitao.cheng@linux.dev>
- <20260622094242.64531b9a@pumpkin>
- <351a6b67-b394-4c58-aee2-88b6c8089ad5@linux.dev>
- <cf8467c7-b98f-44a5-9cf9-60b43b5da711@amd.com>
- <20260624152324.3def88ce@pumpkin>
- <0ed6b5c3-e955-46e2-9fc6-075a0dfd1c4f@linux.dev>
-Date: Thu, 25 Jun 2026 14:00:39 +0300
-Message-ID: <734f66ca51485ee3ec9788c0eaaead681e00664b@intel.com>
+   d="scan'208";a="280804486"
+Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 25 Jun 2026 04:49:29 -0700
+Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1wciaF-0000000047Z-2b4G;
+	Thu, 25 Jun 2026 11:49:27 +0000
+Date: Thu, 25 Jun 2026 19:47:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-7.3] BUILD SUCCESS
+ 8a564dfdfd88f1c5262ad1a4957310fe907650fc
+Message-ID: <202606251920.ZSONWiyJ-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17286-lists,cgroups=lfdr.de];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:kaitao.cheng@linux.dev,m:david.laight.linux@gmail.com,m:christian.koenig@amd.com,m:david@kernel.org,m:ast@kernel.org,m:akpm@linux-foundation.org,m:axboe@kernel.dk,m:tj@kernel.org,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:hannes@cmpxchg.org,m:peterz@infradead.org,m:mingo@redhat.com,m:acme@kernel.org,m:namhyung@kernel.org,m:tglx@kernel.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:paul@paul-moore.com,m:andriy.shevchenko@linux.intel.com,m:paulmck@kernel.org,m:shakeel.butt@linux.dev,m:dhowells@redhat.com,m:simona.vetter@ffwll.ch,m:rdunlap@infradead.org,m:luca.ceresoli@bootlin.com,m:phasta@kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-ntfs-dev@lists.sourceforge.net,m:linux-fsdevel@vger.kernel.org,m:io-uring@vger.kernel.org,m:audit@vger.kernel.org,m:bpf@vger.kernel.org,m:netdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-perf-us
- ers@vger.kernel.org,m:linux-trace-kernel@vger.kernel.org,m:kexec@lists.infradead.org,m:live-patching@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-pm@vger.kernel.org,m:rcu@vger.kernel.org,m:sched-ext@lists.linux.dev,m:linux-mm@kvack.org,m:virtualization@lists.linux.dev,m:damon@lists.linux.dev,m:llvm@lists.linux.dev,m:chengkaitao@kylinos.cn,m:muchun.song@linux.dev,m:davidlaightlinux@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[jani.nikula@linux.intel.com,cgroups@vger.kernel.org];
-	HAS_ORG_HEADER(0.00)[];
-	FREEMAIL_TO(0.00)[linux.dev,gmail.com,amd.com,kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_GT_50(0.00)[55];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jani.nikula@linux.intel.com,cgroups@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17287-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,vger.kernel.org:from_smtp,kylinos.cn:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.intel.com:from_mime,linux.dev:email,amd.com:email]
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,intel.com:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 29ED16C4EF6
+X-Rspamd-Queue-Id: E9C976C543E
 
-On Thu, 25 Jun 2026, Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
-> =E5=9C=A8 2026/6/24 22:23, David Laight =E5=86=99=E9=81=93:
->> On Wed, 24 Jun 2026 15:23:47 +0200
->> Christian K=C3=B6nig <christian.koenig@amd.com> wrote:
->>> On 6/24/26 15:14, Kaitao Cheng wrote:
->>>> =E5=9C=A8 2026/6/22 16:42, David Laight =E5=86=99=E9=81=93:=20=20
->>>>> On Mon, 22 Jun 2026 12:05:31 +0800
->>>>> Kaitao Cheng <kaitao.cheng@linux.dev> wrote:
->>>>>=20=20
->>>>>> From: Kaitao Cheng <chengkaitao@kylinos.cn>
->>>>>>
->>>>>> The list_for_each*_safe() helpers are used when the loop body may
->>>>>> remove the current entry.  Their API exposes the temporary cursor at
->>>>>> every call site, even though most users only need it for the iterator
->>>>>> implementation and never reference it in the loop body.
->>>>>>
->>>>>> Add *_mutable() variants for list and hlist iteration.  The new help=
-ers
->>>>>> support both forms: callers may keep passing an explicit temporary c=
-ursor
->>>>>> when they need to inspect or reset it, or omit it and let the helper=
- use
->>>>>> a unique internal cursor.=20=20
->>>>>
->>>>> I'm not really sure 'mutable' means anything either.
->>>>> It is possible to make it valid for the loop body (or even other thre=
-ads)
->>>>> to delete arbitrary list items - but that needs significant extra ove=
-rheads.
->>>>>
->>>>> It might be worth doing something that doesn't need the extra variabl=
-e,
->>>>> but there is little point doing all the churn just to rename things.
->>>>>=20=20
->>>>>>
->>>>>> This makes call sites that only mutate the list through the current =
-entry
->>>>>> less noisy, while keeping the existing *_safe() helpers available for
->>>>>> compatibility.
->>>>>>
->>>>>> Signed-off-by: Kaitao Cheng <chengkaitao@kylinos.cn>
->>>>>> ---
->>>>>>  include/linux/list.h | 269 +++++++++++++++++++++++++++++++++++++---=
----
->>>>>>  1 file changed, 231 insertions(+), 38 deletions(-)
->>>>>>
->>>>>> diff --git a/include/linux/list.h b/include/linux/list.h
->>>>>> index 09d979976b3b..1081def7cea9 100644
->>>>>> --- a/include/linux/list.h
->>>>>> +++ b/include/linux/list.h
->>>>>> @@ -7,6 +7,7 @@
->>>>>>  #include <linux/stddef.h>
->>>>>>  #include <linux/poison.h>
->>>>>>  #include <linux/const.h>
->>>>>> +#include <linux/args.h>
->>>>>>=20=20
->>>>>>  #include <asm/barrier.h>
->>>>>>=20=20
->>>>>> @@ -763,28 +764,72 @@ static inline void list_splice_tail_init(struc=
-t list_head *list,
->>>>>>  #define list_for_each_prev(pos, head) \
->>>>>>  	for (pos =3D (head)->prev; !list_is_head(pos, (head)); pos =3D pos=
-->prev)
->>>>>>=20=20
->>>>>> -/**
->>>>>> - * list_for_each_safe - iterate over a list safe against removal of=
- list entry
->>>>>> - * @pos:	the &struct list_head to use as a loop cursor.
->>>>>> - * @n:		another &struct list_head to use as temporary storage
->>>>>> - * @head:	the head for your list.
->>>>>> +/*
->>>>>> + * list_for_each_safe is an old interface, use list_for_each_mutabl=
-e instead.
->>>>>>   */
->>>>>>  #define list_for_each_safe(pos, n, head) \
->>>>>>  	for (pos =3D (head)->next, n =3D pos->next; \
->>>>>>  	     !list_is_head(pos, (head)); \
->>>>>>  	     pos =3D n, n =3D pos->next)
->>>>>>=20=20
->>>>>> +#define __list_for_each_mutable_internal(pos, tmp, head)		\
->>>>>> +	for (typeof(pos) tmp =3D (pos =3D (head)->next)->next;		\=20=20
->>>>>
->>>>> Use auto
->>>>>=20=20
->>>>>> +	     !list_is_head(pos, (head));				\
->>>>>> +	     pos =3D tmp, tmp =3D pos->next)
->>>>>> +
->>>>>> +#define __list_for_each_mutable1(pos, head)				\
->>>>>> +	__list_for_each_mutable_internal(pos, __UNIQUE_ID(next), head)
->>>>>> +
->>>>>> +#define __list_for_each_mutable2(pos, next, head)			\
->>>>>> +	list_for_each_safe(pos, next, head)
->>>>>> +
->>>>>>  /**
->>>>>> - * list_for_each_prev_safe - iterate over a list backwards safe aga=
-inst removal of list entry
->>>>>> + * list_for_each_mutable - iterate over a list safe against entry r=
-emoval
->>>>>>   * @pos:	the &struct list_head to use as a loop cursor.
->>>>>> - * @n:		another &struct list_head to use as temporary storage
->>>>>> - * @head:	the head for your list.
->>>>>> + * @...:	either (head) or (next, head)
->>>>>> + *
->>>>>> + * next:	another &struct list_head to use as optional temporary sto=
-rage.
->>>>>> + *		The temporary cursor is internal unless explicitly supplied by
->>>>>> + *		the caller.
->>>>>> + * head:	the head for your list.
->>>>>> + */
->>>>>> +#define list_for_each_mutable(pos, ...)					\
->>>>>> +	CONCATENATE(__list_for_each_mutable, COUNT_ARGS(__VA_ARGS__))	\
->>>>>> +		(pos, __VA_ARGS__)=20=20
->>>>>
->>>>> The variable argument count logic really just slows down compilation.
->>>>> Maybe there aren't enough copies of this code to make that significan=
-t.
->>>>> But just because you can do it doesn't mean it is a gooD idea.
->>>>> I'm also not sure it really adds anything to the readability.
->>>>>
->>>>> And, it you are going to make the middle argument optional there is
->>>>> no need to change the macro name.=20=20
->>>>
->>>> Christian K=C3=B6nig and Jani Nikula also disagree with the variadic-a=
-rgument
->>>> implementation approach. If we abandon that method, it means we will
->>>> inevitably need to add some new macros. If mutable is not a good name,
->>>> suggestions for better alternatives would be welcome; coming up with a
->>>> suitable name is indeed rather tricky.=20=20
->>>
->>> I don't think you need to add a new macro for the specific use case tha=
-t people want to modify the next element of the iteration.
->>>
->>> If I remember your numbers correctly that is a really corner case and k=
-eeping using the existing *_safe() macros for that sounds perfectly fine to=
- me.
->>=20
->> IIRC currently you have a choice of either:
->> 	define               Item that can't be deleted
->> 	list_for_each()	     The current item.
->> 	list_for_each_safe() The next item.
->> There is also likely to be code that updates the variables to allow
->> for other scenarios.
->>=20
->> Note that if increase a reference count and release a lock then list_for=
-_each()
->> is likely safer than list_for_each_safe() :-)
->>=20
->> list.h has 9 variants of the 'safe' loop.
->> The bloat of another 9 is getting excessive.
->>=20
->> It has to be said that this is one of my least favourite type of list...
->
-> Hi Christian K=C3=B6nig, David Laight, Jani Nikula, David Hildenbrand,
-> Andy Shevchenko, Alexei Starovoitov
->
-> For ease of discussion, I need to summarize the currently possible
-> approaches and briefly describe their respective pros and cons,
-> using the list_for_each_entry* interfaces as examples.
->
-> 1. Add list_for_each_entry_mutable, while keeping list_for_each_entry
-> and list_for_each_entry_safe unchanged. list_for_each_entry_mutable
-> would be used specifically for safe deletion scenarios that do not
-> need to expose the temporary cursor externally. The code can refer to
-> the v1 version.
->
-> Pros: Does not depend on immediate per-subsystem adaptation and can be
->       merged directly.
-> Cons: Requires adding a whole set of mutable interfaces, which makes the
->       code somewhat redundant.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-7.3
+branch HEAD: 8a564dfdfd88f1c5262ad1a4957310fe907650fc  cgroup: Fix a typo of the function name in comment
 
-Seems fine, and the original _safe naming is ambiguous anyway.
+elapsed time: 853m
 
-> 2. Directly optimize away the temporary cursor in list_for_each_entry_safe
-> and define it inside the loop instead, changing the interface from four
-> arguments to three.
->
-> Pros: Does not add redundant interfaces.
-> Cons: (1) Users need to manually update special cases that use the
->       traversal variable of list_for_each_entry_safe, the new
->       list_for_each_entry_safe would no longer apply there and would
->       need to be open-coded.
->       (2) Because the macro arguments changes, all list_for_each_entry_sa=
-fe
->       callers would need to be modified and merged together, making it
->       difficult to merge such a large amount of code at once.
+configs tested: 268
+configs skipped: 2
 
-This won't fly because there are literally thousands of
-list_for_each_entry_safe() users.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 3. Use a variadic macro approach to optimize list_for_each_entry_safe,
-> so that it supports both three and four arguments.
->
-> Pros: (1) Does not add redundant interfaces.
->       (2) Does not depend on immediate per-subsystem adaptation and can
->       be merged directly.
-> Cons: (1) Increases compile time.
->       (2) Makes the interface harder for users to use.
+tested configs:
+alpha                             allnoconfig    gcc-16.1.0
+alpha                            allyesconfig    gcc-16.1.0
+alpha                               defconfig    gcc-16.1.0
+arc                              allmodconfig    clang-23
+arc                              allmodconfig    gcc-16.1.0
+arc                               allnoconfig    gcc-16.1.0
+arc                              allyesconfig    clang-23
+arc                              allyesconfig    gcc-16.1.0
+arc                                 defconfig    gcc-16.1.0
+arc                            randconfig-001    gcc-16.1.0
+arc                   randconfig-001-20260625    clang-23
+arc                   randconfig-001-20260625    gcc-16.1.0
+arc                            randconfig-002    gcc-16.1.0
+arc                   randconfig-002-20260625    clang-23
+arc                   randconfig-002-20260625    gcc-16.1.0
+arm                               allnoconfig    clang-17
+arm                               allnoconfig    gcc-16.1.0
+arm                              allyesconfig    clang-23
+arm                              allyesconfig    gcc-16.1.0
+arm                                 defconfig    gcc-16.1.0
+arm                         nhk8815_defconfig    clang-23
+arm                            randconfig-001    gcc-16.1.0
+arm                   randconfig-001-20260625    clang-23
+arm                   randconfig-001-20260625    gcc-16.1.0
+arm                            randconfig-002    gcc-16.1.0
+arm                   randconfig-002-20260625    clang-23
+arm                   randconfig-002-20260625    gcc-16.1.0
+arm                            randconfig-003    gcc-16.1.0
+arm                   randconfig-003-20260625    clang-23
+arm                   randconfig-003-20260625    gcc-16.1.0
+arm                            randconfig-004    gcc-16.1.0
+arm                   randconfig-004-20260625    clang-23
+arm                   randconfig-004-20260625    gcc-16.1.0
+arm                        shmobile_defconfig    gcc-16.1.0
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-16.1.0
+arm64                               defconfig    gcc-16.1.0
+arm64                          randconfig-001    clang-23
+arm64                 randconfig-001-20260625    clang-23
+arm64                          randconfig-002    clang-23
+arm64                 randconfig-002-20260625    clang-23
+arm64                          randconfig-003    clang-23
+arm64                 randconfig-003-20260625    clang-23
+arm64                          randconfig-004    clang-23
+arm64                 randconfig-004-20260625    clang-23
+csky                             allmodconfig    gcc-16.1.0
+csky                              allnoconfig    gcc-16.1.0
+csky                                defconfig    gcc-16.1.0
+csky                           randconfig-001    clang-23
+csky                  randconfig-001-20260625    clang-23
+csky                           randconfig-002    clang-23
+csky                  randconfig-002-20260625    clang-23
+hexagon                          allmodconfig    clang-23
+hexagon                          allmodconfig    gcc-16.1.0
+hexagon                           allnoconfig    clang-23
+hexagon                           allnoconfig    gcc-16.1.0
+hexagon                             defconfig    gcc-16.1.0
+hexagon                        randconfig-001    gcc-11.5.0
+hexagon               randconfig-001-20260625    gcc-11.5.0
+hexagon                        randconfig-002    gcc-11.5.0
+hexagon               randconfig-002-20260625    gcc-11.5.0
+i386                             allmodconfig    clang-22
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                              allnoconfig    gcc-16.1.0
+i386                             allyesconfig    clang-22
+i386                             allyesconfig    gcc-14
+i386                 buildonly-randconfig-001    gcc-14
+i386        buildonly-randconfig-001-20260625    gcc-14
+i386                 buildonly-randconfig-002    gcc-14
+i386        buildonly-randconfig-002-20260625    gcc-14
+i386                 buildonly-randconfig-003    gcc-14
+i386        buildonly-randconfig-003-20260625    gcc-14
+i386                 buildonly-randconfig-004    gcc-14
+i386        buildonly-randconfig-004-20260625    gcc-14
+i386                 buildonly-randconfig-005    gcc-14
+i386        buildonly-randconfig-005-20260625    gcc-14
+i386                 buildonly-randconfig-006    gcc-14
+i386        buildonly-randconfig-006-20260625    gcc-14
+i386                                defconfig    gcc-16.1.0
+i386                           randconfig-001    clang-22
+i386                  randconfig-001-20260625    clang-22
+i386                           randconfig-002    clang-22
+i386                  randconfig-002-20260625    clang-22
+i386                           randconfig-003    clang-22
+i386                  randconfig-003-20260625    clang-22
+i386                           randconfig-004    clang-22
+i386                  randconfig-004-20260625    clang-22
+i386                           randconfig-005    clang-22
+i386                  randconfig-005-20260625    clang-22
+i386                           randconfig-006    clang-22
+i386                  randconfig-006-20260625    clang-22
+i386                           randconfig-007    clang-22
+i386                  randconfig-007-20260625    clang-22
+i386                  randconfig-011-20260625    clang-22
+i386                  randconfig-012-20260625    clang-22
+i386                  randconfig-013-20260625    clang-22
+i386                  randconfig-014-20260625    clang-22
+i386                  randconfig-015-20260625    clang-22
+i386                  randconfig-016-20260625    clang-22
+i386                  randconfig-017-20260625    clang-22
+loongarch                        allmodconfig    clang-19
+loongarch                        allmodconfig    clang-23
+loongarch                         allnoconfig    clang-20
+loongarch                         allnoconfig    gcc-16.1.0
+loongarch                           defconfig    clang-23
+loongarch                      randconfig-001    gcc-11.5.0
+loongarch             randconfig-001-20260625    gcc-11.5.0
+loongarch                      randconfig-002    gcc-11.5.0
+loongarch             randconfig-002-20260625    gcc-11.5.0
+m68k                             allmodconfig    gcc-16.1.0
+m68k                              allnoconfig    gcc-16.1.0
+m68k                             allyesconfig    clang-23
+m68k                             allyesconfig    gcc-16.1.0
+m68k                                defconfig    clang-23
+m68k                         nettel_defconfig    gcc-16.1.0
+microblaze                        allnoconfig    gcc-16.1.0
+microblaze                       allyesconfig    gcc-16.1.0
+microblaze                          defconfig    clang-23
+mips                             allmodconfig    gcc-16.1.0
+mips                              allnoconfig    gcc-16.1.0
+mips                             allyesconfig    gcc-16.1.0
+mips                          ath25_defconfig    clang-23
+nios2                            allmodconfig    clang-20
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    clang-23
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    clang-23
+nios2                          randconfig-001    gcc-11.5.0
+nios2                 randconfig-001-20260625    gcc-11.5.0
+nios2                          randconfig-002    gcc-11.5.0
+nios2                 randconfig-002-20260625    gcc-11.5.0
+openrisc                         allmodconfig    clang-20
+openrisc                         allmodconfig    gcc-16.1.0
+openrisc                          allnoconfig    clang-23
+openrisc                          allnoconfig    gcc-16.1.0
+openrisc                            defconfig    gcc-16.1.0
+parisc                           allmodconfig    gcc-16.1.0
+parisc                            allnoconfig    clang-23
+parisc                            allnoconfig    gcc-16.1.0
+parisc                           allyesconfig    clang-17
+parisc                           allyesconfig    gcc-16.1.0
+parisc                              defconfig    gcc-16.1.0
+parisc                         randconfig-001    gcc-13.4.0
+parisc                randconfig-001-20260625    gcc-13.4.0
+parisc                         randconfig-002    gcc-13.4.0
+parisc                randconfig-002-20260625    gcc-13.4.0
+parisc64                            defconfig    clang-23
+powerpc                          allmodconfig    gcc-16.1.0
+powerpc                           allnoconfig    clang-23
+powerpc                           allnoconfig    gcc-16.1.0
+powerpc                        randconfig-001    gcc-13.4.0
+powerpc               randconfig-001-20260625    gcc-13.4.0
+powerpc                        randconfig-002    gcc-13.4.0
+powerpc               randconfig-002-20260625    gcc-13.4.0
+powerpc                     tqm5200_defconfig    gcc-16.1.0
+powerpc64                      randconfig-001    gcc-13.4.0
+powerpc64             randconfig-001-20260625    gcc-13.4.0
+powerpc64                      randconfig-002    gcc-13.4.0
+powerpc64             randconfig-002-20260625    gcc-13.4.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    clang-23
+riscv                             allnoconfig    gcc-16.1.0
+riscv                            allyesconfig    clang-23
+riscv                               defconfig    gcc-16.1.0
+riscv                          randconfig-001    gcc-8.5.0
+riscv                 randconfig-001-20260625    gcc-8.5.0
+riscv                          randconfig-002    gcc-8.5.0
+riscv                 randconfig-002-20260625    gcc-8.5.0
+s390                             allmodconfig    clang-17
+s390                             allmodconfig    clang-23
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-16.1.0
+s390                                defconfig    gcc-16.1.0
+s390                           randconfig-001    gcc-8.5.0
+s390                  randconfig-001-20260625    gcc-8.5.0
+s390                           randconfig-002    gcc-8.5.0
+s390                  randconfig-002-20260625    gcc-8.5.0
+sh                               allmodconfig    gcc-16.1.0
+sh                                allnoconfig    clang-23
+sh                                allnoconfig    gcc-16.1.0
+sh                               allyesconfig    clang-17
+sh                               allyesconfig    gcc-16.1.0
+sh                                  defconfig    gcc-14
+sh                             randconfig-001    gcc-8.5.0
+sh                    randconfig-001-20260625    gcc-8.5.0
+sh                             randconfig-002    gcc-8.5.0
+sh                    randconfig-002-20260625    gcc-8.5.0
+sparc                             allnoconfig    clang-23
+sparc                             allnoconfig    gcc-16.1.0
+sparc                               defconfig    gcc-16.1.0
+sparc                 randconfig-001-20260625    gcc-8.5.0
+sparc                 randconfig-002-20260625    gcc-8.5.0
+sparc64                          allmodconfig    clang-20
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20260625    gcc-8.5.0
+sparc64               randconfig-002-20260625    gcc-8.5.0
+um                               allmodconfig    clang-17
+um                                allnoconfig    clang-17
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-14
+um                               allyesconfig    gcc-16.1.0
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260625    gcc-8.5.0
+um                    randconfig-002-20260625    gcc-8.5.0
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-22
+x86_64                            allnoconfig    clang-22
+x86_64                            allnoconfig    clang-23
+x86_64                           allyesconfig    clang-22
+x86_64               buildonly-randconfig-001    clang-22
+x86_64      buildonly-randconfig-001-20260625    clang-22
+x86_64               buildonly-randconfig-002    clang-22
+x86_64      buildonly-randconfig-002-20260625    clang-22
+x86_64               buildonly-randconfig-003    clang-22
+x86_64      buildonly-randconfig-003-20260625    clang-22
+x86_64               buildonly-randconfig-004    clang-22
+x86_64      buildonly-randconfig-004-20260625    clang-22
+x86_64               buildonly-randconfig-005    clang-22
+x86_64      buildonly-randconfig-005-20260625    clang-22
+x86_64               buildonly-randconfig-006    clang-22
+x86_64      buildonly-randconfig-006-20260625    clang-22
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-22
+x86_64                randconfig-001-20260625    gcc-14
+x86_64                randconfig-002-20260625    gcc-14
+x86_64                randconfig-003-20260625    gcc-14
+x86_64                randconfig-004-20260625    gcc-14
+x86_64                randconfig-005-20260625    gcc-14
+x86_64                randconfig-006-20260625    gcc-14
+x86_64                         randconfig-011    clang-22
+x86_64                randconfig-011-20260625    clang-22
+x86_64                         randconfig-012    clang-22
+x86_64                randconfig-012-20260625    clang-22
+x86_64                         randconfig-013    clang-22
+x86_64                randconfig-013-20260625    clang-22
+x86_64                         randconfig-014    clang-22
+x86_64                randconfig-014-20260625    clang-22
+x86_64                         randconfig-015    clang-22
+x86_64                randconfig-015-20260625    clang-22
+x86_64                         randconfig-016    clang-22
+x86_64                randconfig-016-20260625    clang-22
+x86_64                         randconfig-071    clang-22
+x86_64                randconfig-071-20260625    clang-22
+x86_64                         randconfig-072    clang-22
+x86_64                randconfig-072-20260625    clang-22
+x86_64                         randconfig-073    clang-22
+x86_64                randconfig-073-20260625    clang-22
+x86_64                         randconfig-074    clang-22
+x86_64                randconfig-074-20260625    clang-22
+x86_64                         randconfig-075    clang-22
+x86_64                randconfig-075-20260625    clang-22
+x86_64                         randconfig-076    clang-22
+x86_64                randconfig-076-20260625    clang-22
+x86_64                               rhel-9.4    clang-22
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-22
+x86_64                    rhel-9.4-kselftests    clang-22
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-22
+xtensa                            allnoconfig    clang-23
+xtensa                            allnoconfig    gcc-16.1.0
+xtensa                           allyesconfig    clang-20
+xtensa                           allyesconfig    gcc-16.1.0
+xtensa                randconfig-001-20260625    gcc-8.5.0
+xtensa                randconfig-002-20260625    gcc-8.5.0
 
-Basically I'm against any variadic macro tricks where the optional
-argument is not the last argument. That's just way too surprising, and
-goes against common practice in just about all other languages.
-
-> 4. Optimize list_for_each_entry by defining the temporary cursor internal=
-ly,
-> making it compatible with the functionality of list_for_each_entry_safe.
-> The code can refer to the v2 version.
->
-> Pros: (1) Does not add redundant interfaces.
->       (2) The number of externally visible arguments of list_for_each_ent=
-ry
->       remains unchanged, still three.
-> Cons: (1) list_for_each_entry and list_for_each_entry_safe would be merged
->       into one, and list_for_each_entry_safe would gradually be deprecate=
-d.
->       (2) Users need to manually update special cases that use the traver=
-sal
->       variable of list_for_each_entry, the new list_for_each_entry would =
-no
->       longer apply there and would need to be open-coded. There are 15 su=
-ch
->       cases in total.
-
-This sounds good to me, though I take it there's some code size increase
-and/or performance penalty?
-
-Maybe the 15 cases are questionable anyway?
-
-> 5. Use a variadic macro approach to optimize list_for_each_entry, so that
-> it supports both three and four arguments.
->
-> Pros: (1) Does not add redundant interfaces.
->       (2) Does not depend on immediate per-subsystem adaptation and can be
->       merged directly.
-> Cons: (1) Increases compile time.
->       (2) list_for_each_entry and list_for_each_entry_safe would be merged
->       into one, and list_for_each_entry_safe would gradually be deprecate=
-d.
-
-Please don't do the macro tricks.
-
-> 6. Make no changes, keep the current logic unchanged, and close the curre=
-nt
-> email discussion.
-
-I like hiding the temporary stuff when possible.
-
-
-BR,
-Jani.
-
---=20
-Jani Nikula, Intel
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
