@@ -1,136 +1,172 @@
-Return-Path: <cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17272-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 7tltDWuIPGqZpAgAu9opvQ
-	(envelope-from <cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 03:46:19 +0200
+	id F7aIFWGOPGpupQgAu9opvQ
+	(envelope-from <cgroups+bounces-17272-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 04:11:45 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7277C6C2377
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 03:46:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB1A16C2576
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 04:11:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=fygo-io.20200929.dkim.larksuite.com header.s=s1 header.b=fMfJFJyT;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17271-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=fygo.io (policy=quarantine);
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17272-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17272-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 727A6307B0BE
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 01:42:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B420D30045A3
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 02:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCA5374192;
-	Thu, 25 Jun 2026 01:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 991443AA4E0;
+	Thu, 25 Jun 2026 02:11:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from va-2-47.ptr.blmpb.com (va-2-47.ptr.blmpb.com [209.127.231.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDB0374745
-	for <cgroups@vger.kernel.org>; Thu, 25 Jun 2026 01:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA7993A9852;
+	Thu, 25 Jun 2026 02:11:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782351739; cv=none; b=HGo+7Oy+665lYGrDT4nFbUhnw+IssSUQw1R4GWnanzawPSg1zMQ1vmJC1wiRSSC11f70htBwhIdglYq3Bqkmy8BeszB8na2PD2yg4ciYPxzPIQ/9X5cBkProb3pw0ZRgKnvIYzXLJdahql9T9DzalqlwD6CHGsFIttP7ito567s=
+	t=1782353497; cv=none; b=a0zrFzezthjHxkbf7KJgDPykCvS6BySzdrfIjwVJHHZ4PTYXnOJHldZNXy01Jed8PnQxEXfseNgaarZYjtvH4uXqyhjteESHS+IbNKSvu8zUKwXO0idg8IMuUIBrHTsIKiBBteNnsMZ6efE4l/P3ZgQPNS8lmQKaydyNTD0zx+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782351739; c=relaxed/simple;
-	bh=w4j8f6uFb433Grb8B0eRcI7+Ke5YL/rbbA2Y0K+GuCg=;
-	h=Subject:Date:Message-Id:Cc:In-Reply-To:Content-Type:From:
-	 Mime-Version:References:To; b=agqz4KdOrRFvvNZ/rrxraWn0Bpml8ljAUZKba1CgnlY/Azqa+gVtlOhQxdjclfGzJvaM2r0gv07UwCuCohRCeNCCR/1IKEEjZJpUNSCaTUI476zQENvK75Mmw4EyVwKOXvaxXZRQQ3Ol24bAwEbgioCWygIhJPVLHgNqRx5qyoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fygo.io; spf=pass smtp.mailfrom=fygo.io; dkim=pass (2048-bit key) header.d=fygo-io.20200929.dkim.larksuite.com header.i=@fygo-io.20200929.dkim.larksuite.com header.b=fMfJFJyT; arc=none smtp.client-ip=209.127.231.47
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=fygo-io.20200929.dkim.larksuite.com; t=1782351728;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=w4j8f6uFb433Grb8B0eRcI7+Ke5YL/rbbA2Y0K+GuCg=;
- b=fMfJFJyT58AGjKzbG4LBJYi/Ehgens5KdI2jxzQS81BZNn0UA1zTA3A4qAHXSndya/Sno7
- 70AT6VxXyZLVQhs0GEVbQLd7J9HOUDuuzz7d/0594l4+jbua6O1Ne7gAT69RuJY+M1XGO0
- sWGdTmHodHUtx6Iosj8F1dCkXtEeW0yGYetnKwRP0E7YIBI3f8yYrm2UkqwcdQ1b7+DLx7
- mU4CEYcroDUxWhHYpK1yvvXey3mEhO/2Zw+dzGCabbedrz8H14LzkIaKNhHStNhXAYXVaL
- pyRxMmB/h3Vr3FAL8gAbNLRMNsvH5FWX/XHWhVW6L1Tz4kBSJ5JpdxnNx+Q8Ew==
-Subject: Re: [PATCH 0/8] blk-cgroup: remove queue_lock nesting from blkcg paths
-Date: Thu, 25 Jun 2026 09:42:02 +0800
-Message-Id: <727c7d76-ba00-4905-b64f-e954392b346c@fygo.io>
-Content-Transfer-Encoding: quoted-printable
-Cc: <akpm@linux-foundation.org>, <chrisl@kernel.org>, <kasong@tencent.com>, 
-	<shikemeng@huaweicloud.com>, <nphamcs@gmail.com>, <bhe@redhat.com>, 
-	<baohua@kernel.org>, <youngjun.park@lge.com>, <cgroups@vger.kernel.org>, 
-	<linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>, 
-	<linux-mm@kvack.org>
-User-Agent: Mozilla Thunderbird
-In-Reply-To: <34d48fb5-4952-4a48-b92a-f189bc3edd0b@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-X-Original-From: yu kuai <yukuai@fygo.io>
-From: "yu kuai" <yukuai@fygo.io>
+	s=arc-20240116; t=1782353497; c=relaxed/simple;
+	bh=dc6GxFOtX82fWBXyYCcZWmSGKG3m0bYG7gdRH4ekqJY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=UOTNILA97Z4qQZp7G6DXBLVWE/7b5oY1KcWlEZW0ajl+D13ozpZVu75Z3BW8gWnOcRQ3LXMixC/aOJ9WEXws0sORpPK9yW/1yy0G1ZWSrKObSG39e7tAwPES07RbtfB27Zd5t37Cs2lW3+T+GJgwq+h1f5cD73VY1M2X3f8iG+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+X-UUID: 2be80908703b11f1aa26b74ffac11d73-20260625
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:28c332a2-702e-448d-83d3-ba56f2aaac95,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:10
+X-CID-INFO: VERSION:1.3.12,REQID:28c332a2-702e-448d-83d3-ba56f2aaac95,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:10
+X-CID-META: VersionHash:e7bac3a,CLOUDID:6bf237fb64cc35fff2084227c0961fab,BulkI
+	D:260624112706YSGBNPCQ,BulkQuantity:3,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|127|841|850|865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File
+	:nil,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR
+	:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 2be80908703b11f1aa26b74ffac11d73-20260625
+X-User: lihongfu@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <lihongfu@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1390390969; Thu, 25 Jun 2026 10:11:26 +0800
+From: Hongfu Li <lihongfu@kylinos.cn>
+To: tj@kernel.org
+Cc: cgroups@vger.kernel.org,
+	corbet@lwn.net,
+	dev@lankhorst.se,
+	dri-devel@lists.freedesktop.org,
+	hannes@cmpxchg.org,
+	lihongfu@kylinos.cn,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mkoutny@suse.com,
+	mripard@kernel.org,
+	natalie.vock@gmx.de,
+	skhan@linuxfoundation.org,
+	hongfu.li@linux.dev
+Subject: Re: [PATCH 1/2] cgroup/dmem: add per-region event counters
+Date: Thu, 25 Jun 2026 10:10:53 +0800
+Message-Id: <20260625021053.488107-1-lihongfu@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ajwnf0uzT4PMHYZx@slm.duckdns.org>
+References: <ajwnf0uzT4PMHYZx@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Received: from [192.168.1.104] ([39.182.0.148]) by smtp.larksuite.com with ESMTPS; Thu, 25 Jun 2026 01:42:06 +0000
-X-Lms-Return-Path: <lba+26a3c876f+2849a5+vger.kernel.org+yukuai@fygo.io>
-References: <cover.1780621988.git.yukuai@fygo.io> <1c739fcc-5132-4cb2-bf34-cec94de26509@fygo.io> <34d48fb5-4952-4a48-b92a-f189bc3edd0b@kernel.dk>
-Reply-To: yukuai@fygo.io
-To: "Jens Axboe" <axboe@kernel.dk>, <yukuai@fygo.io>, <nilay@linux.ibm.com>, 
-	<tom.leiming@gmail.com>, <bvanassche@acm.org>, <tj@kernel.org>, 
-	<josef@toxicpanda.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	DMARC_POLICY_QUARANTINE(1.50)[fygo.io : SPF not aligned (relaxed), DKIM not aligned (relaxed),quarantine];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[fygo-io.20200929.dkim.larksuite.com:s=s1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:baohua@kernel.org,m:youngjun.park@lge.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:axboe@kernel.dk,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:tom.leiming@gmail.com,m:bvanassche@acm.org,m:tj@kernel.org,m:josef@toxicpanda.com,m:tomleiming@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17271-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.dk,fygo.io,linux.ibm.com,gmail.com,acm.org,kernel.org,toxicpanda.com];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17272-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lwn.net,lankhorst.se,lists.freedesktop.org,cmpxchg.org,kylinos.cn,suse.com,kernel.org,gmx.de,linuxfoundation.org,linux.dev];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[lihongfu@kylinos.cn,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:cgroups@vger.kernel.org,m:corbet@lwn.net,m:dev@lankhorst.se,m:dri-devel@lists.freedesktop.org,m:hannes@cmpxchg.org,m:lihongfu@kylinos.cn,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:mkoutny@suse.com,m:mripard@kernel.org,m:natalie.vock@gmx.de,m:skhan@linuxfoundation.org,m:hongfu.li@linux.dev,s:lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lihongfu@kylinos.cn,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[fygo-io.20200929.dkim.larksuite.com:+];
-	PRECEDENCE_BULK(0.00)[];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yukuai@fygo.io,cgroups@vger.kernel.org];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,vger.kernel.org,kvack.org];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	TAGGED_RCPT(0.00)[cgroups];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	HAS_REPLYTO(0.00)[yukuai@fygo.io];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[fygo.io:replyto,fygo.io:mid,fygo.io:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,fygo-io.20200929.dkim.larksuite.com:dkim,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dmem.events:url,vger.kernel.org:from_smtp,kylinos.cn:mid,kylinos.cn:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7277C6C2377
+X-Rspamd-Queue-Id: EB1A16C2576
 
-Hi,
+Hi, Tejun
+Thanks for the review comments.
 
-=E5=9C=A8 2026/6/24 20:43, Jens Axboe =E5=86=99=E9=81=93:
-> On 6/24/26 12:57 AM, yu kuai wrote:
->> Friendly ping ...
->>
->> This set can still be applied cleanly for block-7.2 branch.
-> Not sure how you checked that, because patch 3 very much needs some
-> manual attention to get applied. I have applied it now.
+> > Add dmem.events to report hierarchical low/max event counts per DMEM
+> > region.  Increment counters on dmem.max allocation failures and
+> > dmem.low protection events.  The file is available for non-root cgroups
+> > only.
+> 
+> Please don't double space in descs or comments. Also, maybe it's obvious but
+> it'd help if you list why and how this is useful. Why do we want to add
+> this?
 
-Thanks!
+I'll fix the double spacing in the commit message and comments.
 
-This was build on the top of my other set:
-blk-cgroup: fix blkg list and policy data races
+As for the motivation: dmem already exposes per-region limits and current
+usage, but not how often those limits actually matter at runtime. Without
+event counters, it's hard to tell whether allocation failures come from
+this cgroup, a parent limit, or pressure elsewhere in the hierarchy.
+dmem.events provides that visibility for tuning dmem.low/dmem.max and
+diagnosing recurring device memory pressure.
 
-I'll rebase and resend this set :)
+I'll expand the commit message to cover this.
+ 
+> > +  dmem.events
+> > +	A read-only file that reports the number of times each cgroup
+> > +	has hit its configured memory limits.  The format lists each
+> > +	region on a single line, followed by the event counters::
+> > +
+> > +	  drm/0000:03:00.0/vram0 low 0 max 3
+> > +	  drm/0000:03:00.0/stolen low 0 max 0
+> 
+> This isn't a supported file format. Please read the documentation on allowed
+> formats.
 
->
---=20
-Thanks,
-Kuai
+Thanks for catching this. I'll switch dmem.events to nested-keyed format (region low=N max=M).
+
+Thanks again for the valuable feedback.
+
+Best regards,
+Hongfu
 
