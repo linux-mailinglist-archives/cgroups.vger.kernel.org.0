@@ -1,169 +1,153 @@
-Return-Path: <cgroups+bounces-17290-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17291-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id f+anHEYoPWpqyAgAu9opvQ
-	(envelope-from <cgroups+bounces-17290-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 15:08:22 +0200
+	id RBZmFkUsPWrJyQgAu9opvQ
+	(envelope-from <cgroups+bounces-17291-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 15:25:25 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id F19476C5EDC
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 15:08:21 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 450E26C61DD
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 15:25:24 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17290-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17290-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=fail ("headers rsa verify failed") header.d=igalia.com header.s=20170329 header.b=WeysAnzO;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17291-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17291-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed)" header.from=igalia.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 40FB6304043A
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 13:08:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7445330069A1
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jun 2026 13:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8F52DCF52;
-	Thu, 25 Jun 2026 13:08:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DEB3264E5;
+	Thu, 25 Jun 2026 13:25:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB142D060D;
-	Thu, 25 Jun 2026 13:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B57D31AAAA;
+	Thu, 25 Jun 2026 13:25:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782392887; cv=none; b=UTwgMpumt5Z+G/J8/vI2LVZBCSQfG3rpOQTmrQGvAKx51W/hrdYYOLClfR9CMGy06xB/7bNCLBAH34ntU9FE82Bz+y/kCUCrqTKBWbaKrs0+4CFddWnTnGcJC6+0seD/vcTHkj/D+PCeyHEip28JtECfuS67tSyUA6BlKTOZ9RA=
+	t=1782393919; cv=none; b=iMUkvS9smgXzwckGnDzf4JNxJNtIB/OA0ST2o7sziNHvvFUnNna0DGbq3bxDlAfh7oyU8SwM3aOd/0Vz4iYA9bLajOw6MkQ070nczJVP6F3WNUrpjyJmX7RRKW10iIjMf/RG/d/8pioJ2QGEafSJjT0pyXpEdYx6bxoL+aQcmnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782392887; c=relaxed/simple;
-	bh=wxKs0oIjtl8h1n0FPsKgyNpBDFQIJZFKJHF6YcD0Pr0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=EUmjbQ8/tNCIwitRxNZde30AC6m7zAi/aCEAjUM/yhWusYbs6KDoASsrWR+dWb5ezUWX8pMlKV37/iUAaMZH9Oaup4bIrTlXRthXFMTwDF1JGqR719Bk3JX372caIjLem2FGd0EIywlVZWh8U2W/QbNse3gIq7iOq0U41Ftz68k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-X-UUID: e0389c46709611f1aa26b74ffac11d73-20260625
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
-	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_TXT, HR_DATE_H, HR_DATE_WKD
-	HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER
-	HR_SJ_NOR_SYM, HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_CHARSET
-	HR_TO_CHARSET_NUM, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NAME, IP_TRUSTED
-	SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED, SN_TRUSTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
-	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
-	ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:e1b0e46d-9d1a-4ec5-912b-067289893e2a,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:10
-X-CID-INFO: VERSION:1.3.12,REQID:e1b0e46d-9d1a-4ec5-912b-067289893e2a,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:10
-X-CID-META: VersionHash:e7bac3a,CLOUDID:874d4e85a3f4f74e0db688536e5b4231,BulkI
-	D:26062521075613Q2WM3T,BulkQuantity:0,Recheck:0,SF:10|38|66|78|102|127|136
-	|850|865|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bul
-	k:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0
-	,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: e0389c46709611f1aa26b74ffac11d73-20260625
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1356698150; Thu, 25 Jun 2026 21:07:53 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Cc: Shuah Khan <skhan@linuxfoundation.org>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sun Shaojie <sunshaojie@kylinos.cn>
-Subject: [PATCH] cgroup/cpu: document cpu.stat.local
-Date: Thu, 25 Jun 2026 21:07:23 +0800
-Message-Id: <20260625130723.1144463-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1782393919; c=relaxed/simple;
+	bh=cDRm9o+e1DCCdszZq67gYsG5H2t3Q6tznqzo59jSHew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s0a5voz+sUauWpR+LxhgarEZoOpCBFnHTJO2ix7XN5IXoE2ugQWn63JOvgjAtaDtSwpHn/hKjP89l/Qk76DZZDxX9S8ThY1iAUqDm1X8TpCbDc6wdNCzCTm1zL0aCLBf3T++CH0lWbiCMlhcYaBpktES5oFL+og0WgOYcKozrY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=WeysAnzO; arc=none smtp.client-ip=213.97.179.56
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=ZhSTsKEqP6hhtF0Rymr3DME6a07dkDUYrzylnv1XxG8=; b=WeysAnzOduioc9tUdPr9SEjsBh
+	osUbX3DUqMcCAWzhJjeG5xFcNAVx8p9RI2X92EIdRBCgOfAoO4oBA9s4CkbL2YQm8bwGVjevivOuf
+	RQD2BX+5lF0iI5yxAzQVO8bshTYrPSD10ssSQ0eeTeVoSxo5q4rk3c85UArdJkFxeAV2v1/L9cAH1
+	8Hrx+Et3sR6MQUPFuAKsBS7iKDRGUN9ymkwSH5EWhgUB3bzYL3Bo/WsRhEv4G/apKUcLnCxDJJFE8
+	bjLmxOFL/nCYI8Z5WcpF7DIHq0+Sqssz1i2hxyE8RVIEk9A8bLbsncgPgnsrUm3rKyy5IK69ydYI2
+	PolOxVjA==;
+Received: from 179-125-64-254-dinamico.pombonet.net.br ([179.125.64.254] helo=quatroqueijos.cascardo.eti.br)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1wck4j-00548a-Ap; Thu, 25 Jun 2026 15:25:02 +0200
+Date: Thu, 25 Jun 2026 10:22:02 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>,
+	Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, Natalie Vock <natalie.vock@gmx.de>,
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+	Huang Rui <ray.huang@amd.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Simona Vetter <simona@ffwll.ch>, David Airlie <airlied@gmail.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/6] [PATCH v6 0/6] Add reclaim to the dmem cgroup
+ controller
+Message-ID: <aj0rembs3CGy0ZMX@quatroqueijos.cascardo.eti.br>
+References: <20260611173301.17473-1-thomas.hellstrom@linux.intel.com>
+ <ajBJU-Jp2QVy14qt@slm.duckdns.org>
+ <ajBLAsNoKesXmFcs@slm.duckdns.org>
+ <ajlUPmaMsa2gxOLg@quatroqueijos.cascardo.eti.br>
+ <ajzxLABtnWym81Dp@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ajzxLABtnWym81Dp@localhost.localdomain>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_NA(0.00)[kylinos.cn];
+	FORGED_RECIPIENTS(0.00)[m:mkoutny@suse.com,m:tj@kernel.org,m:thomas.hellstrom@linux.intel.com,m:intel-xe@lists.freedesktop.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:christian.koenig@amd.com,m:alexander.deucher@amd.com,m:rodrigo.vivi@intel.com,m:dri-devel@lists.freedesktop.org,m:amd-gfx@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17291-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:cgroups@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:sunshaojie@kylinos.cn,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[sunshaojie@kylinos.cn,cgroups@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-17290-lists,cgroups=lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sunshaojie@kylinos.cn,cgroups@vger.kernel.org];
+	FORGED_SENDER(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,linux.intel.com,lists.freedesktop.org,gmx.de,cmpxchg.org,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	R_DKIM_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[igalia.com:-];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp,igalia.com:from_mime,igalia.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: F19476C5EDC
+X-Rspamd-Queue-Id: 450E26C61DD
 
-Add documentation for the cpu.stat.local interface file, which reports
-the throttled_usec stat -- the actual throttling time incurred by the
-cgroup's own runqueues, which may include throttling inherited from
-ancestor cgroup bandwidth limits. Unlike cpu.stat's throttled_usec
-which only accounts for throttling caused by the cgroup's own CFS
-bandwidth limit.
+On Thu, Jun 25, 2026 at 11:19:19AM +0200, Michal Koutný wrote:
+> On Mon, Jun 22, 2026 at 12:26:54PM -0300, Thadeu Lima de Souza Cascardo <cascardo@igalia.com> wrote:
+> > As far as I understood the patchset, it doesn't fail the write if it fails
+> > to reclaim. It sets the new max, then, if the write is blocking, starts
+> > reclaim and eventually returns after multiple attempts. But it still
+> > returns success.
+> > 
+> > So I believe this is behaving as you would expect.
+> 
+> I was alarmed by the EBUSY mention similarly to Tejun but then I
+> couldn't find it in pre-patch (840ef6c78e6a2) nor in patched (v5) code.
+> Please make sure the EBUSY return behavior is not introduced
+> (essentially match memory.max behavior) and that the accompanying
+> message refers up to date code ;-)
+> 
+> Michal
 
-When the controller is not enabled, the stat is not reported.
+I think this is a reference to the fact that right now writing to dmem.max
+calls page_counter_set_max, which will return -EBUSY and fail to change the
+max value. It is just that we are not returning that error today to
+userspace (a fix I have submitted back in April).
 
-Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
----
- Documentation/admin-guide/cgroup-v2.rst | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+So, this patchset by Thomas is setting max, and, then, if it is a blocking
+write, tries to evict on a best-effort basis, and returns success after a
+few attempts, still setting max to the written value.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 993446ab66d0..a7766f40ef65 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1160,6 +1160,23 @@ will be referred to. All time durations are in microseconds.
- 	- nr_bursts
- 	- burst_usec
- 
-+  cpu.stat.local
-+	A read-only flat-keyed file which exists on non-root cgroups.
-+	This file exists whether the controller is enabled or not.
-+
-+	It reports the following stat when the controller is enabled:
-+
-+	- throttled_usec
-+
-+	Unlike the ``throttled_usec`` reported by ``cpu.stat`` which
-+	accounts for throttling caused by this cgroup's own CFS
-+	bandwidth limit, ``cpu.stat.local`` reports the actual
-+	throttling time incurred by this cgroup's own runqueues,
-+	which may include throttling inherited from ancestor
-+	cgroup bandwidth limits.
-+
-+	When the controller is not enabled, this stat is not reported.
-+
-   cpu.weight
- 	A read-write single value file which exists on non-root
- 	cgroups.  The default is "100".
--- 
-2.25.1
-
+Cascardo.
 
