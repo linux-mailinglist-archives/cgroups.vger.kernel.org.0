@@ -1,430 +1,241 @@
-Return-Path: <cgroups+bounces-17354-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17342-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 7ZRCJNTHPmqQLgkAu9opvQ
-	(envelope-from <cgroups+bounces-17354-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 20:41:24 +0200
+	id DcxEJf3GPmo5LgkAu9opvQ
+	(envelope-from <cgroups+bounces-17342-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 20:37:49 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08E576CFC3A
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 20:41:24 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92BB06CFB7A
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 20:37:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=aEgQTkbo;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17354-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17354-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=XsgvWSZL;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17342-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17342-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 29E7730DDA9F
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 18:38:41 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D5C033027B4E
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 18:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC553BADB4;
-	Fri, 26 Jun 2026 18:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08243B841D;
+	Fri, 26 Jun 2026 18:37:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEBDE3B8409
-	for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 18:38:20 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782499102; cv=none; b=ee3PRsH1k5Fw9yQ7hIADAl3VH7gJrCydsj4nAHFf5QUKAdiheI9s9oekdLYzTznlzhbJ8kuJPO2bbf3Nv6u425GiiWwZow1/NdEomCKtaaSmB95jTpGXXXSwi7CfxH/nHcXh18pya5mmcNkPMZNNr1FPLY2eLhncSyTxkTcwCGE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782499102; c=relaxed/simple;
-	bh=ENYk6GNS43dprULP01JVzS2aHnkL+qdWkw6ys9fzHig=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UkpfC8yEZu920AgPiwLAhXiLLJnvirWxfsgZxz53AzhqsAYwAj8+4suM5ha4Klia2rQTTFQrzPBBKbeoJh32G5uZXlisNjoH3armZOS1BumKFsVkptLNJEiaLlx4mNC1vMW8PXjBk5pQDRtUdbZSwnxxdzltVLEoAfm0AgT47bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aEgQTkbo; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1782499100;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GhQadWWbyJNoWjy2SCoPtNuWLEk15QTFYZ61Hy14GqU=;
-	b=aEgQTkboYrLNjJU7R/ae2cOPs20GdZKgiYjcyE3WF4Hr/SLofTuCCK4DdB0YzY1Z3DdsW9
-	IM06QJqD7rgVrk7iUD/MmVY0AyJfnHS2375qOSNRTOYTHyP9C7gj0h0wtFC3y5DTRhGtvj
-	zw0xJ2v/NIRYKDE2cn1YG7uH1+rjb/M=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-292-Jcz7cGlwNy-7qRyhfnO9bQ-1; Fri,
- 26 Jun 2026 14:38:15 -0400
-X-MC-Unique: Jcz7cGlwNy-7qRyhfnO9bQ-1
-X-Mimecast-MFC-AGG-ID: Jcz7cGlwNy-7qRyhfnO9bQ_1782499093
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6E6CA1954B1E;
-	Fri, 26 Jun 2026 18:38:13 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.2.16.156])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B9A9819560A3;
-	Fri, 26 Jun 2026 18:38:08 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Ridong Chen <ridong.chen@linux.dev>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Farhad Alemi <farhad.alemi@berkeley.edu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Aaron Tomlin <atomlin@atomlin.com>,
-	Guopeng Zhang <guopeng.zhang@linux.dev>,
-	Gregory Price <gourry@gourry.net>,
-	David Hildenbrand <david@kernel.org>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v8 11/11] selftests/cgroup: Add test for cpuset affinity on controller disable
-Date: Fri, 26 Jun 2026 14:19:23 -0400
-Message-ID: <20260626181923.133658-12-longman@redhat.com>
-In-Reply-To: <20260626181923.133658-1-longman@redhat.com>
-References: <20260626181923.133658-1-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAA8D3B8405
+	for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 18:37:03 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782499026; cv=pass; b=RBL/1SJ9BDr8sC6eFDIHeAkZjKBsoBrAlsOccp5EyPo4lIvhQVKzbEVkiOl6UlEBMGO1snc7mBVn0NB7BnxBGRIHNLWgsMjPfMkWrAWVvBgGXd9EbOALQM9zcc4WWFgkfFliFCcTZLkc4JM7A5O6K07n5iJShWhpOgndm0OXwG0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782499026; c=relaxed/simple;
+	bh=OfOa8rqqXCKRNRLH/nmiHKh0iPBKtZJR4R6D2Wg9rRw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jQzrpbPoV15vfuPu1J+5+lnHYHsdImovxzisFtVP6fNJD6EofdeiWjwuxbTXjfbysQwZiCnsvbQG9jfR+4QTl2HmVY5JccnC5a99KnBMs+5U8ci4Mfs/8IT3LgWhyY68GzdtgNfP1/PP/heIxVpHc0tPQ3Nr3GKwLwFpDZTZqFw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XsgvWSZL; arc=pass smtp.client-ip=209.85.128.49
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4903d730b1fso16707805e9.2
+        for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 11:37:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1782499022; cv=none;
+        d=google.com; s=arc-20260327;
+        b=pWq4vTHMdGP2nM4xG1ozpICeuiewLXfMbWJuLFPYqyTAg1K2GgdRLwm03u7DDLw3lo
+         FEHoHblrzKDFICHiSLf/1H7kPVKTzJFNx3P4CPvqrh6+6EBa3QjAmuuWf8298Rfh144o
+         V6eI+TPdu+omik/pUqcOW72yVeS0BTH7o/iSRUJZYN51lYVj4C+4Hup99AL+Q+JnwklA
+         ehcZehwZMNN23rqKTTVdzrL5W2lSkOCHwaxdxF1XboFFQnaV3d/xEPFuUdjWR0flzcs3
+         U954q/1g32gWaxkIA9NSV1vt/iOVoot6IYdwt6DUfn+wdKxzya2Ws5HpcMeVM0FrvV6R
+         UCTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=HOOeJEgGJirHLvCIZDna3WzBVXhg0OXljifTzHlO340=;
+        fh=07xrVQQFIRI19R4hQ2m7rGkK/6gXHdvj3le0GMREyII=;
+        b=Gn9ZJjqcwg88M+7L89dpa4aUmP0ctoHGTnKX4OfNrvVusm9oTPw+CM1LkAk5GAvbP/
+         fRArj0fpmgpPUjTIJeGAq2RBkDV06M98xzzJz5jfwWKdAkEHteVbFepov18kGTOe0u/w
+         GQQ6BnUiCngz/OAv60YHGcgsdc2B2BcjOdyjWp/TZvNugeNIpn9lmwkn00VuW88c8S3m
+         2xw++4swUBd3TcULxKF/zcoM7chMUSGPvnd0tVtXPDJA0b0A+hovbrang5MaKNydxu6w
+         v0WJ9I8263aQRuglkv7qRKBphyFDe8hQ12YF+IQph6KGS4eaLW9bpXcjJ+xpSpgdr/Ky
+         uPYQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1782499022; x=1783103822; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HOOeJEgGJirHLvCIZDna3WzBVXhg0OXljifTzHlO340=;
+        b=XsgvWSZL4OJdDStOy8iZ02jKrcxWhZV2B0bWwznTt+6Q2cRxehpKw2ry2J3vOZWL9T
+         oO6Ee/cKEyqeS4g8NMdkwRE0vP18VHsvSG6VvIC7O3KOeSdxcvmELH9XChtIkFAIlJzk
+         E1I7YBx11WmHrrGvVxJWVKGx+aO+uz2ocA3UM7QJ0MDk+E35HEq5B1rqjPH2DjEZm78K
+         uwOwGu6rtUF7Pp6Ikp8PE9A/8z2V6U5eZgaMyhHuUfDu9jHwSQqzw76NvjU22bnEgN2X
+         4PZaWb9oJ4a1l8lO2rrOgEOWcKHqTGHgzKCbA22yaz1a7mlKUJfealBTKJ7gQGXLJ2BJ
+         0jug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782499022; x=1783103822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=HOOeJEgGJirHLvCIZDna3WzBVXhg0OXljifTzHlO340=;
+        b=b6pkwZSpT+JGwlHIZbCPUvTPFedQv1jCT7oPeF4194fyZcQn+RGdzitYWd54cpqye2
+         NyhdCFPP+9IotOXPqy6x03jiNWU0JvY5psMey2dRKlAwm6RXBjak029lDOmenxWwFxcd
+         pww/gCE3G+LxysFACQmKzAkQpdAoJhGUC3Ri8D99LdGSE738TBPYXtc6NpTxrwwJXjWk
+         G7mbuLrFauC5pQG4EzX+1Lg1B7FDgtA0kyl7+aUoHEQUqBaJRbv9JLn3GshQtx+8a1+Q
+         mzVC3pogY1qULQ0V822626lcIi6dytqpQ43pZi479FcbQixGIff56r35k+hXYxNJDsuq
+         bMYQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/pEi0ZM3Fi2Usz6NnZ4m0usse6Tt4uPhJyk6gB8jQA2niiZsf6cGycL8I0RyM6kO3J2GSBac8b@vger.kernel.org
+X-Gm-Message-State: AOJu0YyDxVfy1+u6mFMV75d7w46QOhRDM2s483z1OfnNXv0kMZt2thXi
+	mHcIaaqqioK4NZHV0WG3+PC0RrbgF7O2FOzCu6n2cwsxfrHyXUzuPSXtZH5dH5tj5yBd8a9QD0C
+	UhYW4VaZRur1xevT5BJbzkg9XbcEzp5g=
+X-Gm-Gg: AfdE7cl9+SRsC/gyd86aDIsipsgqRn4yREx9RQ4vLeuQxdDFF+FOtoiNuWPgOzg5kZm
+	6K2ana/Ap3QQaNq6A9TVpmmkeqHmMnp7/o6DxU15i4DhOopQyLf39V35i27+ZdJP69yQOUk4c1F
+	oCx7nDDP0jcsTy8v/bH3FG920LWnOgQOcGbAslUz0tlksKt8fnf/pe2PmJ35pdDv91YqhK3b4Eh
+	CjNiY2LxPdiJdz68ZS9kZYhm9VUAEAyEmhQlgrVXEYEYfQuBUWkJFWnxZe8lSZ4R666jc9OEE3k
+	fEzn+utpUst9VHQeNkWi5hn1dpHY
+X-Received: by 2002:a05:600c:3b19:b0:490:3c15:7146 with SMTP id
+ 5b1f17b1804b1-4926687e6eamr128170845e9.19.1782499021866; Fri, 26 Jun 2026
+ 11:37:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+References: <20260626102358.1603618-10-alex@ghiti.fr> <20260626143244.3382853-1-usama.arif@linux.dev>
+In-Reply-To: <20260626143244.3382853-1-usama.arif@linux.dev>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 26 Jun 2026 11:36:50 -0700
+X-Gm-Features: AVVi8Ce_QPTWquN2d0lbnXchc4ZFxAYS-iAJXfFBvlstHcQ-UH4eG8289oGmnbI
+Message-ID: <CAKEwX=OKsjtStcuvhQ3WCGYoTJHT6eagBq1mZqX+DdbLm_BFLQ@mail.gmail.com>
+Subject: Re: [PATCH v2 9/9] mm: zswap: per-node kmem accounting for zswap/zsmalloc
+To: Usama Arif <usama.arif@linux.dev>
+Cc: Alexandre Ghiti <alex@ghiti.fr>, alexandre@ghiti.fr, 
+	Andrew Morton <akpm@linux-foundation.org>, Barry Song <baohua@kernel.org>, 
+	Ben Segall <bsegall@google.com>, cgroups@vger.kernel.org, 
+	Chengming Zhou <chengming.zhou@linux.dev>, Christoph Lameter <cl@gentwo.org>, 
+	David Hildenbrand <david@kernel.org>, Dennis Zhou <dennis@kernel.org>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, Ingo Molnar <mingo@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Kairui Song <kasong@tencent.com>, Kent Overstreet <kent.overstreet@linux.dev>, 
+	K Prateek Nayak <kprateek.nayak@amd.com>, "Liam R. Howlett" <liam@infradead.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Lorenzo Stoakes <ljs@kernel.org>, Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>, 
+	Mike Rapoport <rppt@kernel.org>, Minchan Kim <minchan@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
+	Qi Zheng <qi.zheng@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Steven Rostedt <rostedt@goodmis.org>, Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>, 
+	Valentin Schneider <vschneid@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Vlastimil Babka <vbabka@kernel.org>, Wei Xu <weixugc@google.com>, Yosry Ahmed <yosry@kernel.org>, 
+	Yuanchu Xie <yuanchu@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-17354-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:usama.arif@linux.dev,m:alex@ghiti.fr,m:alexandre@ghiti.fr,m:akpm@linux-foundation.org,m:baohua@kernel.org,m:bsegall@google.com,m:cgroups@vger.kernel.org,m:chengming.zhou@linux.dev,m:cl@gentwo.org,m:david@kernel.org,m:dennis@kernel.org,m:dietmar.eggemann@arm.com,m:mingo@redhat.com,m:hannes@cmpxchg.org,m:juri.lelli@redhat.com,m:kasong@tencent.com,m:kent.overstreet@linux.dev,m:kprateek.nayak@amd.com,m:liam@infradead.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:ljs@kernel.org,m:mgorman@suse.de,m:mhocko@kernel.org,m:rppt@kernel.org,m:minchan@kernel.org,m:muchun.song@linux.dev,m:peterz@infradead.org,m:qi.zheng@linux.dev,m:roman.gushchin@linux.dev,m:senozhatsky@chromium.org,m:shakeel.butt@linux.dev,m:rostedt@goodmis.org,m:surenb@google.com,m:tj@kernel.org,m:vschneid@redhat.com,m:vincent.guittot@linaro.org,m:vbabka@kernel.org,m:weixugc@google.com,m:yosry@kernel.org,m:yuanchu@google.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:gourry@gourry.net,m:david@kernel.org,m:longman@redhat.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17342-lists,cgroups=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[41];
+	FORWARDED(0.00)[lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[redhat.com:+];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.com:email,vger.kernel.org:from_smtp]
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 08E576CFC3A
+X-Rspamd-Queue-Id: 92BB06CFB7A
 
-From: Michal Koutný <mkoutny@suse.com>
+On Fri, Jun 26, 2026 at 7:32=E2=80=AFAM Usama Arif <usama.arif@linux.dev> w=
+rote:
+>
+> On Fri, 26 Jun 2026 12:20:58 +0200 Alexandre Ghiti <alex@ghiti.fr> wrote:
+>
+> > Update zswap and zsmalloc to use per-node obj_cgroup for kmem
+> > accounting, attributing compressed page charges to the correct
+> > NUMA node.
+> >
+> > But actually, this is incomplete because it does not correctly account
+> > for entries that straddle pages, those pages being possibly on 2 differ=
+ent
+> > nodes.
+> >
+> > This will be correctly handled by Joshua in a different series [1].
+> >
+> > Link: https://lore.kernel.org/linux-mm/20260311195153.4013476-1-joshua.=
+hahnjy@gmail.com/ [1]
+> > Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> > ---
+> >  include/linux/zsmalloc.h |  2 ++
+> >  mm/zsmalloc.c            | 11 +++++++++++
+> >  mm/zswap.c               | 19 ++++++++++++++++++-
+> >  3 files changed, 31 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/zsmalloc.h b/include/linux/zsmalloc.h
+> > index 478410c880b1..30427f3fe232 100644
+> > --- a/include/linux/zsmalloc.h
+> > +++ b/include/linux/zsmalloc.h
+> > @@ -50,6 +50,8 @@ void zs_obj_read_sg_end(struct zs_pool *pool, unsigne=
+d long handle);
+> >  void zs_obj_write(struct zs_pool *pool, unsigned long handle,
+> >                 void *handle_mem, size_t mem_len);
+> >
+> > +int zs_handle_to_nid(struct zs_pool *pool, unsigned long handle);
+> > +
+> >  extern const struct movable_operations zsmalloc_mops;
+> >
+> >  #endif
+> > diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+> > index 83f5820c45f9..17f7403ebe77 100644
+> > --- a/mm/zsmalloc.c
+> > +++ b/mm/zsmalloc.c
+> > @@ -1380,6 +1380,17 @@ static void obj_free(int class_size, unsigned lo=
+ng obj)
+> >       mod_zspage_inuse(zspage, -1);
+> >  }
+> >
+> > +int zs_handle_to_nid(struct zs_pool *pool, unsigned long handle)
+> > +{
+> > +     unsigned long obj;
+> > +     struct zpdesc *zpdesc;
+> > +
+> > +     obj =3D handle_to_obj(handle);
+> > +     obj_to_zpdesc(obj, &zpdesc);
+> > +     return page_to_nid(zpdesc_page(zpdesc));
+> > +}
+> > +EXPORT_SYMBOL(zs_handle_to_nid);
+>
+> Does this need the same locking as the other handle-to-zspage paths?
+> zs_free() takes pool->lock before handle_to_obj() because zspage migratio=
+n can
+> update or move the object behind the handle. This helper does the same de=
+code
+> without the lock, so zswap's uncharge path can race migration and charge =
+or
+> uncharge the wrong node, or observe transient zspage state.
+>
 
-Add a new selftest that exposes a bug in cpuset_attach() where thread
-CPU affinity is not properly updated when the cpuset controller is
-disabled in a threaded cgroup hierarchy.
+Can we just charge it to the page's node for now? Once Joshua's patch
+series is in, we can correctly charge the node owning the data :)
 
-The test creates a threaded cgroup hierarchy with two child cgroups
-(A and B) having different cpuset.cpus constraints:
-- Parent: cpuset.cpus=0-1
-- Child A: cpuset.cpus=0-1
-- Child B: cpuset.cpus=1 (restricted to CPU 1 only)
-
-A multithreaded process is created with threads placed in different
-cgroups. When the cpuset controller is disabled on the parent, thread
-affinities should be updated to match the parent's cpuset.
-
-Expected behavior:
-- thread_a affinity: {0-1} before and after (unchanged)
-- thread_b affinity: {1} before, {0-1} after (expanded)
-
-Current buggy behavior:
-- thread_b affinity remains {1} after controller disable
-
-Assisted-by: Claude:claude-sonnet-4-5
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
-Acked-by: Waiman Long <longman@redhat.com>
----
- tools/testing/selftests/cgroup/test_cpuset.c | 243 +++++++++++++++++++
- 1 file changed, 243 insertions(+)
-
-diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
-index c5cf8b56ceb8..8b4c4a9dd78b 100644
---- a/tools/testing/selftests/cgroup/test_cpuset.c
-+++ b/tools/testing/selftests/cgroup/test_cpuset.c
-@@ -1,7 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#define _GNU_SOURCE
-+#include <assert.h>
- #include <linux/limits.h>
-+#include <pthread.h>
-+#include <sched.h>
- #include <signal.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
- 
- #include "kselftest.h"
- #include "cgroup_util.h"
-@@ -232,6 +238,242 @@ static int test_cpuset_perms_subtree(const char *root)
- 	return ret;
- }
- 
-+static int get_cpu_affinity(cpu_set_t *mask)
-+{
-+	CPU_ZERO(mask);
-+	return sched_getaffinity(0, sizeof(*mask), mask);
-+}
-+
-+static int cpu_set_equal(cpu_set_t *dst, unsigned long mask)
-+{
-+	cpu_set_t expected;
-+
-+	CPU_ZERO(&expected);
-+	assert(sizeof(mask) < CPU_SETSIZE);
-+
-+	for (int cpu = 0; cpu < sizeof(mask); ++cpu)
-+		if ((1UL << cpu) & mask)
-+			CPU_SET(cpu, &expected);
-+
-+	return CPU_EQUAL(&expected, dst);
-+}
-+
-+enum test_phase {
-+	AFFINITY_SETUP,
-+	AFFINITY_THREAD_A_READY,
-+	AFFINITY_THREADS_READY,
-+	AFFINITY_CONTROLLER_DISABLED,
-+	AFFINITY_COMPLETE,
-+	AFFINITY_ERROR
-+};
-+
-+struct thread_args {
-+	const char *cgroup;
-+	cpu_set_t *affinity_before;
-+	cpu_set_t *affinity_after;
-+	enum test_phase ready_phase;
-+};
-+
-+static pthread_mutex_t test_mutex = PTHREAD_MUTEX_INITIALIZER;
-+static pthread_cond_t test_cond = PTHREAD_COND_INITIALIZER;
-+static enum test_phase test_phase;
-+
-+static void *affinity_thread_fn(void *arg)
-+{
-+	struct thread_args *args = (struct thread_args *)arg;
-+
-+	if (cg_enter_current_thread(args->cgroup))
-+		goto fail;
-+
-+	if (get_cpu_affinity(args->affinity_before) != 0)
-+		goto fail;
-+
-+	pthread_mutex_lock(&test_mutex);
-+	if (test_phase < args->ready_phase)
-+		test_phase = args->ready_phase;
-+	pthread_cond_broadcast(&test_cond);
-+
-+	while (test_phase < AFFINITY_CONTROLLER_DISABLED)
-+		pthread_cond_wait(&test_cond, &test_mutex);
-+	pthread_mutex_unlock(&test_mutex);
-+
-+	if (get_cpu_affinity(args->affinity_after) != 0)
-+		goto fail;
-+
-+
-+	return NULL;
-+
-+fail:
-+	pthread_mutex_lock(&test_mutex);
-+	test_phase = AFFINITY_ERROR;
-+	pthread_cond_broadcast(&test_cond);
-+	pthread_mutex_unlock(&test_mutex);
-+	return NULL;
-+}
-+
-+/*
-+ * Test that disabling cpuset controller properly updates thread affinity.
-+ *
-+ * This test exposes a bug in cpuset_attach() where threads in child cgroups
-+ * don't get their affinity updated when the cpuset controller is disabled.
-+ *
-+ * Setup:
-+ * - Create parent cgroup with cpuset.cpus=0-1
-+ * - Create child A with cpuset.cpus=0-1
-+ * - Create child B with cpuset.cpus=1
-+ * - Place multithreaded process: group leader + thread_a in A, thread_b in B
-+ * - Disable cpuset controller on parent
-+ *
-+ * Expected: thread_b's affinity should expand from {1} to {0-1}
-+ * Buggy: thread_b's affinity remains {1}
-+ */
-+static int test_cpuset_affinity_on_controller_disable(const char *root)
-+{
-+	char *parent = NULL, *child_a = NULL, *child_b = NULL;
-+	pthread_t thread_a, thread_b;
-+	int thread_a_created = 0, thread_b_created = 0;
-+	cpu_set_t affinity_a_before, affinity_a_after;
-+	cpu_set_t affinity_b_before, affinity_b_after;
-+	int ret = KSFT_FAIL;
-+
-+	parent = cg_name(root, "cpuset_affinity_test");
-+	if (!parent)
-+		goto cleanup;
-+	if (cg_create(parent))
-+		goto cleanup;
-+	if (cg_write(parent, "cgroup.type", "threaded"))
-+		goto cleanup;
-+
-+	child_a = cg_name(parent, "A");
-+	if (!child_a)
-+		goto cleanup;
-+	if (cg_create(child_a))
-+		goto cleanup;
-+	if (cg_write(child_a, "cgroup.type", "threaded"))
-+		goto cleanup;
-+
-+	child_b = cg_name(parent, "B");
-+	if (!child_b)
-+		goto cleanup;
-+	if (cg_create(child_b))
-+		goto cleanup;
-+	if (cg_write(child_b, "cgroup.type", "threaded"))
-+		goto cleanup;
-+
-+	/* Now enable cpuset controller in parent */
-+	if (cg_write(parent, "cgroup.subtree_control", "+cpuset")) {
-+		ret = KSFT_SKIP;
-+		goto cleanup;
-+	}
-+
-+	/* Set CPU affinity constraints */
-+	if (cg_write(parent, "cpuset.cpus", "0-1"))
-+		goto cleanup;
-+	if (cg_write(child_a, "cpuset.cpus", "0-1"))
-+		goto cleanup;
-+	if (cg_write(child_b, "cpuset.cpus", "1"))
-+		goto cleanup;
-+
-+	/* Move group leader (main thread) to child A */
-+	if (cg_enter_current(child_a))
-+		goto cleanup;
-+
-+	/* Create threads - they will move themselves to their respective cgroups */
-+	test_phase = AFFINITY_SETUP;
-+
-+	struct thread_args args_a = {
-+		.cgroup = child_a,
-+		.affinity_before = &affinity_a_before,
-+		.affinity_after = &affinity_a_after,
-+		.ready_phase = AFFINITY_THREAD_A_READY,
-+	};
-+	if (pthread_create(&thread_a, NULL, affinity_thread_fn, &args_a))
-+		goto cleanup;
-+	thread_a_created = 1;
-+
-+	struct thread_args args_b = {
-+		.cgroup = child_b,
-+		.affinity_before = &affinity_b_before,
-+		.affinity_after = &affinity_b_after,
-+		.ready_phase = AFFINITY_THREADS_READY,
-+	};
-+	if (pthread_create(&thread_b, NULL, affinity_thread_fn, &args_b))
-+		goto cleanup_threads;
-+	thread_b_created = 1;
-+
-+	pthread_mutex_lock(&test_mutex);
-+	while (test_phase < AFFINITY_THREADS_READY)
-+		pthread_cond_wait(&test_cond, &test_mutex);
-+
-+	/* If a thread failed during setup, bail out */
-+	if (test_phase == AFFINITY_ERROR) {
-+		pthread_mutex_unlock(&test_mutex);
-+		goto cleanup_threads;
-+	}
-+	pthread_mutex_unlock(&test_mutex);
-+
-+	if (!cpu_set_equal(&affinity_a_before, 0x3)) {
-+		ksft_print_msg("FAIL: thread_a initial affinity incorrect\n");
-+		goto cleanup_threads;
-+	}
-+
-+	if (!cpu_set_equal(&affinity_b_before, 0x2)) {
-+		ksft_print_msg("FAIL: thread_b initial affinity incorrect\n");
-+		goto cleanup_threads;
-+	}
-+
-+	/* Disable cpuset controller - this should trigger affinity update */
-+	if (cg_write(parent, "cgroup.subtree_control", "-cpuset"))
-+		goto cleanup_threads;
-+
-+	/* Signal threads to save their final affinity and exit */
-+	pthread_mutex_lock(&test_mutex);
-+	test_phase = AFFINITY_CONTROLLER_DISABLED;
-+	pthread_cond_broadcast(&test_cond);
-+	pthread_mutex_unlock(&test_mutex);
-+
-+	pthread_join(thread_a, NULL);
-+	pthread_join(thread_b, NULL);
-+
-+	/* Verify thread affinities AFTER disabling controller */
-+	if (!cpu_set_equal(&affinity_a_after, 0x3)) {
-+		ksft_print_msg("FAIL: thread_a final affinity incorrect\n");
-+		goto cleanup;
-+	}
-+
-+	if (!cpu_set_equal(&affinity_b_after, 0x3)) {
-+		ksft_print_msg("FAIL: thread_b affinity did not expand to {0-1}\n");
-+		goto cleanup;
-+	}
-+
-+	ret = KSFT_PASS;
-+	goto cleanup;
-+
-+cleanup_threads:
-+	pthread_mutex_lock(&test_mutex);
-+	test_phase = AFFINITY_COMPLETE;
-+	pthread_cond_broadcast(&test_cond);
-+	pthread_mutex_unlock(&test_mutex);
-+
-+	if (thread_a_created)
-+		pthread_join(thread_a, NULL);
-+	if (thread_b_created)
-+		pthread_join(thread_b, NULL);
-+
-+cleanup:
-+	/* Move back to root before cleanup */
-+	cg_enter_current(root);
-+
-+	cg_destroy(child_b);
-+	free(child_b);
-+	cg_destroy(child_a);
-+	free(child_a);
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
- 
- #define T(x) { x, #x }
- struct cpuset_test {
-@@ -241,6 +483,7 @@ struct cpuset_test {
- 	T(test_cpuset_perms_object_allow),
- 	T(test_cpuset_perms_object_deny),
- 	T(test_cpuset_perms_subtree),
-+	T(test_cpuset_affinity_on_controller_disable),
- };
- #undef T
- 
--- 
-2.54.0
-
+FWIW, this is how these zswap entries are organized in the LRU too -
+following to the OG page's node.
 
