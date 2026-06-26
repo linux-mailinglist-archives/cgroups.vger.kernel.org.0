@@ -1,41 +1,41 @@
-Return-Path: <cgroups+bounces-17321-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17322-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ahAUDNJUPmqQDwkAu9opvQ
-	(envelope-from <cgroups+bounces-17321-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 12:30:42 +0200
+	id b5YGOv9UPmqsDwkAu9opvQ
+	(envelope-from <cgroups+bounces-17322-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 12:31:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A0326CC184
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 12:30:41 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6464A6CC1AA
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 12:31:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17321-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17321-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17322-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17322-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id EA6633026E7C
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 10:29:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 876B5305FB31
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 10:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC5C3EFD02;
-	Fri, 26 Jun 2026 10:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A9E3EF0DC;
+	Fri, 26 Jun 2026 10:31:02 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23A53ED3A9;
-	Fri, 26 Jun 2026 10:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A9D3ED5A3;
+	Fri, 26 Jun 2026 10:30:52 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782469790; cv=none; b=R6GAFnUC0GdYDNXBsHwmJEAU/xDiwx4Oda8Pw2JFmQK/8Xl4l0RUShEiC7TlcrYrMTJWqD6sy/gdhwJxvatzYkYrWtUBoLClmKbj3IV3PRcwNSlc1dobxBdnSX8e5L+9FJVUvZGzcGRfYkcv893u6UhAC13CO5i+zCwGzYZxtyc=
+	t=1782469861; cv=none; b=jAOm3E/uO9CnQxOSfyuRLP5Gc7pa1AvvUc2yQawu7T6R4P+3xbnKPTPLpH91gIlpIBImarjJhSn3Hs2Fa+nWtMtX2IdORUSAceHl9j02yayPpROpJg/rayFWVwezck/4oFkCWGhX7uRy2fpn691FauFSNYuXOwr1M/Nj7cbLTgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782469790; c=relaxed/simple;
-	bh=fy6M6sT+ZfTaNcD5yI8SgIcYOWMVc/sJnU+uXABwQfg=;
+	s=arc-20240116; t=1782469861; c=relaxed/simple;
+	bh=n6xgtfollAfZJyd7GuoZQWdj26LgplgJtXVsu0kK1XE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e3v/h1QQkBugAZuwFhPyEBx6RsKiQMLpcyIqESmxklvkX2s5eFqQCHzfA77dmLyhjuQwjQUWn4601jBRiGLIHwf3pDEPYpJ1kXlfn1vdl0ZPQ02ogI86i3HOo0piL4BtXAgrraYaRL0qnOBgZcOlD7H7TP079jj3jpfAUQ/9b7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.195
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0ACD21F65B;
-	Fri, 26 Jun 2026 10:29:39 +0000 (UTC)
+	 MIME-Version; b=SQQ2H802dm7lomeuSB4vvcDo0A3uAC2QMV0VbvjBpAISOPboKSnKgyMNdlbsfFeVa3FVT2+TV1waNAfJ3uNiMm/Xdpsczu3Ufv/dci2tbAujuguyNT9B9l3idNUx0bZILYMFEjQL1S5zShS+iU6ulBKT1Cpp6qRYxyv+/xA88xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.193
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 758A83E96E;
+	Fri, 26 Jun 2026 10:30:45 +0000 (UTC)
 From: Alexandre Ghiti <alex@ghiti.fr>
 To: alexandre@ghiti.fr,
 	Andrew Morton <akpm@linux-foundation.org>
@@ -79,9 +79,9 @@ Cc: Axel Rasmussen <axelrasmussen@google.com>,
 	Yosry Ahmed <yosry@kernel.org>,
 	Yuanchu Xie <yuanchu@google.com>,
 	Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH v2 5/9] mm: memcontrol: track MEMCG_KMEM per NUMA node
-Date: Fri, 26 Jun 2026 12:20:54 +0200
-Message-ID: <20260626102358.1603618-6-alex@ghiti.fr>
+Subject: [PATCH v2 6/9] mm: percpu: per-node kmem accounting
+Date: Fri, 26 Jun 2026 12:20:55 +0200
+Message-ID: <20260626102358.1603618-7-alex@ghiti.fr>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260626102358.1603618-1-alex@ghiti.fr>
 References: <20260626102358.1603618-1-alex@ghiti.fr>
@@ -95,19 +95,19 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: alex@ghiti.fr
 X-GND-State: clean
 X-GND-Score: -100
-X-GND-Cause: dmFkZTGdhs9xuqAzUROmmsJvsJjXlJZ0qeTIQWv1SwQGarWmGYIa0sFgvk5TpQ9jfrltusvZoPk8YdWn3PZEEalLBjdfHMe7NqNuZrhxSoChbVpy5Nep8byl3DHWVqDvp22mXFzlNO8942ydLlAkQ+L6aO+eIgnDvtvprJXn6Gk9sJGXK+ptPbEvnkFg0hCg1QwOx0jFi2oA3CD11zGmtPZ3Qj90hnJeuAwCdkM5UQT74WjOHTYJqjH6/g55DRp4gxglIvoWlT1Dy8heeGbvllTWUsmkWwtaP9Gq6rx1FN35MPiV+ZgrCHBylug5kSysqz4Bd4NnZNgsc26P0Z686fWBs04NmhDwJhRVUM511DOXL7IqzWPOEjEgB/QpJP6wf7Ur6bAZjKtcFUzy3c7uwImkbKgeFMzFpKuZTmoRC5EfVKrmvyqU8R4oK2AWp8fY+l9ov3UtyvlcviFq6iZwIRQv0dRr0H080tw081br9wjabs/4DorJCqi3zz2rKa40PV7BmVrpQVPEUQJD+UFXwROdU0MvLAyhWUKDyLJakdHOQdFCWxPJgpjMKTKj4/4OArD7AD86mZ87p7kz/z0WJFDaDvzk5KMgxRdDMJG1WY5B+ciyUyqtiDasAbdicuGnw8yF0b2KdSqUTsZybjqcHuXD7V17cgJ1q9CRxPXBghnegPIVJQ
+X-GND-Cause: dmFkZTGnYIDq9A11TftEatbke2wSLsM4U/RRnbCHpAUAIQBwHbVmowa+ke86M8Z6PPn5o7UKBvUMbr2gZWgcRiFc7ixLzqgLUvmoF1f6yq0GAxvM7ym0xa3n5f10aBqF/6aF0YuddnSkH5x50aCnRuJBlmRRybtyRnTHEtDjNABLsbF8/J37ko6Bm3zG+eW4NfAtWrkoIM0OVuVjH1i1R2t7kHuPQJtjQvB5ayDwVI8gcfE8wIDI8ctauyWpfQVDC9X4EX6LKQuBwn+BvrBeBO0dxg0WQvW3qtFakFlV8vs7Ehg02InoNEqwXY73y16xKIg4BKzVJqVRXZF2evXpKGHtjYSRf1v/B7FVN3Z06tc7fxHWyCdWXvP2ULvCvevW9v0kxmFCJc3JUq1DDIDKRH+N3FvV2TqE1J4StGRAKPYFn1SmtED7pB6BwHmaqSvT1k/e3ptJrDcVsEWtbAjA0Kqr33CAOC+uYXb3tedJNpHQVLKSvLhvJZqF4zl6LmuUZrA2gpOXOkLnaG+KI8yBIKBjqAKFkn3XZ16MtHL90kSeY7rrQTLYbL1gwjmUAeQm93S2gYjbe1yWuiAjhJKDILiSwUdAmSmzAyzcg/rFCFeLJOuMZaf2YTNUa8wD1BdF1UySRvalZ9/cYtYmGCdy/rGxzX6X3eXCWy0Kus+XmBXJQVrz5g
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_TWELVE(0.00)[42];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17321-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17322-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[ghiti.fr];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:alexandre@ghiti.fr,m:akpm@linux-foundation.org,m:axelrasmussen@google.com,m:baohua@kernel.org,m:bsegall@google.com,m:cgroups@vger.kernel.org,m:chengming.zhou@linux.dev,m:cl@gentwo.org,m:david@kernel.org,m:dennis@kernel.org,m:dietmar.eggemann@arm.com,m:mingo@redhat.com,m:hannes@cmpxchg.org,m:juri.lelli@redhat.com,m:kasong@tencent.com,m:kent.overstreet@linux.dev,m:kprateek.nayak@amd.com,m:liam@infradead.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:ljs@kernel.org,m:mgorman@suse.de,m:mhocko@kernel.org,m:rppt@kernel.org,m:minchan@kernel.org,m:muchun.song@linux.dev,m:nphamcs@gmail.com,m:peterz@infradead.org,m:qi.zheng@linux.dev,m:roman.gushchin@linux.dev,m:senozhatsky@chromium.org,m:shakeel.butt@linux.dev,m:rostedt@goodmis.org,m:surenb@google.com,m:tj@kernel.org,m:vschneid@redhat.com,m:vincent.guittot@linaro.org,m:vbabka@kernel.org,m:weixugc@google.com,m:yosry@kernel.org,m:yuanchu@google.com,m:alex@ghiti.fr,s:lists@lfdr.de];
@@ -126,295 +126,184 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ghiti.fr:email,ghiti.fr:mid,ghiti.fr:from_mime,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,ghiti.fr:email,ghiti.fr:mid,ghiti.fr:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1A0326CC184
+X-Rspamd-Queue-Id: 6464A6CC1AA
 
-This patch gets rid of MEMCG_KMEM and wires all the "generic" functions
-by introducing per-node obj_cgroup objects.
+Now that the memcg charging is decoupled from the kmem accounting, the
+post-alloc hook knows the actual node each backing page landed on and can
+account it per node. The backing pages of a percpu allocation are only
+best-effort placed on cpu_to_node() by pcpu_alloc_pages(), so some may
+have fallen back to other nodes; the hook therefore reads each page's real
+node via page_to_nid() and accumulates the bytes per node.
 
-Note that it does not convert the kmem users to proper per-memcg-per-node
-accounting now, this is done in upcoming patches.
+The accounting cannot go through the obj_stock: a concurrent stock drain
+could take the pages the post-alloc hook relies on, and the hook cannot
+afford a failing re-charge. Instead, accumulate the per-node bytes first,
+then for each touched node issue a single obj_cgroup_account_kmem() of
+ceil(bytes_on_node / PAGE_SIZE) pages and hand the sub-page remainder back
+to the stock. The free hook mirrors this with one uncharge of the exact
+bytes per node. Batching per node (instead of per page) keeps the memcg
+work proportional to the number of nodes rather than num_possible_cpus().
+
+We have to precharge enough pages to account for the worst case scenario
+where the allocation is spread on all nodes. Since in
+pcpu_memcg_post_alloc_hook(), we charge PAGE_ALIGN(size_on_node_X), that
+means we round up by strictly less than one page for each node. So for N
+nodes, we waste strictly less than N pages: so we have to precharge at
+least PAGE_ALIGN(total size) + num_possible_nodes().
 
 Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 ---
- include/linux/memcontrol.h | 19 +++++++----
- include/linux/mmzone.h     |  1 +
- mm/memcontrol.c            | 64 ++++++++++++++++++++++++--------------
- mm/vmstat.c                |  1 +
- 4 files changed, 55 insertions(+), 30 deletions(-)
+ mm/percpu.c | 88 +++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 76 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 8f419ee54510..a60fa197a973 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -36,7 +36,6 @@ enum memcg_stat_item {
- 	MEMCG_SWAP = NR_VM_NODE_STAT_ITEMS,
- 	MEMCG_SOCK,
- 	MEMCG_PERCPU_B,
--	MEMCG_KMEM,
- 	MEMCG_ZSWAP_B,
- 	MEMCG_ZSWAPPED,
- 	MEMCG_ZSWAP_INCOMP,
-@@ -127,9 +126,10 @@ struct mem_cgroup_per_node {
- 	struct list_head objcg_list;
- 
- #ifdef CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC
--	/* slab stats for nmi context */
-+	/* slab and kmem stats for nmi context */
- 	atomic_t		slab_reclaimable;
- 	atomic_t		slab_unreclaimable;
-+	atomic_t		kmem;
- #endif
- };
- 
-@@ -191,6 +191,7 @@ struct obj_cgroup {
- 		struct rcu_head rcu;
- 	};
- 	bool is_root;
-+	int nid;
- };
- 
- /*
-@@ -255,10 +256,6 @@ struct mem_cgroup {
- 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
- 	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
- 
--#ifdef CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC
--	/* MEMCG_KMEM for nmi context */
--	atomic_t		kmem_stat;
--#endif
- 	/*
- 	 * Hint of reclaim pressure for socket memroy management. Note
- 	 * that this indicator should NOT be used in legacy cgroup mode
-@@ -773,6 +770,16 @@ static inline void obj_cgroup_put(struct obj_cgroup *objcg)
- 		percpu_ref_put(&objcg->refcnt);
+diff --git a/mm/percpu.c b/mm/percpu.c
+index 01c87e39d366..e9d2d3716b99 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -1613,6 +1613,22 @@ static struct pcpu_chunk *pcpu_chunk_addr_search(void *addr)
  }
  
-+static inline struct obj_cgroup *obj_cgroup_nid(struct obj_cgroup *objcg,
-+						int nid)
+ #ifdef CONFIG_MEMCG
++static unsigned int pcpu_memcg_nr_precharge_pages(size_t size)
 +{
-+	struct mem_cgroup *memcg = obj_cgroup_memcg(objcg);
++	size_t total = pcpu_obj_full_size(size);
++	unsigned int ceil = PAGE_ALIGN(total) >> PAGE_SHIFT;
 +
-+	/* Borrowed RCU lookup: takes no reference, caller must hold RCU. */
-+	WARN_ON_ONCE(!rcu_read_lock_held());
-+	return rcu_dereference(memcg->nodeinfo[nid]->objcg);
++	/*
++	 * pcpu_memcg_post_alloc_hook() charges ceil(bytes_on_node / PAGE_SIZE)
++	 * pages per node. Summed over the K <= num_possible_nodes() nodes the
++	 * allocation touches that is at most ceil + (K - 1): each node rounds
++	 * its share up by strictly less than a page. Precharge
++	 * ceil + num_possible_nodes(), which covers that worst case with a
++	 * page of headroom, so the per-node credit never runs short.
++	 */
++	return ceil + num_possible_nodes();
 +}
 +
- static inline bool mem_cgroup_tryget(struct mem_cgroup *memcg)
+ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
+ 				      struct obj_cgroup **objcgp)
  {
- 	return !memcg || css_tryget(&memcg->css);
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index ca2712187147..753fdf9dc80f 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -327,6 +327,7 @@ enum node_stat_item {
- #ifdef CONFIG_HUGETLB_PAGE
- 	NR_HUGETLB,
- #endif
-+	NR_KMEM,
- 	NR_BALLOON_PAGES,
- 	NR_KERNEL_FILE_PAGES,
- 	NR_GPU_ACTIVE,	/* Pages assigned to GPU objects */
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 480fba12a217..c6a0d8463400 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -136,6 +136,7 @@ bool mem_cgroup_kmem_disabled(void)
+@@ -1625,14 +1641,37 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
+ 	if (!objcg || obj_cgroup_is_root(objcg))
+ 		return true;
+ 
+-	if (obj_cgroup_precharge(objcg, gfp,
+-				 PAGE_ALIGN(pcpu_obj_full_size(size)) >> PAGE_SHIFT))
++	if (obj_cgroup_precharge(objcg, gfp, pcpu_memcg_nr_precharge_pages(size)))
+ 		return false;
+ 
+ 	*objcgp = objcg;
+ 	return true;
  }
  
- static void memcg_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages);
-+static void mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx, int val);
- 
- static void obj_cgroup_release(struct percpu_ref *ref)
- {
-@@ -170,9 +171,11 @@ static void obj_cgroup_release(struct percpu_ref *ref)
- 
- 	if (nr_pages) {
- 		struct mem_cgroup *memcg;
-+		struct lruvec *lruvec;
- 
- 		memcg = get_mem_cgroup_from_objcg(objcg);
--		mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
-+		lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(objcg->nid));
-+		mod_lruvec_state(lruvec, NR_KMEM, -nr_pages);
- 		memcg1_account_kmem(memcg, -nr_pages);
- 		if (!mem_cgroup_is_root(memcg))
- 			memcg_uncharge(memcg, nr_pages);
-@@ -423,13 +426,13 @@ static const unsigned int memcg_node_stat_items[] = {
- #ifdef CONFIG_HUGETLB_PAGE
- 	NR_HUGETLB,
- #endif
-+	NR_KMEM,
- };
- 
- static const unsigned int memcg_stat_items[] = {
- 	MEMCG_SWAP,
- 	MEMCG_SOCK,
- 	MEMCG_PERCPU_B,
--	MEMCG_KMEM,
- 	MEMCG_ZSWAP_B,
- 	MEMCG_ZSWAPPED,
- 	MEMCG_ZSWAP_INCOMP,
-@@ -1546,7 +1549,7 @@ struct memory_stat {
- static const struct memory_stat memory_stats[] = {
- 	{ "anon",			NR_ANON_MAPPED			},
- 	{ "file",			NR_FILE_PAGES			},
--	{ "kernel",			MEMCG_KMEM			},
-+	{ "kernel",			NR_KMEM				},
- 	{ "kernel_stack",		NR_KERNEL_STACK_KB		},
- 	{ "pagetables",			NR_PAGETABLE			},
- 	{ "sec_pagetables",		NR_SECONDARY_PAGETABLE		},
-@@ -3052,20 +3055,26 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
- }
- 
- #ifdef CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC
--static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int val)
-+static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int nid, int val)
- {
- 	if (likely(!in_nmi())) {
--		mod_memcg_state(memcg, MEMCG_KMEM, val);
-+		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
++/*
++ * Accumulate the per-cpu payload bytes of this allocation onto the node that
++ * actually backs each page. pcpu_alloc_pages() only places a CPU's backing
++ * page on cpu_to_node() as a best effort, so the page may have fallen back to
++ * another node; use the page's real node. node_bytes[nid] accumulates the
++ * bytes seen on each node, to be charged in one batch per node by the caller.
++ */
++static void pcpu_memcg_accumulate_pages(struct pcpu_chunk *chunk, int off,
++				   size_t size, unsigned int *node_bytes)
++{
++	unsigned int nr_pages = PAGE_ALIGN(size) >> PAGE_SHIFT;
++	unsigned int cpu, i;
 +
-+		mod_lruvec_state(lruvec, NR_KMEM, val);
++	for_each_possible_cpu(cpu) {
++		for (i = 0; i < nr_pages; i++) {
++			void *addr = (void *)pcpu_chunk_addr(chunk, cpu, PFN_DOWN(off) + i);
++			size_t page_sz = i < nr_pages - 1 ?
++				PAGE_SIZE : size - (nr_pages - 1) * PAGE_SIZE;
++
++			node_bytes[page_to_nid(pcpu_addr_to_page(addr))] += page_sz;
++		}
++	}
++}
++
+ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
+ 				       struct pcpu_chunk *chunk, int off,
+ 				       size_t size)
+@@ -1641,29 +1680,47 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
+ 		return;
+ 
+ 	if (likely(chunk && chunk->obj_exts)) {
+-		size_t total = pcpu_obj_full_size(size);
+-		size_t remainder = PAGE_ALIGN(total) - total;
++		unsigned int precharge_pages = pcpu_memcg_nr_precharge_pages(size);
++		unsigned int node_bytes[MAX_NUMNODES] = { 0 };
++		unsigned int pages_used = 0;
++		int nid;
+ 
+ 		obj_cgroup_get(objcg);
+ 		chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].cgroup = objcg;
+ 
++		pcpu_memcg_accumulate_pages(chunk, off, size, node_bytes);
++
+ 		rcu_read_lock();
+ 		mod_memcg_state(obj_cgroup_memcg(objcg), MEMCG_PERCPU_B,
+-				total);
+-		rcu_read_unlock();
++				pcpu_obj_full_size(size));
++
++		for_each_online_node(nid) {
++			unsigned int pages;
+ 
+-		obj_cgroup_account_kmem(objcg, PAGE_ALIGN(total) >> PAGE_SHIFT);
+-		if (remainder)
+-			obj_cgroup_uncharge(objcg, remainder);
++			if (!node_bytes[nid])
++				continue;
++			pages = DIV_ROUND_UP(node_bytes[nid], PAGE_SIZE);
++			obj_cgroup_account_kmem(obj_cgroup_nid(objcg, nid), pages);
++			pages_used += pages;
++			if (pages * PAGE_SIZE > node_bytes[nid])
++				obj_cgroup_uncharge(obj_cgroup_nid(objcg, nid),
++						    pages * PAGE_SIZE - node_bytes[nid]);
++		}
++
++		/* Return the precharged pages we did not use. */
++		if (pages_used < precharge_pages)
++			obj_cgroup_unprecharge(objcg, precharge_pages - pages_used);
++		rcu_read_unlock();
  	} else {
-+		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-+
- 		/* preemption is disabled in_nmi(). */
- 		__css_rstat_updated(&memcg->css, smp_processor_id());
--		atomic_add(val, &memcg->kmem_stat);
-+		atomic_add(val, &pn->kmem);
+-		obj_cgroup_unprecharge(objcg,
+-				       PAGE_ALIGN(pcpu_obj_full_size(size)) >> PAGE_SHIFT);
++		obj_cgroup_unprecharge(objcg, pcpu_memcg_nr_precharge_pages(size));
  	}
  }
- #else
--static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int val)
-+static inline void account_kmem_nmi_safe(struct mem_cgroup *memcg, int nid, int val)
+ 
+ static void pcpu_memcg_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
  {
--	mod_memcg_state(memcg, MEMCG_KMEM, val);
-+	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
-+
-+	mod_lruvec_state(lruvec, NR_KMEM, val);
- }
- #endif
++	unsigned int node_bytes[MAX_NUMNODES] = { 0 };
+ 	struct obj_cgroup *objcg;
++	int nid;
  
-@@ -3081,7 +3090,7 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+ 	if (unlikely(!chunk->obj_exts))
+ 		return;
+@@ -1673,11 +1730,18 @@ static void pcpu_memcg_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
+ 		return;
+ 	chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].cgroup = NULL;
  
- 	memcg = get_mem_cgroup_from_objcg(objcg);
- 
--	account_kmem_nmi_safe(memcg, -nr_pages);
-+	account_kmem_nmi_safe(memcg, objcg->nid, -nr_pages);
- 	memcg1_account_kmem(memcg, -nr_pages);
- 	if (!mem_cgroup_is_root(memcg))
- 		refill_stock(memcg, nr_pages);
-@@ -3109,7 +3118,7 @@ static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
- 	if (ret)
- 		goto out;
- 
--	account_kmem_nmi_safe(memcg, nr_pages);
-+	account_kmem_nmi_safe(memcg, objcg->nid, nr_pages);
- 	memcg1_account_kmem(memcg, nr_pages);
- out:
- 	css_put(&memcg->css);
-@@ -3337,10 +3346,11 @@ static void drain_obj_stock_slot(struct obj_stock_pcp *stock, int i)
- 
- 		if (nr_pages) {
- 			struct mem_cgroup *memcg;
-+			struct lruvec *lruvec;
- 
- 			memcg = get_mem_cgroup_from_objcg(old);
--
--			mod_memcg_state(memcg, MEMCG_KMEM, -nr_pages);
-+			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(old->nid));
-+			mod_lruvec_state(lruvec, NR_KMEM, -nr_pages);
- 			memcg1_account_kmem(memcg, -nr_pages);
- 			if (!mem_cgroup_is_root(memcg))
- 				memcg_uncharge(memcg, nr_pages);
-@@ -3349,7 +3359,7 @@ static void drain_obj_stock_slot(struct obj_stock_pcp *stock, int i)
- 		}
- 
- 		/*
--		 * The leftover is flushed to the centralized per-memcg value.
-+		 * The leftover is flushed to the per-node per-memcg value.
- 		 * On the next attempt to refill obj stock it will be moved
- 		 * to a per-cpu stock (probably, on an other CPU), see
- 		 * refill_obj_stock().
-@@ -3548,7 +3558,7 @@ void obj_cgroup_account_kmem(struct obj_cgroup *objcg, unsigned int nr_pages)
+-	obj_cgroup_uncharge(objcg, pcpu_obj_full_size(size));
++	pcpu_memcg_accumulate_pages(chunk, off, size, node_bytes);
  
  	rcu_read_lock();
- 	memcg = obj_cgroup_memcg(objcg);
--	account_kmem_nmi_safe(memcg, nr_pages);
-+	account_kmem_nmi_safe(memcg, objcg->nid, nr_pages);
- 	memcg1_account_kmem(memcg, nr_pages);
- 	rcu_read_unlock();
- }
-@@ -4302,6 +4312,7 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 		if (unlikely(mem_cgroup_is_root(memcg)))
- 			objcg->is_root = true;
- 
-+		objcg->nid = nid;
- 		objcg->memcg = memcg;
- 		rcu_assign_pointer(memcg->nodeinfo[nid]->objcg, objcg);
- 		obj_cgroup_get(objcg);
-@@ -4505,15 +4516,6 @@ static void flush_nmi_stats(struct mem_cgroup *memcg, struct mem_cgroup *parent,
- {
- 	int nid;
- 
--	if (atomic_read(&memcg->kmem_stat)) {
--		int kmem = atomic_xchg(&memcg->kmem_stat, 0);
--		int index = memcg_stats_index(MEMCG_KMEM);
--
--		memcg->vmstats->state[index] += kmem;
--		if (parent)
--			parent->vmstats->state_pending[index] += kmem;
--	}
--
- 	for_each_node_state(nid, N_MEMORY) {
- 		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
- 		struct lruvec_stats *lstats = pn->lruvec_stats;
-@@ -4544,6 +4546,18 @@ static void flush_nmi_stats(struct mem_cgroup *memcg, struct mem_cgroup *parent,
- 			if (parent)
- 				parent->vmstats->state_pending[index] += slab;
- 		}
-+		if (atomic_read(&pn->kmem)) {
-+			int kmem = atomic_xchg(&pn->kmem, 0);
-+			int index = memcg_stats_index(NR_KMEM);
+ 	mod_memcg_state(obj_cgroup_memcg(objcg), MEMCG_PERCPU_B,
+ 			-pcpu_obj_full_size(size));
 +
-+			mod_node_page_state(NODE_DATA(nid), NR_KMEM, kmem);
-+			lstats->state[index] += kmem;
-+			memcg->vmstats->state[index] += kmem;
-+			if (plstats)
-+				plstats->state_pending[index] += kmem;
-+			if (parent)
-+				parent->vmstats->state_pending[index] += kmem;
-+		}
- 	}
- }
- #else
-@@ -5332,7 +5346,9 @@ static void uncharge_batch(const struct uncharge_gather *ug)
- 	if (ug->nr_memory) {
- 		memcg_uncharge(memcg, ug->nr_memory);
- 		if (ug->nr_kmem) {
--			mod_memcg_state(memcg, MEMCG_KMEM, -ug->nr_kmem);
-+			struct lruvec *lruvec =
-+				mem_cgroup_lruvec(memcg, NODE_DATA(ug->objcg->nid));
-+			mod_lruvec_state(lruvec, NR_KMEM, -ug->nr_kmem);
- 			memcg1_account_kmem(memcg, -ug->nr_kmem);
- 		}
- 		memcg1_oom_recover(memcg);
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index f534972f517d..d55437d1852e 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1293,6 +1293,7 @@ const char * const vmstat_text[] = {
- #ifdef CONFIG_HUGETLB_PAGE
- 	[I(NR_HUGETLB)]				= "nr_hugetlb",
- #endif
-+	[I(NR_KMEM)]				= "nr_kmem",
- 	[I(NR_BALLOON_PAGES)]			= "nr_balloon_pages",
- 	[I(NR_KERNEL_FILE_PAGES)]		= "nr_kernel_file_pages",
- 	[I(NR_GPU_ACTIVE)]			= "nr_gpu_active",
++	/* Uncharge each node the exact bytes it was charged at alloc. */
++	for_each_online_node(nid) {
++		if (node_bytes[nid])
++			obj_cgroup_uncharge(obj_cgroup_nid(objcg, nid),
++					    node_bytes[nid]);
++	}
+ 	rcu_read_unlock();
+ 
+ 	obj_cgroup_put(objcg);
 -- 
 2.54.0
 
