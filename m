@@ -1,263 +1,584 @@
-Return-Path: <cgroups+bounces-17304-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17305-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id vyXjHNkJPmrK+wgAu9opvQ
-	(envelope-from <cgroups+bounces-17304-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 07:10:49 +0200
+	id Jc+OFoMMPmqU/AgAu9opvQ
+	(envelope-from <cgroups+bounces-17305-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 07:22:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE3036CA39A
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 07:10:48 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C294B6CA4CF
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 07:22:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=appspotmail.com (policy=none);
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17304-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17304-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b="Q9d+PxB/";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17305-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17305-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=amazon.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7D7BE3036637
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 05:10:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6DAEE308F820
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 05:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B683542F6;
-	Fri, 26 Jun 2026 05:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE9735AC12;
+	Fri, 26 Jun 2026 05:19:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-011.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-011.esa.us-west-2.outbound.mail-perimeter.amazon.com [52.35.192.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13AB923BD1B
-	for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 05:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C90396D0D;
+	Fri, 26 Jun 2026 05:19:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782450646; cv=none; b=PlxMiTtqG8YyLLTlHynbA0l6sxhMpH0ETSXTlzewjok0VCLmsH1vs7X32uuV9Yis0vs+NyBGDMzzanfoAaaIeflQdi64VJiJuSQm7AjxgPg9DE6E7XJMzS2KIly5WMaF2k3PFUD4QuiY7sl498wWRVXQOg1Jj2LKCuKZTAQyJpw=
+	t=1782451182; cv=none; b=cAdwUhiTbY4hmbWtenHI3dO//fts67Gl0I6WzeZjAPhVjSfDZ5VwuN29lQb/s1INczhqg+HD3dzCX603EWS2zARq/3pG+nCfY4w/OH/v4V1bPDjjRo3abMa4g4oflJTqxWmtU8CAdo8YmKESXvnLds1dToHrdknd+2zLanAO6Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782450646; c=relaxed/simple;
-	bh=E1AnKSkvy/SR7910eEeXX6LnKezjUXwr4DVkJG9Xr6U=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WEffjvpHfkYvdimV3qRBXqTmpy0MDclTPFy6k14SfpfMKrIOba++3sEbkfrsdFJlhJjs1s5hXsj4Tx7RGzaNU7qz4Y3ACxOLikRUccedtPR3+PKlJDE4gUbXlRnIfUm4S0hoCD399j9Uu+d3VBtIsgcdgV4EnrIi3a/GxuqRTN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.207
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-48656ba24fdso813071b6e.2
-        for <cgroups@vger.kernel.org>; Thu, 25 Jun 2026 22:10:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782450644; x=1783055444;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WqVuhnGlA98jHg+WNh0FbxGqsq0xgE7hvDd90gJez9Q=;
-        b=naB9h+GpiaCA9WFmDhuvqHUM12yWaNa16+Z95R0HtBhKMOn1JnCp4ZagpktpgXmXpo
-         kkM7DokUtg1qNbb3iYijQnOb0EfbltJc05BlGVKe0OvurD2/YQzOLW0rAUMM5zJW4kPP
-         gS/H2v/Ah5PxH0Kwwl0llJIHNIPw8O1+053lp2DH0RLgf1UJLhCYSRa5qQkXmysHVaob
-         FceYCfvxbsNvJw6oeOPQRmyOhWRvD6yEoca+6fpXxo795EFBZO8Yj/ZgNuBR3nseawHX
-         kAby74BmdKgoqzsWW1V8/Id1aPKowsHdpw8i/l6EloF3YZNhZP1KGUHNTfE490U0tq7c
-         26GQ==
-X-Gm-Message-State: AOJu0YwosNbLX5vmwqGJaRnT8otxyBcuwI61rZP9fcMVE0FVCJymSN9t
-	MkuEFqV1c5b/CuWL7nlGe1uv9OvaFBt3CF/IS1K06altKMrj++oEw+ucymFHaLPoi/55WleriGN
-	HcZfHefNgdwRw+sKWNVtOWD5duzICc75eZmc8LDKAld95uYZnGPLXlr/f5VPG1g==
+	s=arc-20240116; t=1782451182; c=relaxed/simple;
+	bh=W8BzGb2FcD0I19qOBWu9nbh+u4GBqhHLUMSCCd/l2q0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jVLfopsvqJoPP7z0Yi80K1BqDWr02XasF3zZJj+5TzTeDA07XwALebnsCTsdY7je4B71aHfya8LsJN1nlm0AklMD2WTkaFCoP1BpcfuLTvPHzYYVUZxc+jYGo/xSWZJyZtfQP5hclQCQN/1j27jVy27ierL05B8PAxczxcAr1yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=Q9d+PxB/; arc=none smtp.client-ip=52.35.192.45
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1782451181; x=1813987181;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GxllBR+JzulmYQ8FCwnGzoicpgPU5G3UD+1kWGsNT4s=;
+  b=Q9d+PxB/DgdSJM83ey0zg2L61AMOQTaKuieLWs9C1PLn6EJpVg+zZDCB
+   oKLt2C/gIHVG+NX1dCD4RlldhUP+/My3sDaH/JMXBXvtMAIEglhE6HGQA
+   MkopeswcOpYLdJfApooMqY9srLcf/gaJ7Is7eFNft0RpkhwwzwW1NLjd1
+   pjU5LUkMonUBm7kYiphmUYXAKz6YOTphmbdwhW8SHtTazdxbuV5dr1oXB
+   L8J4CgaGpVHlIeeorS7EWpsRynkz8lawycejQnxjnxX4jDQtBg3Y1RKAH
+   Eli38ICSNd673k06rNhuLWxTfOD6vKgxNxtycGPWc4/A4VzKjT54STKAp
+   A==;
+X-CSE-ConnectionGUID: 1kyqx6/tSnihpLEJSh+ylw==
+X-CSE-MsgGUID: J096OgYwTJyQaGCqUHa6CQ==
+X-IronPort-AV: E=Sophos;i="6.24,225,1774310400"; 
+   d="scan'208";a="22315685"
+Received: from ip-10-5-0-115.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.0.115])
+  by internal-pdx-out-011.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2026 05:19:40 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [205.251.233.51:24332]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.30.151:2525] with esmtp (Farcaster)
+ id 99cfbc80-6ccf-4a71-9e57-fa332fdfedc1; Fri, 26 Jun 2026 05:19:40 +0000 (UTC)
+X-Farcaster-Flow-ID: 99cfbc80-6ccf-4a71-9e57-fa332fdfedc1
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43;
+ Fri, 26 Jun 2026 05:19:40 +0000
+Received: from dev-dsk-liuyuxua-1a-259f0406.eu-west-1.amazon.com
+ (172.19.101.236) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43; Fri, 26 Jun 2026
+ 05:19:36 +0000
+From: Yuxuan Liu <liuyuxua@amazon.com>
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
+	<vincent.guittot@linaro.org>
+CC: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, "Johannes
+ Weiner" <hannes@cmpxchg.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, "Mel
+ Gorman" <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Fernand Sieber <sieberf@amazon.com>, "David
+ Woodhouse" <dwmw@amazon.co.uk>, Alexander Graf <graf@amazon.de>, "Misha
+ Karataiev" <karataev@amazon.com>, Lilit Janpoladyan <lilitj@amazon.de>,
+	<nh-open-source@amazon.com>, Yuxuan Liu <liuyuxua@amazon.com>
+Subject: [PATCH] sched/core: Add core_sibling_idle accounting
+Date: Fri, 26 Jun 2026 05:19:30 +0000
+Message-ID: <20260626051930.40415-1-liuyuxua@amazon.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1a15:b0:48a:9afa:e632 with SMTP id
- 5614622812f47-49217721971mr4241241b6e.27.1782450644117; Thu, 25 Jun 2026
- 22:10:44 -0700 (PDT)
-Date: Thu, 25 Jun 2026 22:10:44 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6a3e09d4.ac7367b4.6675.0003.GAE@google.com>
-Subject: [syzbot] [cgroups?] INFO: task hung in cgroup1_get_tree
-From: syzbot <syzbot+4e415f7013e8d1af362b@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D036UWC003.ant.amazon.com (10.13.139.214) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.36 / 15.00];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=77808e35144e725c];
+X-Spamd-Result: default: False [-10.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	WHITELIST_SPF_DKIM(-3.00)[amazon.com:d:+,kernel.org:s:+];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17304-lists,cgroups=lfdr.de,4e415f7013e8d1af362b];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,appspotmail.com:email,goo.gl:url,storage.googleapis.com:url,syzkaller.appspot.com:url,syzkaller.appspotmail.com:from_mime];
-	FORGED_RECIPIENTS(0.00)[m:cgroups@vger.kernel.org,m:hannes@cmpxchg.org,m:linux-kernel@vger.kernel.org,m:mkoutny@suse.com,m:syzkaller-bugs@googlegroups.com,m:tj@kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17305-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:mingo@redhat.com,m:peterz@infradead.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:tj@kernel.org,m:lizefan.x@bytedance.com,m:hannes@cmpxchg.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:bristot@redhat.com,m:vschneid@redhat.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:sieberf@amazon.com,m:dwmw@amazon.co.uk,m:graf@amazon.de,m:karataev@amazon.com,m:lilitj@amazon.de,m:nh-open-source@amazon.com,m:liuyuxua@amazon.com,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FORGED_SENDER(0.00)[liuyuxua@amazon.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[liuyuxua@amazon.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	SUBJECT_HAS_QUESTION(0.00)[]
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: BE3036CA39A
+X-Rspamd-Queue-Id: C294B6CA4CF
 
-Hello,
+When a VM runs on one SMT thread and core scheduling leaves the sibling
+idle because no compatible workload can share the core, existing metrics
+(forced idle time) only report this cost if another task is actively
+waiting. Without waiting tasks, the stranded capacity looks like free
+capacity to external fleet management software, leading it to place
+additional workloads onto hosts that are already effectively fully
+loaded. Add core_sibling_idle to capture all idle time caused by core
+scheduling constraints so orchestrators can make accurate placement
+decisions.
 
-syzbot found the following issue on:
+To avoid redundant bookkeeping, forceidle and sibling_idle accounting
+are consolidated into a single function __sched_core_account_idle().
+Both metrics share a common timestamp (core_sibling_idle_start) and
+occupation count (core_sibling_idle_occupation), replacing the separate
+core_forceidle_start and core_forceidle_occupation fields. The
+forceidle subset is derived from core_forceidle_count within the same
+accounting pass.
 
-HEAD commit:    ab9de95c9cf9 Merge tag 'rust-7.2-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13976591580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=77808e35144e725c
-dashboard link: https://syzkaller.appspot.com/bug?extid=4e415f7013e8d1af362b
-compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
+The new metric is exposed as core_sched.sibling_idle_usec in cgroup v2
+cpu.stat, alongside the existing core_sched.force_idle_usec. The
+per-task core_sibling_idle_sum is also available via /proc/<pid>/sched
+for debugging.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+== Testing ==
+Testing is done using QEMU.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ea216d6c635b/disk-ab9de95c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a4726046a068/vmlinux-ab9de95c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1ee56b4f63b2/bzImage-ab9de95c.xz
+=== Scenario 1: No CPU Contention ===
+The system has 2 CPUs, with 1 VM (2 vCPUs) that uses core scheduling and
+runs an infinite loop pinned to vCPU 0:
+taskset -c 0 sh -c 'while true; do :; done' &
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4e415f7013e8d1af362b@syzkaller.appspotmail.com
+In the VM's cpu.stat, its core_sched.force_idle_usec is near 0 (199 us)
+while core_sched.sibling_idle_usec (117796370 us) is identical to
+usage_usec (123946273 us).
 
-INFO: task syz.3.5067:25142 blocked for more than 143 seconds.
-      Tainted: G             L      syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.3.5067      state:D stack:27688 pid:25142 tgid:25139 ppid:24491  task_flags:0x400140 flags:0x00080002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5504 [inline]
- __schedule+0x125c/0x6730 kernel/sched/core.c:7228
- __schedule_loop kernel/sched/core.c:7307 [inline]
- schedule+0xdd/0x390 kernel/sched/core.c:7322
- cgroup_lock_and_drain_offline+0x383/0x800 kernel/cgroup/cgroup.c:3275
- cgroup1_get_tree+0xc2/0x1620 kernel/cgroup/cgroup-v1.c:1265
- vfs_get_tree+0x92/0x320 fs/super.c:1694
- fc_mount fs/namespace.c:1198 [inline]
- do_new_mount_fc fs/namespace.c:3765 [inline]
- do_new_mount fs/namespace.c:3841 [inline]
- path_mount+0x7d0/0x23d0 fs/namespace.c:4161
- do_mount fs/namespace.c:4174 [inline]
- __do_sys_mount fs/namespace.c:4390 [inline]
- __se_sys_mount fs/namespace.c:4367 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:4367
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x115/0x870 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fe24299ce59
-RSP: 002b:00007fe243858028 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fe242c16090 RCX: 00007fe24299ce59
-RDX: 0000200000000080 RSI: 0000200000001180 RDI: 0000000000000000
-RBP: 00007fe242a32e6f R08: 0000200000000000 R09: 0000000000000000
-R10: 0000000000004000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fe242c16128 R14: 00007fe242c16090 R15: 00007ffc1d1628c8
- </TASK>
+=== Scenario 2: With CPU Contention ===
+Same setup as Scenario 1 except with 2 VMs (2 vCPUs each).
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/31:
- #0: ffffffff8e7e60c0 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire include/linux/rcupdate.h:300 [inline]
- #0: ffffffff8e7e60c0 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock include/linux/rcupdate.h:840 [inline]
- #0: ffffffff8e7e60c0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x3d/0x184 kernel/locking/lockdep.c:6775
-6 locks held by kworker/1:6/5718:
- #0: ffff8880202ea940 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x12b1/0x1940 kernel/workqueue.c:3297
- #1: ffffc900040d7d08 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x988/0x1940 kernel/workqueue.c:3298
- #2: ffff88802ac581d8 (&dev->mutex){....}-{4:4}, at: device_lock include/linux/device.h:1102 [inline]
- #2: ffff88802ac581d8 (&dev->mutex){....}-{4:4}, at: hub_event+0x1bd/0x4af0 drivers/usb/core/hub.c:5899
- #3: ffff88802ad59568 (&port_dev->status_lock){+.+.}-{4:4}, at: usb_lock_port drivers/usb/core/hub.c:3252 [inline]
- #3: ffff88802ad59568 (&port_dev->status_lock){+.+.}-{4:4}, at: hub_port_connect drivers/usb/core/hub.c:5464 [inline]
- #3: ffff88802ad59568 (&port_dev->status_lock){+.+.}-{4:4}, at: hub_port_connect_change drivers/usb/core/hub.c:5707 [inline]
- #3: ffff88802ad59568 (&port_dev->status_lock){+.+.}-{4:4}, at: port_event drivers/usb/core/hub.c:5871 [inline]
- #3: ffff88802ad59568 (&port_dev->status_lock){+.+.}-{4:4}, at: hub_event+0x2bd2/0x4af0 drivers/usb/core/hub.c:5953
- #4: ffff88802ac76760 (hcd->address0_mutex){+.+.}-{4:4}, at: hub_port_connect drivers/usb/core/hub.c:5465 [inline]
- #4: ffff88802ac76760 (hcd->address0_mutex){+.+.}-{4:4}, at: hub_port_connect_change drivers/usb/core/hub.c:5707 [inline]
- #4: ffff88802ac76760 (hcd->address0_mutex){+.+.}-{4:4}, at: port_event drivers/usb/core/hub.c:5871 [inline]
- #4: ffff88802ac76760 (hcd->address0_mutex){+.+.}-{4:4}, at: hub_event+0x2bfb/0x4af0 drivers/usb/core/hub.c:5953
- #5: ffffffff8fbf2c48 (ehci_cf_port_reset_rwsem){.+.+}-{4:4}, at: hub_port_reset+0x1a5/0x1c60 drivers/usb/core/hub.c:3067
-2 locks held by getty/13406:
- #0: ffff8880383d10a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc9000202e2e8 (&ldata->atomic_read_lock){+.+.}-{4:4}, at: n_tty_read+0x419/0x14e0 drivers/tty/n_tty.c:2211
-1 lock held by syz.2.5163/25788:
- #0: ffff88807d22e0d8 (&type->s_umount_key#64){++++}-{4:4}, at: do_remount fs/namespace.c:3404 [inline]
- #0: ffff88807d22e0d8 (&type->s_umount_key#64){++++}-{4:4}, at: path_mount+0x1757/0x23d0 fs/namespace.c:4153
-1 lock held by syz.0.5462/27160:
+Both VMs have identical core_sched.force_idle_usec and
+core_sched.sibling_idle_usec in their respective cpu.stat, with
+sibling_idle_usec being slightly higher.
 
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 31 Comm: khungtaskd Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/09/2026
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
- nmi_cpu_backtrace.cold+0x12d/0x151 lib/nmi_backtrace.c:122
- nmi_trigger_cpumask_backtrace+0x21c/0x2a0 lib/nmi_backtrace.c:65
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- __sys_info lib/sys_info.c:157 [inline]
- sys_info+0x141/0x190 lib/sys_info.c:165
- check_hung_uninterruptible_tasks kernel/hung_task.c:353 [inline]
- watchdog+0xcb1/0x1030 kernel/hung_task.c:561
- kthread+0x370/0x450 kernel/kthread.c:436
- ret_from_fork+0x72b/0xd50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 0 Comm: swapper/0 Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/09/2026
-RIP: 0010:pv_native_safe_halt+0xf/0x20 arch/x86/kernel/paravirt.c:64
-Code: d6 85 02 c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 0f 00 2d 23 28 10 00 fb f4 <e9> fc 48 03 00 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90
-RSP: 0018:ffffffff8e407e10 EFLAGS: 00000246
-RAX: 00000000088c3e3f RBX: ffffffff8e491480 RCX: ffffffff8b9b72d5
-RDX: 0000000000000000 RSI: ffffffff8df596ca RDI: ffffffff8c1e7180
-RBP: fffffbfff1c92290 R08: 0000000000000001 R09: ffffed101708678d
-R10: ffff8880b8433c6b R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 1ffffffff1c80fc6 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8881242e7000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa09d875d58 CR3: 000000004c22a000 CR4: 00000000003526f0
-DR0: 0000000000000008 DR1: 0000000000000007 DR2: 0000000000000004
-DR3: 0000000000000008 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- arch_safe_halt arch/x86/include/asm/paravirt.h:62 [inline]
- default_idle+0x9/0x10 arch/x86/kernel/process.c:768
- default_idle_call+0x6c/0xb0 kernel/sched/idle.c:122
- cpuidle_idle_call kernel/sched/idle.c:199 [inline]
- do_idle+0x3a7/0x5b0 kernel/sched/idle.c:355
- cpu_startup_entry+0x4f/0x60 kernel/sched/idle.c:454
- rest_init+0x251/0x260 init/main.c:717
- start_kernel+0x48e/0x490 init/main.c:1175
- x86_64_start_reservations+0x24/0x30 arch/x86/kernel/head64.c:310
- x86_64_start_kernel+0x12b/0x130 arch/x86/kernel/head64.c:291
- common_startup_64+0x13e/0x158
- </TASK>
-
-
+Signed-off-by: Yuxuan Liu <liuyuxua@amazon.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ include/linux/cgroup-defs.h |  1 +
+ include/linux/kernel_stat.h |  2 ++
+ include/linux/sched.h       |  1 +
+ kernel/cgroup/rstat.c       | 11 ++++++
+ kernel/sched/core.c         | 31 ++++++++---------
+ kernel/sched/core_sched.c   | 67 +++++++++++++++++++++++++------------
+ kernel/sched/cputime.c      | 12 +++++++
+ kernel/sched/debug.c        |  1 +
+ kernel/sched/sched.h        | 17 ++++++----
+ 9 files changed, 100 insertions(+), 43 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index c0c2b26725d0f..b65c910cbd872 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -301,6 +301,7 @@ struct cgroup_base_stat {
+ 
+ #ifdef CONFIG_SCHED_CORE
+ 	u64 forceidle_sum;
++	u64 sibling_idle_sum;
+ #endif
+ };
+ 
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 9935f7ecbfb9e..0e1386a9816ff 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -30,6 +30,7 @@ enum cpu_usage_stat {
+ 	CPUTIME_GUEST_NICE,
+ #ifdef CONFIG_SCHED_CORE
+ 	CPUTIME_FORCEIDLE,
++	CPUTIME_SIBLING_IDLE,
+ #endif
+ 	NR_STATS,
+ };
+@@ -132,6 +133,7 @@ extern void account_idle_ticks(unsigned long ticks);
+ 
+ #ifdef CONFIG_SCHED_CORE
+ extern void __account_forceidle_time(struct task_struct *tsk, u64 delta);
++extern void __account_sibling_idle_time(struct task_struct *tsk, u64 delta);
+ #endif
+ 
+ #endif /* _LINUX_KERNEL_STAT_H */
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index fad3aad97c7b0..5b1a1c247b12a 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -544,6 +544,7 @@ struct sched_statistics {
+ 
+ #ifdef CONFIG_SCHED_CORE
+ 	u64				core_forceidle_sum;
++	u64				core_sibling_idle_sum;
+ #endif
+ #endif /* CONFIG_SCHEDSTATS */
+ } ____cacheline_aligned;
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index c32439b855f5d..29ef399d1c7e7 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -326,6 +326,7 @@ static void cgroup_base_stat_add(struct cgroup_base_stat *dst_bstat,
+ 	dst_bstat->cputime.sum_exec_runtime += src_bstat->cputime.sum_exec_runtime;
+ #ifdef CONFIG_SCHED_CORE
+ 	dst_bstat->forceidle_sum += src_bstat->forceidle_sum;
++	dst_bstat->sibling_idle_sum += src_bstat->sibling_idle_sum;
+ #endif
+ }
+ 
+@@ -337,6 +338,7 @@ static void cgroup_base_stat_sub(struct cgroup_base_stat *dst_bstat,
+ 	dst_bstat->cputime.sum_exec_runtime -= src_bstat->cputime.sum_exec_runtime;
+ #ifdef CONFIG_SCHED_CORE
+ 	dst_bstat->forceidle_sum -= src_bstat->forceidle_sum;
++	dst_bstat->sibling_idle_sum -= src_bstat->sibling_idle_sum;
+ #endif
+ }
+ 
+@@ -430,6 +432,9 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
+ 	case CPUTIME_FORCEIDLE:
+ 		rstatc->bstat.forceidle_sum += delta_exec;
+ 		break;
++	case CPUTIME_SIBLING_IDLE:
++		rstatc->bstat.sibling_idle_sum += delta_exec;
++		break;
+ #endif
+ 	default:
+ 		break;
+@@ -472,6 +477,7 @@ static void root_cgroup_cputime(struct cgroup_base_stat *bstat)
+ 
+ #ifdef CONFIG_SCHED_CORE
+ 		bstat->forceidle_sum += cpustat[CPUTIME_FORCEIDLE];
++		bstat->sibling_idle_sum += cpustat[CPUTIME_SIBLING_IDLE];
+ #endif
+ 	}
+ }
+@@ -483,6 +489,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 	struct cgroup_base_stat bstat;
+ #ifdef CONFIG_SCHED_CORE
+ 	u64 forceidle_time;
++	u64 sibling_idle_time;
+ #endif
+ 
+ 	if (cgroup_parent(cgrp)) {
+@@ -492,6 +499,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 			       &utime, &stime);
+ #ifdef CONFIG_SCHED_CORE
+ 		forceidle_time = cgrp->bstat.forceidle_sum;
++		sibling_idle_time = cgrp->bstat.sibling_idle_sum;
+ #endif
+ 		cgroup_rstat_flush_release();
+ 	} else {
+@@ -501,6 +509,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 		stime = bstat.cputime.stime;
+ #ifdef CONFIG_SCHED_CORE
+ 		forceidle_time = bstat.forceidle_sum;
++		sibling_idle_time = bstat.sibling_idle_sum;
+ #endif
+ 	}
+ 
+@@ -509,6 +518,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 	do_div(stime, NSEC_PER_USEC);
+ #ifdef CONFIG_SCHED_CORE
+ 	do_div(forceidle_time, NSEC_PER_USEC);
++	do_div(sibling_idle_time, NSEC_PER_USEC);
+ #endif
+ 
+ 	seq_printf(seq, "usage_usec %llu\n"
+@@ -518,6 +528,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 
+ #ifdef CONFIG_SCHED_CORE
+ 	seq_printf(seq, "core_sched.force_idle_usec %llu\n", forceidle_time);
++	seq_printf(seq, "core_sched.sibling_idle_usec %llu\n", sibling_idle_time);
+ #endif
+ }
+ 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index d558e43aedcf2..ba2b7b15d871d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -369,7 +369,7 @@ static void __sched_core_flip(bool enabled)
+ 		for_each_cpu(t, smt_mask)
+ 			cpu_rq(t)->core_enabled = enabled;
+ 
+-		cpu_rq(cpu)->core->core_forceidle_start = 0;
++		cpu_rq(cpu)->core->core_sibling_idle_start = 0;
+ 
+ 		sched_core_unlock(cpu, &flags);
+ 
+@@ -6124,18 +6124,19 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 
+ 	/* reset state */
+ 	rq->core->core_cookie = 0UL;
+-	if (rq->core->core_forceidle_count) {
++	if (rq->core->core_sibling_idle_occupation) {
+ 		if (!core_clock_updated) {
+ 			update_rq_clock(rq->core);
+ 			core_clock_updated = true;
+ 		}
+-		sched_core_account_forceidle(rq);
+-		/* reset after accounting force idle */
+-		rq->core->core_forceidle_start = 0;
+-		rq->core->core_forceidle_count = 0;
+-		rq->core->core_forceidle_occupation = 0;
++		sched_core_account_idle(rq);
++		rq->core->core_sibling_idle_start = 0;
++		rq->core->core_sibling_idle_occupation = 0;
++	}
++	if (rq->core->core_forceidle_count) {
+ 		need_sync = true;
+ 		fi_before = true;
++		rq->core->core_forceidle_count = 0;
+ 	}
+ 
+ 	/*
+@@ -6221,9 +6222,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		}
+ 	}
+ 
+-	if (schedstat_enabled() && rq->core->core_forceidle_count) {
+-		rq->core->core_forceidle_start = rq_clock(rq->core);
+-		rq->core->core_forceidle_occupation = occ;
++	if (schedstat_enabled() && occ < cpumask_weight(smt_mask)) {
++		rq->core->core_sibling_idle_start = rq_clock(rq->core);
++		rq->core->core_sibling_idle_occupation = occ;
+ 	}
+ 
+ 	rq->core->core_pick_seq = rq->core->core_task_seq;
+@@ -6480,14 +6481,14 @@ static void sched_core_cpu_deactivate(unsigned int cpu)
+ 	core_rq->core_cookie               = rq->core_cookie;
+ 	core_rq->core_forceidle_count      = rq->core_forceidle_count;
+ 	core_rq->core_forceidle_seq        = rq->core_forceidle_seq;
+-	core_rq->core_forceidle_occupation = rq->core_forceidle_occupation;
+ 
+ 	/*
+-	 * Accounting edge for forced idle is handled in pick_next_task().
++	 * Accounting edge for sibling idle is handled in pick_next_task().
+ 	 * Don't need another one here, since the hotplug thread shouldn't
+ 	 * have a cookie.
+ 	 */
+-	core_rq->core_forceidle_start = 0;
++	core_rq->core_sibling_idle_occupation = rq->core_sibling_idle_occupation;
++	core_rq->core_sibling_idle_start = 0;
+ 
+ 	/* install new leader */
+ 	for_each_cpu(t, smt_mask) {
+@@ -10071,8 +10072,8 @@ void __init sched_init(void)
+ 		rq->core_enabled = 0;
+ 		rq->core_tree = RB_ROOT;
+ 		rq->core_forceidle_count = 0;
+-		rq->core_forceidle_occupation = 0;
+-		rq->core_forceidle_start = 0;
++		rq->core_sibling_idle_occupation = 0;
++		rq->core_sibling_idle_start = 0;
+ 
+ 		rq->core_cookie = 0UL;
+ #endif
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index a57fd8f27498f..f9aa119b52afd 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -237,38 +237,59 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
+ #ifdef CONFIG_SCHEDSTATS
+ 
+ /* REQUIRES: rq->core's clock recently updated. */
+-void __sched_core_account_forceidle(struct rq *rq)
++/*
++ * Account core scheduling idle cost.  Both forceidle (idle sibling has
++ * waiting tasks) and sibling_idle (any idle sibling) are derived from
++ * the same time delta and scaled by their respective idle counts.
++ * A single loop charges both metrics to each running cookied task.
++ */
++void __sched_core_account_idle(struct rq *rq)
+ {
+ 	const struct cpumask *smt_mask = cpu_smt_mask(cpu_of(rq));
++	unsigned int occ = rq->core->core_sibling_idle_occupation;
++	unsigned int fi_count = rq->core->core_forceidle_count;
++	unsigned int smt_width, idle_count;
+ 	u64 delta, now = rq_clock(rq->core);
++	u64 fi_delta = 0, si_delta = 0;
+ 	struct rq *rq_i;
+ 	struct task_struct *p;
+ 	int i;
+ 
+ 	lockdep_assert_rq_held(rq);
+ 
+-	WARN_ON_ONCE(!rq->core->core_forceidle_count);
+-
+-	if (rq->core->core_forceidle_start == 0)
++	if (rq->core->core_sibling_idle_start == 0)
+ 		return;
+ 
+-	delta = now - rq->core->core_forceidle_start;
++	delta = now - rq->core->core_sibling_idle_start;
+ 	if (unlikely((s64)delta <= 0))
+ 		return;
+ 
+-	rq->core->core_forceidle_start = now;
++	if (WARN_ON_ONCE(!occ))
++		return;
+ 
+-	if (WARN_ON_ONCE(!rq->core->core_forceidle_occupation)) {
+-		/* can't be forced idle without a running task */
+-	} else if (rq->core->core_forceidle_count > 1 ||
+-		   rq->core->core_forceidle_occupation > 1) {
+-		/*
+-		 * For larger SMT configurations, we need to scale the charged
+-		 * forced idle amount since there can be more than one forced
+-		 * idle sibling and more than one running cookied task.
+-		 */
+-		delta *= rq->core->core_forceidle_count;
+-		delta = div_u64(delta, rq->core->core_forceidle_occupation);
++	smt_width = cpumask_weight(smt_mask);
++	idle_count = smt_width - occ;
++	if (!idle_count)
++		return;
++
++	rq->core->core_sibling_idle_start = now;
++
++	/*
++	 * For SMT-2 with one idle sibling (the common case), both
++	 * idle_count and occ are 1, so si_delta == fi_delta == delta
++	 * with no division needed.  For larger SMT configurations, we
++	 * scale by the respective idle count / occupation since there
++	 * can be more than one idle sibling and more than one running
++	 * cookied task.
++	 */
++	si_delta = delta;
++	if (idle_count > 1 || occ > 1)
++		si_delta = div_u64(delta * idle_count, occ);
++
++	if (fi_count) {
++		fi_delta = delta;
++		if (fi_count > 1 || occ > 1)
++			fi_delta = div_u64(delta * fi_count, occ);
+ 	}
+ 
+ 	for_each_cpu(i, smt_mask) {
+@@ -279,22 +300,24 @@ void __sched_core_account_forceidle(struct rq *rq)
+ 			continue;
+ 
+ 		/*
+-		 * Note: this will account forceidle to the current cpu, even
+-		 * if it comes from our SMT sibling.
++		 * Note: this will account idle time to the current cpu,
++		 * even if it comes from our SMT sibling.
+ 		 */
+-		__account_forceidle_time(p, delta);
++		__account_sibling_idle_time(p, si_delta);
++		if (fi_delta)
++			__account_forceidle_time(p, fi_delta);
+ 	}
+ }
+ 
+ void __sched_core_tick(struct rq *rq)
+ {
+-	if (!rq->core->core_forceidle_count)
++	if (!rq->core->core_sibling_idle_occupation)
+ 		return;
+ 
+ 	if (rq != rq->core)
+ 		update_rq_clock(rq->core);
+ 
+-	__sched_core_account_forceidle(rq);
++	__sched_core_account_idle(rq);
+ }
+ 
+ #endif /* CONFIG_SCHEDSTATS */
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index b453f8a6a7c76..2a3500323c3c4 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -243,6 +243,18 @@ void __account_forceidle_time(struct task_struct *p, u64 delta)
+ 
+ 	task_group_account_field(p, CPUTIME_FORCEIDLE, delta);
+ }
++
++/*
++ * Account for sibling idle time due to core scheduling.
++ *
++ * REQUIRES: schedstat is enabled.
++ */
++void __account_sibling_idle_time(struct task_struct *p, u64 delta)
++{
++	__schedstat_add(p->stats.core_sibling_idle_sum, delta);
++
++	task_group_account_field(p, CPUTIME_SIBLING_IDLE, delta);
++}
+ #endif
+ 
+ /*
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 115e266db76bf..2c3bf256308dc 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -1059,6 +1059,7 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+ 
+ #ifdef CONFIG_SCHED_CORE
+ 		PN_SCHEDSTAT(core_forceidle_sum);
++		PN_SCHEDSTAT(core_sibling_idle_sum);
+ #endif
+ 	}
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 65ff0254659ac..c52effdb2e172 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1156,8 +1156,13 @@ struct rq {
+ 	unsigned long		core_cookie;
+ 	unsigned int		core_forceidle_count;
+ 	unsigned int		core_forceidle_seq;
+-	unsigned int		core_forceidle_occupation;
+-	u64			core_forceidle_start;
++	/*
++	 * Shared start timestamp and occupation for both forceidle and
++	 * sibling_idle accounting.  Set whenever occupation < SMT width
++	 * (any sibling is idle), not just when core_forceidle_count > 0.
++	 */
++	unsigned int		core_sibling_idle_occupation;
++	u64			core_sibling_idle_start;
+ #endif
+ 
+ 	/* Scratch cpumask to be temporarily used under rq_lock */
+@@ -1966,12 +1971,12 @@ static inline const struct cpumask *task_user_cpus(struct task_struct *p)
+ 
+ #if defined(CONFIG_SCHED_CORE) && defined(CONFIG_SCHEDSTATS)
+ 
+-extern void __sched_core_account_forceidle(struct rq *rq);
++extern void __sched_core_account_idle(struct rq *rq);
+ 
+-static inline void sched_core_account_forceidle(struct rq *rq)
++static inline void sched_core_account_idle(struct rq *rq)
+ {
+ 	if (schedstat_enabled())
+-		__sched_core_account_forceidle(rq);
++		__sched_core_account_idle(rq);
+ }
+ 
+ extern void __sched_core_tick(struct rq *rq);
+@@ -1984,7 +1989,7 @@ static inline void sched_core_tick(struct rq *rq)
+ 
+ #else
+ 
+-static inline void sched_core_account_forceidle(struct rq *rq) {}
++static inline void sched_core_account_idle(struct rq *rq) {}
+ 
+ static inline void sched_core_tick(struct rq *rq) {}
+ 
+-- 
+2.47.3
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
