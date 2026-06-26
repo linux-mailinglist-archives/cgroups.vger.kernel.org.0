@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-17336-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17337-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id DZrvKP6TPmqXIQkAu9opvQ
-	(envelope-from <cgroups+bounces-17336-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 17:00:14 +0200
+	id MKPwFr2WPmqDIgkAu9opvQ
+	(envelope-from <cgroups+bounces-17337-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 17:11:57 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 115766CE3FD
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 17:00:14 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE5D6CE5B7
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 17:11:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Ju6I4k07;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17336-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17336-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="nHoo2Yi/";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17337-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17337-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 163A630BE1E6
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 14:57:19 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 47FF2307DB26
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 15:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6984D3F4DEE;
-	Fri, 26 Jun 2026 14:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04FD31282F;
+	Fri, 26 Jun 2026 15:00:59 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5674E30C166;
-	Fri, 26 Jun 2026 14:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769B130AABE;
+	Fri, 26 Jun 2026 15:00:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782485836; cv=none; b=KFoiDYrSTqjOaphLbUxpwTSob6qlHBPyWAhnAUDucdV3nyPxIpvm4Ruu2Ye3KbNox9xsIQCiMK4cnm6yKmrB59Ypq/SBe9vZk0SVof1uqC0sNw2NrxzrRqqUetn9cOcbsI/RRPz1TaGVBMnIuGL/P76QnzlQ6Hg3EoHGuU93q1g=
+	t=1782486058; cv=none; b=Pl1rK+vXtv+XP8jY7elN9ravgUcrxKgkUni4Q/7yPkczzHEOS8nlHgSKZfyNdVdVvOI1mOZYowmu8pOcX1iNUNznLlhRhFnq3jkqv6l/TTFTgA0MPkDWtu4Lo6/UCr/ZKIiDKOV38IoGrmIv1/frw/6vXuozBp1Pp4nHtf+mDj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782485836; c=relaxed/simple;
-	bh=08SBmbmt1es9nvO/KWBHGxYsF9F9B2UWNxL8xnBLHKM=;
+	s=arc-20240116; t=1782486058; c=relaxed/simple;
+	bh=XSs3CUva20TTxVS/K+HeZG9LbMIKRnbeFCP9OdmsvHA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QF3uo+WEFcbyoXqL51M4nbKG/mbigMYTgd6p8s9Hz8gdh0BRuMCaeMKuLnRd5xhWPlAH19/WvabLlenQCBn0MDhrYlOjLGauNL3O/Q5/SrCA02K4qtKTFUSwp/4U9hGYS1T5F3CfbpwsHF9Moqtc/KwRo+R/bxl7PDZzBMFGPXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ju6I4k07; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14E031F00A3E;
-	Fri, 26 Jun 2026 14:57:07 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=YZDUPLWIIDRrUyJWEQ7bkhTCOm68EY/myN5dmb4w/FZx6LklzGJijiXhe6cu44iQdypTMfBcYuYoUNEgBkzCWO3nBgMXk2LdCm0JJ06acK840AjVs+5+ht1t1JsVSJ6LmIQxFT0pbE767Mu/9A91ldHcD4H1rqyA1Wcp4xLWs8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nHoo2Yi/; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D48E01F000E9;
+	Fri, 26 Jun 2026 15:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782485831;
-	bh=h4dEsq7eT0U+sy2EuGGNHMB1wu+Xu3EYpNjubxVfLcc=;
+	s=k20260515; t=1782486055;
+	bh=juC1Y5v1j3sP5fMQDkrZYHNSUJQ+4S5mJUHcpe7Ac+Y=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Ju6I4k07BJu2QU8MLzI4HFyVkm9JoCqL1MLjMne2NwFtUbN4pZqAK+duO/sguQ1Sm
-	 o6SovK2IKQM3F0Un8rewjt0ONXKYPlLEAEE/1Wd3ZmFOZ+Zbwzftm5xGyH9XzqRdRh
-	 L87MqYw9nlXGrMJUC2kOD3DCKNhfOI1vxTAW9f7sLsM7xhwUv01IUOWLlzWZ16W0cV
-	 AJKwS5fFWuvFPdi5r0qsrkvnNGslW1TXo8gt1tIf7Ds5powFNti/f3BwFEc/rwGh3v
-	 rrpok0p8p7P0gG8wWjkKWCW5TzlA8seaPoYHzGbhYd2t4uySesCQye9OQtKfYyKhe1
-	 0nrd4AekvsyQQ==
-Message-ID: <56b3e774-8866-4e0f-9746-b646a4b58fef@kernel.org>
-Date: Fri, 26 Jun 2026 16:57:06 +0200
+	b=nHoo2Yi/y4ujBsFKNm/8GmcKx89Mae5+bQ7ujza84jDtcjvSs+ZUoVL69Boo7vGdk
+	 8dMxUVeLpgwafnaKeZRD3TZp8e4ZtSG8lqn9Mp+jHxIjdPPx/R3ae/ZQMksOG/WTyg
+	 TE/mjtDb49CRf9bqw8oF9uoIPWqLpBwjtFyqazn6lpuFeiC1lpSDP0NUJoLeyUp/QK
+	 JHltctkNxct0riLSdhcwbrXAuyeFdoShcHwNnYhPyxw4qLzBGTBUTk7iUNgG3lXfAa
+	 CGPb1XNqC+Gj4LdIHL20+qPCy8Ef9+yq58//FqaxFz9FE1+B6ukmVUM3Bx1VffBvup
+	 g5G31jRhoyqug==
+Message-ID: <feb3e339-f61d-4f99-9859-e1895d396561@kernel.org>
+Date: Fri, 26 Jun 2026 17:00:51 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,8 +55,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 3/4] mm/slab: fix a deadlock in
- memcg_alloc_abort_single()
+Subject: Re: [PATCH RFC 4/4] mm/slab: serialize defer_free_barrier()
 Content-Language: en-US
 To: "Harry Yoo (Oracle)" <harry@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
@@ -68,7 +67,7 @@ To: "Harry Yoo (Oracle)" <harry@kernel.org>,
 Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
  linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 References: <20260624-kmalloc-nolock-fixes-v1-0-fdf4d17351dd@kernel.org>
- <20260624-kmalloc-nolock-fixes-v1-3-fdf4d17351dd@kernel.org>
+ <20260624-kmalloc-nolock-fixes-v1-4-fdf4d17351dd@kernel.org>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -109,7 +108,7 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <20260624-kmalloc-nolock-fixes-v1-3-fdf4d17351dd@kernel.org>
+In-Reply-To: <20260624-kmalloc-nolock-fixes-v1-4-fdf4d17351dd@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
@@ -117,18 +116,18 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:ast@kernel.org,m:pfalcato@suse.de,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:hao.li@linux.dev,m:cl@gentwo.org,m:rientjes@google.com,m:ast@kernel.org,m:pfalcato@suse.de,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:bpf@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[16];
-	TAGGED_FROM(0.00)[bounces-17336-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17337-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -142,80 +141,82 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sashiko.dev:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,sashiko.dev:url,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 115766CE3FD
+X-Rspamd-Queue-Id: 4EE5D6CE5B7
 
 On 6/24/26 15:11, Harry Yoo (Oracle) wrote:
-> When kmalloc_nolock() successfully grabs a slab object but memcg aborts
-> the allocation, the object is freed via __slab_free(). Calling
-> __slab_free() in unknown context is not allowed and can lead to a
-> deadlock.
+> irq_work_sync() uses rcuwait instead of busy waiting in two cases:
 > 
-> Free the object via defer_free() when spinning is not allowed.
+>   1. The kernel is using PREEMPT_RT and the irq work does not run in a
+>      hardirq context.
 > 
-> Reported-by: Sashiko <sashiko-bot@kernel.org>
-> Closes: https://sashiko.dev/#/patchset/20260610-slab_alloc_flags-v2-0-7190909db118%40kernel.org?part=9
+>   2. The architecture cannot send inter-processor interrupts to make
+>      busy waiting reasonably short.
+> 
+> However, rcuwait.h says:
+>> The caller is responsible for locking around rcuwait_wait_event(),
+>> and [prepare_to/finish]_rcuwait() such that writes to @task are
+>> properly serialized.
+> 
+> Since defer_free_barrier() calls irq_work_sync() without any locks,
+> it can potentially cause a hang as writes to @task are not serialized.
+> 
+> Fix this by calling defer_free_barrier() under slab_mutex and
+> cpus_read_lock() and add lockdep asserts.
+> 
+> Now that defer_free_barrier() is called inside cpus_read_lock(), iterate
+> over online cpus instead of possible cpus.
+> 
+> Reported-by: Sashiko <sashiko+bot@kernel.org>
+> Closes: https://sashiko.dev/#/patchset/20260615-kfree_rcu_nolock-v3-0-70a54f3775bb%40kernel.org?part=5
 > Fixes: af92793e52c3 ("slab: Introduce kmalloc_nolock() and kfree_nolock().")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Harry Yoo (Oracle) <harry@kernel.org>
 
-Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
 > ---
->  mm/slub.c | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
+>  mm/slab_common.c | 5 ++---
+>  mm/slub.c        | 6 +++++-
+>  2 files changed, 7 insertions(+), 4 deletions(-)
 > 
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 388eb5980859..27f77273fabe 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -550,11 +550,10 @@ void kmem_cache_destroy(struct kmem_cache *s)
+>  		rcu_barrier();
+>  	}
+>  
+> -	/* Wait for deferred work from kmalloc/kfree_nolock() */
+> -	defer_free_barrier();
+> -
+>  	cpus_read_lock();
+>  	mutex_lock(&slab_mutex);
+> +	/* Wait for deferred work from kmalloc/kfree_nolock() */
+> +	defer_free_barrier();
+>  
+>  	s->refcount--;
+>  	if (s->refcount) {
 > diff --git a/mm/slub.c b/mm/slub.c
-> index 85760c8ff2e2..4a3618e3967e 100644
+> index 4a3618e3967e..52c8d3f33782 100644
 > --- a/mm/slub.c
 > +++ b/mm/slub.c
-> @@ -2459,7 +2459,8 @@ alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
->  
->  #ifdef CONFIG_MEMCG
->  
-> -static void memcg_alloc_abort_single(struct kmem_cache *s, void *object);
-> +static void memcg_alloc_abort_single(struct kmem_cache *s, void *object,
-> +				     bool allow_spin);
->  
->  static __fastpath_inline
->  bool memcg_slab_post_alloc_hook(struct kmem_cache *s, gfp_t flags,
-> @@ -2477,7 +2478,9 @@ bool memcg_slab_post_alloc_hook(struct kmem_cache *s, gfp_t flags,
->  		return true;
->  
->  	if (likely(size == 1)) {
-> -		memcg_alloc_abort_single(s, *p);
-> +		bool allow_spin = alloc_flags_allow_spinning(ac->alloc_flags);
-> +
-> +		memcg_alloc_abort_single(s, *p, allow_spin);
->  		*p = NULL;
->  	} else {
->  		kmem_cache_free_bulk(s, size, p);
-> @@ -6436,16 +6439,20 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
->  #ifdef CONFIG_MEMCG
->  /* Do not inline the rare memcg charging failed path into the allocation path */
->  static noinline
-> -void memcg_alloc_abort_single(struct kmem_cache *s, void *object)
-> +void memcg_alloc_abort_single(struct kmem_cache *s, void *object, bool allow_spin)
+> @@ -6411,7 +6411,11 @@ void defer_free_barrier(void)
 >  {
->  	struct slab *slab = virt_to_slab(object);
->  	bool init = slab_want_init_on_free(s);
-> -	bool allow_spin = true;
+>  	int cpu;
 >  
->  	alloc_tagging_slab_free_hook(s, slab, &object, 1);
->  
-> -	if (likely(slab_free_hook(s, object, init, false, allow_spin)))
-> +	if (unlikely(!slab_free_hook(s, object, init, false, allow_spin)))
-> +		return;
+> -	for_each_possible_cpu(cpu)
+> +	/* irq_work_sync() may use rcuwait that requires serialization */
+> +	lockdep_assert_held(&slab_mutex);
+> +	lockdep_assert_cpus_held();
 > +
-> +	if (likely(allow_spin))
->  		__slab_free(s, slab, object, object, 1, _RET_IP_);
-> +	else
-> +		defer_free(s, object);
+> +	for_each_online_cpu(cpu)
+>  		irq_work_sync(&per_cpu_ptr(&defer_free_objects, cpu)->work);
 >  }
->  #endif
 >  
 > 
 
