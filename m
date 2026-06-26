@@ -1,187 +1,229 @@
-Return-Path: <cgroups+bounces-17341-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17343-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8WZ9CJGsPmpFKAkAu9opvQ
-	(envelope-from <cgroups+bounces-17341-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 18:45:05 +0200
+	id MOR5KvTGPmo0LgkAu9opvQ
+	(envelope-from <cgroups+bounces-17343-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 20:37:40 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF166CF369
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 18:45:04 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 681E36CFB6E
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 20:37:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=suse.com header.s=google header.b=TECVmPGk;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17341-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17341-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=suse.com;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=PTLB0fEA;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17343-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17343-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 68C5A3028EA4
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 16:44:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D60F53015C14
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 18:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA213FC5A2;
-	Fri, 26 Jun 2026 16:44:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968BE3B8131;
+	Fri, 26 Jun 2026 18:37:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A801481B1
-	for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 16:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 260403B7B71
+	for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 18:37:36 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782492291; cv=none; b=S6uWfbMVo0/zDZ7ZXQ30e2pkgFzGG9TsboswAX6eL3OVmxdPdazvhmOqb/aAngNvEd5Q+8njyAifGNaWhGgUhAi8cJFgwuvHr6XtYLX5mivFZOBG2IZV9FGRdvQzQLqgld1ypy/lifWzVIEqMm3xP2NNUnhvoYWsQUDWBAo7CRs=
+	t=1782499058; cv=none; b=TWD7IpGSqYDzMible7l7KTrjdwaSlvNqkAJe11DVuqsmw6Gdk1aBr1keum/IcWHovr8hFcB/xh+C5YmGZ+zFHdy0tN74ip+rdjueIiAU5r+lcRYa2E356IQ40pWricPglYFrEJmB6yFmv4G8OIRg0WA1QNY04yunfV8CxXprDF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782492291; c=relaxed/simple;
-	bh=m7F5wb38djwjdU4PCT+nH0ihnwGgVV3yXMzvQ77WA+A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DqCKZeESxQnRPolOiuHnIIrWnBK1fog4ZI/qsMp/9m6i4+4VnfuUragmC4uCLiV16vcT+pnepxYR2IlJf9E/opxoKg4vFeiUTur/QLHcxgUpcSbrR5Y37WCMQEYdO7JHZnks225EX15IC/rsZiz+b0fjNY5RaN6UcRVwa/J7DCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TECVmPGk; arc=none smtp.client-ip=209.85.128.41
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4926d6b177eso4231685e9.1
-        for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 09:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1782492289; x=1783097089; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KiWBrutmWIAfCPXVB/qlhLvNu7kR/O5EnS7WLLWLfPA=;
-        b=TECVmPGkq0DaeiaNUl23gL3Wb4fhb619kgYRgs/l/tsrnW8IM81fqybkFcEldIy0yX
-         n3UInS9NnojoXAYsWuY+lDUjQbhMPr4gW4v/DKxoeJ/vZ21BtTE9MDnmX1wdiVsrwwPt
-         bW8UT01KcgXbHBPIKbHyWHG5/X0EK9Pbn682eqHPA0XTW+Ry06jsRsO9fx6Q7fz+ZNs7
-         Pj+tQuSZu3iCToo7DzMWcVoqQoLXfqUwvOcThlHMhz3uJc9LSiIO3NJV7emdkzVvSSO8
-         oqyuwj5XsE0U1PyBPkjcpV+USn1im6dg/xb4ZwF1fQ4w1I4rjScVEuFHy4jQQihDrQTC
-         8QIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782492289; x=1783097089;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KiWBrutmWIAfCPXVB/qlhLvNu7kR/O5EnS7WLLWLfPA=;
-        b=r1jo+NSVUg9YXimslnaxQdHu/T2mjlftcADLN4ChZ3NKGE0ti1gHnis2hV5HjEmps4
-         jxGc76dc/nBHhVRnsnrq1hZi9vhKZnrIiHyoHla9YnFC+L2ScFPuKaQI7jvxYOjfBHln
-         w5G1Mzh7PYlE2MGDa/sxvCoNjyNBL2LxnNhuPJITk1PXtr9LS0+XOYn62tmnLpX12+4x
-         4zs6F8bTbvgOvsAYCF5bMtVrfYA6Ewjpss2kEWyixXD2aSqbb0nMOVwVb4rePmiIwrew
-         LgIB72CPPPNAoWCrmZ89BpGvUfIrpGvZzzKadIOokQminix/TP/qLnLO1QnLT3NGA6Fb
-         cq6A==
-X-Forwarded-Encrypted: i=1; AFNElJ9u+0Q0Q52K2NpRH5cv3rhdsOfdwtFXE48/XIljiblyWBtX4Nv7JSYL09HTFAwxUr7Tx21YFTWc@vger.kernel.org
-X-Gm-Message-State: AOJu0YwePGfI4h/JeAJY3mH0CuSHOzSJwYXgYmaLbWkAp7Po8JUrbU9V
-	VfPugBi4Nri00VrbVpShVXj0btz53rualMQIQnHt8H3NfVAjlTm1VKgOXjgIsittckk=
-X-Gm-Gg: AfdE7cmwilattoS1Yvv473qbXTdCOLv7Jd1/2mRd42Tc0SqCfFK/xigc5t6kQnc7996
-	fILl1kC4SUXZLnikCLN52+fompd1+YCopTRHci+T+5zQPyf5X1ywGtkp5GFCJ1Cv/XxlRcydX5D
-	KvFDV+NlCTUaS3Iq0Sy5OkOW9UD/NTnPCynFfEdXm2qPLAwL5aPe1A7JnU3gckfhvlfpNSi4qqJ
-	sRU3k1sernBfW5Gn8e45rlIgbByP8qOfBtKtLbnbT3dsaAUonfMZl4xeW65NRswGtOFFMr4Bff+
-	h9bZLQjDSrjb+Gr9Ilt6xa7RG4sxRE9LtuggA2/MEjugkInm4z5lYJ8NnSivIJGTFmlhllJySJ/
-	SeO14FQFhqfpi14VW/zqGy5stcTv3T4iqPwX9QyoACgWixY1TQ2ulAW4Ckg65qyStjozk4+K57K
-	3Rq1LrUW2epdTGTLWgNw==
-X-Received: by 2002:a05:600c:c118:b0:492:6881:1114 with SMTP id 5b1f17b1804b1-49268811131mr76135445e9.0.1782492289053;
-        Fri, 26 Jun 2026 09:44:49 -0700 (PDT)
-Received: from localhost.localdomain ([62.77.90.70])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4926c02088dsm53200365e9.0.2026.06.26.09.44.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Jun 2026 09:44:48 -0700 (PDT)
-Date: Fri, 26 Jun 2026 18:44:46 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Joe Simmons-Talbott <joest@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Shuah Khan <shuah@kernel.org>, cui.tao@linux.dev, Li Wang <li.wang@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
-	Guopeng Zhang <zhangguopeng@kylinos.cn>, Sebastian Chlad <sebastianchlad@gmail.com>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RESEND v4] selftests/cgroup: Adjust cpu test duration
- based on HZ
-Message-ID: <aj6r_tUrPH8eTuQw@localhost.localdomain>
-References: <20260625203307.1114538-1-joest@redhat.com>
+	s=arc-20240116; t=1782499058; c=relaxed/simple;
+	bh=6dDnymeCyAIjxRoJW74PZ/gV2/Qm9iNCg2yVKleCGx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ecUQ/h+jTx/SDvpN1Xzj8/DO2DVc5dVDk+CV35W89QQ/l/5X3p0PtOyvCQVApN7eM31ff3cLw4b4vP6KFJ4J9cZ7/m/Kr2gAgP8ASrUHcnBd2J3wspb3pbiw+xhrY2PfYmVZkd3NZxPc6qPDXtVWPRMHTKKnONMhzMr1CKy9PfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PTLB0fEA; arc=none smtp.client-ip=170.10.133.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1782499056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Xg+gfZZRw6uxD4/DdDYAkO88l6qr/2Ph391mNIOILd4=;
+	b=PTLB0fEAKcHHjN2447tjck6d2IPK9JieLCnjxoEGZ3ILyxJL/U55y5jODUIrKEp/V3wsId
+	wOY1UtP+vI4617sJBjp63qh0ZdwV3sn8/vJa18v9LMF9TKerFYlj4uMNyg6vZEFvOOyqhZ
+	yj5oZL6D0qbxhE5KCelHAPrFX2aOUWU=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-vKbXLotSONuCiEMUmwOrWQ-1; Fri,
+ 26 Jun 2026 14:37:30 -0400
+X-MC-Unique: vKbXLotSONuCiEMUmwOrWQ-1
+X-Mimecast-MFC-AGG-ID: vKbXLotSONuCiEMUmwOrWQ_1782499048
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 077271955DC9;
+	Fri, 26 Jun 2026 18:37:28 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.2.16.156])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E358619560A3;
+	Fri, 26 Jun 2026 18:37:23 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Ridong Chen <ridong.chen@linux.dev>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Farhad Alemi <farhad.alemi@berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Aaron Tomlin <atomlin@atomlin.com>,
+	Guopeng Zhang <guopeng.zhang@linux.dev>,
+	Gregory Price <gourry@gourry.net>,
+	David Hildenbrand <david@kernel.org>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v8 00/11] cgroup/cpuset: Support multiple source/destination cpusets for cpuset_*attach()
+Date: Fri, 26 Jun 2026 14:19:12 -0400
+Message-ID: <20260626181923.133658-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hnagmfluecnp3bhm"
-Content-Disposition: inline
-In-Reply-To: <20260625203307.1114538-1-joest@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-17343-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,linux.dev,gmail.com,kylinos.cn,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17341-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FORGED_RECIPIENTS(0.00)[m:joest@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:shuah@kernel.org,m:cui.tao@linux.dev,m:li.wang@linux.dev,m:shakeel.butt@linux.dev,m:nphamcs@gmail.com,m:zhangguopeng@kylinos.cn,m:sebastianchlad@gmail.com,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:gourry@gourry.net,m:david@kernel.org,m:longman@redhat.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.com:dkim,suse.com:from_mime,localhost.localdomain:mid]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7FF166CF369
+X-Rspamd-Queue-Id: 681E36CFB6E
 
+ v8:
+  - Update patch 3 to make attach_in_progress a global flag which block
+    all cpuset write operations until the attach is done.
+  - Add a new patch 4 to collect most of the attach related variables
+    into a attach_ctx structure as suggested by Ridong.
+  - Add a test_cpuset selftest patch contributed by Michal Koutný.
+  - Keep the existing Reviewed-by tags as there is no functional change
+    to the other patches other than rename of some variables. Also add
+    some new tags.
 
---hnagmfluecnp3bhm
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH RESEND v4] selftests/cgroup: Adjust cpu test duration
- based on HZ
-MIME-Version: 1.0
+ v7: https://lore.kernel.org/lkml/20260621032816.1806773-1-longman@redhat.com/
+  - Include the fix patch from Farhad Alemi to fix a div/0 crash that
+    was part of the old patch 1.
+  - Integrated v6 patch 7 into earlier patches.
+  - Add a new "cgroup/cpuset: Prevent race between task attach and
+    cpuset state change" patch to ensure that there will be no cpuset
+    state change between cpuset_can_attach() and cpuset_attach() or
+    cpuset_cancel_attach().
+  - Break v6 patch 6 into 2 separate patches for supporting multiple
+    source cpusets and multiple destination cpusets respectively and
+    further simplify and streamline the code.
 
-On Thu, Jun 25, 2026 at 04:33:04PM -0400, Joe Simmons-Talbott <joest@redhat=
-=2Ecom> wrote:
->  static int test_cpucg_max_nested(const char *root)
->  {
->  	int ret =3D KSFT_FAIL;
-> +	long hz =3D get_config_hz();
->  	long quota_usec =3D 1000;
->  	long default_period_usec =3D 100000; /* cpu.max's default period */
->  	long duration_seconds =3D 1;
-> =20
-> -	long duration_usec =3D duration_seconds * USEC_PER_SEC;
-> +	long duration_usec, duration_sec, duration_nsec;
->  	long usage_usec, n_periods, remainder_usec, expected_usage_usec;
->  	char *parent, *child;
->  	char quota_buf[32];
-> =20
-> +	duration_usec =3D duration_seconds * USEC_PER_SEC * 1000 / hz;
-> +	duration_sec =3D duration_usec / USEC_PER_SEC;
-> +	duration_nsec =3D duration_usec % USEC_PER_SEC * NSEC_PER_USEC;
+ v6:
+  - Make guarantee_online_mems() to only return cs->effective_mems with v2
+    in patch 1.
+  - Remove obsolete commit description text from patch 3.
+  - Add Reviewed-by tags.
+  - In patch 6, add WARN_ON_ONCE() test in cpuset_can_attach() to
+    confirm that cs != oldcs.
 
-Oh, that's duration in so many units and the seconds is there twice. (I
-understand why you did that for the rescale but) could you pick more
-descriptive/distinctive names then and ideally keep it simple :-p
+Sashiko AI review of another cpuset patch had found that cpuset_attach()
+and cpuset_can_attach() can be passed a cgroup_taskset with tasks
+migrating from one source cpuset to multiple destination cpusets and
+vice versa.  Further testing of the cpuset code indicates that this is
+indeed the case when the v2 cpuset controller is enabled or disabled.
 
-Thanks,
-Michal
+Unfortunately, cpuset_attach() and cpuset_can_attach() still assume that
+there will be one source and one destinaton cpuset which may result in
+inocrrect behavior.
 
---hnagmfluecnp3bhm
-Content-Type: application/pgp-signature; name="signature.asc"
+This patch series is created to fix this issue.
 
------BEGIN PGP SIGNATURE-----
+Patch 1 is a fix that fix a cgroup v2 div/0 crash due to bug in
+cpuset_update_tasks_nodemask().
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaj6sexsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AjcsgD+PahM0s+YmXEN2Ui9pVtE
-FMgDbmDnWk4anoBQVxTF6ZoA/0jjiW78vkltqLj1imUmdkfUdTjr7GhBD+a+VHwV
-lTQC
-=j+J0
------END PGP SIGNATURE-----
+Patch 2 is to fix an inconsistency in the way node mask update is being
+handled in cpuset_update_tasks_nodemask() and cpuset_attach() so that
+they match each other.
 
---hnagmfluecnp3bhm--
+Patch 3 makes any cpuset state change to wait for the completion of the
+pending cpuset attach operation, if any.
+
+Patch 4 collects task attach related data into a common attach_ctx
+structure.
+
+Patches 5 and 6 are just preparatory patches to make the remaining
+patches easier to review.
+
+Patch 7 makes attach_ctx.old_cs track group leader for use by
+cpuset_migrate_mm().
+
+Patch 8 moves mpol_rebind_mm() and cpuset_migrate_mm() inside
+cpuset_attach_task() to make CLONE_INTO_CGROUP flag of clone(2) works
+more like moving task from one cpuset to another one, while also make
+supporting multiple source and destination cpusets easier.
+
+Patch 9 makes the necessary changes to enable the support of multiple
+source cpusets by keeping all the source cpusets found during task
+iterations in a singly linked lists.
+
+Patch 10 enables the support of multiple destination cpusets during the
+the enabling of cpuset v2 controller.
+
+Patch 11 adds new test case to test_cpuset to test disabling of cpuset
+controller.
+
+Farhad Alemi (1):
+  cgroup/cpuset: rebind mm mempolicy to effective_mems, not mems_allowed
+
+Michal Koutný (1):
+  selftests/cgroup: Add test for cpuset affinity on controller disable
+
+Waiman Long (9):
+  cgroup/cpuset: Fix node inconsistencies between
+    cpuset_update_tasks_nodemask() and cpuset_attach()
+  cgroup/cpuset: Prevent race between task attach and cpuset state
+    change
+  cgroup/cpuset: Put all task attach related variables into attach_ctx
+  cgroup/cpuset: Add a cpuset_reserve_dl_bw() helper
+  cgroup/cpuset: Expand the scope of cpuset_can_attach_check()
+  cgroup/cpuset: Make attach_ctx.old_cs track task group leader
+  cgroup/cpuset: Move mpol_rebind_mm/cpuset_migrate_mm() calls inside
+    cpuset_attach_task()
+  cgroup/cpuset: Support multiple source cpusets for cpuset_*attach()
+  cgroup/cpuset: Support multiple destination cpusets for
+    cpuset_*attach()
+
+ kernel/cgroup/cpuset-internal.h              |  11 +-
+ kernel/cgroup/cpuset.c                       | 442 ++++++++++++-------
+ tools/testing/selftests/cgroup/test_cpuset.c | 243 ++++++++++
+ 3 files changed, 541 insertions(+), 155 deletions(-)
+
+-- 
+2.54.0
+
 
