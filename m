@@ -1,203 +1,285 @@
-Return-Path: <cgroups+bounces-17327-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17328-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +zGbBk5lPmoRFQkAu9opvQ
-	(envelope-from <cgroups+bounces-17327-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 13:41:02 +0200
+	id UPGkCpxuPmoLGAkAu9opvQ
+	(envelope-from <cgroups+bounces-17328-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 14:20:44 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32C3A6CC91A
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 13:41:01 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 754086CCEEF
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 14:20:43 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=infradead.org header.s=desiato.20200630 header.b="h+0H4/ug";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17327-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17327-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=infradead.org;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=JtuLUD3h;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17328-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17328-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 625413017007
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 11:40:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 75618302A4C5
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jun 2026 12:20:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1473E023E;
-	Fri, 26 Jun 2026 11:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE1D3DCD9C;
+	Fri, 26 Jun 2026 12:20:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D1C274FD1;
-	Fri, 26 Jun 2026 11:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D151F2459E5
+	for <cgroups@vger.kernel.org>; Fri, 26 Jun 2026 12:20:27 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782474042; cv=none; b=sP2OnKkh9EBY163bf12JoBtuLT9qmt0rI4+p9L+PZ2ZDhHVLfJDHfKhNSEPFRW7gxTUBSEBRLqknnsJoR8AqEic3iR6dJdvw8hsNDWKe1Q5JiqJrK4YoAMALCaAugFalhgwiMZyfrxtxJxr1cJWZ59Wtcdqwn3usPkRMQTevM4g=
+	t=1782476429; cv=none; b=h3u1nb1Mcp1EwVOjy5DMFBHnfrBO6tDiyByIie1Qkb2V0M7MSk6fGB1hykoqYLszXTo0XjJZ/zTGa9O5XTSgGzjzZK9D7HarIUtZQTgWuCW+P9Ey9wBLu4zEWvs7GxirGhuhu2zT9AQDJl9RgW23YC2p5iZlIdc507VRDtPWwvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782474042; c=relaxed/simple;
-	bh=x4r8gpp5fPgbBPhyKnTfjv8q2gHPEHBzvn9Rm/Llo/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VghPh9yqf+NkII90v9fKRLJclIyk4Nq7lq0JCfEpSq3ELxBSU6mJvFdHlJeA8F6G3w9KdG++PDH1eX6CanB+Jz9quR3XpPr7RcFhNeCChzIVcxEkEu8I+4X+DfN3QHF+4q7IFYY3d/nnbm/789Imkn0r6GYX5WYG3v916vV/0Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=pass smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=h+0H4/ug; arc=none smtp.client-ip=90.155.92.199
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ekXy61ni8/qG7IPaPTiYAhfgPZgX1m8oEJ9GDwzIQaQ=; b=h+0H4/uglo08ffMH/cq4O7g2JP
-	5KexDZ0uxnR279j6ziIUx5ga7mKj6Aj6RZ+Y5NeDmn2ajsLfbh1HNh0SJ9ftwbz5cDWZ47swjfIEg
-	DpZUZQGvuqfgx4TRzi5gXTRVg+EkMzOUOLpAQ3ax2MZfy09cQMKwFP09AqbTxTdOIll5FSmQIBu4I
-	N8DVIGTnuyRzE6VvGXivsbFeJOdLa3uyNJKjHkiK4vmHYRwO8U9FsZ0JRzlMCnxxd0BDU2idcckCi
-	TdyDk/+taAPW+jDly5x4oY2KvfVBJ05x3PtodqNU7OZTf+zsW4EUyRB/8z2K7Fhq4MGF4lpG5Z4Ji
-	X/YcwA7A==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.99.2 #2 (Red Hat Linux))
-	id 1wd4ux-00000004n6a-1XIk;
-	Fri, 26 Jun 2026 11:40:19 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 0A30C3004F8; Fri, 26 Jun 2026 13:40:17 +0200 (CEST)
-Date: Fri, 26 Jun 2026 13:40:16 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: "Chen, Yu C" <yu.c.chen@intel.com>
-Cc: longman@redhat.com, chenridong@huaweicloud.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jstultz@google.com,
-	kprateek.nayak@amd.com, qyousef@layalina.io, mingo@kernel.org
-Subject: Re: [PATCH v3 7/7] sched/eevdf: Move to a single runqueue
-Message-ID: <20260626114016.GZ42921@noisy.programming.kicks-ass.net>
-References: <20260605105513.354837583@infradead.org>
- <20260605124052.227463677@infradead.org>
- <a22eea2b-4c4a-4623-9a44-d7b18c0c91c8@intel.com>
+	s=arc-20240116; t=1782476429; c=relaxed/simple;
+	bh=liHUnt6/fGFEFl8xrFW6e+gj0j+4SEcKN+8BgIc25Iw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EfTzjJ+yEsdGB/0533QacVXBsJ8dxqoNhJSPK0Bfdz3QtEJWjnxUW1tsAXGtscddZEYdMBPimezAjZcefxCgParWTUIjkBDDSJXp+jY0n/1ooLNQDR92um3NySW8PhUKRcqxHanUGBJIRiPae7ed+dPIVV1eHVnmLl008YNrc9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JtuLUD3h; arc=none smtp.client-ip=95.215.58.177
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782476415;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=nKnqyFpkGqJ5qqN1vo0VqOJxDpoK/HcDMxENgN5Bb08=;
+	b=JtuLUD3hLJaijfheOV7umvsIyWwvW98MolEhw1ZGvfSBbwIKF+bG8XdOtypvHIOlRlDnFZ
+	tBUtI2/7O5QuO+wOKwCoIn5Oqb3EQZQuwc/Fm5GMVOlRfwR/QWCZmtpId2qbQ4VTCoa9ef
+	d2o63X8gbL+y6nj8lkOPnl2DiGRD/mU=
+From: Usama Arif <usama.arif@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	david@kernel.org,
+	ljs@kernel.org,
+	liam@infradead.org,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	kasong@tencent.com,
+	qi.zheng@linux.dev,
+	shakeel.butt@linux.dev,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	chrisl@kernel.org,
+	nphamcs@gmail.com,
+	baoquan.he@linux.dev,
+	youngjun.park@lge.com,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	rientjes@google.com,
+	kernel-team@meta.com
+Cc: Usama Arif <usama.arif@linux.dev>
+Subject: [RFC 0/1] mm/vmscan: reduce lru_lock contention via vmstat-derived scan-balance cost 
+Date: Fri, 26 Jun 2026 05:19:46 -0700
+Message-ID: <20260626122009.75334-1-usama.arif@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a22eea2b-4c4a-4623-9a44-d7b18c0c91c8@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	SUBJECT_ENDS_SPACES(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:chrisl@kernel.org,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:youngjun.park@lge.com,m:hannes@cmpxchg.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:rientjes@google.com,m:kernel-team@meta.com,m:usama.arif@linux.dev,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17327-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:yu.c.chen@intel.com,m:longman@redhat.com,m:chenridong@huaweicloud.com,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:jstultz@google.com,m:kprateek.nayak@amd.com,m:qyousef@layalina.io,m:mingo@kernel.org,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_SENDER(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,infradead.org,google.com,suse.com,tencent.com,linux.dev,gmail.com,lge.com,cmpxchg.org,kvack.org,vger.kernel.org,meta.com];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-17328-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,intel.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,infradead.org:dkim,infradead.org:from_mime]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 32C3A6CC91A
+X-Rspamd-Queue-Id: 754086CCEEF
 
-On Sat, Jun 20, 2026 at 11:54:22AM +0800, Chen, Yu C wrote:
+The anon/file scan balance heuristic in get_scan_count() is fed by two
+scalars in struct lruvec (anon_cost, file_cost) that every reclaim
+producer updates under lruvec->lru_lock. The cost-recording work
+itself is trivial, but it both contends for and contributes to
+contention on lru_lock - which is often a contention point
+on memory-pressured workloads. Specifically:
 
-> A divide-by-zero crash is observed when running hackbench:
-> 
->   [14697.488452] CPU: 112 UID: 0 PID: 124791 Comm: hackbench Not tainted
-> 7.1.0-rc2+
->   [14697.492627] RIP: 0010:propagate_entity_load_avg+0x35f/0x3e0
->   [14697.506799]  <TASK>
->   [14697.507411]  __dequeue_task+0x2b4/0xc70
->   [14697.508677]  dequeue_task_fair+0x36/0x370
->   [14697.509047]  dequeue_task+0x101/0x2f0
->   [14697.509426]  __schedule+0x1b1/0x1a00
->   [14697.510868]  anon_pipe_read+0x3da/0x450
->   [14697.511400]  vfs_read+0x361/0x390
->   [14697.512053]  __x64_sys_read+0x19/0x30
-> 
-> The divide-by-zero happens here:
-> 
-> if (scale_load_down(gcfs_rq->load.weight)) {
->         load_sum = div_u64(gcfs_rq->avg.load_sum,
->                 scale_load_down(gcfs_rq->load.weight));
-> }
-> 
-> gcfs_rq->load.weight is an insane large value and is truncated
-> to the lower 32 bits by div_u64, which happen to be 0.
-> 
-> Using AI for investigation, the cause is a u32 overflow in
-> update_tg_cfs_runnable(), and flat pickup became a victim when using
-> tg_tasks():
-> 
->   u32 new_sum, divider;
->   ...
->   new_sum = se->avg.runnable_avg * divider; <-- boom
-> 
-> The following sequence shows how this triggers the crash:
-> 
->   propagate_entity_load_avg()
->     update_tg_cfs_runnable()     # u32 overflow corrupts runnable_sum
-> 
->   __update_load_avg_cfs_rq()
->     ___update_load_avg()         # computes insane runnable_avg
->   update_tg_load_avg()           # propagates to tg->runnable_avg
-> 
->   update_cfs_group()
->     calc_concur_shares()
->       tg_tasks()                 # long-to-int truncation, negative nr
->     reweight_entity()            # corrupted se->load.weight
->       update_load_add()          # corrupted cfs_rq->load.weight
-> 
->   propagate_entity_load_avg()
->     update_tg_cfs_load()
->       div_u64()                  # divide-by-zero
-> 
-> Fix by widening new_sum from u32 to u64(no need to force tg_tasks()
-> to return unsigned long after this fix)
-> Assisted-by: Claude:claude-opus-4.6
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
->  kernel/sched/fair.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d991ea85873a..99ea51448981 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5305,7 +5305,8 @@ static inline void
->  update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq *gcfs_rq)
->  {
->  	long delta_sum, delta_avg = gcfs_rq->avg.runnable_avg - se->avg.runnable_avg;
-> -	u32 new_sum, divider;
-> +	u64 new_sum;
-> +	u32 divider;
-> 
->  	/* Nothing to update */
->  	if (!delta_avg)
-> @@ -5319,7 +5320,7 @@ update_tg_cfs_runnable(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cf
-> 
->  	/* Set new sched_entity's runnable */
->  	se->avg.runnable_avg = gcfs_rq->avg.runnable_avg;
-> -	new_sum = se->avg.runnable_avg * divider;
-> +	new_sum = (u64)se->avg.runnable_avg * divider;
->  	delta_sum = (long)new_sum - (long)se->avg.runnable_sum;
->  	se->avg.runnable_sum = new_sum;
+- shrink_inactive_list() re-acquires lru_lock at function exit just
+  to call lru_note_cost_unlock_irq().
+- shrink_active_list() does the same after rotation accounting.
+- workingset_refault() takes folio_lruvec_lock_irq() purely to
+  record the refault cost.
+- prepare_scan_control() snapshots anon_cost/file_cost under
+  lru_lock.
+- lru_note_cost_unlock_irq() itself walks parent_lruvec() and
+  re-acquires lru_lock on every ancestor, multiplying the cost
+  of every update by memcg-hierarchy depth.
 
-Hmm, nice one. This makes sense because sched_avg::runnable_sum is a u64
-itself, so having the delta be one is only sensible.
+This patch removes those producer-side acquisitions entirely. The
+producer-local inputs (PGROTATE_*, PGRECLAIM_PAGEOUT_*) become
+per-LRU vmstat counters; WORKINGSET_RESTORE_* already captures the
+refault input. prepare_scan_control() reads the raw cost signal
+lock-free from those vmstats and folds the delta into a per-lruvec
+accumulator. A dedicated per-lruvec cost_lock — not touched by
+isolate_lru_folios(), move_folios_to_lru(), or folio_add_lru() —
+serialises the accumulator RMW and the lrusize/4 halving check.
+Hierarchy aggregation is implicit in rstat propagation, so the
+parent_lruvec() walk and the lru_reparent_memcg() cost-splice both
+disappear.
 
-I do wonder though, this doesn't actually look to be specific to flat,
-it just managed to trip it somehow.
+Trade-offs:
+  - Signal freshness is slightly worse: cost reads see rstat-
+    aggregated values that can lag until periodic / reader-triggered
+    flushing. Decay timing is also coarser since multiple producer
+    events may be batched into one read-side halving check.
+    The cost signal is a heuristic feeding the anon-vs-file split,
+    it's not a precise control loop — it's deliberately smoothed by
+    the lrusize/4 halving.  Producing/consuming it with a tiny lag should
+    not be perceptible.
+  - Per-lruvec footprint grows by 2 unsigned longs + a spinlock,
+    its a small cost.
 
-I'll stick this on as a separate fix.
+== Numbers ==
+
+Tested on a 176-core, 256 GB host. The benchmark drives sustained
+swap-out/refault inside a tight memcg using vm-scalability/usemem:
+
+  usemem -n 16 --prealloc --prefault --random $((256*1024*1024))
+
+run inside a two-level memcg with memory.max=512M on the leaf
+(4 GB anon working set has to fit in 512 MB -> continuous
+shrink_inactive_list + workingset_refault). A 16 GB swap file
+is used. Measurement is a 30 s `perf lock record -a` window
+over otherwise-idle hardware.
+
+Workload rates are identical on both kernels (the bench drives the
+same memory pressure):
+
+                          baseline    patched      delta
+  pgscan_direct  / s      172,662     171,817      ~0%
+  pgsteal_direct / s       67,162      66,306      ~0%
+  workingset_refault_anon / s
+                           40,696      39,830      ~0%
+
+perf lock contention (total wait per 30 s window):
+
+  Lock Name                Before      After     % change
+  shrink_lruvec+0x770     722.84 ms    0         -100% (eliminated)
+        (= lru_note_cost_unlock_irq)
+  workingset_refault+0x167 385.26 ms   0         -100% (eliminated)
+        (= lru_note_cost_refault)
+  shrink_node+0x4ad       689.43 ms    26.95 ms  -96%
+  shrink_active_list      208.34 ms    15.97 ms  -92%
+  lru_add_drain_cpu+0x34    1.96 s    917.71 ms  -53%
+
+  Total LRU lock wait      ~4.23 s     ~1.66 s   -61%
+
+The two specific contention sites the patch removes
+(shrink_lruvec+0x770 = lru_note_cost_unlock_irq;
+workingset_refault+0x167 = lru_note_cost_refault) are completely
+absent from the patched perf-lock-contention output.
+Secondary reductions in shrink_node, shrink_active_list,
+lru_add_drain_cpu and pgrefill/pgactivate look like knock-on
+effects from removing the cost-recording overhead and the
+parent_lruvec walk.
+
+The remaining ~1.66 s of LRU lock wait on the patched kernel is
+dominated by the per-CPU pagevec drain (lru_add_drain_cpu) and the
+main reclaim path in shrink_lruvec.
+
+The numbers above can be reproduced using the script in [1].
+
+== Alternatives considered ==
+
+1. cost_lock for both producer and consumer (no vmstat indirection):
+   Keep the producer loop, just swap lru_lock for a new per-lruvec
+   cost_lock. Decouples cost from LRU manipulation, but producers
+   still synchronously contend on cost_lock, the parent_lruvec()
+   walk is still required (O(memcg-depth) acquisitions per recording,
+   now on cost_lock), and lru_reparent_memcg() still needs explicit
+   cost-splice. We can do much better and this series removes the
+   producer lock entirely and gets hierarchy propagation for "free"
+   via rstat.
+
+2. Attempt to switch to using MGLRU's scan model:
+   MGLRU has no anon_cost/file_cost at all. It replaces the cost
+   heuristic with generation-based aging: per-LRU sequence numbers
+   (min_seq/max_seq) age folios into generations, and the
+   older-generation type is the one to scan. So
+   lru_note_cost_unlock_irq() / lru_note_cost_refault() are simply
+   not called when lru_gen_enabled() — by design it sidesteps every
+   concern this patch addresses.
+   But MGLRU is not a substitute for fixing classic LRU:
+     - It relies on a lot of things including per-lruvec generation
+       lists, bloom filters, mm_struct walk infrastructure, working-set
+       protection tiers and a whole sysfs interface. Replacing
+       classic LRU's cost recording with the MGLRU model would
+       mean dragging in all of that.
+     - It changes scan-balance semantics, not just the locking, so
+       it's a heuristic change we would need to evaluate separately.
+       There are known regressions (database/anon-heavy workloads
+       sensitive to swappiness, or file-cache-dominated workloads
+       where MGLRU's bloom-filter protection differs from classic
+       refault tracking).
+   This patch preserves classic-LRU semantics.
+
+3. Atomic cost counter:
+   lrusize/4 halving has no clean atomic form, and the parent
+   walk still has to run explicitly. Reusing vmstats gives per-CPU
+   aggregation AND rstat hierarchy propagation for free.
+
+4. Drop cost_lock from the existing patch and reuse lru_lock in the
+   consumer (prepare_scan_control()):
+   Saves 1 lock space per lruvec but re-couples the cost path to LRU
+   manipulation, though just from the consumer side this time.
+   prepare_scan_control() runs at the start of every shrink_lruvec()
+   cycle, so under sustained memory pressure it would take lru_lock
+   on the hot path and block isolate_lru_folios() /
+   move_folios_to_lru() / folio_add_lru() i.e. when reclaim is
+   in flight. A dedicated cost_lock is never taken by anyone except
+   the consumer cost calucation.
+
+[1] https://gist.github.com/uarif1/a4eb33a86c5b2d7bbc55b42f0956e884
+ 
+Usama Arif (1):
+  mm/vmscan: reduce lru_lock contention via vmstat-derived scan-balance
+    cost
+
+ include/linux/mmzone.h | 11 +++++--
+ include/linux/swap.h   |  3 --
+ mm/memcontrol-v1.c     |  4 +--
+ mm/memcontrol.c        |  4 +++
+ mm/mmzone.c            |  1 +
+ mm/swap.c              | 69 ------------------------------------------
+ mm/vmscan.c            | 64 +++++++++++++++++++++++++++++++++------
+ mm/vmstat.c            |  4 +++
+ mm/workingset.c        |  5 ---
+ 9 files changed, 74 insertions(+), 91 deletions(-)
+
+-- 
+2.53.0-Meta
+
 
