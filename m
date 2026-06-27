@@ -1,127 +1,170 @@
-Return-Path: <cgroups+bounces-17359-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17360-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ZrtgMV8TP2q+OgkAu9opvQ
-	(envelope-from <cgroups+bounces-17359-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2026 02:03:43 +0200
+	id BS/5CLQTP2rFOgkAu9opvQ
+	(envelope-from <cgroups+bounces-17360-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2026 02:05:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6AC6D0977
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2026 02:03:43 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87E966D0986
+	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2026 02:05:07 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=tqlKQhv5;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17359-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17359-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=MZTbPqdo;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17360-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17360-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CFBF8302DE20
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2026 00:03:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DDD28302F683
+	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2026 00:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8853017D6;
-	Sat, 27 Jun 2026 00:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777A140D584;
+	Sat, 27 Jun 2026 00:05:02 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E600C38D
-	for <cgroups@vger.kernel.org>; Sat, 27 Jun 2026 00:03:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6FC3C2D;
+	Sat, 27 Jun 2026 00:05:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782518618; cv=none; b=bcGJ1JLPqx9xuYPNnNvFJzvRTlHwcEKNJv9aVr/Qp4emOWOL+loiHEE2Vq8FRS5lU7Sg4QEpCLZYdQAg1A7H1P1m5OvyGx42OrxdWw4J9jpCEnF3CchiUeXqfVQezVaHhvwSUgJq4/TFjqFeSPj8Qs5zLQxJIMpaYQ1lTfOWenw=
+	t=1782518702; cv=none; b=tbXl+OudvQB/duc1q4OXChjd549geT8HX3nAUb+6if7zr96SRpTgKFM8Jt8G3a1Ui7AJeli65crUByc1efecX1yq0XA4Qxw4YcmVpOPb7c3Mw5QUBAFHOstOhnw5tPuT4E9tghlmspdOdDO7V/9ALjMNt4HJl8/hkIERreQaNTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782518618; c=relaxed/simple;
-	bh=lYf898hunEgSW0ZHYKR8e7s9pAnnfGRsXXJ/Ps5DykU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iU4q9t0B4USD3ZI42BjLAGJggPgFUlbHRoS31wQiUsZm/1kENvP8I6laiQ+ukGOlvkwaJIFZtkrD6LBxyOvnalJ2XWSqE+4M1nlkCHR1xLNZLdWI2k+z1KakjOk0ex1+8g4HRAwBgDbamFwfy5kUnnhrjQwbjlj/275wCe5d63c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tqlKQhv5; arc=none smtp.client-ip=91.218.175.173
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782518614;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lYf898hunEgSW0ZHYKR8e7s9pAnnfGRsXXJ/Ps5DykU=;
-	b=tqlKQhv5JQkI6bokcL3pmaPWOOWl2ckxjfKRqvwOECpLWTkl4P3IgJ0Ch953pXdFMYE4rs
-	HPAtt49lrbt1Cg0Y+fpGHB8jZPJOoWVnkMwsN26RpI78rCxPP+Tnf1XEYs4/59S3deHqF0
-	K7+/RjlRVoONF7/uOrgivtTgPHZbnQE=
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: linux-mm@kvack.org,  Johannes Weiner <hannes@cmpxchg.org>,  Michal Hocko
- <mhocko@kernel.org>,  Shakeel Butt <shakeel.butt@linux.dev>,  Muchun Song
- <muchun.song@linux.dev>,  Andrew Morton <akpm@linux-foundation.org>,
-  cgroups@vger.kernel.org,  linux-kernel@kvger.kernel.org,
-  kernel-team@meta.com
-Subject: Re: [PATCH] mm/memcontrol: remove unused for_each_mem_cgroup macro
- and cleanup
-In-Reply-To: <20260624183700.1152742-1-joshua.hahnjy@gmail.com> (Joshua Hahn's
-	message of "Wed, 24 Jun 2026 11:36:59 -0700")
-References: <20260624183700.1152742-1-joshua.hahnjy@gmail.com>
-Date: Fri, 26 Jun 2026 17:03:29 -0700
-Message-ID: <87jyrkdf3i.fsf@linux.dev>
+	s=arc-20240116; t=1782518702; c=relaxed/simple;
+	bh=2Zh6R/15i6vOTHGCOaxfoeHL+jgQib064kIUkuL/g0E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=olrQ+lWK2sS/zrv2plR6eXOQ9qZkqlTredCH+D2COj0yA+kA0XjJun0Kjf6XV4j+NcUcMTHwCdPoPts+r5NACXlWXR37SsZC5WfKDgE+JATPomzJm6xBMYPe4oSwU4ASRKs+iISqzHt+t9fIN2966jNE6Z/8EC6DH0QPVZYOE6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MZTbPqdo; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BF31F000E9;
+	Sat, 27 Jun 2026 00:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1782518700;
+	bh=qaTIdG2spwckKCehRc5kJjk4jNw/YP4es+XSEGs8qSw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=MZTbPqdonoA49oh0gHgSqOLKuwIFjZJRM4j1UsXSBMvZ63LI0/LOhspgpSuv2LA2h
+	 sm9pMMPk2qW8nsLrI0LgGk8bglA/ELX1QAuq5AecvwjL6Jry7RCJ8I9kNC/OrkJwYl
+	 cRGZFZxmtaMNYlRIBXS/jsSOZnBbmMXZfLJ3SJfUz+Lq1PsU2ZDTXdZx4Hmnktn697
+	 EeE/L+uVvYc7yXEZCS0zirjwi7USipcIQvFt3AE1EfOd4nPfNSRglHl6vg+K6XWMxh
+	 PcuoEALYr+JpNu2Mk93yC+/xWfvhb9Sot7JVEA2q8fpg7i/z51TFWD2aRBWIMjRvtN
+	 1VWQ/qlStZjBQ==
+From: SeongJae Park <sj@kernel.org>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	Breno Leitao <leitao@debian.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@suse.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: initialize *locked in memcg1_oom_prepare() stub
+Date: Fri, 26 Jun 2026 17:04:45 -0700
+Message-ID: <20260627000445.85650-1-sj@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <aj7KoDXJv3NByGUm@cmpxchg.org>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17359-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:joshua.hahnjy@gmail.com,m:linux-mm@kvack.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:cgroups@vger.kernel.org,m:linux-kernel@kvger.kernel.org,m:kernel-team@meta.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-17360-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:sj@kernel.org,m:leitao@debian.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:mhocko@suse.com,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:kernel-team@meta.com,m:stable@vger.kernel.org,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[roman.gushchin@linux.dev,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_SENDER(0.00)[sj@kernel.org,cgroups@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[roman.gushchin@linux.dev,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[sj@kernel.org,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,cmpxchg.org:email,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2E6AC6D0977
+X-Rspamd-Queue-Id: 87E966D0986
 
-Joshua Hahn <joshua.hahnjy@gmail.com> writes:
+On Fri, 26 Jun 2026 14:53:20 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-> Commit 7e1c0d6f58207 ("memcg: switch lruvec stats to rstat") removed the
-> last caller of for_each_mem_cgroup back in 2021, and there have not been
-> any new callers since. Remove the macro.
->
-> A comment in mem_cgroup_css_online has also been out of date since 2021,
-> when 2bfd36374edd9 ("mm: vmscan: consolidate shrinker_maps handling
-> code") open-coded the for_each_mem_cgroup iterator. Update the comment.
->
-> Finally, 99430ab8b804c ("mm: introduce BPF kfuncs to access memcg
-> statistics and events") added a second declaration for memcg_events to
-> include/linux/memcontrol.h, duplicating the one in mm/memcontrol-v1.h.
-> Let's clean that up too.
->
-> No functional changes intended.
->
-> Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+> On Fri, Jun 26, 2026 at 05:43:02AM -0700, Breno Leitao wrote:
+> > mem_cgroup_oom() passes an uninitialized "locked" to memcg1_oom_prepare()
+> > and reads it back in memcg1_oom_finish():
+> > 
+> > 	bool locked, ret;
+> > 	...
+> > 	if (!memcg1_oom_prepare(memcg, &locked))
+> > 		return false;
+> > 	ret = mem_cgroup_out_of_memory(memcg, mask, order);
+> > 	memcg1_oom_finish(memcg, locked);
+> > 
+> > This relies on memcg1_oom_prepare() setting *locked whenever it returns
+> > true.  The CONFIG_MEMCG_V1=y version does, but the stub used when
+> > CONFIG_MEMCG_V1=n returns true without touching *locked, so
+> > memcg1_oom_finish() consumes an uninitialized value.  On a memcg OOM this
+> > is reported by UBSAN:
+> > 
+> >   UBSAN: invalid-load in mm/memcontrol.c:1932:27
+> >   load of value 0 is not a valid value for type 'bool' (aka '_Bool')
+> > 
+> > Initialize *locked to false in the stub; with cgroup v1 compiled out
+> > there is no OOM lock to take.
+> > 
+> > Fixes: e93d4166b40a ("mm: memcg: put cgroup v1-specific code under a config option")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> 
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> I prefer this way over the idea to initialize in the caller. For the
+> actual implementation, the protocol is that the thing is initialized
+> when the function returns true. This version of the fix maintains that
+> for the dummy as well:
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+I agree.  I also feel the caller code is _slightly_ easier to read as is, than
+adding the initialization there.  If it is initialized there, I would assume it
+will be used somewhere.  But after finding out it is not used for early return
+cases including memcg1_oom_prepare() reuturning false case, I would be confused
+about the inefficiency.  Using a variable after passing its pointer to a
+function depending on the function's return value makes me assume the variable
+will be set inside the function.
+
+The code is simple enough to read in any way, and my taste is sometimes just
+weird, though.
+
+Anyway nice fix, thank you!
+
+Reviewed-by: SeongJae Park <sj@kernel.org>
+
+
+Thanks,
+SJ
+
+[...]
 
