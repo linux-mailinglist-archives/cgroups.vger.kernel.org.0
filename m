@@ -1,227 +1,189 @@
-Return-Path: <cgroups+bounces-17368-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17369-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id SdFmIoodQmrw0QkAu9opvQ
-	(envelope-from <cgroups+bounces-17368-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 09:23:54 +0200
+	id aDWAOC0gQmqc0gkAu9opvQ
+	(envelope-from <cgroups+bounces-17369-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 09:35:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CF86D6F55
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 09:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E2A76D70CB
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 09:35:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=KqLs4GIN;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17368-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17368-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=none;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17369-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17369-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2085C302DB7B
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 07:16:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0F68B3040AA9
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 07:28:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A8E3C1F43;
-	Mon, 29 Jun 2026 07:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74093D6CB8;
+	Mon, 29 Jun 2026 07:28:03 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A33E39769D
-	for <cgroups@vger.kernel.org>; Mon, 29 Jun 2026 07:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F3C3D34A0;
+	Mon, 29 Jun 2026 07:28:00 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782717398; cv=none; b=kZP0aw3kDFIIFMhw9LqAVpqIfxrT+WtdyFcaqt6WYUSMwexsrxngr8/nKE9uV4rnaDKlTAI7N3fd1iFy/U2NNiD5sP0QfVYb5YoOKZnQIF5f/XiYnpxJlDlUVxAajLYit7pWtsCQtFcVIgRJhkSKLwz9x8E0HhYWLr/MPRotD3g=
+	t=1782718083; cv=none; b=K2sdxHRNQKBUVtrhQoHhUpne8Mm4LfSugUW4gp5P6XXG2zOtZjfsU7VutVLaKAQsboZ1FtQ28PQS5LlyO2IUnMsHBHDewJCkfxH8l34eXLDdKWvORQCYyvsWtlq6LCR0aq94qOcb9vy3SV2QOdkjcAaP1eFNcdvuCL2TRD3ym+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782717398; c=relaxed/simple;
-	bh=irI66T1YvoEyiRNdxiF39BA6qTdeYPFLhfyWCNHKzf4=;
+	s=arc-20240116; t=1782718083; c=relaxed/simple;
+	bh=ifzOW5xRhoRUg6/BDIT+EDopmK6Cx/+YTe6yGEWjuQI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jOanNlv0BbeLT5SN+tvhG6aPJo1T715EGKePWBG+RUWQbGm51BLE0bbrPX14avS/0C+D1eZexbjc5KrIgrpxeP5rD3Sd0r7bbqYxmuD23VX0t9VOItRxboKEtwPRkpcdqB+dNcBFEZpQytc2WbMWxpcLkhJZLc7udyeI4G+Kt04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KqLs4GIN; arc=none smtp.client-ip=95.215.58.172
-Message-ID: <a37d6336-8f67-405c-b6fa-796a4348d676@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782717393;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rYt6huZCPhtTAV11Wes2eBLleTRAaiagsI+kEZZZ7uo=;
-	b=KqLs4GINfOWotsKpxzl4TsSwhRaykiaiFiOiWxJmMxU+c/7vD8iiSbWzpDVeygnefz0uuE
-	P8N+nMRY27BdUvpb8E0vhuXqcXjuVcqTkVHFAN4aB74nTde3+pz2W0alZchB5WuXE+0T71
-	d8Ocf3fViOPiaDyIt3TkGI/HAMWs9gU=
-Date: Mon, 29 Jun 2026 15:16:04 +0800
+	 In-Reply-To:Content-Type; b=nrFg3sPpLN0aM2gKnwKApWENtPhA/mAIWPrmn27DrGte2BxCHjtLHo9pCVuIXNtUZ7WidXLrLEsfSziBEM0uGr1YH6JUAKnh6Y+ZIXfcxIdV9cOOtG7uN8ilHn4Icwcl+CLunhwIL09eenH3TYWDcebzAqaoxcnIscwQu6aGuSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A04FF1F000E9;
+	Mon, 29 Jun 2026 07:27:54 +0000 (UTC)
+Message-ID: <fd16413a-95a7-4503-80df-2d71303498fa@kernel.org>
+Date: Mon, 29 Jun 2026 09:27:23 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v8 04/11] cgroup/cpuset: Put all task attach related
- variables into attach_ctx
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Farhad Alemi <farhad.alemi@berkeley.edu>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Aaron Tomlin <atomlin@atomlin.com>,
- Guopeng Zhang <guopeng.zhang@linux.dev>, Gregory Price <gourry@gourry.net>,
- David Hildenbrand <david@kernel.org>
-References: <20260626181923.133658-1-longman@redhat.com>
- <20260626181923.133658-5-longman@redhat.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Ridong Chen <ridong.chen@linux.dev>
-In-Reply-To: <20260626181923.133658-5-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] cgroup/cpuset: rebind mm mempolicy to effective_mems,
+ not mems_allowed
+To: Andrew Morton <akpm@linux-foundation.org>,
+ Farhad Alemi <farhad.alemi@berkeley.edu>
+Cc: Waiman Long <longman@redhat.com>, Farhad Alemi <falemi@asu.edu>,
+ Gregory Price <gourry@gourry.net>, Yury Norov <ynorov@nvidia.com>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>, Zi Yan <ziy@nvidia.com>,
+ Matthew Brost <matthew.brost@intel.com>, Rakie Kim <rakie.kim@sk.com>,
+ Byungchul Park <byungchul@sk.com>, Ying Huang
+ <ying.huang@linux.alibaba.com>, Alistair Popple <apopple@nvidia.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ stable@vger.kernel.org, Tejun Heo <tj@kernel.org>
+References: <CA+0ovCg05rUk1-3k2ysdxmbcER8aG-wVh9SSTrrbp6LPWpPHYA@mail.gmail.com>
+ <CA+0ovCgfHJHv5d1mzapWWvF-LhjppzDX8NPPLvCPZxPKg8RiYw@mail.gmail.com>
+ <20260627231508.74201ca47c883507be97d8c2@linux-foundation.org>
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=david@kernel.org; keydata=
+ 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
+ qIws/H2t
+In-Reply-To: <20260627231508.74201ca47c883507be97d8c2@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.46 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:farhad.alemi@berkeley.edu,m:longman@redhat.com,m:falemi@asu.edu,m:gourry@gourry.net,m:ynorov@nvidia.com,m:joshua.hahnjy@gmail.com,m:ziy@nvidia.com,m:matthew.brost@intel.com,m:rakie.kim@sk.com,m:byungchul@sk.com,m:ying.huang@linux.alibaba.com,m:apopple@nvidia.com,m:linux@rasmusvillemoes.dk,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:stable@vger.kernel.org,m:tj@kernel.org,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:gourry@gourry.net,m:david@kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-17368-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17369-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FREEMAIL_CC(0.00)[redhat.com,asu.edu,gourry.net,nvidia.com,gmail.com,intel.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org,kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: F1CF86D6F55
+X-Rspamd-Queue-Id: 3E2A76D70CB
 
-
-
-On 6/27/2026 2:19 AM, Waiman Long wrote:
-> Put the task attach related cpuset_attach_old_cs and
-> cpuset_attach_nodemask_to static variables into the new attach_ctx
-> structure to improve readability and ease maintanence.
+On 6/28/26 08:15, Andrew Morton wrote:
+> On Sun, 14 Jun 2026 06:25:55 -0700 Farhad Alemi <farhad.alemi@berkeley.edu> wrote:
 > 
-> No functional change is expected.
+>> Creating a child cpuset where cpuset.mems is never set leads to a div/0
+>> when a VMA mempolicy with MPOL_F_RELATIVE_NODES rebinds in response to a
+>> CPU hotplug event.
+>>
+>> Reproduction steps:
+>>  1) Create a cgroup w/ cpuset controls (do not set cpuset.mems)
+>>  2) Move the task into the child cpuset
+>>  3) Create a VMA mempolicy for that task with MPOL_F_RELATIVE_NODES
+>>  4) unplug and hotplug a cpu
+>>       echo 0 > /sys/devices/system/cpu/cpu1/online
+>>       echo 1 > /sys/devices/system/cpu/cpu1/online
+>>  5) mempolicy rebind does a div/0 in mpol_relative_nodemask on the
+>>     call to __nodes_fold()
 > 
-> Suggested-by: Ridong Chen <ridong.chen@linux.dev>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   kernel/cgroup/cpuset.c | 21 ++++++++++-----------
->   1 file changed, 10 insertions(+), 11 deletions(-)
+> Oops.
 > 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index dec9785d0271..1f31f340e0ec 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -362,6 +362,8 @@ static DECLARE_WAIT_QUEUE_HEAD(cpuset_attach_wq);
->    */
->   static struct {
->   	int in_progress;
-> +	struct cpuset *old_cs;	/* Source cpuset */
-> +	nodemask_t nodemask_to;
->   } attach_ctx;
->   
->   static inline void check_insane_mems_config(nodemask_t *nodes)
-> @@ -2996,8 +2998,6 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->   	return 0;
->   }
->   
-> -static struct cpuset *cpuset_attach_old_cs;
-> -
->   /*
->    * Check to see if a cpuset can accept a new task
->    * For v1, cpus_allowed and mems_allowed can't be empty.
-> @@ -3029,8 +3029,8 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   	int cpu, ret;
->   
->   	/* used later by cpuset_attach() */
-> -	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> -	oldcs = cpuset_attach_old_cs;
-> +	attach_ctx.old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> +	oldcs = attach_ctx.old_cs;
->   	cs = css_cs(css);
->   
->   	mutex_lock(&cpuset_mutex);
-> @@ -3133,7 +3133,6 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
->    * allocate from cpuset_init().
->    */
->   static cpumask_var_t cpus_attach;
-> -static nodemask_t cpuset_attach_nodemask_to;
->   
->   static void cpuset_attach_task(struct cpuset *cs, struct task_struct *task)
->   {
-> @@ -3150,7 +3149,7 @@ static void cpuset_attach_task(struct cpuset *cs, struct task_struct *task)
->   	 */
->   	WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
->   
-> -	cpuset_change_task_nodemask(task, &cpuset_attach_nodemask_to);
-> +	cpuset_change_task_nodemask(task, &attach_ctx.nodemask_to);
->   	cpuset1_update_task_spread_flags(cs, task);
->   }
->   
-> @@ -3160,7 +3159,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   	struct task_struct *leader;
->   	struct cgroup_subsys_state *css;
->   	struct cpuset *cs;
-> -	struct cpuset *oldcs = cpuset_attach_old_cs;
-> +	struct cpuset *oldcs = attach_ctx.old_cs;
->   	bool cpus_updated, mems_updated;
->   	bool queue_task_work = false;
->   
-> @@ -3172,7 +3171,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   	cpus_updated = !cpumask_equal(cs->effective_cpus,
->   				      oldcs->effective_cpus);
->   	mems_updated = !nodes_equal(cs->effective_mems, oldcs->effective_mems);
-> -	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
-> +	guarantee_online_mems(cs, &attach_ctx.nodemask_to);
->   
->   	/*
->   	 * In the default hierarchy, enabling cpuset in the child cgroups
-> @@ -3211,7 +3210,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   			 */
->   			if (is_memory_migrate(cs)) {
->   				cpuset_migrate_mm(mm, &oldcs->old_mems_allowed,
-> -						  &cpuset_attach_nodemask_to);
-> +						  &attach_ctx.nodemask_to);
->   				queue_task_work = true;
->   			} else
->   				mmput(mm);
-> @@ -3221,7 +3220,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   out:
->   	if (queue_task_work)
->   		schedule_flush_migrate_mm();
-> -	cs->old_mems_allowed = cpuset_attach_nodemask_to;
-> +	cs->old_mems_allowed = attach_ctx.nodemask_to;
->   
->   	if (cs->nr_migrate_dl_tasks) {
->   		cs->nr_deadline_tasks += cs->nr_migrate_dl_tasks;
-> @@ -3685,7 +3684,7 @@ static void cpuset_fork(struct task_struct *task)
->   
->   	/* CLONE_INTO_CGROUP */
->   	mutex_lock(&cpuset_mutex);
-> -	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
-> +	guarantee_online_mems(cs, &attach_ctx.nodemask_to);
->   	cpuset_attach_task(cs, task);
->   
->   	dec_attach_in_progress_locked();
+>> The cpuset code passes (cs->mems_allowed) which is not guaranteed to have
+>> nodes to the rebind routine.  Use cs->effective_mems instead, which is
+>> guaranteed to have a non-empty nodemask.
+> 
+> Well gee, what happened with this patch.
+> 
+> I apologize for misfiling a cc:stable bugfix into my post-rc1 backlog
+> pile, but I got there in the end.
+> 
+> I guess this is an MM patch, even though it's against
+> kernel/cgroup/cpuset.c.
+> 
+> Nobody cc'ed Tejun.  Fixed.
+> 
+> David acked v1 but is being coy about the v2 patch?
 
-LGTM.
-
-Reviewed-by: Ridong Chen <ridong.chen@linux.dev>
-
+Yes, after the discussion, I think we should add comment similar to what I proposed.
 -- 
-Best regards
-Ridong
+Cheers,
 
+David
 
