@@ -1,196 +1,371 @@
-Return-Path: <cgroups+bounces-17366-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17367-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id YFJxCNUMQmrezQkAu9opvQ
-	(envelope-from <cgroups+bounces-17366-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 08:12:37 +0200
+	id 28Y8A6cdQmr30QkAu9opvQ
+	(envelope-from <cgroups+bounces-17367-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 09:24:23 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA7356D6356
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 08:12:36 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99FE36D6F64
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 09:24:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17366-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17366-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=aByoCzyh;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17367-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17367-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BE9B2302C7B8
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 06:07:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9D67030734B1
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 07:15:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5577F394783;
-	Mon, 29 Jun 2026 06:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AEF3C1966;
+	Mon, 29 Jun 2026 07:15:35 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C14D393DCA;
-	Mon, 29 Jun 2026 06:07:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE5B3B47CF
+	for <cgroups@vger.kernel.org>; Mon, 29 Jun 2026 07:15:32 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782713233; cv=none; b=ceNcleQJ8SanVvaN5HfBxDkJ/G5HGRnj0WUb2KwQIi37yZHA5nCOJ3rpQScDRIgb1tIqak5W5yKiiIjkTKYxP8M4Y7G/2rd7eGDXDTEzblrpFRRiaDXqHEMrFqXWeuGOjeckvLA3J/sF8JDV9jMoVNlq8iSeQeEFxAcK3/HAZG4=
+	t=1782717334; cv=none; b=DJUWw4vqaDNwUHi2omVkhteq9H2lBvsuItvHYO63kHDILylnMkjX/s0p7ORWCAxAtxoI4bKfDsd4N5Ei8FBcOV32vhmbZaHUL323AlD3BblkzXjZwgPc+TzltP2p30f47dZXL6yfeWjh6k5WIs4rkDSMkzNcQpXO0pgj8g1Qo3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782713233; c=relaxed/simple;
-	bh=euC0r2zWJPZGoCGT32YgAzbNzVvqm6KONJ+verk7KoY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oWmnyXkNlMimN6dVlMqTAyNV00jtcL5KgR6M9Wyht4+aFATO24cAPlAS9Ki7js/FEOPSUJpuWhFMQleR32Yg06uCS9zNXRwzlCsj64DJEHq/wggj54GP7uggciZDM1L40CJIW8mx3Ci/ZOP7okeiQpz/Fgh+fE2I4DBt+mk8fFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-X-UUID: bdbf1630738011f1aa26b74ffac11d73-20260629
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:061ebb43-a123-488e-bc92-1a9951ad7928,IP:10,
-	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:35
-X-CID-INFO: VERSION:1.3.12,REQID:061ebb43-a123-488e-bc92-1a9951ad7928,IP:10,UR
-	L:0,TC:0,Content:0,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:35
-X-CID-META: VersionHash:e7bac3a,CLOUDID:aa9a21a9133b91db1514a1f681957751,BulkI
-	D:260629140702YO8BPXHF,BulkQuantity:0,Recheck:0,SF:10|66|78|81|82|102|127|
-	136|850|865|898,TC:nil,Content:0|15|50,EDM:5,IP:-2,URL:0,File:nil,RT:nil,B
-	ulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR
-	:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: bdbf1630738011f1aa26b74ffac11d73-20260629
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1082564114; Mon, 29 Jun 2026 14:07:00 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	corbet@lwn.net,
-	cui.tao@linux.dev,
-	hannes@cmpxchg.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: [PATCH v3] cgroup/cpu: document cpu.stat.local and clarify cpu.stat behavior
-Date: Mon, 29 Jun 2026 14:06:36 +0800
-Message-Id: <20260629060636.200118-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <aj6PQPz4IDoVTnPL@localhost.localdomain>
-References: <aj6PQPz4IDoVTnPL@localhost.localdomain>
+	s=arc-20240116; t=1782717334; c=relaxed/simple;
+	bh=MYaqEaysKP46BpS2btGZP46vesfc6sQogd1OFwtbopM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JmZo67wLR+DUFRnj48y3iC7+TE0CHBTa0S8aeQZfM0gw2JyjxKa81pT4NweW2CwEoGnp24PfNw36A+g3bHQTA5JWlUBynPskC4NcPCx2bKQYNuKX7Grm0o8lQSX3Yge0XijaK1e+R7o5W5DQuqK8TWMdv8dejr+ZnSCcfF2z7KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aByoCzyh; arc=none smtp.client-ip=95.215.58.176
+Message-ID: <e856149c-e4cf-430f-80e0-a6f402faec99@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782717329;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P/Spr3uHJDXm8nUfAmFnApQAMVX8PvaQ+FFwn3/Z1Sc=;
+	b=aByoCzyhYyplBlrBYJzeK1dw/7QbQI+nIbiAYJQwXfj7C3snAHQ0PdmkM4WllqSJV4mi0K
+	Xp4N3IMs64BUQdLgiULOgSe/3ky1FjgSDSjod0IvQDjoYA/Mh4vWcY4vMUpM91vjCfdOZt
+	TvZ3d5o9LrSd1T3I04EoLzIRNHiUza0=
+Date: Mon, 29 Jun 2026 15:14:51 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v8 03/11] cgroup/cpuset: Prevent race between task attach
+ and cpuset state change
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Farhad Alemi <farhad.alemi@berkeley.edu>,
+ Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Aaron Tomlin <atomlin@atomlin.com>,
+ Guopeng Zhang <guopeng.zhang@linux.dev>, Gregory Price <gourry@gourry.net>,
+ David Hildenbrand <david@kernel.org>
+References: <20260626181923.133658-1-longman@redhat.com>
+ <20260626181923.133658-4-longman@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Ridong Chen <ridong.chen@linux.dev>
+In-Reply-To: <20260626181923.133658-4-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	TAGGED_FROM(0.00)[bounces-17366-lists,cgroups=lfdr.de];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:corbet@lwn.net,m:cui.tao@linux.dev,m:hannes@cmpxchg.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:skhan@linuxfoundation.org,m:sunshaojie@kylinos.cn,m:tj@kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:gourry@gourry.net,m:david@kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TAGGED_FROM(0.00)[bounces-17367-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[sunshaojie@kylinos.cn,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[sunshaojie@kylinos.cn,cgroups@vger.kernel.org];
-	ALIAS_RESOLVED(0.00)[];
-	TO_DN_NONE(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	R_DKIM_NA(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,kylinos.cn:email,kylinos.cn:mid,kylinos.cn:from_mime,vger.kernel.org:from_smtp]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CA7356D6356
+X-Rspamd-Queue-Id: 99FE36D6F64
 
-Add documentation for the cpu.stat.local interface file, which reports
-the throttled_usec stat -- the actual throttling time incurred by the
-cgroup's own runqueues, which may include throttling inherited from
-ancestor cgroup bandwidth limits. Unlike cpu.stat's throttled_usec
-which only accounts for throttling caused by the cgroup's own CFS
-bandwidth limit.
 
-When the controller is not enabled, the stat is not reported.
 
-Also clarify cpu.stat descriptions: note that the three base CPU usage
-stats (usage_usec, user_usec, system_usec) include descendant cgroups,
-and that the five CFS bandwidth stats are non-hierarchical -- they only
-account for throttling caused by the cgroup's own bandwidth limit.
+On 6/27/2026 2:19 AM, Waiman Long wrote:
+> Commit e44193d39e8d ("cpuset: let hotplug propagation work wait for
+> task attaching") was introduced to let hotplug operation to wait
+> until the completion of task attach operation. However, it is still
+> possible that the states of the source or destination cpuset can
+> be changed between the cpuset_can_attach() call and the subsequent
+> cpuset_attach()/cpuset_cacnel_attach() call.
+> 
+> As a result, data gathered during cpuset_can_attach() cannot be reliably
+> used in the subsequent cpuset_attach()/cpuset_cacnel_attach()
+> call at all. Make the task attach operation more robust
+> and allow the sharing of data between cpuset_can_attach() and
+> cpuset_attach()/cpuset_cacnel_attach() by making cpuset_write_resmask()
+> and cpuset_partition_write() wait for the completion of task attach
+> as well.
+> 
+> Ideally, an ongoing task attach operation should block any cpuset write
+> operation that can change its internal state until the operation is
+> completed. However, the attach_in_progress flag is currently per cpuset
+> and only the destination cpuset will have this flag set. The flag is not
+> set in the source cpuset where the tasks will be moved from. Even if we
+> extend the scope to include the source cpuset, it will not block cpuset
+> operation that changes the state of one of its ancestor cpuset which may
+> indirectly impact the state of the source or destination cpuset. It may
+> be too costly to set the flag for the whole subtree, it is far easier
+> to just make the flag global and block all the cpuset write operation
+> whenever a task attach operation is in progress. Make that change by
+> creating a new cpuset attach context (attach_ctx) structure to hold the
+> global in_progress flag and use it for blocking cpuset write operation
+> if a cpuset attach operation is in progress.
+> 
+> The comments about validate_change() are no longer valid as it won't
+> be called at all if an attach operation is in progress. So the comments
+> can be removed.
+> 
+> The per-cpuset attach_in_progress flag is also currently used in
+> partition_is_populated() and cpuset_is_populated() to determine if
+> an empty cpuset will have incoming task. This check will no longer be
+> needed as this function will not be called when there is a task attach
+> in progress. So the flag check is now removed.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>   kernel/cgroup/cpuset-internal.h | 11 +-----
+>   kernel/cgroup/cpuset.c          | 68 +++++++++++++++++++++------------
+>   2 files changed, 44 insertions(+), 35 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+> index f7aaf01f7cd5..817b86ba7019 100644
+> --- a/kernel/cgroup/cpuset-internal.h
+> +++ b/kernel/cgroup/cpuset-internal.h
+> @@ -145,12 +145,6 @@ struct cpuset {
+>   	 */
+>   	nodemask_t old_mems_allowed;
+>   
+> -	/*
+> -	 * Tasks are being attached to this cpuset.  Used to prevent
+> -	 * zeroing cpus/mems_allowed between ->can_attach() and ->attach().
+> -	 */
+> -	int attach_in_progress;
+> -
+>   	/* partition root state */
+>   	int partition_root_state;
+>   
+> @@ -269,10 +263,7 @@ static inline int nr_cpusets(void)
+>   static inline bool cpuset_is_populated(struct cpuset *cs)
+>   {
+>   	lockdep_assert_cpuset_lock_held();
+> -
+> -	/* Cpusets in the process of attaching should be considered as populated */
+> -	return cgroup_is_populated(cs->css.cgroup) ||
+> -		cs->attach_in_progress;
+> +	return cgroup_is_populated(cs->css.cgroup);
+>   }
+>   
+>   /**
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index d108c2083e86..dec9785d0271 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -356,6 +356,14 @@ static struct workqueue_struct *cpuset_migrate_mm_wq;
+>   
+>   static DECLARE_WAIT_QUEUE_HEAD(cpuset_attach_wq);
+>   
+> +/*
+> + * Cpuset task attach context
+> + * Protected by cpuset_mutex
+> + */
+> +static struct {
+> +	int in_progress;
+> +} attach_ctx;
+> +
+>   static inline void check_insane_mems_config(nodemask_t *nodes)
+>   {
+>   	if (!cpusets_insane_config() &&
+> @@ -368,22 +376,22 @@ static inline void check_insane_mems_config(nodemask_t *nodes)
+>   }
+>   
+>   /*
+> - * decrease cs->attach_in_progress.
+> - * wake_up cpuset_attach_wq if cs->attach_in_progress==0.
+> + * decrease attach_ctx.in_progress.
+> + * wake_up cpuset_attach_wq if attach_ctx.in_progress==0.
+>    */
+> -static inline void dec_attach_in_progress_locked(struct cpuset *cs)
+> +static inline void dec_attach_in_progress_locked(void)
+>   {
+>   	lockdep_assert_cpuset_lock_held();
+>   
+> -	cs->attach_in_progress--;
+> -	if (!cs->attach_in_progress)
+> +	attach_ctx.in_progress--;
+> +	if (!attach_ctx.in_progress)
+>   		wake_up(&cpuset_attach_wq);
+>   }
+>   
+> -static inline void dec_attach_in_progress(struct cpuset *cs)
+> +static inline void dec_attach_in_progress(void)
+>   {
+>   	mutex_lock(&cpuset_mutex);
+> -	dec_attach_in_progress_locked(cs);
+> +	dec_attach_in_progress_locked();
+>   	mutex_unlock(&cpuset_mutex);
+>   }
+>   
+> @@ -432,8 +440,7 @@ static inline bool partition_is_populated(struct cpuset *cs,
+>   	 * nr_populated_domain_children may include populated
+>   	 * csets from descendants that are partitions.
+>   	 */
+> -	if (cgroup_has_tasks(cs->css.cgroup) ||
+> -	    cs->attach_in_progress)
+> +	if (cgroup_has_tasks(cs->css.cgroup))
+>   		return true;
+>   
+>   	rcu_read_lock();
+> @@ -3091,11 +3098,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+>   	cs->dl_bw_cpu = cpu;
+>   
+>   out_success:
+> -	/*
+> -	 * Mark attach is in progress.  This makes validate_change() fail
+> -	 * changes which zero cpus/mems_allowed.
+> -	 */
+> -	cs->attach_in_progress++;
+> +	attach_ctx.in_progress++;
+>   
+>   out_unlock:
+>   	if (ret)
+> @@ -3113,7 +3116,7 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
+>   	cs = css_cs(css);
+>   
+>   	mutex_lock(&cpuset_mutex);
+> -	dec_attach_in_progress_locked(cs);
+> +	dec_attach_in_progress_locked();
+>   
+>   	if (cs->dl_bw_cpu >= 0)
+>   		dl_bw_free(cs->dl_bw_cpu, cs->sum_migrate_dl_bw);
+> @@ -3226,7 +3229,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+>   		reset_migrate_dl_data(cs);
+>   	}
+>   
+> -	dec_attach_in_progress_locked(cs);
+> +	dec_attach_in_progress_locked();
+>   
+>   	mutex_unlock(&cpuset_mutex);
+>   }
+> @@ -3246,10 +3249,19 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>   		return -EACCES;
+>   
+>   	buf = strstrip(buf);
+> +retry:
+> +	wait_event(cpuset_attach_wq, attach_ctx.in_progress == 0);
+> +
+>   	cpuset_full_lock();
+>   	if (!is_cpuset_online(cs))
+>   		goto out_unlock;
+>   
+> +	/* Don't race with task attach */
+> +	if (attach_ctx.in_progress) {
+> +		cpuset_full_unlock();
+> +		goto retry;
+> +	}
+> +
+>   	trialcs = dup_or_alloc_cpuset(cs);
+>   	if (!trialcs) {
+>   		retval = -ENOMEM;
+> @@ -3377,7 +3389,17 @@ static ssize_t cpuset_partition_write(struct kernfs_open_file *of, char *buf,
+>   	else
+>   		return -EINVAL;
+>   
+> +retry:
+> +	wait_event(cpuset_attach_wq, attach_ctx.in_progress == 0);
+> +
+>   	cpuset_full_lock();
+> +
+> +	/* Don't race with task attach */
+> +	if (attach_ctx.in_progress) {
+> +		cpuset_full_unlock();
+> +		goto retry;
+> +	}
+> +
 
-Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
----
-Changes in v3:
-- Clarify that the three base CPU usage stats include descendant
-  cgroups.
-- Add a note explaining that the five CFS bandwidth stats are
-  non-hierarchical.
----
- Documentation/admin-guide/cgroup-v2.rst | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+Would it make sense to add a helper like wait_attach_done_locked()?
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 993446ab66d0..91ad91680cf0 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1145,7 +1145,7 @@ will be referred to. All time durations are in microseconds.
- 	This file exists whether the controller is enabled or not.
- 
- 	It always reports the following three stats, which account for all the
--	processes in the cgroup:
-+	processes in the cgroup (including those in descendant cgroups):
- 
- 	- usage_usec
- 	- user_usec
-@@ -1160,6 +1160,27 @@ will be referred to. All time durations are in microseconds.
- 	- nr_bursts
- 	- burst_usec
- 
-+	Note that the above five CFS bandwidth stats are non-hierarchical;
-+	they only account for throttling caused by this cgroup's own bandwidth
-+	limit, not including throttling inherited from ancestor cgroups.
-+
-+  cpu.stat.local
-+	A read-only flat-keyed file.
-+	This file exists whether the controller is enabled or not.
-+
-+	It reports the following stat when the controller is enabled:
-+
-+	- throttled_usec
-+
-+	Unlike the ``throttled_usec`` reported by ``cpu.stat`` which
-+	accounts for throttling caused by this cgroup's own CFS
-+	bandwidth limit, ``cpu.stat.local`` reports the actual
-+	throttling time incurred by this cgroup's own runqueues,
-+	which may include throttling inherited from ancestor
-+	cgroup bandwidth limits.
-+
-+	When the controller is not enabled, this stat is not reported.
-+
-   cpu.weight
- 	A read-write single value file which exists on non-root
- 	cgroups.  The default is "100".
+>   	if (is_cpuset_online(cs))
+>   		retval = update_prstate(cs, val);
+>   	cpuset_update_sd_hk_unlock();
+> @@ -3616,11 +3638,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
+>   	if (ret)
+>   		goto out_unlock;
+>   
+> -	/*
+> -	 * Mark attach is in progress.  This makes validate_change() fail
+> -	 * changes which zero cpus/mems_allowed.
+> -	 */
+> -	cs->attach_in_progress++;
+> +	attach_ctx.in_progress++;
+>   out_unlock:
+>   	mutex_unlock(&cpuset_mutex);
+>   	return ret;
+> @@ -3638,7 +3656,7 @@ static void cpuset_cancel_fork(struct task_struct *task, struct css_set *cset)
+>   	if (same_cs)
+>   		return;
+>   
+> -	dec_attach_in_progress(cs);
+> +	dec_attach_in_progress();
+>   }
+>   
+>   /*
+> @@ -3670,7 +3688,7 @@ static void cpuset_fork(struct task_struct *task)
+>   	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
+>   	cpuset_attach_task(cs, task);
+>   
+> -	dec_attach_in_progress_locked(cs);
+> +	dec_attach_in_progress_locked();
+>   	mutex_unlock(&cpuset_mutex);
+>   }
+>   
+> @@ -3775,7 +3793,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+>   	int partcmd = -1;
+>   	struct cpuset *parent;
+>   retry:
+> -	wait_event(cpuset_attach_wq, cs->attach_in_progress == 0);
+> +	wait_event(cpuset_attach_wq, attach_ctx.in_progress == 0);
+>   
+>   	mutex_lock(&cpuset_mutex);
+>   
+> @@ -3783,7 +3801,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+>   	 * We have raced with task attaching. We wait until attaching
+>   	 * is finished, so we won't attach a task to an empty cpuset.
+>   	 */
+> -	if (cs->attach_in_progress) {
+> +	if (attach_ctx.in_progress) {
+>   		mutex_unlock(&cpuset_mutex);
+>   		goto retry;
+>   	}
+
 -- 
-2.25.1
+Best regards
+Ridong
 
 
