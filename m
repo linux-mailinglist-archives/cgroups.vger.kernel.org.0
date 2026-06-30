@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-17385-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17386-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 1FybGjYcQ2o+QwoAu9opvQ
-	(envelope-from <cgroups+bounces-17385-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 03:30:30 +0200
+	id +H9NOEccQ2pJQwoAu9opvQ
+	(envelope-from <cgroups+bounces-17386-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 03:30:47 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CBB6DF9AF
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 03:30:29 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C1846DF9BB
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 03:30:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b="LJ8Tyy/N";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17385-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17385-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=jszc46Un;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17386-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17386-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 60E733023334
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 01:30:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5661F30254EE
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 01:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B7A36AB53;
-	Tue, 30 Jun 2026 01:30:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EC736A34C;
+	Tue, 30 Jun 2026 01:30:11 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3F827BF79
-	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 01:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D6B36F8EA
+	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 01:29:59 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782783001; cv=none; b=ImSQ65i9qKLrdPJpHjmRE65KTNGGc4tAj5pZZ1PjM3wjpKBa/TEqBBVsmRerfEFKRW6lLu1TFDan5VS6VmjyOFQ83eSmUoZFLsiuk7fNIGjlcF86kPoeYr4FuiiO0zWECGXBaGmmszxLrRiQilqHtI1sthNxuSeE8RuuzT7ZwRM=
+	t=1782783010; cv=none; b=em5Hbrx7t9krwpUKs6O6mIooSgKte9LSwpNuPeleeTN0LBEPhZ6trAY0BXMN5X3GwOKSQL/Dy8U2CcvMUGVE1+uLcppO7iSePtU7LRGssOCF8uXcygtxg//IxrevAoEVjcnA3cVmE738e62lkMCOzezkvshjG2oCn8Mccplz9No=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782783001; c=relaxed/simple;
-	bh=aFJldYyAlb1CdY3ktbD93x91fYqbwdvJA9Y1WTRy3Vo=;
+	s=arc-20240116; t=1782783010; c=relaxed/simple;
+	bh=fC2utO8KjnM+7TkHp1lSHynKJ6hfdXI72U5IvjcQtbU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bbE+Ls8iFWZFAqpl0mybGJ4dZx1FpPLJ2DpNCEHJ++8W1s1eEm5rIEws3yi1ntthZ5UaEyb38fjcswl5FTk/c0MX1ZKwW/3NbDmNRA7IrH/dNnsghMx7b+5L4Z9MuHtnfTZsuce1fUQ/+5dNqJY0B1kjqlg5GjJZaQYj3grBBhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LJ8Tyy/N; arc=none smtp.client-ip=91.218.175.172
+	 MIME-Version; b=DVUe5f9uaKSovpf1JV8ufKMc/AuWOPHttUuIKSGeDXpHbQDKUXusoRimEDfDCGAHwztziVZGWB1eUqLYIMawWjp1WgjUT4YkuS49y/RDOLTGbEOYXu6lXiVmGmzVFbM8plG6OMwgZ8wBDuoYUtwKEeBpuLhsdRnQctdSP5R7MVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jszc46Un; arc=none smtp.client-ip=91.218.175.171
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782782989;
+	t=1782782997;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=v+SjXDyaIUskmylTeULQ7YpsBG7g1B+2e1JWTTH/oMw=;
-	b=LJ8Tyy/NprEhJ1xWl5tZRepKEJ7Bf0iHIWyvd/DvQB/j8JXueF6A951huLjm2u2D+cVJRC
-	q+dns6nOTW2bNzOJnTxthMxSXn4oLUUr7N1+ZD/bPOdGaufs0lY8JnEs6PwF54z8GiuLxQ
-	J1zBx6IR2GIfBmmIcQp4B6FfUlWqpDE=
+	bh=sNMKfSq2rmG4Tk4WWqhPVEGirGb4v0bYHt6h2drRT1Y=;
+	b=jszc46UnWBKJ802otRkO/5UZQNkUddnQJ9ptKfEgL1K0FluYSyc/NeY2+PMS5KLYXodKyE
+	EKseZFhOVvRVUt3u1GyTV8gcFigA3N7nO9AhQ5ldaJ4KmbPdIfGuVAxHmzGMcDTYXjOXvX
+	LJUoJ0SbQcQPsYoct3bDxCkxemu3efk=
 From: Jiayuan Chen <jiayuan.chen@linux.dev>
 To: linux-mm@kvack.org
 Cc: jiayuan.chen@shopee.com,
@@ -66,9 +66,9 @@ Cc: jiayuan.chen@shopee.com,
 	Wei Xu <weixugc@google.com>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/4] memcg: bail out proactive reclaim when memcg is dying
-Date: Tue, 30 Jun 2026 09:29:03 +0800
-Message-ID: <20260630012909.144372-4-jiayuan.chen@linux.dev>
+Subject: [PATCH v2 4/4] memcg-v1: bail out reclaim when memcg is dying
+Date: Tue, 30 Jun 2026 09:29:04 +0800
+Message-ID: <20260630012909.144372-5-jiayuan.chen@linux.dev>
 In-Reply-To: <20260630012909.144372-1-jiayuan.chen@linux.dev>
 References: <20260630012909.144372-1-jiayuan.chen@linux.dev>
 Precedence: bulk
@@ -85,14 +85,14 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_TWELVE(0.00)[20];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17385-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17386-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS(0.00)[m:linux-mm@kvack.org,m:jiayuan.chen@shopee.com,m:yingfu.zhou@shopee.com,m:jiayuan.chen@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:qi.zheng@linux.dev,m:ljs@kernel.org,m:kasong@tencent.com,m:baohua@kernel.org,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -110,40 +110,60 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[shopee.com:email,vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D8CBB6DF9AF
+X-Rspamd-Queue-Id: 4C1846DF9BB
 
 From: Jiayuan Chen <jiayuan.chen@shopee.com>
 
-Proactive reclaim via memory.reclaim can run for a long time - swap I/O
-or thrashing again dominating the latency - and delays cgroup removal in
-the same way.
+The legacy memory.limit_in_bytes and memory.memsw.limit_in_bytes writers
+retry page_counter_set_max() by reclaiming synchronously in the writer
+context. memory.force_empty similarly loops in synchronous reclaim until
+the cgroup is empty or reclaim stops making progress.
 
-Mitigate this by stopping the reclaim once memcg_is_dying().
+These writes hold a kernfs active reference on the file. If cgroup removal
+starts in parallel, the remover sets CSS_DYING and then waits in
+kernfs_drain() under cgroup_mutex for the active reference to drain.
+Continuing reclaim after the memcg is dying can therefore delay cgroup
+removal and keep cgroup_mutex held for a long time.
+
+Stop the v1 reclaim loops once the memcg is dying. For limit resizing,
+keep the existing -EBUSY semantics when the new limit could not be
+installed. For memory.force_empty, keep the existing best-effort success
+semantics.
 
 Reported-by: Zhou Yingfu <yingfu.zhou@shopee.com>
 Cc: Jiayuan Chen <jiayuan.chen@linux.dev>
 Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
 ---
- mm/vmscan.c | 3 +++
- 1 file changed, 3 insertions(+)
+ mm/memcontrol-v1.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 754c5f5d716a..091b609cf1b1 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -7912,6 +7912,9 @@ int user_proactive_reclaim(char *buf,
+diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+index 765069211567..ad23de985d9a 100644
+--- a/mm/memcontrol-v1.c
++++ b/mm/memcontrol-v1.c
+@@ -1513,6 +1513,9 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+ 		if (!ret)
+ 			break;
+ 
++		if (memcg_is_dying(memcg))
++			break;
++
+ 		if (!drained) {
+ 			drain_all_stock(memcg);
+ 			drained = true;
+@@ -1551,6 +1554,9 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
  		if (signal_pending(current))
  			return -EINTR;
  
-+		if (memcg && memcg_is_dying(memcg))
-+			return -EAGAIN;
++		if (memcg_is_dying(memcg))
++			break;
 +
- 		/*
- 		 * This is the final attempt, drain percpu lru caches in the
- 		 * hope of introducing more evictable pages.
+ 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+ 						  MEMCG_RECLAIM_MAY_SWAP, NULL))
+ 			nr_retries--;
 -- 
 2.43.0
 
