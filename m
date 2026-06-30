@@ -1,329 +1,177 @@
-Return-Path: <cgroups+bounces-17400-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17401-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id yYm3MvF6Q2qLZAoAu9opvQ
-	(envelope-from <cgroups+bounces-17400-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 10:14:41 +0200
+	id xJwxHiqaQ2pNdAoAu9opvQ
+	(envelope-from <cgroups+bounces-17401-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 12:27:54 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930AC6E1939
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 10:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CCA86E2D43
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 12:27:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=IzEaU4de;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17400-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17400-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=intel.com;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=aRutZEds;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17401-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17401-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C4F233001CE1
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 08:14:37 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B701E30287A8
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 10:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D544A3C10AB;
-	Tue, 30 Jun 2026 08:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8132C3ED5A6;
+	Tue, 30 Jun 2026 10:09:08 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9843BC685
-	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 08:14:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7353ECBE3
+	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 10:09:04 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782807276; cv=none; b=rpxQyJLd/z6WqqK20FuCRnPdVxmXfaq+m7fevft+zkkkIS6qTLThd8z3QHMKkSglrUjIQmC3Zy8V0OZJoTUh0K80tGjO3UdoW/Ivv7Z0UCiVx+V/kFMNFrZV450sWq6UMMkbL3pPv8hO8VjMBQxG5Fl32xJRFpnXiIc35+NLO7Q=
+	t=1782814148; cv=none; b=YQu34OHCN/dlSFiTJZglJM/vd+yz/yjllSGC3Ih1+Txm68/mpoieoNIvM1Q5yM5CAMNtEzfwhJc5Suo3+AxrBpp5AFb3IpD1ACxFkwTbkCh/avrZP2DMrNtFi4TNMKRNP71bf1RgMmOK257OOfsk5lttAQpIdddbA/LO8KQbxYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782807276; c=relaxed/simple;
-	bh=xlI7so1g58p2eHsy0vQz3SrOc4bpctDDeoQ2kR6yAAI=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Td2bUW+0tX74P0ESOKZAjAvCrKqXHufJKTCIms0PxjeSEybXI7zwHSAV0N1kp8dPx+HK9RsH5z7roF4EjacJ/C7+luwUSo2cNzwRml56gg/UqrMbQuGPzUn+1xFEJCFBtgZS4A37NQNcSE38OFXrUEntEeH+seCMNioR5BTPTYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IzEaU4de; arc=none smtp.client-ip=192.198.163.12
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1782807275; x=1814343275;
-  h=date:from:to:cc:subject:message-id;
-  bh=xlI7so1g58p2eHsy0vQz3SrOc4bpctDDeoQ2kR6yAAI=;
-  b=IzEaU4deyjRpOtBuRAtzXHb469GVx4OAIPRDHAbJRXF7jusTAqfHvnuJ
-   VyJwnpBrK0i6rvjBxWnRhWRwbm65XBqVgGq74mNbG8Y6qRGP8qXgyFh+Q
-   7IzFdcUTHhE/jYu5HUzOC485dZYAaTkDWmYpVxxcmJ2zUpPH5GrnJ8Pta
-   tv31i9csCaibD8kSOalkO0g4PPpzlKjYIt2QFb3C5N1BrScp2xqxkzKVh
-   p3GTgfcggxQ7/csfMNitcir9f0Ef/08YF84u2Vn4+h45i5/Vyz70cum3U
-   ZpgB/NZbLpYPsPkfYfMyZJ7cIN55eSMlC5kNVRbo1jueLJxf46L2jCzjz
-   Q==;
-X-CSE-ConnectionGUID: VEB3LFdaT4G9wfqSHRmT2w==
-X-CSE-MsgGUID: 72LjOkjyRNa82T8fCCKn+g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11832"; a="87352056"
-X-IronPort-AV: E=Sophos;i="6.24,233,1774335600"; 
-   d="scan'208";a="87352056"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2026 01:14:35 -0700
-X-CSE-ConnectionGUID: rngh3+IcSJ+D1WKx82m0Mg==
-X-CSE-MsgGUID: OrWbufR/TkyQAGNdjoct/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.24,233,1774335600"; 
-   d="scan'208";a="276472506"
-Received: from lkp-server02.sh.intel.com (HELO ea128546eb3d) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 30 Jun 2026 01:14:33 -0700
-Received: from kbuild by ea128546eb3d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1weTbz-00000000874-0egA;
-	Tue, 30 Jun 2026 08:14:31 +0000
-Date: Tue, 30 Jun 2026 16:13:53 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-7.3] BUILD SUCCESS
- 171569f8ee6724a4113a0100fea6ff83d9b70c6a
-Message-ID: <202606301642.31M0wE95-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1782814148; c=relaxed/simple;
+	bh=p8odCEtGDc3zWu3v5B7FvxUBHn6h9JwExtWpoy6Jk7U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=d9tmlBCqzxEhEfUqJeRA9eTHn/+pQwstCbPaDU+Dz6NoxahgMujtmUm8OEvEhoCdGMUE42PgAsWNX/3fXGDdnaNkUGfOroIlvWxSErLULkICnloUMqsJzaiP21R/XVVMZeqFZfAx+JSxckB/wr6yRXRX6jXV0EijKrjAUdm2vJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aRutZEds; arc=none smtp.client-ip=95.215.58.176
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782814143;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=FSNOm2q+3f3joQNb7BZoeC7qzDmBVHPFm6THuKHZtzQ=;
+	b=aRutZEdszElsjGKIZ3OIRCtw9Yav7eECm7lwEFlEZ0qblblQvKMm8PBwgWO74ZUcTT2CPv
+	zwcexmcNBY94EpEZNwHg81ypFJ31cjtTLo16DqHaAXfrA5B18qpl/lH7qzZG51+u0zc/ll
+	laL/g5h+Wp0yy/mOIrKkva5wUmb73j8=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: linux-mm@kvack.org
+Cc: jiayuan.chen@linux.dev,
+	Jiayuan Chen <jiayuan.chen@shopee.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: memcg: reset zswap settings in css_reset
+Date: Tue, 30 Jun 2026 18:08:30 +0800
+Message-ID: <20260630100832.107062-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17401-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17400-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:linux-mm@kvack.org,m:jiayuan.chen@linux.dev,m:jiayuan.chen@shopee.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,intel.com:dkim,intel.com:mid,intel.com:from_mime,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime,shopee.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 930AC6E1939
+X-Rspamd-Queue-Id: 2CCA86E2D43
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-7.3
-branch HEAD: 171569f8ee6724a4113a0100fea6ff83d9b70c6a  cgroup/cpu: document cpu.stat.local and clarify cpu.stat behavior
+From: Jiayuan Chen <jiayuan.chen@shopee.com>
 
-elapsed time: 726m
+mem_cgroup_css_reset() is called when the memory controller is disabled
+on a cgroup but the memcg cannot be destroyed because it is pinned by a
+subsystem dependency -- for example, the io controller declares
+.depends_on = 1 << memory_cgrp_id, so memory remains in the cgroup_ss_mask
+and the css is hidden rather than killed.
 
-configs tested: 198
-configs skipped: 2
+The purpose of css_reset is to revert the memcg to its vanilla state so
+that no policies are applied and the css can be safely made visible again
+later.  Currently, all page counters (memory.max, swap.max, kmem.max,
+tcpmem.max) and other limits (soft_limit, memory.high, swap.high) are
+reset to their defaults, but zswap_max and zswap_writeback are not.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+These fields are initialized in css_alloc (zswap_max = PAGE_COUNTER_MAX,
+zswap_writeback inherited from parent) but were missing from css_reset.
+As a result, stale zswap policies remain in effect after css_reset: the
+zswap charge path (obj_cgroup_may_zswap) continues to enforce the old
+zswap_max limit, and the writeback path continues to honor the old
+zswap_writeback setting, even though the memory controller has been
+"disabled" on this cgroup.
 
-tested configs:
-alpha                             allnoconfig    gcc-16.1.0
-alpha                            allyesconfig    gcc-16.1.0
-alpha                               defconfig    gcc-16.1.0
-arc                              allmodconfig    clang-23
-arc                               allnoconfig    gcc-16.1.0
-arc                              allyesconfig    clang-23
-arc                                 defconfig    gcc-16.1.0
-arc                   randconfig-001-20260630    clang-23
-arc                   randconfig-002-20260630    clang-23
-arc                    vdk_hs38_smp_defconfig    gcc-16.1.0
-arm                               allnoconfig    gcc-16.1.0
-arm                              allyesconfig    clang-23
-arm                                 defconfig    gcc-16.1.0
-arm                   randconfig-001-20260630    clang-23
-arm                   randconfig-002-20260630    clang-23
-arm                   randconfig-003-20260630    clang-23
-arm                   randconfig-004-20260630    clang-23
-arm64                            allmodconfig    clang-23
-arm64                             allnoconfig    gcc-16.1.0
-arm64                               defconfig    gcc-16.1.0
-arm64                 randconfig-001-20260630    clang-23
-arm64                 randconfig-002-20260630    clang-23
-arm64                 randconfig-003-20260630    clang-23
-arm64                 randconfig-004-20260630    clang-23
-csky                             allmodconfig    gcc-16.1.0
-csky                              allnoconfig    gcc-16.1.0
-csky                                defconfig    gcc-16.1.0
-csky                  randconfig-001-20260630    clang-23
-csky                  randconfig-002-20260630    clang-23
-hexagon                          allmodconfig    gcc-16.1.0
-hexagon                           allnoconfig    gcc-16.1.0
-hexagon                             defconfig    gcc-16.1.0
-hexagon               randconfig-001-20260630    clang-18
-hexagon               randconfig-002-20260630    clang-18
-i386                             allmodconfig    clang-22
-i386                              allnoconfig    gcc-16.1.0
-i386                             allyesconfig    clang-22
-i386        buildonly-randconfig-001-20260630    clang-22
-i386        buildonly-randconfig-002-20260630    clang-22
-i386        buildonly-randconfig-003-20260630    clang-22
-i386        buildonly-randconfig-004-20260630    clang-22
-i386        buildonly-randconfig-005-20260630    clang-22
-i386        buildonly-randconfig-006-20260630    clang-22
-i386                                defconfig    gcc-16.1.0
-i386                           randconfig-001    clang-22
-i386                  randconfig-001-20260630    clang-22
-i386                           randconfig-002    clang-22
-i386                  randconfig-002-20260630    clang-22
-i386                           randconfig-003    clang-22
-i386                  randconfig-003-20260630    clang-22
-i386                           randconfig-004    clang-22
-i386                  randconfig-004-20260630    clang-22
-i386                           randconfig-005    clang-22
-i386                  randconfig-005-20260630    clang-22
-i386                           randconfig-006    clang-22
-i386                  randconfig-006-20260630    clang-22
-i386                           randconfig-007    clang-22
-i386                  randconfig-007-20260630    clang-22
-i386                  randconfig-011-20260630    gcc-12
-i386                  randconfig-012-20260630    gcc-12
-i386                  randconfig-013-20260630    gcc-12
-i386                  randconfig-014-20260630    gcc-12
-i386                  randconfig-015-20260630    gcc-12
-i386                  randconfig-016-20260630    gcc-12
-i386                  randconfig-017-20260630    gcc-12
-loongarch                        allmodconfig    clang-23
-loongarch                         allnoconfig    gcc-16.1.0
-loongarch                           defconfig    clang-23
-loongarch             randconfig-001-20260630    clang-18
-loongarch             randconfig-002-20260630    clang-18
-m68k                             allmodconfig    gcc-16.1.0
-m68k                              allnoconfig    gcc-16.1.0
-m68k                             allyesconfig    clang-23
-m68k                                defconfig    clang-23
-microblaze                        allnoconfig    gcc-16.1.0
-microblaze                       allyesconfig    gcc-16.1.0
-microblaze                          defconfig    clang-23
-mips                             allmodconfig    gcc-16.1.0
-mips                              allnoconfig    gcc-16.1.0
-mips                             allyesconfig    gcc-16.1.0
-mips                      malta_kvm_defconfig    gcc-16.1.0
-mips                        qi_lb60_defconfig    clang-17
-nios2                            allmodconfig    clang-20
-nios2                             allnoconfig    clang-23
-nios2                               defconfig    clang-23
-nios2                 randconfig-001-20260630    clang-18
-nios2                 randconfig-002-20260630    clang-18
-openrisc                         allmodconfig    clang-20
-openrisc                          allnoconfig    clang-23
-openrisc                            defconfig    gcc-16.1.0
-parisc                           allmodconfig    gcc-16.1.0
-parisc                            allnoconfig    clang-23
-parisc                           allyesconfig    clang-17
-parisc                              defconfig    gcc-16.1.0
-parisc                         randconfig-001    clang-22
-parisc                randconfig-001-20260630    clang-22
-parisc                         randconfig-002    clang-22
-parisc                randconfig-002-20260630    clang-22
-parisc64                            defconfig    clang-23
-powerpc                          allmodconfig    gcc-16.1.0
-powerpc                           allnoconfig    clang-23
-powerpc                        randconfig-001    clang-22
-powerpc               randconfig-001-20260630    clang-22
-powerpc                        randconfig-002    clang-22
-powerpc               randconfig-002-20260630    clang-22
-powerpc                        warp_defconfig    gcc-16.1.0
-powerpc64                      randconfig-001    clang-22
-powerpc64             randconfig-001-20260630    clang-22
-powerpc64                      randconfig-002    clang-22
-powerpc64             randconfig-002-20260630    clang-22
-riscv                            alldefconfig    gcc-16.1.0
-riscv                            allmodconfig    clang-23
-riscv                             allnoconfig    clang-23
-riscv                            allyesconfig    clang-23
-riscv                               defconfig    gcc-16.1.0
-riscv                 randconfig-001-20260630    gcc-9.5.0
-riscv                 randconfig-002-20260630    gcc-9.5.0
-s390                             allmodconfig    clang-17
-s390                              allnoconfig    clang-23
-s390                             allyesconfig    gcc-16.1.0
-s390                                defconfig    gcc-16.1.0
-s390                  randconfig-001-20260630    gcc-9.5.0
-s390                  randconfig-002-20260630    gcc-9.5.0
-sh                               allmodconfig    gcc-16.1.0
-sh                                allnoconfig    clang-23
-sh                               allyesconfig    clang-17
-sh                                  defconfig    gcc-14
-sh                    randconfig-001-20260630    gcc-9.5.0
-sh                    randconfig-002-20260630    gcc-9.5.0
-sh                          rsk7201_defconfig    gcc-16.1.0
-sparc                             allnoconfig    clang-23
-sparc                               defconfig    gcc-16.1.0
-sparc                 randconfig-001-20260630    clang-17
-sparc                 randconfig-002-20260630    clang-17
-sparc64                          allmodconfig    clang-20
-sparc64                             defconfig    gcc-14
-sparc64               randconfig-001-20260630    clang-17
-sparc64               randconfig-002-20260630    clang-17
-um                               allmodconfig    clang-17
-um                                allnoconfig    clang-23
-um                               allyesconfig    gcc-16.1.0
-um                                  defconfig    gcc-14
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20260630    clang-17
-um                    randconfig-002-20260630    clang-17
-um                           x86_64_defconfig    gcc-14
-x86_64                           allmodconfig    clang-22
-x86_64                            allnoconfig    clang-23
-x86_64                           allyesconfig    clang-22
-x86_64               buildonly-randconfig-001    clang-22
-x86_64      buildonly-randconfig-001-20260630    clang-22
-x86_64               buildonly-randconfig-002    clang-22
-x86_64      buildonly-randconfig-002-20260630    clang-22
-x86_64               buildonly-randconfig-003    clang-22
-x86_64      buildonly-randconfig-003-20260630    clang-22
-x86_64               buildonly-randconfig-004    clang-22
-x86_64      buildonly-randconfig-004-20260630    clang-22
-x86_64               buildonly-randconfig-005    clang-22
-x86_64      buildonly-randconfig-005-20260630    clang-22
-x86_64               buildonly-randconfig-006    clang-22
-x86_64      buildonly-randconfig-006-20260630    clang-22
-x86_64                              defconfig    gcc-14
-x86_64                                  kexec    clang-22
-x86_64                         randconfig-001    gcc-14
-x86_64                randconfig-001-20260630    gcc-14
-x86_64                         randconfig-002    gcc-14
-x86_64                randconfig-002-20260630    gcc-14
-x86_64                         randconfig-003    gcc-14
-x86_64                randconfig-003-20260630    gcc-14
-x86_64                         randconfig-004    gcc-14
-x86_64                randconfig-004-20260630    gcc-14
-x86_64                         randconfig-005    gcc-14
-x86_64                randconfig-005-20260630    gcc-14
-x86_64                         randconfig-006    gcc-14
-x86_64                randconfig-006-20260630    gcc-14
-x86_64                randconfig-011-20260630    gcc-14
-x86_64                randconfig-012-20260630    gcc-14
-x86_64                randconfig-013-20260630    gcc-14
-x86_64                randconfig-014-20260630    gcc-14
-x86_64                randconfig-015-20260630    gcc-14
-x86_64                randconfig-016-20260630    gcc-14
-x86_64                randconfig-071-20260630    clang-22
-x86_64                randconfig-072-20260630    clang-22
-x86_64                randconfig-073-20260630    clang-22
-x86_64                randconfig-074-20260630    clang-22
-x86_64                randconfig-075-20260630    clang-22
-x86_64                randconfig-076-20260630    clang-22
-x86_64                               rhel-9.4    clang-22
-x86_64                           rhel-9.4-bpf    gcc-14
-x86_64                          rhel-9.4-func    clang-22
-x86_64                    rhel-9.4-kselftests    clang-22
-x86_64                         rhel-9.4-kunit    gcc-14
-x86_64                           rhel-9.4-ltp    gcc-14
-x86_64                          rhel-9.4-rust    clang-22
-xtensa                            allnoconfig    clang-23
-xtensa                           allyesconfig    clang-20
-xtensa                randconfig-001-20260630    clang-17
-xtensa                randconfig-002-20260630    clang-17
+Reset zswap_max to PAGE_COUNTER_MAX and zswap_writeback to true, matching
+their defaults in css_alloc.
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Test:
+	echo "+memory +io" > /sys/fs/cgroup/cgroup.subtree_control
+
+	mkdir /sys/fs/cgroup/test
+	mkdir /sys/fs/cgroup/test/child
+
+	echo "+memory +io" > /sys/fs/cgroup/test/cgroup.subtree_control
+	echo 10000 > /sys/fs/cgroup/test/child/memory.zswap.max
+
+	# child/memory.swap.max and child/memory.zswam.max disappear
+	echo "-memory" > /sys/fs/cgroup/test/cgroup.subtree_control
+
+	# re-enable memory control
+	echo "+memory" > /sys/fs/cgroup/test/cgroup.subtree_control
+
+	# before this patch
+	cat /sys/fs/cgroup/test/child/memory.zswap.max
+	    8192
+
+	# after this patch, same as memory.swap.max
+	cat /sys/fs/cgroup/test/child/memory.zswap.max
+	    max
+
+Cc: Jiayuan Chen <jiayuan.chen@linux.dev>
+Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+---
+ mm/memcontrol.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d20ffc827306..eeeb22a5e8cc 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4362,6 +4362,10 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
+ 
+ 	page_counter_set_max(&memcg->memory, PAGE_COUNTER_MAX);
+ 	page_counter_set_max(&memcg->swap, PAGE_COUNTER_MAX);
++#ifdef CONFIG_ZSWAP
++	memcg->zswap_max = PAGE_COUNTER_MAX;
++	WRITE_ONCE(memcg->zswap_writeback, true);
++#endif
+ #ifdef CONFIG_MEMCG_V1
+ 	page_counter_set_max(&memcg->kmem, PAGE_COUNTER_MAX);
+ 	page_counter_set_max(&memcg->tcpmem, PAGE_COUNTER_MAX);
+-- 
+2.43.0
+
 
