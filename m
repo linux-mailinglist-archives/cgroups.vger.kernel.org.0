@@ -1,273 +1,167 @@
-Return-Path: <cgroups+bounces-17406-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17407-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ViZHHTjtQ2qwlgoAu9opvQ
-	(envelope-from <cgroups+bounces-17406-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 18:22:16 +0200
+	id y3C/GGADRGoQnQoAu9opvQ
+	(envelope-from <cgroups+bounces-17407-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 19:56:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B8AB6E6643
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 18:22:16 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C69806E70D2
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 19:56:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=J3nVYiKZ;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17406-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17406-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=SP14efyY;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17407-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17407-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5972030421B1
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 16:22:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B9295303F73E
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 17:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D85477E28;
-	Tue, 30 Jun 2026 16:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D973DF018;
+	Tue, 30 Jun 2026 17:56:45 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC274779BF
-	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 16:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DABCA3DD51F
+	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 17:56:43 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782836533; cv=none; b=C77bFv7yjSEfkcMKX+oKH37CKtYy1hg/FtGbUT2h2og71EJea0QezP/fP+4ENlGzzQ+ymfaU7u74HIFK2mFEPmLaQQzg/C+5W68C6iwsglt88LphfADwva9Itmkz+CLJDMyz0BG2IlVAord2k1w0Xpfaf01KIjJ4l6KCHeo6s5Q=
+	t=1782842205; cv=none; b=T5MWtgrsJuns5bLnCl9RpYriFB4yLDgP1q+hYL6lwfHfoEDQdzs5+9rNGf0cZGzixQWyCOXTkvL31g/zV3AiTI1+71iRXdB1ju7xSaImZTSEG5EJx6pWfqWJHWznz0OxwsZE8wL3Y8AoYwBFBDp0iD9/yatEwnQfENJe8ts9Tq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782836533; c=relaxed/simple;
-	bh=FKXhz8s3Vd+6bRKnI5aQiQgbkf0y8yxy+g2UiuewnfM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=J2bjkYa+IK5wY5igpVm2c4K1Wno8X9wPgnDPBafMu3Ks71DCDnQtz8srnCffRD2s6X+I7ggkPObOVgizMJaGHNK4kweV9M34AmOAdjFT0YXWDa/Pji7S3cFdHhg/7eGA7DVhmFUSZNUIJv3cALc1hYpme6QDNNkBSmgiohtDl5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J3nVYiKZ; arc=none smtp.client-ip=209.85.161.46
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-69e9b037d82so3452249eaf.2
-        for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 09:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782836531; x=1783441331; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=acv2p4BFA8gRpGMf2Eyfsq9WFKOfOwtHU816xigiBjE=;
-        b=J3nVYiKZM5tcDNJkHkYPsPu6hl709S430ztA4aOm4LUTWmcn60WBcTTEgwrFCKY5TX
-         5vp86H4kk+OsNXRITZMj8K0U/4WIj2yws+kjvaUJiq+2gt2OcidCyaCKGjksg1HGLIM8
-         wyRsNxJZ0zInYc5IBznnUE/Z5FRl2Y9yxulf25sRxIc7VDpidaRWEj2eOE8+0lrs9wgQ
-         YLUHWpOYWt/rFS2VnljehxXjb0cUrJeY+1wiR+Piz5HiJ9OhEy+JgOqOHF8GoOIH9Kxr
-         1Blck6WcNDtXOpYTOeCf/61Nqve+CUassQ/KQajJUF8QvsXt42tL4Vapi5VyY5TW4njr
-         G8Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782836531; x=1783441331;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=acv2p4BFA8gRpGMf2Eyfsq9WFKOfOwtHU816xigiBjE=;
-        b=SIHyv/146Y9YzNyjF0aX/Xwi1rFN1/Miy3ewU2N0xX/1bQaniy/6x4fXekgMYos7CZ
-         TvrkKfcUdv5/Cz2MTiTeORf8ld8n9xgLSoRtzPzu1E1GsDXcomZ7OeSx8KnYjZqVB7dG
-         idHyq+NnPPgKgUBud6/kcfYH0bHHp94TfXyp2OT1bemFqt6YjthPt8xUGjX1znmhmasi
-         JLepTxOiPMZ+u03yECTwrVGFsujhie+gO81ITvM81O/S+KdYEBgb1FsQGbKjs2fR3+jV
-         TOACW8nijmBUwDGGki54s9OQ/URStt9ZAS9N6bIHObb1oPzzR0zIH9UKqT1Bf6uGYX6Z
-         G5Eg==
-X-Forwarded-Encrypted: i=1; AFNElJ/9DiDDdBdGlHmteN2X65pcm1MmtHvj6/Q+4ZCXIbwG8AsgqAHIH7RPbdARm9G1oKLiOM66I521@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyvdp4tbhVhDKxyAZt7L5s+w2p/w77nCqeHO50U/hk4ABIew6zy
-	MYTYoXSS8cg0qgeuSGSLZ/kK7xwCaGFWml4VH2U7ndaM6NP7f1WCZRF4dciHyA==
-X-Gm-Gg: AfdE7clpfgpj6bsrxHPjkFJ5KpjUcooAZNI0RG7u4dm9bkB30s+cCVzfBJ4peuSZM0p
-	x8cT7iJPyUm75N5mkofNGjrKd8IMxUUqV+Fj9iZeH6kz2iLTu8bn6xdf1yMW8Ez6JBVQH8ncZsX
-	K3e94B1rShLZJbMwQaRon4RJ5dnCR6P7mf9asaQvkBeoNLixdlGAiwltiUOTUcMQEiDZZ4PfwTc
-	jpYSRwllek/635YErvuxYboLVdZUlflHvK1JlfQDUUlEODnkWQvShfsFUeh/GdS8qdMWH0Vg6/h
-	h3EF5Ox50TAbcLIrejRS5rE7VXnMGtA+q2E2NDZawOszFcVPdG1NoQlLwpzWfPH3K2egylUHmB9
-	0V9MKgr5ORVuCZbGu4QJYVNDVeOkLuoIiPQWbUnYAJtvbKJV0tbZIJXYR7nSGgQ0jCHFG7xd6kQ
-	+o+FHLkypbG8b6U/dGEYMrgwgDdZBzGQ8bsC1jC4mtpyg=
-X-Received: by 2002:a4a:d2e1:0:b0:6a1:154c:8199 with SMTP id 006d021491bc7-6a1891d3bdemr2567738eaf.40.1782836530787;
-        Tue, 30 Jun 2026 09:22:10 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:13::])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6a189493f93sm2155547eaf.14.2026.06.30.09.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jun 2026 09:22:10 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: Hui Zhu <hui.zhu@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-rt-devel@lists.linux.dev,
-	Hui Zhu <zhuhui@kylinos.cn>
-Subject: Re: [RESEND PATCH v2] mm/memcontrol: Avoid stuck FLUSHING_CACHED_CHARGE on isolated CPU
-Date: Tue, 30 Jun 2026 09:22:07 -0700
-Message-ID: <20260630162208.1159952-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260630070004.470181-1-hui.zhu@linux.dev>
-References: 
+	s=arc-20240116; t=1782842205; c=relaxed/simple;
+	bh=z64Zvugew+P1MInglJmh7Jam4FjCF1L/n6yrx55KL8c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jpCifJJMBDNg6E/1/YDhXxRLpnv5G8uM+0G1ny6W8gx//b8gUw8UEvFCcZqp3uCcTCp3CBrF5lTHSOwQDlPNY41U+HW3X+a74Ap7Nxs1StC+Fl1vHX7rkVqGmBrtBWj42DKrNiFXpaQr1n9MyTe1wyX/dfBl19BV2CdYF1VYHNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SP14efyY; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1782842202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y5XIm2s2oESgGUDdl7rh3Y8K1wz6Jr9u+0+fQyisStw=;
+	b=SP14efyY/NUoEL1qOleDQ4uSy1Xiy8/ehYsXhMr+f19FAX0oTbkO7qwWdnL9z8HZrn0+AZ
+	uoScmJE0MZRlTgRj1pxBbzXViIrJ0Id9zwtb27Wp9CnlRoAO7WrvDw6HbaRqmersVQRH08
+	8I+acdwXaWK2lNg7Q7j/WCoALssYdLA=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-657-IM9iqbr9OZuDB3leHEwJKw-1; Tue,
+ 30 Jun 2026 13:56:39 -0400
+X-MC-Unique: IM9iqbr9OZuDB3leHEwJKw-1
+X-Mimecast-MFC-AGG-ID: IM9iqbr9OZuDB3leHEwJKw_1782842197
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 01DFE18009E3;
+	Tue, 30 Jun 2026 17:56:37 +0000 (UTC)
+Received: from [10.2.17.12] (unknown [10.2.17.12])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C00E21956088;
+	Tue, 30 Jun 2026 17:56:33 +0000 (UTC)
+Message-ID: <e4ab9944-4687-45be-9935-4ad29f2a923c@redhat.com>
+Date: Tue, 30 Jun 2026 13:56:32 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-next v9 01/11] cgroup/cpuset: Make nr_deadline_tasks an
+ atomic_t
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Aaron Tomlin <atomlin@atomlin.com>, Guopeng Zhang <guopeng.zhang@linux.dev>
+References: <20260630033344.352702-1-longman@redhat.com>
+ <20260630033344.352702-2-longman@redhat.com>
+ <akPMKXppWM74-m9a@jlelli-thinkpadt14gen4.remote.csb>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <akPMKXppWM74-m9a@jlelli-thinkpadt14gen4.remote.csb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_RECIPIENTS(0.00)[m:hui.zhu@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:bigeasy@linutronix.de,m:clrkwllms@kernel.org,m:rostedt@goodmis.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-rt-devel@lists.linux.dev,m:zhuhui@kylinos.cn,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17406-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17407-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:juri.lelli@redhat.com,m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	FROM_HAS_DN(0.00)[]
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,sashiko.dev:url]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0B8AB6E6643
+X-Rspamd-Queue-Id: C69806E70D2
 
-On Tue, 30 Jun 2026 15:00:04 +0800 Hui Zhu <hui.zhu@linux.dev> wrote:
 
-> From: Hui Zhu <zhuhui@kylinos.cn>
-> 
-> drain_all_stock() sets FLUSHING_CACHED_CHARGE before calling
-> schedule_drain_work() to queue per-CPU drain work.  When the target
-> CPU is isolated (cpu_is_isolated() == true), the work is silently
-> not queued, but FLUSHING_CACHED_CHARGE stays set.  Every subsequent
-> drain_all_stock() then sees the bit and skips this stock entirely,
-> so the entry is effectively pinned until something else on that CPU
-> runs drain_local_*_stock() and clears the bit -- which on a long-
-> isolated CPU may never happen.
+On 6/30/26 10:01 AM, Juri Lelli wrote:
+> Hi Waiman,
+>
+> On 29/06/26 23:33, Waiman Long wrote:
+>> The nr_deadline_tasks variable in the cpuset structure was introduced by
+>> commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
+>> in cpusets"). It is reported by sashiko [1] that nr_deadline_tasks
+>> can currently be modified by inc_dl_tasks_cs() under rq->lock and
+>> by cpuset_attach() under cpuset_mutex. So if both updates happen
+>> simultaneously, the nr_deadline_tasks variable can be corrupted leading
+>> to incorrect operations down the road.
+>>
+>> Fix that by changing its type to atomic_t so that nr_deadline_tasks are
+>> always atomically updated.
+>>
+>> [1] https://sashiko.dev/#/patchset/20260626181923.133658-1-longman%40redhat.comk
+>>
+>> Fixes: 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+> Looks like Sashiko is yet not completely happy with this:
+>
+> https://sashiko.dev/#/patchset/20260630033344.352702-1-longman%40redhat.com
+>
+> I actually wondered the same and couldn't convince myself we don't
+> actually have that problem with the window between sched_setscheduler()
+> and cpuset_attach(). If issue is confirmed, not sure if wait_attach_
+> done_lock() could help here as well? It's kind of a big lock for the
+> scheduler, but maybe only affecting DEADLINE tasks and if migrations
+> are ongoing.
 
-Hello Hui,
+Yes, I am aware of that. This patch can only partially close the race 
+window. It doesn't completely eliminate it.
 
-I hope you're doing well! Thank you for the patch. I've also been
-thinking about memcg stock and specifically on how the flushing happens.
+My current thought is for inc_dl_tasks_cs() to check if the in_progress 
+flag is set. If so, it sets another flag for cpuset_attach() to double 
+check the DL data for consistency. It will be a rather complicated 
+solution in order to eliminate the race window. So I am postponing it to 
+a later time when I have more free time to think about it.
 
-I haven't been thinking about the issue of isolated work taking a long
-time, but I have been reworking memcg stock by getting rid of it and
-pushing it down to the page_counter level [1].
+Cheers,
+Longman
 
-I think that this patch is still important because of the obj_stock
-portion, which my series doens't touch. I just wanted to bring this
-to your attention! I don't think there should be any other problems.
-
-Thank you again, have a great day!
-Joshua
-
-[1] https://lore.kernel.org/all/20260623180124.868655-1-joshua.hahnjy@gmail.com/
-
-> The original idea was to actually perform the drain from the calling
-> CPU on behalf of the isolated one, by adding a lock around the
-> per-CPU stock so that a remote drainer could safely touch it.  In
-> practice this turned out to be intrusive: the stock data structures
-> and their fast paths (consume_stock(), refill_stock(), the obj_stock
-> helpers) are deliberately designed around current-CPU-only access,
-> and retrofitting cross-CPU serialisation onto them adds non-trivial
-> locking and PREEMPT_RT concerns for very little gain.
-> 
-> Looking at the actual amount of charge that can accumulate in a
-> single per-CPU stock, it is bounded and small, so leaving an
-> isolated CPU's stock undrained for a while is not a real problem.
-> The only real bug is that the stuck FLUSHING_CACHED_CHARGE bit
-> prevents future drain_all_stock() callers from re-attempting once
-> the CPU is no longer isolated.
-> 
-> Fix this minimally by clearing FLUSHING_CACHED_CHARGE when the work
-> could not be queued because the target CPU is isolated.  The cached
-> charge itself is left in place; it will be released the next time
-> the CPU runs drain_local_*_stock() (e.g. after leaving isolation,
-> or if the isolated CPU itself calls drain_all_stock() -- in that
-> case cpu == curcpu causes drain_local_memcg_stock() to be invoked
-> directly), and the next drain_all_stock() call is free to retry
-> instead of skipping the stock forever.
-> 
-> Fixes: 6a792697a53a ("memcg: do not drain charge pcp caches on remote isolated cpus")
-> Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
-> ---
-> Changelog:
-> v2:
-> According to the comments of Waiman Long, updated fixes.
-> 
->  mm/memcontrol.c | 28 ++++++++++++++++++++++------
->  1 file changed, 22 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6dc4888a90f3..2e66b4a2c25d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2256,7 +2256,8 @@ static bool is_memcg_drain_needed(struct memcg_stock_pcp *stock,
->  	return flush;
->  }
->  
-> -static void schedule_drain_work(int cpu, struct work_struct *work)
-> +static void
-> +schedule_drain_work(int cpu, struct work_struct *work, unsigned long *flags)
->  {
->  	/*
->  	 * Protect housekeeping cpumask read and work enqueue together
-> @@ -2264,9 +2265,22 @@ static void schedule_drain_work(int cpu, struct work_struct *work)
->  	 * partition update only need to wait for an RCU GP and flush the
->  	 * pending work on newly isolated CPUs.
->  	 */
-> -	guard(rcu)();
-> -	if (!cpu_is_isolated(cpu))
-> -		queue_work_on(cpu, memcg_wq, work);
-> +	scoped_guard(rcu) {
-> +		if (!cpu_is_isolated(cpu)) {
-> +			queue_work_on(cpu, memcg_wq, work);
-> +			return;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * The target CPU is isolated: the drain work was not queued.
-> +	 * Clear FLUSHING_CACHED_CHARGE so that future drain_all_stock()
-> +	 * callers can re-attempt instead of skipping this stock forever.
-> +	 * The cached charge is left in place; it will be released the
-> +	 * next time the CPU itself runs drain_local_*_stock() (e.g.
-> +	 * after leaving isolation), or by a follow-up mechanism.
-> +	 */
-> +	clear_bit(FLUSHING_CACHED_CHARGE, flags);
->  }
->  
->  /*
-> @@ -2299,7 +2313,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
->  			if (cpu == curcpu)
->  				drain_local_memcg_stock(&memcg_st->work);
->  			else
-> -				schedule_drain_work(cpu, &memcg_st->work);
-> +				schedule_drain_work(cpu, &memcg_st->work,
-> +						    &memcg_st->flags);
->  		}
->  
->  		if (!test_bit(FLUSHING_CACHED_CHARGE, &obj_st->flags) &&
-> @@ -2309,7 +2324,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
->  			if (cpu == curcpu)
->  				drain_local_obj_stock(&obj_st->work);
->  			else
-> -				schedule_drain_work(cpu, &obj_st->work);
-> +				schedule_drain_work(cpu, &obj_st->work,
-> +						    &obj_st->flags);
->  		}
->  	}
->  	migrate_enable();
-> -- 
-> 2.43.0
 
