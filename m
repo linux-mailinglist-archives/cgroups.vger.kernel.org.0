@@ -1,331 +1,255 @@
-Return-Path: <cgroups+bounces-17381-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17382-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id yxSRMHPpQmq+HwoAu9opvQ
-	(envelope-from <cgroups+bounces-17381-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 23:53:55 +0200
+	id bEXbBgkcQ2oaQwoAu9opvQ
+	(envelope-from <cgroups+bounces-17382-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 03:29:45 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D98A6DEF3A
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 23:53:55 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A23D6DF99A
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 03:29:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=MNoCUqWQ;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17381-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17381-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=C20zHS3o;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17382-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17382-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 470273024C80
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2026 21:53:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 586B2302199A
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2026 01:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1E4B395AD1;
-	Mon, 29 Jun 2026 21:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3734368D57;
+	Tue, 30 Jun 2026 01:29:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8D71D86FF
-	for <cgroups@vger.kernel.org>; Mon, 29 Jun 2026 21:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FC1318ED6
+	for <cgroups@vger.kernel.org>; Tue, 30 Jun 2026 01:29:30 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782770028; cv=none; b=NlId/6gFEh8gqLHSAoJbxB5V6CpZmRVf09NQKCkVo1ibYZ3cJE3w1y2fkiy5Q09Rbl5JC2dk/f1SVGY3hVy52WFhaAb/GmwdTUGQpfN3lpulDHrDkSATvuCvoM4ZxUGA27oRV2vIw6LnqGbFyPBuwkiMVITcBvwQTaNkAcMNcio=
+	t=1782782981; cv=none; b=M7O3a12NZneVPX6e1cTYWAR6JzXKN6IEekw6mU0BT+xZQjcEbGMSJU5GC+cs+QYbS3gA1nQ/9QTDNZdZoR9tgIoKlzImvAVkqU6eISYrItNVtI07XXU42Iz6df7tXwk2/6sTiyabqIaB63dt7qZ4u5bC1/AX3o8Ff8IjipMpzpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782770028; c=relaxed/simple;
-	bh=wasBTdd8nx0mRXb6YT0lGTl4aFtDFGM6b+Ib/lpt+Zc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=spFidLePEMLnt2Yg975MEWiZlDZYAOxaV02x/uKFN4RYTXtIMIPHgO+PaSci8Z3VDcYS3YyZlnDZ5SCrABtyMNzuSNzSuMoN0rxSyZnbxBAyeaWcdfwlSgfWReR8d46d+cZywM8ufSeZGODnA52zP1Fx/NpFzgtpddfL0S8Lozw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MNoCUqWQ; arc=none smtp.client-ip=170.10.129.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1782770024;
+	s=arc-20240116; t=1782782981; c=relaxed/simple;
+	bh=oWeRGpDaFJSUZkAyBlbHJ6g6K/s/EA182EsrA+ujTWQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OMwoVqRRTEZV6pS1TEK8ZvaZ92ocK1sLidf5naGBjLNUEUGJ6VDIXGs/3hjSQVQhUkg8AOJayqG2LMJQ6mxJpUMKCMaa1DRSjAzapcsGoSOzX4wro/D4G0+ZVd1kLUdZohKZpOxgJajf+lh9IQKf9WCDtKcbKk+5DT/uVHAQ53c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=C20zHS3o; arc=none smtp.client-ip=91.218.175.179
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1782782967;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pBTk4qHa0L+voLkz/kKo0AZ7D22i9f0HHtiRO+oSlD4=;
-	b=MNoCUqWQOqfyKAni8n/St9JNhBWnr9HoNwq6FBUr1tYaMiR0umEBgz11f9GS8+zt+nphRe
-	z7NL6duWvQQC7srg4O2wkvqAXquUrBYFch+3Xl7qt+P6Prx0Ytm7KtTn9um1D09pyhq7Jp
-	0EQfViIF1KKTNmdcNMIAHz9pIFUva2M=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-457-48lN469jM1qP0yG1_S64Zw-1; Mon,
- 29 Jun 2026 17:53:40 -0400
-X-MC-Unique: 48lN469jM1qP0yG1_S64Zw-1
-X-Mimecast-MFC-AGG-ID: 48lN469jM1qP0yG1_S64Zw_1782770018
-Received: from mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.95])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 202C8180A8C0;
-	Mon, 29 Jun 2026 21:53:38 +0000 (UTC)
-Received: from [10.2.16.200] (unknown [10.2.16.200])
-	by mx-prod-int-10.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 965663652A;
-	Mon, 29 Jun 2026 21:53:34 +0000 (UTC)
-Message-ID: <6b9c7f81-b77a-4ab6-9e35-ece3bf4ad475@redhat.com>
-Date: Mon, 29 Jun 2026 17:53:33 -0400
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ZTtenTdtqeMl8/RBjWbQbC1t0UZUIUeSy0y7m2XWyto=;
+	b=C20zHS3ofClI+RO9BptHadFBGWaiyExfg4Xzr/Nv0lG0SG4BPjlT7e/mGg1ZSsjKpbSOmY
+	V0zb2ABpN/7otH11xxDOxAjPbDcsJvQO9SZaenkeJTXYxGUgPhvXvu4FvFYbsw6z5xfqB8
+	oQT/I80r/WzV8i2xfFPLcDFsTKFW2/Y=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: linux-mm@kvack.org
+Cc: jiayuan.chen@shopee.com,
+	yingfu.zhou@shopee.com,
+	Jiayuan Chen <jiayuan.chen@linux.dev>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kairui Song <kasong@tencent.com>,
+	Qi Zheng <qi.zheng@linux.dev>,
+	Barry Song <baohua@kernel.org>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>,
+	Wei Xu <weixugc@google.com>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/4] memcg: bail out reclaim when memcg is dying
+Date: Tue, 30 Jun 2026 09:29:00 +0800
+Message-ID: <20260630012909.144372-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/11] cgroup/cpuset: Prevent race between task attach
- and cpuset state change
-To: Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Farhad Alemi <farhad.alemi@berkeley.edu>,
- Andrew Morton <akpm@linux-foundation.org>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Aaron Tomlin <atomlin@atomlin.com>,
- Guopeng Zhang <guopeng.zhang@linux.dev>, Gregory Price <gourry@gourry.net>,
- David Hildenbrand <david@kernel.org>
-References: <20260626181923.133658-1-longman@redhat.com>
- <20260626181923.133658-4-longman@redhat.com>
- <e856149c-e4cf-430f-80e0-a6f402faec99@linux.dev>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <e856149c-e4cf-430f-80e0-a6f402faec99@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.6 on 10.30.177.95
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17381-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:farhad.alemi@berkeley.edu,m:akpm@linux-foundation.org,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,m:gourry@gourry.net,m:david@kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17382-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS(0.00)[m:linux-mm@kvack.org,m:jiayuan.chen@shopee.com,m:yingfu.zhou@shopee.com,m:jiayuan.chen@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:baohua@kernel.org,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:david@kernel.org,m:ljs@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_SENDER(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,linux.dev:from_mime,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1D98A6DEF3A
+X-Rspamd-Queue-Id: 5A23D6DF99A
 
-On 6/29/26 3:14 AM, Ridong Chen wrote:
->
->
-> On 6/27/2026 2:19 AM, Waiman Long wrote:
->> Commit e44193d39e8d ("cpuset: let hotplug propagation work wait for
->> task attaching") was introduced to let hotplug operation to wait
->> until the completion of task attach operation. However, it is still
->> possible that the states of the source or destination cpuset can
->> be changed between the cpuset_can_attach() call and the subsequent
->> cpuset_attach()/cpuset_cacnel_attach() call.
->>
->> As a result, data gathered during cpuset_can_attach() cannot be reliably
->> used in the subsequent cpuset_attach()/cpuset_cacnel_attach()
->> call at all. Make the task attach operation more robust
->> and allow the sharing of data between cpuset_can_attach() and
->> cpuset_attach()/cpuset_cacnel_attach() by making cpuset_write_resmask()
->> and cpuset_partition_write() wait for the completion of task attach
->> as well.
->>
->> Ideally, an ongoing task attach operation should block any cpuset write
->> operation that can change its internal state until the operation is
->> completed. However, the attach_in_progress flag is currently per cpuset
->> and only the destination cpuset will have this flag set. The flag is not
->> set in the source cpuset where the tasks will be moved from. Even if we
->> extend the scope to include the source cpuset, it will not block cpuset
->> operation that changes the state of one of its ancestor cpuset which may
->> indirectly impact the state of the source or destination cpuset. It may
->> be too costly to set the flag for the whole subtree, it is far easier
->> to just make the flag global and block all the cpuset write operation
->> whenever a task attach operation is in progress. Make that change by
->> creating a new cpuset attach context (attach_ctx) structure to hold the
->> global in_progress flag and use it for blocking cpuset write operation
->> if a cpuset attach operation is in progress.
->>
->> The comments about validate_change() are no longer valid as it won't
->> be called at all if an attach operation is in progress. So the comments
->> can be removed.
->>
->> The per-cpuset attach_in_progress flag is also currently used in
->> partition_is_populated() and cpuset_is_populated() to determine if
->> an empty cpuset will have incoming task. This check will no longer be
->> needed as this function will not be called when there is a task attach
->> in progress. So the flag check is now removed.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   kernel/cgroup/cpuset-internal.h | 11 +-----
->>   kernel/cgroup/cpuset.c          | 68 +++++++++++++++++++++------------
->>   2 files changed, 44 insertions(+), 35 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset-internal.h 
->> b/kernel/cgroup/cpuset-internal.h
->> index f7aaf01f7cd5..817b86ba7019 100644
->> --- a/kernel/cgroup/cpuset-internal.h
->> +++ b/kernel/cgroup/cpuset-internal.h
->> @@ -145,12 +145,6 @@ struct cpuset {
->>        */
->>       nodemask_t old_mems_allowed;
->>   -    /*
->> -     * Tasks are being attached to this cpuset.  Used to prevent
->> -     * zeroing cpus/mems_allowed between ->can_attach() and ->attach().
->> -     */
->> -    int attach_in_progress;
->> -
->>       /* partition root state */
->>       int partition_root_state;
->>   @@ -269,10 +263,7 @@ static inline int nr_cpusets(void)
->>   static inline bool cpuset_is_populated(struct cpuset *cs)
->>   {
->>       lockdep_assert_cpuset_lock_held();
->> -
->> -    /* Cpusets in the process of attaching should be considered as 
->> populated */
->> -    return cgroup_is_populated(cs->css.cgroup) ||
->> -        cs->attach_in_progress;
->> +    return cgroup_is_populated(cs->css.cgroup);
->>   }
->>     /**
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index d108c2083e86..dec9785d0271 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -356,6 +356,14 @@ static struct workqueue_struct 
->> *cpuset_migrate_mm_wq;
->>     static DECLARE_WAIT_QUEUE_HEAD(cpuset_attach_wq);
->>   +/*
->> + * Cpuset task attach context
->> + * Protected by cpuset_mutex
->> + */
->> +static struct {
->> +    int in_progress;
->> +} attach_ctx;
->> +
->>   static inline void check_insane_mems_config(nodemask_t *nodes)
->>   {
->>       if (!cpusets_insane_config() &&
->> @@ -368,22 +376,22 @@ static inline void 
->> check_insane_mems_config(nodemask_t *nodes)
->>   }
->>     /*
->> - * decrease cs->attach_in_progress.
->> - * wake_up cpuset_attach_wq if cs->attach_in_progress==0.
->> + * decrease attach_ctx.in_progress.
->> + * wake_up cpuset_attach_wq if attach_ctx.in_progress==0.
->>    */
->> -static inline void dec_attach_in_progress_locked(struct cpuset *cs)
->> +static inline void dec_attach_in_progress_locked(void)
->>   {
->>       lockdep_assert_cpuset_lock_held();
->>   -    cs->attach_in_progress--;
->> -    if (!cs->attach_in_progress)
->> +    attach_ctx.in_progress--;
->> +    if (!attach_ctx.in_progress)
->>           wake_up(&cpuset_attach_wq);
->>   }
->>   -static inline void dec_attach_in_progress(struct cpuset *cs)
->> +static inline void dec_attach_in_progress(void)
->>   {
->>       mutex_lock(&cpuset_mutex);
->> -    dec_attach_in_progress_locked(cs);
->> +    dec_attach_in_progress_locked();
->>       mutex_unlock(&cpuset_mutex);
->>   }
->>   @@ -432,8 +440,7 @@ static inline bool 
->> partition_is_populated(struct cpuset *cs,
->>        * nr_populated_domain_children may include populated
->>        * csets from descendants that are partitions.
->>        */
->> -    if (cgroup_has_tasks(cs->css.cgroup) ||
->> -        cs->attach_in_progress)
->> +    if (cgroup_has_tasks(cs->css.cgroup))
->>           return true;
->>         rcu_read_lock();
->> @@ -3091,11 +3098,7 @@ static int cpuset_can_attach(struct 
->> cgroup_taskset *tset)
->>       cs->dl_bw_cpu = cpu;
->>     out_success:
->> -    /*
->> -     * Mark attach is in progress.  This makes validate_change() fail
->> -     * changes which zero cpus/mems_allowed.
->> -     */
->> -    cs->attach_in_progress++;
->> +    attach_ctx.in_progress++;
->>     out_unlock:
->>       if (ret)
->> @@ -3113,7 +3116,7 @@ static void cpuset_cancel_attach(struct 
->> cgroup_taskset *tset)
->>       cs = css_cs(css);
->>         mutex_lock(&cpuset_mutex);
->> -    dec_attach_in_progress_locked(cs);
->> +    dec_attach_in_progress_locked();
->>         if (cs->dl_bw_cpu >= 0)
->>           dl_bw_free(cs->dl_bw_cpu, cs->sum_migrate_dl_bw);
->> @@ -3226,7 +3229,7 @@ static void cpuset_attach(struct cgroup_taskset 
->> *tset)
->>           reset_migrate_dl_data(cs);
->>       }
->>   -    dec_attach_in_progress_locked(cs);
->> +    dec_attach_in_progress_locked();
->>         mutex_unlock(&cpuset_mutex);
->>   }
->> @@ -3246,10 +3249,19 @@ ssize_t cpuset_write_resmask(struct 
->> kernfs_open_file *of,
->>           return -EACCES;
->>         buf = strstrip(buf);
->> +retry:
->> +    wait_event(cpuset_attach_wq, attach_ctx.in_progress == 0);
->> +
->>       cpuset_full_lock();
->>       if (!is_cpuset_online(cs))
->>           goto out_unlock;
->>   +    /* Don't race with task attach */
->> +    if (attach_ctx.in_progress) {
->> +        cpuset_full_unlock();
->> +        goto retry;
->> +    }
->> +
->>       trialcs = dup_or_alloc_cpuset(cs);
->>       if (!trialcs) {
->>           retval = -ENOMEM;
->> @@ -3377,7 +3389,17 @@ static ssize_t cpuset_partition_write(struct 
->> kernfs_open_file *of, char *buf,
->>       else
->>           return -EINVAL;
->>   +retry:
->> +    wait_event(cpuset_attach_wq, attach_ctx.in_progress == 0);
->> +
->>       cpuset_full_lock();
->> +
->> +    /* Don't race with task attach */
->> +    if (attach_ctx.in_progress) {
->> +        cpuset_full_unlock();
->> +        goto retry;
->> +    }
->> +
->
-> Would it make sense to add a helper like wait_attach_done_locked()?
+Hi,
 
-I guess we can add a helper to do that.
+This series mitigates a system-wide stall we hit when a cgroup is
+removed while one of its memory control files is doing synchronous
+reclaim.
 
-Thanks for the suggestions.
+Problem Description
+===================
 
-Cheers,
-Longman
+Writing to memory.high, memory.max or memory.reclaim runs reclaim
+synchronously in the writer's context, looping until the usage drops
+below the target (or, for memory.reclaim, until the requested amount has
+been reclaimed). On a large cgroup this can take a long time. The
+latency is especially bad when reclaim has to perform swap I/O, where it
+is bound by the swap device write bandwidth, and under thrashing it is
+effectively unbounded - each round reclaims a few pages that the
+workload immediately faults back in, so the loop keeps making "progress"
+and never converges.
 
+The legacy (v1) reclaim loops in memory.limit_in_bytes,
+memory.memsw.limit_in_bytes and memory.force_empty share the same
+pattern.
+
+These writes go through cgroup_file_write(), which does not take
+cgroup_mutex and does not pin the css. Instead, kernfs guarantees the
+node (and thus the css) stays alive for the duration of the operation by
+holding an active reference. So while the reclaim loop runs, the active
+reference on the file is held.
+
+If another task removes the same cgroup in parallel, cgroup_rmdir()
+takes cgroup_mutex and then blocks in kernfs_drain() waiting for that
+active reference to drain. Because cgroup_mutex is held throughout the
+wait, every other task that needs it piles up behind the remover - in
+our case the whole machine ground to a halt, with hung_task reports for
+the remover and for unrelated tasks merely reading /proc/<pid>/cgroup:
+
+INFO: task cgdelete:366634 blocked for more than 159 seconds.
+      Not tainted 6.6.102+ #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call Trace:
+ <TASK>
+ __schedule+0x3da/0x1650
+ schedule+0x58/0x100
+ kernfs_drain+0xe6/0x150
+ __kernfs_remove.part.0+0xd0/0x200
+ kernfs_remove_by_name_ns+0x75/0xd0
+ cgroup_addrm_files+0x325/0x410
+ css_clear_dir+0x50/0xf0
+ cgroup_destroy_locked+0xdf/0x1e0
+ cgroup_rmdir+0x2d/0xd0
+ kernfs_iop_rmdir+0x53/0x90
+ vfs_rmdir+0x98/0x240
+ do_rmdir+0x172/0x1b0
+ __x64_sys_rmdir+0x42/0x70
+ x64_sys_call+0xeb0/0x2210
+ do_syscall_64+0x56/0x90
+ entry_SYSCALL_64_after_hwframe+0x78/0xe2
+
+
+INFO: task systemd-journal:2352 blocked for more than 182 seconds.
+      Not tainted 6.6.102+ #1
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call Trace:
+ <TASK>
+ __schedule+0x3da/0x1650
+ schedule+0x58/0x100
+ schedule_preempt_disabled+0xe/0x20
+ __mutex_lock.constprop.0+0x3bb/0x640
+ __mutex_lock_slowpath+0x13/0x20
+ mutex_lock+0x3c/0x50
+ proc_cgroup_show+0x4d/0x380
+ proc_single_show+0x53/0xe0
+ seq_read_iter+0x12f/0x4b0
+ seq_read+0xcd/0x110
+ vfs_read+0xb1/0x360
+ ? __seccomp_filter+0x368/0x590
+ ksys_read+0x73/0x100
+ __x64_sys_read+0x19/0x30
+ x64_sys_call+0x18d3/0x2210
+ do_syscall_64+0x56/0x90
+ entry_SYSCALL_64_after_hwframe+0x78/0xe2
+
+The system recovers only once the reclaim finally finishes and releases
+the active reference. The reclaim itself is pointless here: the cgroup
+is being torn down and its remaining pages will be reparented to the
+parent anyway.
+
+Even though we check signal_pending(current) in the reclaim loop, the
+typical symptom is that cat /proc/<pid>/cgroup gets stuck.
+By the time someone looks for which task is actually stuck in reclaim,
+the hung task timeout has already been hit. This makes the problem
+particularly nasty to debug from a hung-task report alone, because the
+blocked tasks shown are often the victims, not the reclaim writer itself.
+
+Our Mitigation
+==============
+
+cgroup destruction sets CSS_DYING in kill_css_sync() *before*
+css_clear_dir() triggers the kernfs_drain() that blocks the remover. The
+in-flight reclaim loop is therefore guaranteed to observe it before
+starting another reclaim iteration. This series checks memcg_is_dying()
+in the v2 reclaim loops (memory.high, memory.max and proactive reclaim)
+and the v1 reclaim loops (memory.limit_in_bytes,
+memory.memsw.limit_in_bytes and memory.force_empty), and bails out early,
+so the writer drops the active reference promptly and the remover can
+make progress.
+
+Unlike the no-progress guard (MAX_RECLAIM_RETRIES), which only fires when
+reclaim makes zero progress, the dying check also covers the slow swap
+I/O and thrashing cases, where reclaim keeps succeeding a little and the
+loop would otherwise never converge.
+
+For memory.reclaim, bailing out because the memcg is dying means the
+requested reclaim amount was not satisfied, so the write returns -EAGAIN.
+
+This is orthogonal to commit c8e6002bd611 ("memcg: introduce
+non-blocking limit setting option"): O_NONBLOCK lets a caller avoid the
+synchronous reclaim up front, while this series handles the case where
+reclaim is already running when the cgroup starts being removed.
+
+Changes since v1:
+  - Return -EAGAIN from memory.reclaim when the memcg is dying.
+  - Add the same bailout to the legacy v1 reclaim loops.
+
+v1:
+  https://lore.kernel.org/linux-mm/20260623062800.298514-1-jiayuan.chen@linux.dev/
+
+Jiayuan Chen (4):
+  memcg: bail out memory.high when memcg is dying
+  memcg: bail out memory.max when memcg is dying
+  memcg: bail out proactive reclaim when memcg is dying
+  memcg-v1: bail out reclaim when memcg is dying
+
+ mm/memcontrol-v1.c | 6 ++++++
+ mm/memcontrol.c    | 6 ++++++
+ mm/vmscan.c        | 3 +++
+ 3 files changed, 15 insertions(+)
+
+-- 
+2.43.0
 
 
