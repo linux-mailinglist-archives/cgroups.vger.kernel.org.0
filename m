@@ -1,59 +1,59 @@
-Return-Path: <cgroups+bounces-17411-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17412-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /yIxK1NwRGpfuwoAu9opvQ
-	(envelope-from <cgroups+bounces-17411-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 01 Jul 2026 03:41:39 +0200
+	id 714FGzB4RGpovQoAu9opvQ
+	(envelope-from <cgroups+bounces-17412-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 01 Jul 2026 04:15:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073686E914F
-	for <lists+cgroups@lfdr.de>; Wed, 01 Jul 2026 03:41:39 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01BF76E936A
+	for <lists+cgroups@lfdr.de>; Wed, 01 Jul 2026 04:15:12 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=XX7VMDvS;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17411-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17411-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=IsWrkHPE;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17412-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17412-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6C5EC30247E5
-	for <lists+cgroups@lfdr.de>; Wed,  1 Jul 2026 01:41:35 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6CFD2303B9FC
+	for <lists+cgroups@lfdr.de>; Wed,  1 Jul 2026 02:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D503546F1;
-	Wed,  1 Jul 2026 01:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D4C3630AD;
+	Wed,  1 Jul 2026 02:15:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14C3634D385
-	for <cgroups@vger.kernel.org>; Wed,  1 Jul 2026 01:41:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549FF3630BF
+	for <cgroups@vger.kernel.org>; Wed,  1 Jul 2026 02:15:03 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782870094; cv=none; b=S2iVKvdjR9j8HZ/1uEYyXrAAsEZQNZCDJ7eUpgGjiG8hzZYX9jqzbI0erP/NDckVszgqIuXt2xdtnIzjcGK4EazS689IiswLuDDRttQDMnQpi/q5d1rQgV+KAlhhy9IFo48c7l89q19Hcinkd2gZaWz1WpG4W6zL5pVwDU4qrLQ=
+	t=1782872107; cv=none; b=SljKkk4gQz/T3H6NYZGmjljRTYY87i36VOj5uTXB4HyKUeh9ySgIEBQEova9X0Lu4v4NXiZQ5FV4exW3UzXtdsN6oYUJtGtKJv449Bqb4jBEXDleCdQzicgp90dmvDkGWRUR5LvELshtcttihSneibhanvsjRzg5r90JT+Ci90k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782870094; c=relaxed/simple;
-	bh=fISSsi9q4ppHTxE9gVxjH6ipPm9PXHZfo6xwDLK8fjk=;
+	s=arc-20240116; t=1782872107; c=relaxed/simple;
+	bh=k+p9RmRy1A4Z81AQb7jwx/P+CY94fuGejI8VtyS6C74=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mO8oC6koLE4LdDbpMIetFIba40exaaBvbY6U/jfCnPWcjHIggb/6iCJbGtaduUEppYtqaN5ENutrcmlEcoAEhrDYlhHgS6int4cK8F8AUHRpqkEAYcvQQUrFhQiMCkjnKHCUaT0tNWxqgPFhY0ux0mtUEIe7H2Ugri15w1Pj+Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XX7VMDvS; arc=none smtp.client-ip=91.218.175.189
-Message-ID: <e28a38fa-5998-4e73-886c-2cbbd26ae98f@linux.dev>
+	 In-Reply-To:Content-Type; b=OSqOdaAxTfn19sn4jk1Esncyd68g7v2QlLLQNDFtjn7V6qnonLRGECyoMp6QXvI5wea8TQRRSUIsUiGjQMIaMUQRxLriDdglH4kBZ/i9ME/b/iTRm/xP0KRK18vf8ehRnrKGdM2AGm12Q84+unruixZR4fMDXDZ5r6DTlM2HC0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IsWrkHPE; arc=none smtp.client-ip=91.218.175.178
+Message-ID: <33151a98-3d3d-4a11-9919-2bf38aa83f76@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782870089;
+	t=1782872091;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DdZreJfJHlBP0nrfmNEqS6amNcZzmZOjYNZtIjg7/YQ=;
-	b=XX7VMDvSMCX3922YR0mgMXuFneJyJcIUcAtg0e68VK2dRBtEE5FmWM8qNLbwi5ck3o97sA
-	NQzzGZi2/HjyVDdT8p+E9vsF56bDWu5oKA90fvqDHIfMFlS/kQgkIfG2qlZUqGGC2DFfLU
-	mqedHyGqzhT4ycHmlBfSwkVbImHvL8s=
-Date: Wed, 1 Jul 2026 09:41:22 +0800
+	bh=Z0fpQae9+H0z3yf8NaJ71qIOg3xUmfB2m91dIE9eL0I=;
+	b=IsWrkHPE3OWPCi94xEiMBhtH+KYCbnFqdyGb51HIc4wtPIuHRJoTXCqR3ptZ0O7G4Ebkxj
+	Hk0Ou50Fx+1qqEyNo8T1a+nqcqBLWArrUY9K+9DZ10AXPbOUQwpWQB3iZaoqO7SxBkBXfl
+	VHlDD3+BSSvZ/Uj0o0nh+rq1OC2rFY4=
+Date: Wed, 1 Jul 2026 10:14:39 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH-next v9 03/11] cgroup/cpuset: Prevent race between task
- attach and cpuset state change
+Subject: Re: [PATCH-next v9 08/11] cgroup/cpuset: Move
+ mpol_rebind_mm/cpuset_migrate_mm() calls inside cpuset_attach_task()
 To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
  <mkoutny@suse.com>, Shuah Khan <shuah@kernel.org>,
@@ -62,23 +62,23 @@ Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-kselftest@vger.kernel.org, Aaron Tomlin <atomlin@atomlin.com>,
  Guopeng Zhang <guopeng.zhang@linux.dev>
 References: <20260630033344.352702-1-longman@redhat.com>
- <20260630033344.352702-4-longman@redhat.com>
+ <20260630033344.352702-9-longman@redhat.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Ridong Chen <ridong.chen@linux.dev>
-In-Reply-To: <20260630033344.352702-4-longman@redhat.com>
+In-Reply-To: <20260630033344.352702-9-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17411-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17412-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
@@ -99,303 +99,225 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,vger.kernel.org:from_smtp,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 073686E914F
+X-Rspamd-Queue-Id: 01BF76E936A
 
 
 
 On 6/30/2026 11:33 AM, Waiman Long wrote:
-> Commit e44193d39e8d ("cpuset: let hotplug propagation work wait for
-> task attaching") was introduced to let hotplug operation to wait
-> until the completion of task attach operation. However, it is still
-> possible that the states of the source or destination cpuset can
-> be changed between the cpuset_can_attach() call and the subsequent
-> cpuset_attach()/cpuset_cacnel_attach() call.
+> The cpuset_attach_task() was introduced in commit 42a11bf5c543
+> ("cgroup/cpuset: Make cpuset_fork() handle CLONE_INTO_CGROUP properly")
+> to enable the CLONE_INTO_CGROUP flag of clone(2) to behave more like
+> moving a task from one cpuset into another one. That commits didn't
+> move the mpol_rebind_mm() and cpuset_migrate_mm() calls for group leader
+> into cpuset_attach_task().
 > 
-> As a result, data gathered during cpuset_can_attach() cannot be reliably
-> used in the subsequent cpuset_attach()/cpuset_cacnel_attach()
-> call at all. Make the task attach operation more robust
-> and allow the sharing of data between cpuset_can_attach() and
-> cpuset_attach()/cpuset_cacnel_attach() by making cpuset_write_resmask()
-> and cpuset_partition_write() wait for the completion of task attach
-> as well.
+> When the CLONE_INTO_CGROUP flag is used without CLONE_THREAD, the new
+> task is its own group leader. So it is still not equivalent to moving
+> task between cpusets in this case. Make CLONE_INTO_CGROUP behaves
+> more close to cpuset_attach() by moving the mpol_rebind_mm() and
+> cpuset_migrate_mm() calls inside cpuset_attach_task().
 > 
-
-Nit.
-
-s/cpuset_cacnel_attach/cpuset_cancel_attach/
-
-> Ideally, an ongoing task attach operation should block any cpuset write
-> operation that can change its internal state until the operation is
-> completed. However, the attach_in_progress flag is currently per cpuset
-> and only the destination cpuset will have this flag set. The flag is not
-> set in the source cpuset where the tasks will be moved from. Even if we
-> extend the scope to include the source cpuset, it will not block cpuset
-> operation that changes the state of one of its ancestor cpuset which may
-> indirectly impact the state of the source or destination cpuset. It may
-> be too costly to set the flag for the whole subtree, it is far easier
-> to just make the flag global and block all the cpuset write operation
-> whenever a task attach operation is in progress.
-> 
-> Make that change by creating a new cpuset attach context (attach_ctx)
-> structure to hold the global in_progress flag and use it for blocking
-> cpuset write operation if a cpuset attach operation is in progress. Also
-> add a new wait_attach_done_lock() helper to do the waiting for an
-> ongoing attach operation and acquire the cpuset_mutex.
-> 
-> The comments about validate_change() are no longer valid as it won't
-> be called at all if an attach operation is in progress. So the comments
-> can be removed.
-> 
-> The per-cpuset attach_in_progress flag is also currently used in
-> partition_is_populated() and cpuset_is_populated() to determine if
-> an empty cpuset will have incoming task. This check will no longer be
-> needed as this function will not be called when there is a task attach
-> in progress. So the flag check is now removed.
+> Also move the stack local cpus_updated, mems_updated and queue_task_work
+> flags into attach_ctx so that these flags can be accessed inside and
+> outside of cpuset_attach_task(). The cpuset_fork() function is updated
+> to set up these flags and do memory migration if necessary.
 > 
 > Signed-off-by: Waiman Long <longman@redhat.com>
 > ---
->   kernel/cgroup/cpuset-internal.h | 11 +---
->   kernel/cgroup/cpuset.c          | 90 +++++++++++++++++++--------------
->   2 files changed, 53 insertions(+), 48 deletions(-)
+>   kernel/cgroup/cpuset.c | 104 ++++++++++++++++++++++++-----------------
+>   1 file changed, 60 insertions(+), 44 deletions(-)
 > 
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index 140700e5e236..df662c7fd1a4 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -145,12 +145,6 @@ struct cpuset {
->   	 */
->   	nodemask_t old_mems_allowed;
->   
-> -	/*
-> -	 * Tasks are being attached to this cpuset.  Used to prevent
-> -	 * zeroing cpus/mems_allowed between ->can_attach() and ->attach().
-> -	 */
-> -	int attach_in_progress;
-> -
->   	/* partition root state */
->   	int partition_root_state;
->   
-> @@ -269,10 +263,7 @@ static inline int nr_cpusets(void)
->   static inline bool cpuset_is_populated(struct cpuset *cs)
->   {
->   	lockdep_assert_cpuset_lock_held();
-> -
-> -	/* Cpusets in the process of attaching should be considered as populated */
-> -	return cgroup_is_populated(cs->css.cgroup) ||
-> -		cs->attach_in_progress;
-> +	return cgroup_is_populated(cs->css.cgroup);
->   }
->   
->   /**
 > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 431bf210aa52..1a78d0590737 100644
+> index 55cd580373b7..0b9df38e9a63 100644
 > --- a/kernel/cgroup/cpuset.c
 > +++ b/kernel/cgroup/cpuset.c
-> @@ -356,6 +356,33 @@ static struct workqueue_struct *cpuset_migrate_mm_wq;
->   
->   static DECLARE_WAIT_QUEUE_HEAD(cpuset_attach_wq);
->   
-> +/*
-> + * Cpuset task attach context
-> + * Protected by cpuset_mutex
-> + */
-> +static struct {
-> +	int in_progress;
-> +} attach_ctx;
-> +
-> +/*
-> + * Wait if task attach is in progress until it is done and then acquire
-> + * cpuset_mutex before returning.
-> + */
-> +static void wait_attach_done_lock(void)
-> +	    __acquires(&cpuset_mutex)
-> +{
-> +	for (;;) {
-> +		mutex_lock(&cpuset_mutex);
-> +		if (!attach_ctx.in_progress)
-> +			return;
-> +
-> +		mutex_unlock(&cpuset_mutex);
-> +
-> +		/* Wait until attach operation is done to prevent racing */
-> +		wait_event(cpuset_attach_wq, attach_ctx.in_progress == 0);
-> +	}
-> +}
-> +
->   static inline void check_insane_mems_config(nodemask_t *nodes)
->   {
->   	if (!cpusets_insane_config() &&
-> @@ -368,22 +395,22 @@ static inline void check_insane_mems_config(nodemask_t *nodes)
->   }
->   
->   /*
-> - * decrease cs->attach_in_progress.
-> - * wake_up cpuset_attach_wq if cs->attach_in_progress==0.
-> + * decrease attach_ctx.in_progress.
-> + * wake_up cpuset_attach_wq if attach_ctx.in_progress==0.
+> @@ -362,6 +362,9 @@ static DECLARE_WAIT_QUEUE_HEAD(cpuset_attach_wq);
 >    */
-> -static inline void dec_attach_in_progress_locked(struct cpuset *cs)
-> +static inline void dec_attach_in_progress_locked(void)
+>   static struct {
+>   	int in_progress;
+> +	bool cpus_updated;
+> +	bool mems_updated;
+> +	bool task_work_queued;
+>   	struct cpuset *old_cs;	/* Source cpuset */
+>   	nodemask_t nodemask_to;
+>   } attach_ctx;
+> @@ -3190,6 +3193,8 @@ static cpumask_var_t cpus_attach;
+>   
+>   static void cpuset_attach_task(struct cpuset *cs, struct task_struct *task)
 >   {
+> +	struct mm_struct *mm;
+> +
 >   	lockdep_assert_cpuset_lock_held();
 >   
-> -	cs->attach_in_progress--;
-> -	if (!cs->attach_in_progress)
-> +	attach_ctx.in_progress--;
-> +	if (!attach_ctx.in_progress)
->   		wake_up(&cpuset_attach_wq);
->   }
->   
-> -static inline void dec_attach_in_progress(struct cpuset *cs)
-> +static inline void dec_attach_in_progress(void)
->   {
->   	mutex_lock(&cpuset_mutex);
-> -	dec_attach_in_progress_locked(cs);
-> +	dec_attach_in_progress_locked();
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-> @@ -432,8 +459,7 @@ static inline bool partition_is_populated(struct cpuset *cs,
->   	 * nr_populated_domain_children may include populated
->   	 * csets from descendants that are partitions.
+>   	if (cs != &top_cpuset)
+> @@ -3203,28 +3208,60 @@ static void cpuset_attach_task(struct cpuset *cs, struct task_struct *task)
 >   	 */
-> -	if (cgroup_has_tasks(cs->css.cgroup) ||
-> -	    cs->attach_in_progress)
-> +	if (cgroup_has_tasks(cs->css.cgroup))
->   		return true;
+>   	WARN_ON_ONCE(set_cpus_allowed_ptr(task, cpus_attach));
 >   
->   	rcu_read_lock();
-> @@ -3091,11 +3117,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   	cs->dl_bw_cpu = cpu;
+> +	if (cpuset_v2() && !attach_ctx.mems_updated)
+> +		return;
+> +
+>   	cpuset_change_task_nodemask(task, &attach_ctx.nodemask_to);
+>   	cpuset1_update_task_spread_flags(cs, task);
+> +
+> +	if ((task != task->group_leader) ||
+> +	    (!is_memory_migrate(cs) && !attach_ctx.mems_updated))
+> +		return;
+> +
+
+Nit.
+
+IIUC, the !is_memory_migrate(cs) check may be unnecessary. Previously, 
+placing this condition outside could prevent an unnecessary loop, but in 
+its current position, it appears redundant.
+
+	if (task != task->group_leader ||
+	    !attach_ctx.mems_updated)
+
+> +	/*
+> +	 * Change mm for threadgroup leader. This is expensive and may
+> +	 * sleep and should be moved outside migration path proper.
+> +	 */
+> +	mm = get_task_mm(task);
+> +	if (mm) {
+> +		struct cpuset *oldcs = attach_ctx.old_cs;
+> +
+> +		mpol_rebind_mm(mm, &cs->effective_mems);
+> +
+> +		/*
+> +		 * old_mems_allowed is the same with mems_allowed
+> +		 * here, except if this task is being moved
+> +		 * automatically due to hotplug.  In that case
+> +		 * @mems_allowed has been updated and is empty, so
+> +		 * @old_mems_allowed is the right nodesets that we
+> +		 * migrate mm from.
+> +		 */
+> +		if (is_memory_migrate(cs)) {
+> +			cpuset_migrate_mm(mm, &oldcs->old_mems_allowed,
+> +					  &attach_ctx.nodemask_to);
+> +			attach_ctx.task_work_queued = true;
+> +		} else {
+> +			mmput(mm);
+> +		}
+> +	}
+>   }
 >   
->   out_success:
-> -	/*
-> -	 * Mark attach is in progress.  This makes validate_change() fail
-> -	 * changes which zero cpus/mems_allowed.
-> -	 */
-> -	cs->attach_in_progress++;
-> +	attach_ctx.in_progress++;
+>   static void cpuset_attach(struct cgroup_taskset *tset)
+>   {
+>   	struct task_struct *task;
+> -	struct task_struct *leader;
+>   	struct cgroup_subsys_state *css;
+>   	struct cpuset *cs;
+>   	struct cpuset *oldcs = attach_ctx.old_cs;
+> -	bool cpus_updated, mems_updated;
+> -	bool queue_task_work = false;
 >   
->   out_unlock:
->   	if (ret)
-> @@ -3113,7 +3135,7 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
+>   	cgroup_taskset_first(tset, &css);
 >   	cs = css_cs(css);
 >   
+>   	lockdep_assert_cpus_held();	/* see cgroup_attach_lock() */
 >   	mutex_lock(&cpuset_mutex);
-> -	dec_attach_in_progress_locked(cs);
-> +	dec_attach_in_progress_locked();
->   
->   	if (cs->dl_bw_cpu >= 0)
->   		dl_bw_free(cs->dl_bw_cpu, cs->sum_migrate_dl_bw);
-> @@ -3226,7 +3248,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   		reset_migrate_dl_data(cs);
->   	}
->   
-> -	dec_attach_in_progress_locked(cs);
-> +	dec_attach_in_progress_locked();
->   
->   	mutex_unlock(&cpuset_mutex);
->   }
-> @@ -3246,7 +3268,12 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   		return -EACCES;
->   
->   	buf = strstrip(buf);
-> -	cpuset_full_lock();
+> -	cpus_updated = !cpumask_equal(cs->effective_cpus,
+> -				      oldcs->effective_cpus);
+> -	mems_updated = !nodes_equal(cs->effective_mems, oldcs->effective_mems);
+> +	attach_ctx.task_work_queued = false;
 > +
-> +	/* cpuset_mutex acquired in wait_attach_done_lock() */
-> +	mutex_lock(&cpuset_top_mutex);
-> +	cpus_read_lock();
-> +	wait_attach_done_lock();
-> +
-
-Would it be cleaner to just pass this into cpuset_full_lock() as a flag?
-
-void cpuset_full_lock(bool wait_attach)
-{
-       mutex_lock(&cpuset_top_mutex);
-       cpus_read_lock();
-       if (wait_attach)
-               wait_attach_done_lock();
-       else
-               mutex_lock(&cpuset_mutex);
-}
-Then the two write paths become a single cpuset_full_lock(true). The
-downside is the other 6 callers would need cpuset_full_lock(false). Not 
-sure it's worth it â what do you think?
-
->   	if (!is_cpuset_online(cs))
->   		goto out_unlock;
+> +	attach_ctx.cpus_updated = !cpumask_equal(cs->effective_cpus, oldcs->effective_cpus);
+> +	attach_ctx.mems_updated = !nodes_equal(cs->effective_mems, oldcs->effective_mems);
+>   	guarantee_online_mems(cs, &attach_ctx.nodemask_to);
 >   
-> @@ -3377,7 +3404,10 @@ static ssize_t cpuset_partition_write(struct kernfs_open_file *of, char *buf,
->   	else
->   		return -EINVAL;
+>   	/*
+> @@ -3233,46 +3270,14 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+>   	 * and mems. In that case, we can optimize out by skipping the task
+>   	 * iteration and update.
+>   	 */
+> -	if (cpuset_v2() && !cpus_updated && !mems_updated)
+> +	if (cpuset_v2() && !attach_ctx.cpus_updated && !attach_ctx.mems_updated)
+>   		goto out;
 >   
-> -	cpuset_full_lock();
-> +	mutex_lock(&cpuset_top_mutex);
-> +	cpus_read_lock();
-> +	wait_attach_done_lock();
-> +
->   	if (is_cpuset_online(cs))
->   		retval = update_prstate(cs, val);
->   	cpuset_update_sd_hk_unlock();
-> @@ -3616,11 +3646,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
->   	if (ret)
->   		goto out_unlock;
+>   	cgroup_taskset_for_each(task, css, tset)
+>   		cpuset_attach_task(cs, task);
 >   
 > -	/*
-> -	 * Mark attach is in progress.  This makes validate_change() fail
-> -	 * changes which zero cpus/mems_allowed.
+> -	 * Change mm for all threadgroup leaders. This is expensive and may
+> -	 * sleep and should be moved outside migration path proper. Skip it
+> -	 * if there is no change in effective_mems and CS_MEMORY_MIGRATE is
+> -	 * not set.
 > -	 */
-> -	cs->attach_in_progress++;
-> +	attach_ctx.in_progress++;
->   out_unlock:
->   	mutex_unlock(&cpuset_mutex);
->   	return ret;
-> @@ -3638,7 +3664,7 @@ static void cpuset_cancel_fork(struct task_struct *task, struct css_set *cset)
->   	if (same_cs)
->   		return;
->   
-> -	dec_attach_in_progress(cs);
-> +	dec_attach_in_progress();
->   }
->   
->   /*
-> @@ -3670,7 +3696,7 @@ static void cpuset_fork(struct task_struct *task)
->   	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
->   	cpuset_attach_task(cs, task);
->   
-> -	dec_attach_in_progress_locked(cs);
-> +	dec_attach_in_progress_locked();
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-> @@ -3774,20 +3800,8 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->   	bool remote;
->   	int partcmd = -1;
->   	struct cpuset *parent;
-> -retry:
-> -	wait_event(cpuset_attach_wq, cs->attach_in_progress == 0);
+> -	if (!is_memory_migrate(cs) && !mems_updated)
+> -		goto out;
 > -
-> -	mutex_lock(&cpuset_mutex);
+> -	cgroup_taskset_for_each_leader(leader, css, tset) {
+> -		struct mm_struct *mm = get_task_mm(leader);
 > -
-> -	/*
-> -	 * We have raced with task attaching. We wait until attaching
-> -	 * is finished, so we won't attach a task to an empty cpuset.
-> -	 */
-> -	if (cs->attach_in_progress) {
-> -		mutex_unlock(&cpuset_mutex);
-> -		goto retry;
+> -		if (mm) {
+> -			mpol_rebind_mm(mm, &cs->effective_mems);
+> -
+> -			/*
+> -			 * old_mems_allowed is the same with mems_allowed
+> -			 * here, except if this task is being moved
+> -			 * automatically due to hotplug.  In that case
+> -			 * @mems_allowed has been updated and is empty, so
+> -			 * @old_mems_allowed is the right nodesets that we
+> -			 * migrate mm from.
+> -			 */
+> -			if (is_memory_migrate(cs)) {
+> -				cpuset_migrate_mm(mm, &oldcs->old_mems_allowed,
+> -						  &attach_ctx.nodemask_to);
+> -				queue_task_work = true;
+> -			} else
+> -				mmput(mm);
+> -		}
 > -	}
+> -
+>   out:
+> -	if (queue_task_work)
+> +	if (attach_ctx.task_work_queued)
+>   		schedule_flush_migrate_mm();
+>   	cs->old_mems_allowed = attach_ctx.nodemask_to;
 >   
-> +	wait_attach_done_lock();
->   	parent = parent_cs(cs);
->   	compute_effective_cpumask(&new_cpus, cs, parent);
->   	compute_effective_nodemask(&new_mems, cs, parent);
-
-Overall this looks good to me.
+> @@ -3708,15 +3713,14 @@ static void cpuset_cancel_fork(struct task_struct *task, struct css_set *cset)
+>    */
+>   static void cpuset_fork(struct task_struct *task)
+>   {
+> -	struct cpuset *cs;
+> -	bool same_cs;
+> +	struct cpuset *cs, *oldcs;
+>   
+>   	rcu_read_lock();
+>   	cs = task_cs(task);
+> -	same_cs = (cs == task_cs(current));
+> +	oldcs = task_cs(current);
+>   	rcu_read_unlock();
+>   
+> -	if (same_cs) {
+> +	if (cs == oldcs) {
+>   		if (cs == &top_cpuset)
+>   			return;
+>   
+> @@ -3728,7 +3732,19 @@ static void cpuset_fork(struct task_struct *task)
+>   	/* CLONE_INTO_CGROUP */
+>   	mutex_lock(&cpuset_mutex);
+>   	guarantee_online_mems(cs, &attach_ctx.nodemask_to);
+> +	cs->old_mems_allowed = attach_ctx.nodemask_to;
+> +
+> +	/*
+> +	 * Assume CPUs and memory nodes are updated
+> +	 * A CLONE_INTO_CGROUP operation should have taken the cgroup mutex
+> +	 * and so there shouldn't be a competing cpuset_attach() operation.
+> +	 */
+> +	attach_ctx.cpus_updated = attach_ctx.mems_updated = true;
+> +	attach_ctx.task_work_queued = false;
+> +	attach_ctx.old_cs = oldcs;
+>   	cpuset_attach_task(cs, task);
+> +	if (attach_ctx.task_work_queued)
+> +		schedule_flush_migrate_mm();
+>   
+>   	dec_attach_in_progress_locked();
+>   	mutex_unlock(&cpuset_mutex);
 
 Reviewed-by: Ridong Chen <ridong.chen@linux.dev>
 
