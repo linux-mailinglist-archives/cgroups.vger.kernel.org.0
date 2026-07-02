@@ -1,179 +1,189 @@
-Return-Path: <cgroups+bounces-17441-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17442-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id edrDDu1fRmpASAsAu9opvQ
-	(envelope-from <cgroups+bounces-17441-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 02 Jul 2026 14:56:13 +0200
+	id I/hVNnR9RmoAXQsAu9opvQ
+	(envelope-from <cgroups+bounces-17442-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 02 Jul 2026 17:02:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id B37016F7FBC
-	for <lists+cgroups@lfdr.de>; Thu, 02 Jul 2026 14:56:12 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 839366F9279
+	for <lists+cgroups@lfdr.de>; Thu, 02 Jul 2026 17:02:07 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=HYZ9Nznd;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17441-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17441-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=GpB3h3Zr;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17442-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17442-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 50054302950B
-	for <lists+cgroups@lfdr.de>; Thu,  2 Jul 2026 12:55:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6461E302B810
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jul 2026 15:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D3B47A0BC;
-	Thu,  2 Jul 2026 12:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AC0117BEBF;
+	Thu,  2 Jul 2026 15:00:08 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593DA481220
-	for <cgroups@vger.kernel.org>; Thu,  2 Jul 2026 12:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C337433E8E;
+	Thu,  2 Jul 2026 15:00:06 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782996925; cv=none; b=lJxEwv2YInAJ5mg5SPFPtKYHibmQB/skdWyz9aqcA1D8GZsZn6sqegoOa5j4j0aYNVZU9Zfh0TOaUE+M2jJY76+0e+lvj/meCWxMmcKcBtOZ/0YVNbF1qVlezYwT6sbpF3fWNIkThFbhgfTVN4tBQpeOOLS4Jy6rIK8ncuVPtQI=
+	t=1783004408; cv=none; b=GNAJJmQNVzDPYrj8Ne/sJLBoOe+QYKFYVYwkCVfCYRZtfYUlHFpTeqhw/r97wuq87aojWEBiQrqoZ50hJ4E8fwD+gb0xz2iskGKEjQIX0Jb+gKKeQZqQxy8npvbjvHXG9HkfX8HqTc/cDb/8eyCwB1c9v4OFciqzWd/skqcQe6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782996925; c=relaxed/simple;
-	bh=FAFO4v0fDln5ZjUVgM+Swe9z3E2lBEIwmFoX2n388XA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VrV8YGV4R/4n4PWcK7NEXvnOq3kLmGuFftcPIsVE4CTEgYUegaglmD2h2mnVc4DMtaEhx+M+q0cXoWChu+Hquuuk6JeAZWc1Qbfn7JoIdGXOuscuHvWACUSo6zU+20NfDUE7f7t3Ez40jpx3s8gtJt4hDHNiqkF98/36c4WE21Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HYZ9Nznd; arc=none smtp.client-ip=91.218.175.179
-Message-ID: <358e9e58-77fb-465d-9b37-65b095ef8d2d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1782996922;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8j/wKAAoTtOSbtNtleH6sqMek38VvCHGbrwJb6lRs0A=;
-	b=HYZ9NzndEDgCtbhQ9azierm+3GOA6f4ojPx7Z7g3G1NlPwL2fhtq2w0ExPorofqPY3BMrm
-	5yfRf2CgZL/uV0Oq65XrImAaSHvL747PfSJC2eKlqcOS+xpTmShAdE7NW9XlWt63UszFIk
-	K1tS4Mtzx8PqK9rCXLSG2kGn1Hnbcbk=
-Date: Thu, 2 Jul 2026 20:55:10 +0800
+	s=arc-20240116; t=1783004408; c=relaxed/simple;
+	bh=hPC1d17Pm91ef5jisgFCPpY7b+2HYaO+kLSAqjerQqw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SYUt9QLbEzH4XYZLGuCsxJfviAuuYBd3Cc83pPDuy1w0feq+VuvzUu7G2FWcDIWFJvpUXqngePYVK5A376DeLSL/+A9DoRxr5oa+kjt+J9r4OTUzimvLulbXCx4aIxcaRy1XHPgoEHi218fwjVLkDJVWb1pygafTYNakCNHOnvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GpB3h3Zr; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D84991F000E9;
+	Thu,  2 Jul 2026 15:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783004406;
+	bh=9UsSLsOFrTKTYYu1bP5O8gdG6Ad+9Ku55xym1ohwY3g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date;
+	b=GpB3h3ZrEpTU9FF0KGzdNzXUKImbL2riZrwADZ7VZDzkQ1F5dKhpNQDSMjH43RJ2h
+	 JjhJTrdEa+iXhl0LgSfCY9xAcY/maK5t7B911QvOOvlztnSk3ICTWAh+aMXOXT59ty
+	 gR3nD1nGgPsTRDLnfMZoL/w23xCOLc6gc25l7aInMZ2A/NWkvSAzG3HZDz+Qp8qkxe
+	 uPKPJs/isZ9TO97RdEIqBOmacfTZ5FbPdYKvLincda0xsmPYgLpyWlBLafEuXscpbE
+	 vCBXzs6uC+u+3UDPw3miivkGnMet1rzKME+kvORLGUmhOjlWZXpnF7hODMomyYjEaP
+	 3LcRZDZLCxhlw==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>, Waiman Long <longman@redhat.com>
+Cc: Jing Wu <realwujing@gmail.com>, linux-kernel@vger.kernel.org,
+ rcu@vger.kernel.org, cgroups@vger.kernel.org, Qiliang Yuan
+ <yuanql9@chinatelecom.cn>
+Subject: Re: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of
+ nohz_full and managed_irq CPUs
+In-Reply-To: <akUii2CyEi7SRid7@localhost.localdomain>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260624063404.2106807-1-realwujing@gmail.com>
+ <4ad24488-9cc1-4f1c-8dc5-6830ae7420df@redhat.com>
+ <akUii2CyEi7SRid7@localhost.localdomain>
+Date: Thu, 02 Jul 2026 17:00:03 +0200
+Message-ID: <871pdlphcc.ffs@fw13>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 3/4] memcg: bail out proactive reclaim when memcg is
- dying
-To: linux-mm@kvack.org
-Cc: jiayuan.chen@shopee.com, Zhou Yingfu <yingfu.zhou@shopee.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@kernel.org>, Qi Zheng <qi.zheng@linux.dev>,
- Lorenzo Stoakes <ljs@kernel.org>, Kairui Song <kasong@tencent.com>,
- Barry Song <baohua@kernel.org>, Axel Rasmussen <axelrasmussen@google.com>,
- Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260702120235.376752-1-jiayuan.chen@linux.dev>
- <20260702120235.376752-4-jiayuan.chen@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-In-Reply-To: <20260702120235.376752-4-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-4.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17442-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:frederic@kernel.org,m:longman@redhat.com,m:realwujing@gmail.com,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:linux-mm@kvack.org,m:jiayuan.chen@shopee.com,m:yingfu.zhou@shopee.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:qi.zheng@linux.dev,m:ljs@kernel.org,m:kasong@tencent.com,m:baohua@kernel.org,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-17441-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RSPAMD_URIBL_FAIL(0.00)[fw13:query timed out];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,chinatelecom.cn];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime,vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,fw13:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B37016F7FBC
+X-Rspamd-Queue-Id: 839366F9279
 
-
-On 7/2/26 8:02 PM, Jiayuan Chen wrote:
-> From: Jiayuan Chen <jiayuan.chen@shopee.com>
+On Wed, Jul 01 2026 at 16:22, Frederic Weisbecker wrote:
+> Le Thu, Jun 25, 2026 at 01:27:54AM -0400, Waiman Long a =C3=A9crit :
+>> That will require some adjustments to the nohz_full related hotplug
+>> functions. I have some ideas of what needs to be done. However, I haven't
+>> looked into RCU yet. I know RCU support changing the nocb mask for fully
+>> offline CPUs, I will need to find out if it possible to do that for
+>> partially offline CPUs.
 >
-> Proactive reclaim via memory.reclaim can run for a long time - swap I/O
-> or thrashing again dominating the latency - and delays cgroup removal in
-> the same way.
->
-> Mitigate this by stopping the reclaim once memcg_is_dying().
->
-> Cc: Jiayuan Chen <jiayuan.chen@linux.dev>
-> Reported-by: Zhou Yingfu <yingfu.zhou@shopee.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
-> ---
->   mm/vmscan.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 754c5f5d716a..6ae61be2fab8 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -7912,6 +7912,10 @@ int user_proactive_reclaim(char *buf,
->   		if (signal_pending(current))
->   			return -EINTR;
->   
-> +		/* cgroup_rmdir() waits for us with cgroup_mutex held. */
-> +		if (memcg && memcg_is_dying(memcg))
-> +			return -EAGAIN;
-> +
->   		/*
->   		 * This is the final attempt, drain percpu lru caches in the
->   		 * hope of introducing more evictable pages.
+> No because callbacks can still be enqueued at this stage. But we could
+> manage to make it work with CPUHP_AP_IDLE_DEAD.
+
+Well, if you go down to CPUHP_AP_IDLE_DEAD then that's not any different
+from going down all the way because the latency spike of stomp_machine()
+for bringing it down is the same.
+
+You are right that with the current code this is not possible, but it
+should be possible to avoid that alltogether.
+
+The only critical path is when a CPU switches to offload mode. Switching
+to 'yes queue callbacks here' mode is not really interesting.
+
+Let's look how RCU hot-unplug works:
+
+  1) CPU is marked !active
+
+  2) rcutree_offline_cpu() removes the CPU from the fully functional CPU
+     mask
+=20=20
+  3) stomp_machine()
+
+  4) rcutree_cpu_dying() just traces that the CPU is about to vanish
+
+  5) Wait for the CPU to report DEAD
+
+  6) rcutree_migrate_callbacks() mops up the leftover callbacks on the
+     dead CPU
+
+So if the whole machinery changes to:
+
+  1) CPU is marked !active
+
+  2) rcutree_offline_cpu() removes the CPU from the fully functional CPU
+     mask _AND_ marks the CPU as "lightweight offloaded", which means:
+
+        - no new callbacks can be queued on it anymore neither from the
+          CPU itself nor from truly offloaded CPUs
+
+        - the CPU is still processing already queued callbacks and
+          participates in the GP magic
+
+  3) Before CPUHP_AP_SCHED_WAIT_EMPTY add a new CPUHP_AP_RCU_SYNC state,
+     which does:
+
+       - a full RCU synchronization to end all outstanding read side
+         critical sections
+
+       - drain the now ready callbacks on this CPU
+
+  4) Proceed to CPUHP_TEARDOWN_CPU, where the operation stops
+
+  5) Do the magic cpuset changes for the CPU
+
+  6) Bring CPU back up
+
+At #4 the half unplugged CPU is not in NOHZ full mode and the tick keeps
+running so all GP processing work as before except that the CPU itself
+is not handling any callbacks because all queued ones are drained and no
+new ones can be queued. When it comes back up it turns into a fully
+offloaded one.
+
+There are obviously a gazillion of details and cornercases to handle,
+but I don't see why this can't be made work in principle.
+
+Thanks,
+
+        tglx
 
 
-
-The issuse reported by Ai is benign:
-https://sashiko.dev/#/patchset/20260702120235.376752-1-jiayuan.chen%40linux.dev
-
-We have multiple break points to return in 
-try_to_free_pages::do_try_to_free_pages
-'''
-
-     static unsigned long do_try_to_free_pages()
-     {
-
-         retry:
-             do {
-
-                 shrink_zones(zonelist, sc);
-
-                 // break 1
-                 if (sc->nr_reclaimed >= sc->nr_to_reclaim)
-                     break;
-
-             } while (--sc->priority >= 0); // at most 12 
-times(DEF_PRIORITY)
-
-
-             // break 2
-             if (sc->nr_reclaimed)
-                 return sc->nr_reclaimed;
-
-             // retry twice logic
-             ...
-     }
-'''
-
+=20=20=20=20=20
 
