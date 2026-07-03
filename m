@@ -1,232 +1,185 @@
-Return-Path: <cgroups+bounces-17472-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id tkzHE/y2R2rWdwAAu9opvQ
-	(envelope-from <cgroups+bounces-17472-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 15:19:56 +0200
+	id 4SBSIum2R2rOdwAAu9opvQ
+	(envelope-from <cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 15:19:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142EE702C88
-	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 15:19:55 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E74B702C71
+	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 15:19:37 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=WzjPc3x6;
-	dmarc=pass (policy=none) header.from=intel.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17472-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17472-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=QOE+X9Tc;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8CC673022968
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2026 13:11:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8B2513026AEB
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2026 13:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B223D45C8;
-	Fri,  3 Jul 2026 13:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090703D6484;
+	Fri,  3 Jul 2026 13:19:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237DA3D522F;
-	Fri,  3 Jul 2026 13:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF553D45C1;
+	Fri,  3 Jul 2026 13:19:32 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783084274; cv=none; b=KE3GALKkZJon5kffjrP76Buu0a0H5aVDYAN0+2HUnMvPP6my2Ke2NNkEgRW7aUCu+AMEnC2SuOczSspMfduzVzcKovdrsgAflKBl9bIhVGWiFQiqMPMAxY9X2T3OnltnPJDVr8gP5LPlGU8r3Z7a8hKoIXb+ayUopMZo/7ug6I0=
+	t=1783084773; cv=none; b=hW6dqwlNeqOvlrGboRFIhNFtlpIzP/YZedNEBXkUbNx1eflRTpQ3p5O6UZAj49SNIeG0XGnLu5JjwwfX/sG+o0lNW7vv5Be77Z37kf8XxE14FtOXA6Ab+ohZU+/5RNX+gvg8ak8Co28OitpDBXZw9rBC/xlem5p8nyZrbNQuSFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783084274; c=relaxed/simple;
-	bh=Xu8EYnocXkw9ykOGNuGA2OOtRFcNnzkugR791sAp83E=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CjkDVFVQndL5b5B1nKTzlXgTNP9NfSqSMq86YY+DI19lk9Nffhj9ajbFensgHZPEUk+33wQuFfFxBgsPGnHRD3mwuK2rtJ4rh8+ADxLJdh8iJqIecCThjD1FOwidgsDbKVeROe9O/0ZSr4hsMdpQ6jZ54s3Bn4LiIimnSpgcU8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WzjPc3x6; arc=none smtp.client-ip=198.175.65.16
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1783084272; x=1814620272;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=Xu8EYnocXkw9ykOGNuGA2OOtRFcNnzkugR791sAp83E=;
-  b=WzjPc3x6i8oESGBR+4Sc+DjA3U3nwzUKfDN4ljZtUsEfPOMNQPndDcru
-   BtlA7FRzXtv+EEue78JLxVKO6agwShptmFfGDZwiNpqkQEFI6rxBJsLca
-   WbwUyBYCKCwGNB93DyCMfiHaUpIzT6EPajfJqeeRfF+4Ngo0umt9G7nWS
-   4v+aFqFroSchIRsqfjEdYmDWCiMs74ZkYurzpS6ssMduZhEWIKnkTJWas
-   H530gfP/bSQbT6hUQ7zwS8jWLsrKTq8gv1Fa3qLdSH2D2aqKtn4qIBwcP
-   sGQ7JxpOIrgFEZeLUBZ3F5AAwluAkzL8VkA/j89yoDDVdIf2OuwbV+mqf
-   Q==;
-X-CSE-ConnectionGUID: IGuwcIpcS0CQLXKIPcYxJw==
-X-CSE-MsgGUID: hG0c06xqTGq8RfhrRuMiSQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11835"; a="84028519"
-X-IronPort-AV: E=Sophos;i="6.25,145,1779174000"; 
-   d="scan'208";a="84028519"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2026 06:11:11 -0700
-X-CSE-ConnectionGUID: e8FeLx5dSgKO/yHFp/+lug==
-X-CSE-MsgGUID: l+f6gr/RSDWg7+8CNdy+/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,145,1779174000"; 
-   d="scan'208";a="248664380"
-Received: from smoticic-mobl1.ger.corp.intel.com (HELO [10.245.245.146]) ([10.245.245.146])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Jul 2026 06:11:06 -0700
-Message-ID: <92e3c9210c4038969b24c7b0f3df0a998587ff4c.camel@linux.intel.com>
-Subject: Re: [PATCH v7 1/6] drm/amdgpu: Fix init ordering in
- amdgpu_vram_mgr_init()
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, 
-	intel-xe@lists.freedesktop.org, "Paneer Selvam, Arunpravin"
-	 <Arunpravin.PaneerSelvam@amd.com>
-Cc: Sashiko-bot <sashiko-bot@kernel.org>, Friedrich Vock
- <friedrich.vock@gmx.de>,  Maarten Lankhorst	 <dev@lankhorst.se>, Tejun Heo
- <tj@kernel.org>, Maxime Ripard <mripard@kernel.org>,  Alex Deucher
- <alexander.deucher@amd.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, 	stable@vger.kernel.org, Natalie Vock
- <natalie.vock@gmx.de>, Johannes Weiner	 <hannes@cmpxchg.org>, Michal
- =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, 	cgroups@vger.kernel.org,
- Huang Rui <ray.huang@amd.com>, Matthew Brost	 <matthew.brost@intel.com>,
- Matthew Auld <matthew.auld@intel.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
- <tzimmermann@suse.de>, Simona Vetter	 <simona@ffwll.ch>, David Airlie
- <airlied@gmail.com>, Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, linux-kernel@vger.kernel.org
-Date: Fri, 03 Jul 2026 15:11:03 +0200
-In-Reply-To: <9eae1a5c-d2ef-4d75-a581-58299ca37a1f@amd.com>
-References: <20260703130541.2686-1-thomas.hellstrom@linux.intel.com>
-	 <20260703130541.2686-2-thomas.hellstrom@linux.intel.com>
-	 <9eae1a5c-d2ef-4d75-a581-58299ca37a1f@amd.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	s=arc-20240116; t=1783084773; c=relaxed/simple;
+	bh=SybsfnBwWh6wNYO6K17YybWLHNe2wFkmCwK5CiUpNw8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XqKv/Q/JW7yWA/IBNdU5YL0Aiw+GJMJS/fXgcyo7Qv/VDGQXSka55y0BLQ+iLCxImH9r5Z6BNoqGdNLc5LPP220vxAKVm9CYw0o18voLss+N1JCRPrvSlZKS3AZb2x6PYzt2ScivcXeH0bXohXD+wEw/6PfqqCVPGNZEOY6qCws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QOE+X9Tc; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7C41F000E9;
+	Fri,  3 Jul 2026 13:19:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783084772;
+	bh=nQj/hR3UQosCLZxgAly99fHbBbLd46rIDcrsPC7zt0Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=QOE+X9Tc6w7Al+6bRdD2DCLmRFcVP3+Apmw+i8eugOlGjisfMQa7KfblbyOmJ1bgS
+	 hwibJ4dstELm2Q++c9s1rXuAx5KlK8klqEc5gYTFi45Ow3239Cl843wnhFoQOAIj2+
+	 E2moHoWghnK4DR2XdCbqrF2H09E1E/8UYuCAoaCKS4iSasC0Jq5Rpv6voChRUH0h7k
+	 wXywDHjK+YiIIr/u1pRtDZ1HcUekQqxYMHKpjCWsAZV4h0yg9LBK9T6YXNBrMekQNl
+	 Q7HpGNGpyvLwtGYpR9rxY+OQWlbcrz68J/3lyyMecJu4tIg43kYWthZ6d4McEmnZ5Q
+	 aF7C+y7vWCbEQ==
+Date: Fri, 3 Jul 2026 15:19:29 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Jing Wu <realwujing@gmail.com>, Thomas Gleixner <tglx@kernel.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	cgroups@vger.kernel.org, Qiliang Yuan <yuanql9@chinatelecom.cn>
+Subject: Re: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of
+ nohz_full and managed_irq CPUs
+Message-ID: <ake24SbeTjPo7zXT@localhost.localdomain>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260624063404.2106807-1-realwujing@gmail.com>
+ <4ad24488-9cc1-4f1c-8dc5-6830ae7420df@redhat.com>
+ <akUii2CyEi7SRid7@localhost.localdomain>
+ <fe35dd41-7068-4cf0-9ee9-eb9c12017b42@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe35dd41-7068-4cf0-9ee9-eb9c12017b42@redhat.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17472-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:christian.koenig@amd.com,m:intel-xe@lists.freedesktop.org,m:Arunpravin.PaneerSelvam@amd.com,m:sashiko-bot@kernel.org,m:friedrich.vock@gmx.de,m:dev@lankhorst.se,m:tj@kernel.org,m:mripard@kernel.org,m:alexander.deucher@amd.com,m:amd-gfx@lists.freedesktop.org,m:dri-devel@lists.freedesktop.org,m:stable@vger.kernel.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:cascardo@igalia.com,m:rodrigo.vivi@intel.com,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,gmx.de,lankhorst.se,amd.com,lists.freedesktop.org,vger.kernel.org,cmpxchg.org,suse.com,intel.com,linux.intel.com,suse.de,ffwll.ch,gmail.com,igalia.com];
+	TAGGED_FROM(0.00)[bounces-17473-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	FORGED_SENDER(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:realwujing@gmail.com,m:tglx@kernel.org,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,vger.kernel.org,chinatelecom.cn];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,localhost.localdomain:mid,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 142EE702C88
+X-Rspamd-Queue-Id: 1E74B702C71
 
-On Fri, 2026-07-03 at 15:08 +0200, Christian K=C3=B6nig wrote:
-> Arun please take a look at this.
->=20
-> Thanks,
-> Christian.
+Le Wed, Jul 01, 2026 at 02:56:34PM -0400, Waiman Long a écrit :
+> On 7/1/26 10:22 AM, Frederic Weisbecker wrote:
+> > Le Thu, Jun 25, 2026 at 01:27:54AM -0400, Waiman Long a écrit :
+> > > On 6/24/26 2:34 AM, Jing Wu wrote:
+> > > >     3. Are there specific patches in your series where you would welcome
+> > > >        our contribution directly?
+> > > I have broken down the shutdown callback into separate portions as suggested
+> > > by Thomas. The other major change that I am working on is to try to shutdown
+> > > to only CPUHP_AP_OFFLINE state instead of all the way down to CPUHP_OFFLINE.
+> > What was the reason for that already? Can we perhaps ask the user to offline
+> > the target CPUs before toggling isolation on them?
+> The major problem about fully offlining the CPU is the CPU hotplug stop
+> machine mechanism which put all the CPUs except the CPU to be offlined in a
+> waiting loop within the IPI handler when the offline CPU is transitioning
+> from CPUHP_TEARDOWN_CPU to  CPUHP_AP_IDLE_DEAD. If there is another active
+> isolated partition running DPDK, for instance, it will break the low latency
+> guarantee for a short duration.
 
-FWIW Sashiko claims there is yet another pre-existing bug WRT ordering
-here, but since the fix wasn't needed for the rest of the series, I
-focused on this one.
+Looks like a long standing problem that does not only concern nohz_full
+but also RT in general.
 
-Thanks,
-Thomas
+I made a proposal a while ago to solve this:
 
+https://lore.kernel.org/lkml/aQuNdOEmPYkI03my@localhost.localdomain/
 
->=20
-> On 7/3/26 15:05, Thomas Hellstr=C3=B6m wrote:
-> > drmm_cgroup_register_region() is called before INIT_LIST_HEAD() and
-> > gpu_buddy_init() in amdgpu_vram_mgr_init(). If it fails, the
-> > function
-> > returns early and bypasses those initializations.
-> >=20
-> > Since adev->mman.initialized is set to true before
-> > amdgpu_vram_mgr_init()
-> > is called, a failure triggers amdgpu_ttm_fini(), which calls
-> > amdgpu_vram_mgr_fini(), which then:
-> >=20
-> > =C2=A0- Calls list_for_each_entry_safe() on reservations_pending and
-> > =C2=A0=C2=A0 reserved_pages, whose list_head::next pointers are zero-
-> > initialized
-> > =C2=A0=C2=A0 (NULL). The loop does not recognize them as empty and
-> > dereferences NULL.
-> >=20
-> > =C2=A0- Calls gpu_buddy_fini(), which iterates free_trees[]
-> > unconditionally
-> > =C2=A0=C2=A0 via for_each_free_tree(). Since mm->free_trees is NULL
-> > =C2=A0=C2=A0 (never allocated), this dereferences NULL.
-> >=20
-> > Both result in a kernel panic on the module load error path.
-> >=20
-> > Fix by moving drmm_cgroup_register_region() to after the list and
-> > buddy
-> > allocator are fully initialized, so the teardown path is safe to
-> > run.
-> >=20
-> > Reported-by: Sashiko-bot <sashiko-bot@kernel.org>
-> > Closes:
-> > https://sashiko.dev/#/patchset/20260428073116.15687-1-thomas.hellstrom@=
-linux.intel.com?part=3D4
-> > Fixes: 2b624a2c1865 ("drm/ttm: Handle cgroup based eviction in
-> > TTM")
-> > Cc: Friedrich Vock <friedrich.vock@gmx.de>
-> > Cc: Maarten Lankhorst <dev@lankhorst.se>
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Maxime Ripard <mripard@kernel.org>
-> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: <stable@vger.kernel.org> # v6.14+
-> > Assisted-by: GitHub_Copilot:claude-sonnet-4.6
-> > Signed-off-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
-> > ---
-> > =C2=A0drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 7 ++++---
-> > =C2=A01 file changed, 4 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> > b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> > index 2a241a5b12c4..ac3f71d77140 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
-> > @@ -918,9 +918,6 @@ int amdgpu_vram_mgr_init(struct amdgpu_device
-> > *adev)
-> > =C2=A0	struct ttm_resource_manager *man =3D &mgr->manager;
-> > =C2=A0	int err;
-> > =C2=A0
-> > -	man->cg =3D drmm_cgroup_register_region(adev_to_drm(adev),
-> > "vram", adev->gmc.real_vram_size);
-> > -	if (IS_ERR(man->cg))
-> > -		return PTR_ERR(man->cg);
-> > =C2=A0	ttm_resource_manager_init(man, &adev->mman.bdev,
-> > =C2=A0				=C2=A0 adev->gmc.real_vram_size);
-> > =C2=A0
-> > @@ -935,6 +932,10 @@ int amdgpu_vram_mgr_init(struct amdgpu_device
-> > *adev)
-> > =C2=A0	if (err)
-> > =C2=A0		return err;
-> > =C2=A0
-> > +	man->cg =3D drmm_cgroup_register_region(adev_to_drm(adev),
-> > "vram", adev->gmc.real_vram_size);
-> > +	if (IS_ERR(man->cg))
-> > +		return PTR_ERR(man->cg);
-> > +
-> > =C2=A0	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_VRAM,
-> > &mgr->manager);
-> > =C2=A0	ttm_resource_manager_set_used(man, true);
-> > =C2=A0	return 0;
+To summarize, we could remove that stop machine thing and have this on the
+outgoing CPU at CPUHP_TEARDOWN_CPU:
+
+    set_cpu_online(cpu, 0)
+    synchronize_rcu()
+    migrate things // call CPUHP_TEARDOWN_CPU -> CPUHP_AP_IDLE_DEAD
+
+And on other CPUs the usual should work:
+
+    preempt_disable() // could now be replaced with rcu_read_lock()
+    if (cpu_online(target))
+        // do things
+    preempt_enable()
+
+There are a few dragons on the way in the update side but nothing unsolvable
+as far as I checked. Of course we must check all those callbacks one by one.
+
+Also on the read side we must be careful because:
+
+    rcu_read_lock()
+    A = cpu_online(target))
+    B = cpu_online(target))
+    rcu_read_unlock()
+
+We can now have A && !B but I doubt many callsites do that.
+
+> > > That will require some adjustments to the nohz_full related hotplug
+> > > functions. I have some ideas of what needs to be done. However, I haven't
+> > > looked into RCU yet. I know RCU support changing the nocb mask for fully
+> > > offline CPUs, I will need to find out if it possible to do that for
+> > > partially offline CPUs.
+> > No because callbacks can still be enqueued at this stage. But we could
+> > manage to make it work with CPUHP_AP_IDLE_DEAD.
+> 
+> If we can only go as high as CPUHP_AP_IDLE_DEAD, we may as well go down all
+> the way to CPUHP_OFFLINE as stop machine should be done at
+> CPUHP_AP_IDLE_DEAD. In that case, we may have to break RCU out from
+> HK_TYPE_KERNEL_NOISE and add a cpuset control switch for the system
+> administrators to decide if they are willing to suffer a brief latency spike
+> for an existing isolated partition or keep the RCU housekeeping mask
+> unchanged to avoid that when creating a new or destroying an old isolated
+> partition.
+
+Halfway nohz_full doesn't sound good...
+
+Thanks.
+
+-- 
+Frederic Weisbecker
+SUSE Labs
 
