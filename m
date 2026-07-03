@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17474-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4SBSIum2R2rOdwAAu9opvQ
-	(envelope-from <cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 15:19:37 +0200
+	id bjccEpHBR2pCewAAu9opvQ
+	(envelope-from <cgroups+bounces-17474-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 16:05:05 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E74B702C71
-	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 15:19:37 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EBEC7033C4
+	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 16:05:04 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=QOE+X9Tc;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Xq16OwWQ;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17473-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17474-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17474-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8B2513026AEB
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2026 13:19:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EAD3E31BF38E
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2026 13:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090703D6484;
-	Fri,  3 Jul 2026 13:19:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E113DC4A9;
+	Fri,  3 Jul 2026 13:45:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF553D45C1;
-	Fri,  3 Jul 2026 13:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF8373DB994;
+	Fri,  3 Jul 2026 13:45:54 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783084773; cv=none; b=hW6dqwlNeqOvlrGboRFIhNFtlpIzP/YZedNEBXkUbNx1eflRTpQ3p5O6UZAj49SNIeG0XGnLu5JjwwfX/sG+o0lNW7vv5Be77Z37kf8XxE14FtOXA6Ab+ohZU+/5RNX+gvg8ak8Co28OitpDBXZw9rBC/xlem5p8nyZrbNQuSFU=
+	t=1783086356; cv=none; b=O/RRLMxJ8wCEcZFD8ZMi5PgBEiTa9k0/ZObFQPCeoYxZp+IFuyM1whLoCb2dlgGDtvf2MJFfp4kmBUmIrP9zhNgwfcMepKpz8zKcPmjJWYPvNGkzLh8+qmOH60RQcCtukyGJ21jEMry6eQZgw8qiNgdBLaX1gU4UQJrIv55lP0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783084773; c=relaxed/simple;
-	bh=SybsfnBwWh6wNYO6K17YybWLHNe2wFkmCwK5CiUpNw8=;
+	s=arc-20240116; t=1783086356; c=relaxed/simple;
+	bh=jJeKeSOPAVRCB0VsI0J57fh0QKwys4mGrWVHu9lFiXo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XqKv/Q/JW7yWA/IBNdU5YL0Aiw+GJMJS/fXgcyo7Qv/VDGQXSka55y0BLQ+iLCxImH9r5Z6BNoqGdNLc5LPP220vxAKVm9CYw0o18voLss+N1JCRPrvSlZKS3AZb2x6PYzt2ScivcXeH0bXohXD+wEw/6PfqqCVPGNZEOY6qCws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QOE+X9Tc; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE7C41F000E9;
-	Fri,  3 Jul 2026 13:19:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=SgNj5Hl7ScKz71YqVMB/FbLtvtPPVa7PIcsf+GMLHoAYo5A+PrGbwOtWrkVw+YjpEY/PLSk/4tgZ0kMiiQfW5IoyBzRU7rcDmCWr1wQWsxKVsHr/Ko+VqpF7gAqdSPXrplLK1ped/EbsluWI0w/spNYyJu6/b/qfnTvVDCYl3vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xq16OwWQ; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE64B1F000E9;
+	Fri,  3 Jul 2026 13:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783084772;
-	bh=nQj/hR3UQosCLZxgAly99fHbBbLd46rIDcrsPC7zt0Y=;
+	s=k20260515; t=1783086354;
+	bh=gDp6TSjVXB2fH6wNuUIUIZM/jwINLpp0dPQUa1OQAtw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=QOE+X9Tc6w7Al+6bRdD2DCLmRFcVP3+Apmw+i8eugOlGjisfMQa7KfblbyOmJ1bgS
-	 hwibJ4dstELm2Q++c9s1rXuAx5KlK8klqEc5gYTFi45Ow3239Cl843wnhFoQOAIj2+
-	 E2moHoWghnK4DR2XdCbqrF2H09E1E/8UYuCAoaCKS4iSasC0Jq5Rpv6voChRUH0h7k
-	 wXywDHjK+YiIIr/u1pRtDZ1HcUekQqxYMHKpjCWsAZV4h0yg9LBK9T6YXNBrMekQNl
-	 Q7HpGNGpyvLwtGYpR9rxY+OQWlbcrz68J/3lyyMecJu4tIg43kYWthZ6d4McEmnZ5Q
-	 aF7C+y7vWCbEQ==
-Date: Fri, 3 Jul 2026 15:19:29 +0200
+	b=Xq16OwWQpXMNBI21HWpOebQgamwcdgRxjnj0a8SVIJ+IjU0Oha497kw3dXEGo0uZY
+	 s7tYVWi7jGVXIWdzPJNKxKhNJ0OC5erJVCPZO2gevfO5B1zO5Qez9S8h77LbbG92D0
+	 Hcmu/c8TFY+LxocMA5D/UBTW3v+6vqtW5TJU8IU7l/3DfyJ2ZXjMzfCYgiAY/l50i+
+	 rXLIM5g+3YL7ikDtJZQNpW6c2ObuG2hwyiBmyU5XUJQfZrBDAfIUd3KyZAj3LXiFDW
+	 OIHvsfwfLyNWz+IHIQPE1ppdQNMGp6n6sw4aOLAWJL6Ov3VQswMo4vPU6++d3/qEZx
+	 zCOcta8mlMhPA==
+Date: Fri, 3 Jul 2026 15:45:51 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Jing Wu <realwujing@gmail.com>, Thomas Gleixner <tglx@kernel.org>,
+To: Thomas Gleixner <tglx@kernel.org>
+Cc: Waiman Long <longman@redhat.com>, Jing Wu <realwujing@gmail.com>,
 	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
 	cgroups@vger.kernel.org, Qiliang Yuan <yuanql9@chinatelecom.cn>
 Subject: Re: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of
  nohz_full and managed_irq CPUs
-Message-ID: <ake24SbeTjPo7zXT@localhost.localdomain>
+Message-ID: <ake9D20lxx2Sncqm@localhost.localdomain>
 References: <20260421030351.281436-1-longman@redhat.com>
  <20260624063404.2106807-1-realwujing@gmail.com>
  <4ad24488-9cc1-4f1c-8dc5-6830ae7420df@redhat.com>
  <akUii2CyEi7SRid7@localhost.localdomain>
- <fe35dd41-7068-4cf0-9ee9-eb9c12017b42@redhat.com>
+ <871pdlphcc.ffs@fw13>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -69,26 +69,26 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <fe35dd41-7068-4cf0-9ee9-eb9c12017b42@redhat.com>
+In-Reply-To: <871pdlphcc.ffs@fw13>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17473-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17474-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:realwujing@gmail.com,m:tglx@kernel.org,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:tglx@kernel.org,m:longman@redhat.com,m:realwujing@gmail.com,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,vger.kernel.org,chinatelecom.cn];
+	FREEMAIL_CC(0.00)[redhat.com,gmail.com,vger.kernel.org,chinatelecom.cn];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -101,83 +101,94 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,localhost.localdomain:mid,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,localhost.localdomain:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1E74B702C71
+X-Rspamd-Queue-Id: 7EBEC7033C4
 
-Le Wed, Jul 01, 2026 at 02:56:34PM -0400, Waiman Long a écrit :
-> On 7/1/26 10:22 AM, Frederic Weisbecker wrote:
+Le Thu, Jul 02, 2026 at 05:00:03PM +0200, Thomas Gleixner a écrit :
+> On Wed, Jul 01 2026 at 16:22, Frederic Weisbecker wrote:
 > > Le Thu, Jun 25, 2026 at 01:27:54AM -0400, Waiman Long a écrit :
-> > > On 6/24/26 2:34 AM, Jing Wu wrote:
-> > > >     3. Are there specific patches in your series where you would welcome
-> > > >        our contribution directly?
-> > > I have broken down the shutdown callback into separate portions as suggested
-> > > by Thomas. The other major change that I am working on is to try to shutdown
-> > > to only CPUHP_AP_OFFLINE state instead of all the way down to CPUHP_OFFLINE.
-> > What was the reason for that already? Can we perhaps ask the user to offline
-> > the target CPUs before toggling isolation on them?
-> The major problem about fully offlining the CPU is the CPU hotplug stop
-> machine mechanism which put all the CPUs except the CPU to be offlined in a
-> waiting loop within the IPI handler when the offline CPU is transitioning
-> from CPUHP_TEARDOWN_CPU to  CPUHP_AP_IDLE_DEAD. If there is another active
-> isolated partition running DPDK, for instance, it will break the low latency
-> guarantee for a short duration.
-
-Looks like a long standing problem that does not only concern nohz_full
-but also RT in general.
-
-I made a proposal a while ago to solve this:
-
-https://lore.kernel.org/lkml/aQuNdOEmPYkI03my@localhost.localdomain/
-
-To summarize, we could remove that stop machine thing and have this on the
-outgoing CPU at CPUHP_TEARDOWN_CPU:
-
-    set_cpu_online(cpu, 0)
-    synchronize_rcu()
-    migrate things // call CPUHP_TEARDOWN_CPU -> CPUHP_AP_IDLE_DEAD
-
-And on other CPUs the usual should work:
-
-    preempt_disable() // could now be replaced with rcu_read_lock()
-    if (cpu_online(target))
-        // do things
-    preempt_enable()
-
-There are a few dragons on the way in the update side but nothing unsolvable
-as far as I checked. Of course we must check all those callbacks one by one.
-
-Also on the read side we must be careful because:
-
-    rcu_read_lock()
-    A = cpu_online(target))
-    B = cpu_online(target))
-    rcu_read_unlock()
-
-We can now have A && !B but I doubt many callsites do that.
-
-> > > That will require some adjustments to the nohz_full related hotplug
-> > > functions. I have some ideas of what needs to be done. However, I haven't
-> > > looked into RCU yet. I know RCU support changing the nocb mask for fully
-> > > offline CPUs, I will need to find out if it possible to do that for
-> > > partially offline CPUs.
+> >> That will require some adjustments to the nohz_full related hotplug
+> >> functions. I have some ideas of what needs to be done. However, I haven't
+> >> looked into RCU yet. I know RCU support changing the nocb mask for fully
+> >> offline CPUs, I will need to find out if it possible to do that for
+> >> partially offline CPUs.
+> >
 > > No because callbacks can still be enqueued at this stage. But we could
 > > manage to make it work with CPUHP_AP_IDLE_DEAD.
 > 
-> If we can only go as high as CPUHP_AP_IDLE_DEAD, we may as well go down all
-> the way to CPUHP_OFFLINE as stop machine should be done at
-> CPUHP_AP_IDLE_DEAD. In that case, we may have to break RCU out from
-> HK_TYPE_KERNEL_NOISE and add a cpuset control switch for the system
-> administrators to decide if they are willing to suffer a brief latency spike
-> for an existing isolated partition or keep the RCU housekeeping mask
-> unchanged to avoid that when creating a new or destroying an old isolated
-> partition.
+> Well, if you go down to CPUHP_AP_IDLE_DEAD then that's not any different
+> from going down all the way because the latency spike of stomp_machine()
+> for bringing it down is the same.
+> 
+> You are right that with the current code this is not possible, but it
+> should be possible to avoid that alltogether.
+> 
+> The only critical path is when a CPU switches to offload mode. Switching
+> to 'yes queue callbacks here' mode is not really interesting.
+> 
+> Let's look how RCU hot-unplug works:
+> 
+>   1) CPU is marked !active
+> 
+>   2) rcutree_offline_cpu() removes the CPU from the fully functional CPU
+>      mask
+>   
+>   3) stomp_machine()
+> 
+>   4) rcutree_cpu_dying() just traces that the CPU is about to vanish
+> 
+>   5) Wait for the CPU to report DEAD
+> 
+>   6) rcutree_migrate_callbacks() mops up the leftover callbacks on the
+>      dead CPU
+> 
+> So if the whole machinery changes to:
+> 
+>   1) CPU is marked !active
+> 
+>   2) rcutree_offline_cpu() removes the CPU from the fully functional CPU
+>      mask _AND_ marks the CPU as "lightweight offloaded", which means:
+> 
+>         - no new callbacks can be queued on it anymore neither from the
+>           CPU itself nor from truly offloaded CPUs
+> 
+>         - the CPU is still processing already queued callbacks and
+>           participates in the GP magic
+> 
+>   3) Before CPUHP_AP_SCHED_WAIT_EMPTY add a new CPUHP_AP_RCU_SYNC state,
+>      which does:
+> 
+>        - a full RCU synchronization to end all outstanding read side
+>          critical sections
+> 
+>        - drain the now ready callbacks on this CPU
+> 
+>   4) Proceed to CPUHP_TEARDOWN_CPU, where the operation stops
+> 
+>   5) Do the magic cpuset changes for the CPU
+> 
+>   6) Bring CPU back up
+> 
+> At #4 the half unplugged CPU is not in NOHZ full mode and the tick keeps
+> running so all GP processing work as before except that the CPU itself
+> is not handling any callbacks because all queued ones are drained and no
+> new ones can be queued. When it comes back up it turns into a fully
+> offloaded one.
 
-Halfway nohz_full doesn't sound good...
+But interrupts can still fire and queue callbacks, right?
 
-Thanks.
+> 
+> There are obviously a gazillion of details and cornercases to handle,
+> but I don't see why this can't be made work in principle.
+
+If we need to do something tricky anyway, how about this that would
+solve the initial problem of hotplug:stop_machine VS latency sensitive workloads
+in general?
+
+https://lore.kernel.org/lkml/ake24SbeTjPo7zXT@localhost.localdomain/T/#m4bdf9c760f7451232e21eea6d07935002e5ceb04
 
 -- 
 Frederic Weisbecker
