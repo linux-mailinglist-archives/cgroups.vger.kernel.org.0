@@ -1,252 +1,164 @@
-Return-Path: <cgroups+bounces-17475-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17476-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id HEfDOMnLR2rXfQAAu9opvQ
-	(envelope-from <cgroups+bounces-17475-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 16:48:41 +0200
+	id o4apCL3wR2qXhwAAu9opvQ
+	(envelope-from <cgroups+bounces-17476-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 19:26:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A22570396E
-	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 16:48:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665CB704A46
+	for <lists+cgroups@lfdr.de>; Fri, 03 Jul 2026 19:26:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=igalia.com header.s=20170329 header.b="E/kfhRlT";
-	dmarc=fail reason="SPF not aligned (relaxed)" header.from=igalia.com (policy=none);
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17475-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17475-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=MNRWvWee;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17476-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17476-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1D9C0307A9F3
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2026 14:38:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 80C733027979
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2026 17:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F733D1CC1;
-	Fri,  3 Jul 2026 14:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFB32F7F0F;
+	Fri,  3 Jul 2026 17:25:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9B13EF0C9;
-	Fri,  3 Jul 2026 14:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D9A2BDC05;
+	Fri,  3 Jul 2026 17:25:50 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783089482; cv=none; b=m8MVyAzToUatMQNztZELPVacwfQ3DNdQ95Fhz8JDY2cVB9V/NrxxSCUwkqsDt95Bd52/T8ogUcTBK7YWmiQ74Mc0/Dsxjk39KPlbVtrOyAsitPsZUtqhZ+r2ejY+jJT1FcXbnb2zv+yhuhUqqbAuUojF7kcnEsCI50S/r99wwMQ=
+	t=1783099551; cv=none; b=i9mVUmBwU3uEmzml7kqXuQ1S/uaybndNZDKsTtps/VADN3P4QAMGGxgmo06Yn+v7SE1lz9DK/232wgTr0VTA4JdQb+EpXJ+oZbewMJ2fq15jxrO/+1HFKUQsglLyKwvG89XBreR3OvKoiG9aFcP/rR+AREKS32LpJ7R+6g6Nffc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783089482; c=relaxed/simple;
-	bh=UWz8DAXIShx+jDzEyp9OWKrbUqR+ETd2efpUknq/xek=;
+	s=arc-20240116; t=1783099551; c=relaxed/simple;
+	bh=7K9RmVYbGp40h+Ep0Di+RHjbX7GJseyMs3XYdqrm3y0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YHiYwYoJszavEyY6lahjSzc9W13RUWPjsG8+QDphDpfZyCnt+SXpwdXsE5P9tLaWrGeNQL0/H2TViE1FFBTnJ2Jutv0sv4HC+LgCnsMtkXpMOoInnjwbLU39+QjzgRwdKAGGYBmL3ph6C5TYtAI+jsVY5u+RxaPwvI8DryGYxXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=E/kfhRlT; arc=none smtp.client-ip=213.97.179.56
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ItYwpTbyvNc16g21hJAWFbnwcID7dz49KV1NZJHO8Q4=; b=E/kfhRlTQ1y6SRPWoAILqfYpIg
-	YIQka3gNttc06p0AXrUyZSjTpHSRHWqiUgNBUgE3VzXOLLREiK5QnPH35p32/ToLaeQV9gr7WQwR/
-	+XAbfG+ET47MPDbHRZ60DlYIWQiyzUrgXn9JjbIhLSCf1vyiJCWl/kk6v6keA0nvC1qNj8xmttig0
-	CB/Dgso2yh9b37K1/7St4tvERkS/AUhuqcwEZz6Xr5CalVhHn9I+YxopmyCvNaGlrNNR5oeaTUxmg
-	FCRaMb0voxLxN2m8LubOaTYCOpQcyUIU8jkZw7r1GscfIPsW3Rpkmpt7PkKBHTiEMWEq8ohOMv8nT
-	GKGOJZcQ==;
-Received: from [179.125.94.247] (helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1wff1S-008WYn-QY; Fri, 03 Jul 2026 16:37:43 +0200
-Date: Fri, 3 Jul 2026 11:37:33 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-Cc: intel-xe@lists.freedesktop.org, Natalie Vock <natalie.vock@gmx.de>,
-	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
-	Matthew Brost <matthew.brost@intel.com>,
-	Matthew Auld <matthew.auld@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Simona Vetter <simona@ffwll.ch>, David Airlie <airlied@gmail.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/6] Add reclaim to the dmem cgroup controller
-Message-ID: <akfJLT66vRrPvBqX@quatroqueijos.cascardo.eti.br>
-References: <20260703130541.2686-1-thomas.hellstrom@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mViS7T+BirFls1AKm3/99MvgQqoxDSu9OdaOZbpX84x1+QFoxBijS6vBCCmCF/psBxThDRQKBakg1hnev8PJZygy06XiRaxMVtMzv0zuJCVp2QQhz44qvTuWlHbeOH3XKS8xQxGxjBImlxZltGDTdNqwOZN+NWz4BqGk28GdLRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MNRWvWee; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 649371F000E9;
+	Fri,  3 Jul 2026 17:25:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783099550;
+	bh=Yl6BXtff9NNLZZEGSACN98CKaLP0+6iDhiHs02YS8BA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=MNRWvWeeqT/1YabcJX9BBGr6X6OFjvnJ1hkWHBhmQu/e7lQTemc22YhtF4SrB3khP
+	 7heK7m14ROaef2ZMC/0UfVPiQ+LgSgMZSNU4UA8W5XlQ0MJ50EPpyzFKQziLxXMzuJ
+	 GfvUErPvrMF2Ta2HLN+O9YNzWLDv8ZrnDIrQmhqNjdkPSMT3VgcGrUwDg6A4tEaPw5
+	 zpYApQLun4nZTzyqL/xMTOW2FGyTEKcAg45uZRcUsxVEVAr5XGpXVngNV7u8S+V/HN
+	 eh9hXZUhSpTI+l7L9zD+TUpYDLrrcCWKdIBTMx4l04EcopUZIu3v+UfIHqMpdA4kfO
+	 HjcPuKhbedDng==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 36BD5CE03CE; Fri,  3 Jul 2026 10:25:50 -0700 (PDT)
+Date: Fri, 3 Jul 2026 10:25:50 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Jing Wu <realwujing@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@kernel.org>, Waiman Long <longman@redhat.com>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	cgroups@vger.kernel.org, Qiliang Yuan <yuanql9@chinatelecom.cn>
+Subject: Re: [PATCH-next 00/23] cgroup/cpuset: Enable runtime update of
+ nohz_full and managed_irq CPUs
+Message-ID: <dcd36af9-0418-4997-815e-9e03ae52bde0@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260702033934.984512-1-realwujing@gmail.com>
+ <871pdlphcc.ffs@fw13>
+ <4b9bfc1b-2724-4507-b2b2-81d71eb79841@paulmck-laptop>
+ <20260703061143.1658605-1-realwujing@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260703130541.2686-1-thomas.hellstrom@linux.intel.com>
+In-Reply-To: <20260703061143.1658605-1-realwujing@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-4.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17475-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17476-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:realwujing@gmail.com,m:frederic@kernel.org,m:tglx@kernel.org,m:longman@redhat.com,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FORGED_RECIPIENTS(0.00)[m:thomas.hellstrom@linux.intel.com,m:intel-xe@lists.freedesktop.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:tj@kernel.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:christian.koenig@amd.com,m:alexander.deucher@amd.com,m:rodrigo.vivi@intel.com,m:dri-devel@lists.freedesktop.org,m:amd-gfx@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[lists.freedesktop.org,gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,linux.intel.com,suse.de,ffwll.ch,gmail.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[paulmck@kernel.org,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[igalia.com:-];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[patchwork.freedesktop.org:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,gitlab.freedesktop.org:url,quatroqueijos.cascardo.eti.br:mid,intel.com:email]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[paulmck@kernel.org,cgroups@vger.kernel.org];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	HAS_REPLYTO(0.00)[paulmck@kernel.org];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,paulmck-laptop:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3A22570396E
+X-Rspamd-Queue-Id: 665CB704A46
 
-On Fri, Jul 03, 2026 at 03:05:35PM +0200, Thomas Hellström wrote:
-> When writing a "max" limit lower than the current usage, the
-> existing code silently failed. This series aims to improve
-> on that by returning -EBUSY on failure and also attempt
-> to synchronously reclaim device memory to push the usage
-> under the new max limit to avoid the error.
+On Fri, Jul 03, 2026 at 02:11:42PM +0800, Jing Wu wrote:
+> On Thu, Jul 02 2026 at 16:07, Paul E. McKenney wrote:
+> > wouldn't it work better to just leave all CPUs in RCU-callbacks-offloaded
+> > state?  Then you can adjust the nohz_full state of arbitrary CPUs without
+> > messing with RCU.
+> [...]
+> > a continuous stream of race-condition bugs inspired the current state,
+> > which is to allow this state to change only for offline CPUs.
 > 
-> Patch 1 fixes a pre-existing amdgpu_vram_mgr_init() error path
-> Patch 2 introduces struct dmem_cgroup_init for extensible region
->       registration.
-> Patch 3 implements and documents a reclaim callback interface
->       for the dmem controller.
-> Patch 4 implements a TTM reclaim callback.
-> Patches 5-6 hook up the reclaim callback to the dmem cgroup-aware
->       drivers xe and amdgpu.
+> Thanks Paul.  That is appealing, and we would much rather not wade into
+> the online offload-switching races you describe.
 > 
-> v2:
-> - Remove the error propagation that was in a previous series (Maarten)
-> - A number of updates in patch 1. See its commit message for
->   details (Maarten)
+> Let me lay out the one tension it creates on our side and ask how you and
+> Frederic would like it resolved.
 > 
-> v3:
-> - Add patch 1 fixing a pre-existing amdgpu_vram_mgr_init() error path
->   bug where drmm_cgroup_register_region() was called before
->   INIT_LIST_HEAD() and gpu_buddy_init(), causing a kernel panic on
->   failure. (Sashiko-bot)
-> - Use an rwsem to protect reclaim callback registration and region
->   unregister against concurrent reclaim invocations. (Sashiko-bot)
-> - Fix ttm_resource_manager_set_dmem_region() storing an error pointer
->   in man->cg unconditionally. (Sashiko-bot)
-> - Fix kernel-doc function name format for ttm_bo_evict_cgroup() and
->   ttm_resource_manager_set_dmem_region().
+> DHM's aim is to enable kernel-noise isolation purely at runtime, on
+> machines that did not pass nohz_full= / rcu_nocbs= at boot.  "Leave all
+> CPUs offloaded" needs the candidate CPUs to be in rcu_nocb_mask, which is
+> only populated at boot.  So the RCU part seems to come down to two options:
 > 
-> v4:
-> - Rebased on drm-tip; dropped the XE_PL_STOLEN guard in the xe patch
->   as stolen memory uses a separate TTM manager.
+>   (a) Accept a boot hint: require rcu_nocbs= (or nohz_full=) to cover the
+>       set of CPUs that may later be isolated.  RCU is then never touched at
+>       runtime, exactly as you suggest.  tick / timer / managed_irq /
+>       watchdog stay fully runtime-adjustable, so the "no boot parameter"
+>       property holds for everything except RCU offloading.
 > 
-> v5:
-> - Add patch 2 introducing struct dmem_cgroup_init to make the
->   dmem_cgroup_register_region() API extensible without adding positional
->   arguments in the future.
-> - Use nonblock=true in reset_all_resource_limits() to avoid sleeping
->   inside rcu_read_lock() in dmemcs_offline(). (Sashiko-bot)
-> - Compare usage against the truncated limit stored in cnt.max, not the
->   original u64. (Sashiko-bot)
-> - Use DMEM_MAX_RECLAIM_RETRIES (16) retry budget instead of 5, matching
->   the memcg controller; only -ENOSPC (no progress) counts against the
->   budget, other errors abort immediately.
-> - Handle NULL region in ttm_resource_manager_set_dmem_region() to clear
->   the reclaim callback, preventing use-after-free when the manager is
->   torn down while the dmem region outlives it. (Sashiko-bot)
-> - Return 0 on any eviction progress; reserve -ENOSPC for zero progress.
-> - Clear the reclaim callback in xe and amdgpu fini paths to prevent
->   use-after-free after driver unbind with open DRM file descriptors.
->   (Sashiko-bot)
-> - Register xe fini devres action before drmm_cgroup_register_region()
->   so LIFO teardown runs unregister first, draining callbacks before the
->   manager is destroyed. (Sashiko-bot)
-> - Switch amdgpu to explicit dmem_cgroup_unregister_region() at the top
->   of amdgpu_vram_mgr_fini() before any manager teardown, since amdgpu's
->   fini is called explicitly during driver unbind before drmm cleanup.
->   (Sashiko-bot)
-> - Wrap the xe reclaim callback with drm_dev_enter()/drm_dev_exit() to
->   prevent TTM reclaim from running after driver unbind.
+>   (b) Change the offload state at runtime with no boot hint, which is
+>       precisely the online-switching problem you and Frederic hit, and what
+>       Thomas's lightweight-offloaded + CPUHP_AP_RCU_SYNC sketch would need
+>       to make cheap and race-free.
 > 
-> v6:
-> - Move the ops check inside down_read() in set_resource_max(), guarded
->   by region->unregistered, to close a UAF race against
->   dmem_cgroup_unregister_region(). (Sashiko-bot)
-> - Fix dmem_cgroup_ops->reclaim docstring: -ENOSPC is retried up to
->   DMEM_MAX_RECLAIM_RETRIES times, not an immediate stop. (Sashiko-bot)
-> - Fix mgr->cg_region never being assigned in amdgpu_vram_mgr_init(),
->   causing dmem_cgroup_unregister_region() in fini to silently no-op.
->   (Sashiko-bot)
-> - Reorder amdgpu_vram_mgr_fini() to call set_used(false) and
->   evict_all() before dmem_cgroup_unregister_region(), so
->   ttm_resource_free() can uncharge via man->cg during eviction; clear
->   man->cg after unregister. (Sashiko-bot)
+> We would lean towards (a) as the pragmatic first step: it keeps RCU out of
+> the runtime path entirely, per your recommendation, and only asks the admin
+> who wants runtime RCU-noise isolation to declare the candidate CPUs at boot.
+> (b) / Thomas's mechanism could be a separate, later effort if a truly
+> boot-parameter-free RCU story turns out to be wanted.
 > 
-> v7:
-> - Replace the per-region rw_semaphore with a static SRCU domain
->   (dmemcg_srcu). SRCU is a better fit: it avoids per-region lock
->   overhead on every reclaim call, and synchronize_srcu() at unregister
->   time is a rare, shutdown-time operation. (Maarten)
-> - Trim in-function comments to focus on what rather than how.
-> - Switch back to drmm_cgroup_register_region() with a drm_dev_enter/
->   exit guard in the reclaim callback (matching xe), rather than manual
->   register/unregister.  drm_dev_unplug() fires before vram_mgr_fini(),
->   so drm_dev_enter() returning false prevents any reclaim from touching
->   the manager during teardown.  This also fixes the "vram" name
->   collision on multi-GPU systems, since drmm_cgroup_register_region()
->   automatically prefixes with "drm/<pci-addr>/". (Sashiko-bot)
-> 
-> User-space tests are at
-> https://patchwork.freedesktop.org/series/163935/
-> 
-> Test-with: 20260428065411.4222-1-thomas.hellstrom@linux.intel.com
-> 
+> Does scoping the RCU part to (a) sound acceptable to you and Frederic?  If
+> so, we will drop runtime nocb toggling from DHM entirely and just document
+> the rcu_nocbs= expectation, leaving the other housekeeping types runtime
+> adjustable.
 
-I used the branch at [1] to run tests over amdgpu and they pass.
+For the time being, I will defer to Frederic on this one.
 
-[1] https://gitlab.freedesktop.org/cascardo/igt-gpu-tools/-/commits/dmem_max?ref_type=heads
+His point about interrupt handlers invoking call_rcu() is a caution.  ;-)
 
-Tested-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-
-> Thomas Hellström (6):
->   drm/amdgpu: Fix init ordering in amdgpu_vram_mgr_init()
->   cgroup/dmem: Introduce struct dmem_cgroup_init for region
->     initialization
->   cgroup/dmem: Add reclaim callback for lowering max below current usage
->   drm/ttm: Hook up a cgroup-aware reclaim callback for the dmem
->     controller
->   drm/xe: Wire up dmem cgroup reclaim for VRAM manager
->   drm/amdgpu: Wire up dmem cgroup reclaim for VRAM manager
-> 
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c      |  2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 38 +++++++-
->  drivers/gpu/drm/drm_drv.c                    |  8 +-
->  drivers/gpu/drm/ttm/ttm_bo.c                 | 95 +++++++++++++++++++-
->  drivers/gpu/drm/ttm/ttm_bo_util.c            |  3 +-
->  drivers/gpu/drm/ttm/ttm_resource.c           | 50 +++++++++++
->  drivers/gpu/drm/xe/xe_ttm_vram_mgr.c         | 53 +++++++++--
->  include/drm/drm_drv.h                        |  4 +-
->  include/drm/ttm/ttm_bo.h                     | 10 +++
->  include/drm/ttm/ttm_resource.h               |  7 ++
->  include/linux/cgroup_dmem.h                  | 38 +++++++-
->  kernel/cgroup/dmem.c                         | 91 +++++++++++++++----
->  12 files changed, 362 insertions(+), 37 deletions(-)
-> 
-> -- 
-> 2.54.0
-> 
+							Thanx, Paul
 
