@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-17496-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17497-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8H7YDxNlSWoN1QAAu9opvQ
-	(envelope-from <cgroups+bounces-17496-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:54:59 +0200
+	id qWx+OR9lSWoa1QAAu9opvQ
+	(envelope-from <cgroups+bounces-17497-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:55:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CC47085B7
-	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8770B7085C9
+	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:55:11 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=bnPjrSXo;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=V8jnWK9j;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17496-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17496-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17497-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17497-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2BDDA3032CF0
-	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2026 19:53:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D59213034BCD
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2026 19:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C578631F98E;
-	Sat,  4 Jul 2026 19:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A49F31F98E;
+	Sat,  4 Jul 2026 19:54:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F2D218592;
-	Sat,  4 Jul 2026 19:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8C8218592;
+	Sat,  4 Jul 2026 19:54:04 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783194835; cv=none; b=XE0U/vylYAgZej7AGZ+v9joiRBjD0HdBFAkonJlKBLTck91GB41j97jkw6Be1vb7ybvp5gHJt+qWJQtFmlxEpZRe0qVvo+Xrjufjp+M44eXP6MQiYeGNg5ZKvxGugeubS2XzWMBJk3LNUgH/qZytR5SnCCP51+ZVTc1pY1rF9UI=
+	t=1783194845; cv=none; b=XwHGd7KI4IWLxPLJakiVTVenxCF47jzUFcIJxcJykJ4GMgZdNRge4G+BUJPQuYdc1nhA6oIlNJn7N+juOrhY0mz9xXGgwzqyttyvMNEmg5xDU2Uja86twkESWLG2hNWjT3HB1lSe/K04jr5LNGh9+QDXFqkpONOg3OG79U1fXu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783194835; c=relaxed/simple;
-	bh=L1kBwNt15m1gN/Zb1cgZqAXgwqBjnoGkzuTjZZBrdo0=;
+	s=arc-20240116; t=1783194845; c=relaxed/simple;
+	bh=N8EW+1pOTuaIknEGY0GLqK3qVRVIYR7wQeSn2GtAtdI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qejQI/GRijYG6cmRpC7qqvze3UIvlbRDMKpeVqt9ErKaGcgKOq1NbeD9wkp2kq8q9xGREkFpUtkMnGhRblq5OF4vAEil8DKheAgU2qtyhGfcxTXgf+6XXms2ndn6+059FTt1uZbUF38b0zgHV18Xo2F7w4/xF1ffnib0Rn1zNlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bnPjrSXo; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C477A1F000E9;
-	Sat,  4 Jul 2026 19:53:43 +0000 (UTC)
+	 MIME-Version; b=Dg3c33RSRnEviFEB8gU1LeA1wxWHIOxRg/oJ/TIQBjYibdOSh3H22XnoniuD/HlNUwJrjQJNJrT/UbMPZppaOS+ODYcAOw8a9i0eIHj/s2EGCD1A+tz3yACL+ZhQpLYnr8Ea+09qa3FHd0EOQOdzyQIEf9YKA3KzeGIfbM7a/9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V8jnWK9j; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 476421F00A3A;
+	Sat,  4 Jul 2026 19:53:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783194834;
-	bh=+BiKm4kVK4oPKVGcsKEfBVImUZcHd9qj5zTEiTKcjs4=;
+	s=k20260515; t=1783194844;
+	bh=vu29rf3lgakjneFMYKQ+WlczmzTnFJdW6M8FMGJJaOM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=bnPjrSXoAI1pj9LrT9/YYsJtmp5BA7OGXwpAMroDo3L6eJWrMBi03RQaGLvD9OriC
-	 CGw47ifQXwsu6nuSAIceH1OkAeijT15S/VCDrk/EtRqF9POH6jafoU/0XxchU6L9Qq
-	 za9TtK25VBeCcT01PxbjLBWuZqZycT8VIaFLEfodUFtirF8RHRmoejk9/yKeDyYMaX
-	 mO6hz2zf3Dr7K22UlOxzhJza6AXvQEyjhl4ZHewyxQvmzLsTLXwKmn3SaJTfc0cFOB
-	 SoV0Bx1Dk37H7tOJ4DtcHCETnzNadD4VfXYBZSbTsTRE4tc9bg60iuRlCQDHgTqPrt
-	 +9Xq1ySEdQ3jw==
+	b=V8jnWK9jzq4GRSEcFyc0bp1R43aK8YPsy+08Ecfds9ufrTzFxQ5455bosqhDVRN+Z
+	 k0BOU6V1l8YVOEbF0uMzedEZt90DC1dcrk17aimxaVhjsmxLgoLMC+8CG/V0MP8UC4
+	 LqRKf0fUE08DWoci1Ant5r0qh2Xo3yItrIS4oE8lB++xl1ZqCiYL/tNwe8mSvBM8g8
+	 ijyk5DIKJHJj5ZSGBCg3nNt5/GG0lz8h17mSrDCjmDglc/NfgMVBBHC6DIbzGp9/sG
+	 N4H8/EAk6m18lPAlCmN44Iz9cgCkvTbJZoUhM0y/9W0Mx+7ui8BUDXYL76fRxl8XHO
+	 wEb9s9gHJDi2w==
 From: Yu Kuai <yukuai@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	Tejun Heo <tj@kernel.org>
@@ -68,9 +68,9 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linux-nvme@lists.infradead.org,
 	dm-devel@lists.linux.dev,
 	linux-bcache@vger.kernel.org
-Subject: [RFC PATCH v1 11/17] block: avoid scheduling from non-blocking helper allocations
-Date: Sun,  5 Jul 2026 03:51:18 +0800
-Message-ID: <20260704195124.1375075-12-yukuai@kernel.org>
+Subject: [RFC PATCH v1 12/17] dm: avoid sleeping blkg association from NOWAIT remaps
+Date: Sun,  5 Jul 2026 03:51:19 +0800
+Message-ID: <20260704195124.1375075-13-yukuai@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260704195124.1375075-1-yukuai@kernel.org>
 References: <20260704195124.1375075-1-yukuai@kernel.org>
@@ -94,7 +94,7 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17496-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17497-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS(0.00)[m:axboe@kernel.dk,m:tj@kernel.org,m:hch@lst.de,m:kbusch@kernel.org,m:sagi@grimberg.me,m:agk@redhat.com,m:bmarzins@redhat.com,m:snitzer@kernel.org,m:mpatocka@redhat.com,m:dongsheng.yang@linux.dev,m:cengku@gmail.com,m:colyli@fygo.io,m:kent.overstreet@linux.dev,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:dm-devel@lists.linux.dev,m:linux-bcache@vger.kernel.org,s:lists@lfdr.de];
@@ -117,58 +117,184 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[fygo.io:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C9CC47085B7
+X-Rspamd-Queue-Id: 8770B7085C9
 
 From: Yu Kuai <yukuai@fygo.io>
 
-blk_alloc_discard_bio() and blk_rq_map_bio_alloc() can be used with
-non-blocking GFP masks.  Their bio allocation now handles bdev association in
-nowait mode, so the helpers can pass the target bdev directly and avoid local
-open-coded association paths.
+DM allocates normal NOWAIT target clones with GFP_NOWAIT.  Targets that set
+needs_bio_set_dev can therefore make alloc_tio() associate blkcg state from a
+non-blocking allocation path, which may sleep while creating a missing blkg
+after blkg lookup is protected by q->blkcg_mutex.
 
-The discard helper can also be reached from io_uring with GFP_NOWAIT.  Keep
-its long-loop cond_resched() only for blocking callers.
+Set the default bdev without blkcg association first, then associate blkcg
+with nowait=true for non-blocking allocations.  If a blkg would need creating,
+fail the NOWAIT allocation with BLK_STS_AGAIN.
+
+Targets that advertise DM_TARGET_NOWAIT may also remap bios in their map
+functions.  Those remaps update only the bdev for NOWAIT bios, then
+DM submission clones the original bio's blkg association with nowait=true
+before lower submission.  If that would need to sleep, complete the clone with
+BLK_STS_AGAIN.
 
 Signed-off-by: Yu Kuai <yukuai@fygo.io>
 ---
- block/blk-lib.c | 3 ++-
- block/blk-map.c | 7 +------
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ drivers/md/dm-linear.c        |  2 +-
+ drivers/md/dm-stripe.c        |  6 +++---
+ drivers/md/dm-switch.c        |  2 +-
+ drivers/md/dm-unstripe.c      |  2 +-
+ drivers/md/dm.c               | 28 +++++++++++++++++++++++++---
+ include/linux/device-mapper.h |  8 ++++++++
+ 6 files changed, 39 insertions(+), 9 deletions(-)
 
-diff --git a/block/blk-lib.c b/block/blk-lib.c
-index 688bc67cbf73..b5645f8f69b6 100644
---- a/block/blk-lib.c
-+++ b/block/blk-lib.c
-@@ -56,7 +56,8 @@ struct bio *blk_alloc_discard_bio(struct block_device *bdev,
- 	 * discards (like mkfs).  Be nice and allow us to schedule out to avoid
- 	 * softlocking if preempt is disabled.
- 	 */
--	cond_resched();
-+	if (gfpflags_allow_blocking(gfp_mask))
-+		cond_resched();
- 	return bio;
- }
- 
-diff --git a/block/blk-map.c b/block/blk-map.c
-index 768549f19f97..75c7b864c15a 100644
---- a/block/blk-map.c
-+++ b/block/blk-map.c
-@@ -46,14 +46,9 @@ static struct bio *blk_rq_map_bio_alloc(struct request *rq,
- 		unsigned int nr_vecs, gfp_t gfp_mask)
+diff --git a/drivers/md/dm-linear.c b/drivers/md/dm-linear.c
+index 38c17846deb0..f75a372acd20 100644
+--- a/drivers/md/dm-linear.c
++++ b/drivers/md/dm-linear.c
+@@ -90,7 +90,7 @@ int linear_map(struct dm_target *ti, struct bio *bio)
  {
- 	struct block_device *bdev = rq->q->disk ? rq->q->disk->part0 : NULL;
--	struct bio *bio;
+ 	struct linear_c *lc = ti->private;
  
--	bio = bio_alloc_bioset(bdev, nr_vecs, rq->cmd_flags, gfp_mask,
-+	return bio_alloc_bioset(bdev, nr_vecs, rq->cmd_flags, gfp_mask,
- 				&fs_bio_set);
--	if (!bio)
--		return NULL;
--
--	return bio;
+-	bio_set_dev(bio, lc->dev->bdev);
++	dm_bio_set_dev(bio, lc->dev->bdev);
+ 	bio->bi_iter.bi_sector = linear_map_sector(ti, bio->bi_iter.bi_sector);
+ 
+ 	return DM_MAPIO_REMAPPED;
+diff --git a/drivers/md/dm-stripe.c b/drivers/md/dm-stripe.c
+index 750865fd3ae7..73f9483a3e8a 100644
+--- a/drivers/md/dm-stripe.c
++++ b/drivers/md/dm-stripe.c
+@@ -257,7 +257,7 @@ static int stripe_map_range(struct stripe_c *sc, struct bio *bio,
+ 	stripe_map_range_sector(sc, bio_end_sector(bio),
+ 				target_stripe, &end);
+ 	if (begin < end) {
+-		bio_set_dev(bio, sc->stripe[target_stripe].dev->bdev);
++		dm_bio_set_dev(bio, sc->stripe[target_stripe].dev->bdev);
+ 		bio->bi_iter.bi_sector = begin +
+ 			sc->stripe[target_stripe].physical_start;
+ 		bio->bi_iter.bi_size = to_bytes(end - begin);
+@@ -278,7 +278,7 @@ int stripe_map(struct dm_target *ti, struct bio *bio)
+ 	if (bio->bi_opf & REQ_PREFLUSH) {
+ 		target_bio_nr = dm_bio_get_target_bio_nr(bio);
+ 		BUG_ON(target_bio_nr >= sc->stripes);
+-		bio_set_dev(bio, sc->stripe[target_bio_nr].dev->bdev);
++		dm_bio_set_dev(bio, sc->stripe[target_bio_nr].dev->bdev);
+ 		return DM_MAPIO_REMAPPED;
+ 	}
+ 	if (unlikely(bio_op(bio) == REQ_OP_DISCARD) ||
+@@ -293,7 +293,7 @@ int stripe_map(struct dm_target *ti, struct bio *bio)
+ 			  &stripe, &bio->bi_iter.bi_sector);
+ 
+ 	bio->bi_iter.bi_sector += sc->stripe[stripe].physical_start;
+-	bio_set_dev(bio, sc->stripe[stripe].dev->bdev);
++	dm_bio_set_dev(bio, sc->stripe[stripe].dev->bdev);
+ 
+ 	return DM_MAPIO_REMAPPED;
+ }
+diff --git a/drivers/md/dm-switch.c b/drivers/md/dm-switch.c
+index 5952f02de1e6..9eea6c263eed 100644
+--- a/drivers/md/dm-switch.c
++++ b/drivers/md/dm-switch.c
+@@ -323,7 +323,7 @@ static int switch_map(struct dm_target *ti, struct bio *bio)
+ 	sector_t offset = dm_target_offset(ti, bio->bi_iter.bi_sector);
+ 	unsigned int path_nr = switch_get_path_nr(sctx, offset);
+ 
+-	bio_set_dev(bio, sctx->path_list[path_nr].dmdev->bdev);
++	dm_bio_set_dev(bio, sctx->path_list[path_nr].dmdev->bdev);
+ 	bio->bi_iter.bi_sector = sctx->path_list[path_nr].start + offset;
+ 
+ 	return DM_MAPIO_REMAPPED;
+diff --git a/drivers/md/dm-unstripe.c b/drivers/md/dm-unstripe.c
+index bfcbe6bfa71a..900b1ac88bc8 100644
+--- a/drivers/md/dm-unstripe.c
++++ b/drivers/md/dm-unstripe.c
+@@ -136,7 +136,7 @@ static int unstripe_map(struct dm_target *ti, struct bio *bio)
+ {
+ 	struct unstripe_c *uc = ti->private;
+ 
+-	bio_set_dev(bio, uc->dev->bdev);
++	dm_bio_set_dev(bio, uc->dev->bdev);
+ 	bio->bi_iter.bi_sector = map_to_core(ti, bio) + uc->physical_start;
+ 
+ 	return DM_MAPIO_REMAPPED;
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index c54636235ffe..6dde3c699122 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -610,6 +610,8 @@ static void free_io(struct dm_io *io)
+ 	bio_put(&io->tio.clone);
  }
  
- /**
++static void free_tio(struct bio *clone);
++
+ static struct bio *alloc_tio(struct clone_info *ci, struct dm_target *ti,
+ 			     unsigned int target_bio_nr, unsigned int *len, gfp_t gfp_mask)
+ {
+@@ -644,8 +646,12 @@ static struct bio *alloc_tio(struct clone_info *ci, struct dm_target *ti,
+ 
+ 	/* Set default bdev, but target must bio_set_dev() before issuing IO */
+ 	clone->bi_bdev = md->disk->part0;
+-	if (likely(ti != NULL) && unlikely(ti->needs_bio_set_dev))
+-		bio_set_dev(clone, md->disk->part0);
++	if (likely(ti != NULL) && unlikely(ti->needs_bio_set_dev)) {
++		bio_set_dev_no_blkg(clone, md->disk->part0);
++		if (!bio_associate_blkg(clone,
++				!gfpflags_allow_blocking(gfp_mask)))
++			goto fail;
++	}
+ 
+ 	if (len) {
+ 		clone->bi_iter.bi_size = to_bytes(*len);
+@@ -654,6 +660,14 @@ static struct bio *alloc_tio(struct clone_info *ci, struct dm_target *ti,
+ 	}
+ 
+ 	return clone;
++
++fail:
++	if (dm_tio_flagged(clone_to_tio(clone), DM_TIO_INSIDE_DM_IO)) {
++		clone->bi_bdev = NULL;
++		clone_to_tio(clone)->io = NULL;
++	}
++	free_tio(clone);
++	return NULL;
+ }
+ 
+ static void free_tio(struct bio *clone)
+@@ -1364,7 +1378,15 @@ void dm_submit_bio_remap(struct bio *clone, struct bio *tgt_clone)
+ 	if (!tgt_clone)
+ 		tgt_clone = clone;
+ 
+-	bio_clone_blkg_association(tgt_clone, io->orig_bio, false);
++	if (tgt_clone->bi_opf & REQ_NOWAIT) {
++		if (!bio_clone_blkg_association(tgt_clone, io->orig_bio, true)) {
++			tgt_clone->bi_status = BLK_STS_AGAIN;
++			tgt_clone->bi_end_io(tgt_clone);
++			return;
++		}
++	} else {
++		bio_clone_blkg_association(tgt_clone, io->orig_bio, false);
++	}
+ 
+ 	/*
+ 	 * Account io->origin_bio to DM dev on behalf of target
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index cd4faaf5d427..ca1e1cfee74f 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -713,6 +713,14 @@ module_exit(dm_##name##_exit)
+ #define DM_MAPIO_DELAY_REQUEUE	DM_ENDIO_DELAY_REQUEUE
+ #define DM_MAPIO_KILL		4
+ 
++static inline void dm_bio_set_dev(struct bio *bio, struct block_device *bdev)
++{
++	if (bio->bi_opf & REQ_NOWAIT)
++		bio_set_dev_no_blkg(bio, bdev);
++	else
++		bio_set_dev(bio, bdev);
++}
++
+ #define dm_sector_div64(x, y)( \
+ { \
+ 	u64 _res; \
 -- 
 2.51.0
 
