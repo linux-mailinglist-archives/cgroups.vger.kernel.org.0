@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-17489-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17490-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id zkAkGaZkSWrM1AAAu9opvQ
-	(envelope-from <cgroups+bounces-17489-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:53:10 +0200
+	id FVvFDrlkSWrZ1AAAu9opvQ
+	(envelope-from <cgroups+bounces-17490-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:53:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC2D9708536
-	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:53:09 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D173770854E
+	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:53:28 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=MMNJdnVy;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=K4lNN0dG;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17489-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17489-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17490-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17490-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 81C073028B67
-	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2026 19:52:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 35A303030B04
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2026 19:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8843F30D3F8;
-	Sat,  4 Jul 2026 19:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 385B830FF31;
+	Sat,  4 Jul 2026 19:52:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB61282F01;
-	Sat,  4 Jul 2026 19:52:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E282A12FF69;
+	Sat,  4 Jul 2026 19:52:47 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783194759; cv=none; b=ZKyA4kuHeyei5ZgH2Hks5B2AHP4AfGN8dDb4IAxen2t1BvM+02eErfOSkY6dUy6IPMJUDgh1WZACqRb2SSo5sRdEsKR/QnE2iZn0+RQyzvxno6xQLx71Z8tGm9WwnKdxNOb8y7UFh6Piw3Hvmr45QYwrf120rwqG6h8TfYGT8dI=
+	t=1783194769; cv=none; b=SuCXRMZ7LMNbQt+QxA8fGiteVn51SHeNHV18Fe0HMaIQb4GZoq/3GtYTNLVpUwncNFJtYgd+O8x8X0cbeEnsTRU21cg6kNaTeY9fNfKcFM+XyDBec22RNgC/kpvyulqA35nPsszIgnQI9ghnUMDcHpFS76fhgv+u55ruRhy8V4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783194759; c=relaxed/simple;
-	bh=JhCwcu115MAGCYR9pYIwu2g8JdMZyMfQEghyJaimgfg=;
+	s=arc-20240116; t=1783194769; c=relaxed/simple;
+	bh=mTow1tmrdP9XeBM1b31QKMHtfH2seK9YXYtGLsyFW8M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VXeVgFLqXLyLk8Fw2OHj07vbrDhMme9zQFoeJPW1SnjKA8bfDr5r6s5QmUVxkiJKiDkoTCNyT+QLQXX2Qb9vOAqFfqVhRBNBOc8xL3F0xALdA4tPy3NdDYVjLMQceX2fMXHTw7L74XgK7MtPKvL5cT6MTVeXGzDOvOTZkL5u4zM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MMNJdnVy; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA5491F00A3A;
-	Sat,  4 Jul 2026 19:52:23 +0000 (UTC)
+	 MIME-Version; b=Dnga2I3PNeT/RiwLTDDAkERknqhtHV5Lzhb6fjfs17Iq7Q1awt7aHV7C+sOZypn9vKrjackTLBCWX8bgd8MtOvok35tj431o+h8BC2+guZQhQkAC6+QoEorihiGyjtQOrG4WWPXVHQlQtQKzDDdVooW+UmpHDddiACqyjENliAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K4lNN0dG; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E73361F000E9;
+	Sat,  4 Jul 2026 19:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783194757;
-	bh=9brV8EHs1XB3cVBkQXkrL51M4jRovqFzRidZQ3jum2E=;
+	s=k20260515; t=1783194767;
+	bh=mXJiwwaeOWgN5pHsCgD632laX9hPGfy7GVg2b2/T7js=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=MMNJdnVyBHRTKj6EWDI+k2x3oNf69v/gzhhu51ZD3smWrSGYr3OdyMh0SyGvi2CHl
-	 5TmaBacmSRu4idIiASQjPEBsA5zvKbOh98iHK/EOJbtY6KN/myDhAVEqIdzdGu4Ubz
-	 SjPndKLwmMRW2/SnWxugSFSuvl8n+W2U8orMy4rAAIs6d6G4yoBBja4B1Xsv5gr4m0
-	 GVS7gI2pxI52rtk9PyldxL8fPmI3Kq/48sVFfrOk5yWZvIZQUzYov6ozUJfTOJpZTR
-	 x4J1llghKikvTO50bbnhha7vNeCzg+JVV/mzBfSb8S2MX2acoC4vb3wXQX1LnAGm8V
-	 /3HPF2jrlXK5A==
+	b=K4lNN0dGzzywNRxaL6RbtTbW0krF8yl7KvNm1psx9S8v+EoFuxPY356jqfIV6HtoT
+	 MRluYXHFNTfis30lYXNmexdz9HdrBxACIAIDGZpGXI/cko4cY0p+fvUq+dfd9OyHIS
+	 kpqjkeT6Di+7DaVQJ3V9SZ8QxhwJXmMKwewHuS+ljc7PMoDVi6RlrDpgwTSnsPkvvS
+	 Rw58JYOrk0fQHEuk1f6ps4AbBYosAKE41/Oae2Bn0pXS782aD8g/AnCznb3ktD8dKl
+	 cXk/qoyh9YABGrlWysWaRk/IBvOJ5IPZKMtunTfBT5AUi9LMRjYb3V6SFzyay8NF3i
+	 veottqF8gIpqA==
 From: Yu Kuai <yukuai@kernel.org>
 To: Jens Axboe <axboe@kernel.dk>,
 	Tejun Heo <tj@kernel.org>
@@ -68,9 +68,9 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	linux-nvme@lists.infradead.org,
 	dm-devel@lists.linux.dev,
 	linux-bcache@vger.kernel.org
-Subject: [RFC PATCH v1 04/17] blk-throttle: protect throttle state with td lock
-Date: Sun,  5 Jul 2026 03:51:11 +0800
-Message-ID: <20260704195124.1375075-5-yukuai@kernel.org>
+Subject: [RFC PATCH v1 05/17] block: add bio_alloc_atomic() for atomic bio users
+Date: Sun,  5 Jul 2026 03:51:12 +0800
+Message-ID: <20260704195124.1375075-6-yukuai@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260704195124.1375075-1-yukuai@kernel.org>
 References: <20260704195124.1375075-1-yukuai@kernel.org>
@@ -88,13 +88,13 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17489-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17490-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS(0.00)[m:axboe@kernel.dk,m:tj@kernel.org,m:hch@lst.de,m:kbusch@kernel.org,m:sagi@grimberg.me,m:agk@redhat.com,m:bmarzins@redhat.com,m:snitzer@kernel.org,m:mpatocka@redhat.com,m:dongsheng.yang@linux.dev,m:cengku@gmail.com,m:colyli@fygo.io,m:kent.overstreet@linux.dev,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:dm-devel@lists.linux.dev,m:linux-bcache@vger.kernel.org,s:lists@lfdr.de];
@@ -113,315 +113,110 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[fygo.io:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EC2D9708536
+X-Rspamd-Queue-Id: D173770854E
 
 From: Yu Kuai <yukuai@fygo.io>
 
-Throttle currently uses queue_lock for both blkcg topology and its own
-runtime state. This blocks moving blkg topology protection to blkcg_mutex
-cleanly.
+Add bio_alloc_atomic() for callers that need a GFP_ATOMIC bio from the
+default bio set but cannot safely pass a bdev during allocation. The
+helper returns an unattached bio, leaving callers to set bi_bdev and
+attach blkcg state explicitly before submission.
 
-Add a throttle-private spinlock and use it for throttle service queues,
-pending timers, runtime counters and config updates. Keep queue_lock only
-where the current intermediate code still walks blkcg topology.
+Use the helper for virtio-pmem flush child bios and OCFS2 heartbeat I/O.
+Both allocate bios from atomic paths and must avoid creating missing blkgs
+once blkg creation is protected by q->blkcg_mutex. virtio-pmem clones the
+parent bio's blkg association; OCFS2 binds heartbeat I/O to the root blkg.
 
 Signed-off-by: Yu Kuai <yukuai@fygo.io>
 ---
- block/blk-throttle.c | 87 ++++++++++++++++++++++++++++++++++----------
- 1 file changed, 67 insertions(+), 20 deletions(-)
+ drivers/nvdimm/nd_virtio.c   |  8 ++++----
+ fs/ocfs2/cluster/heartbeat.c | 15 ++++++++++++---
+ include/linux/bio.h          |  6 ++++++
+ 3 files changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index ffc3b70065d4..7bca2805404f 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -30,6 +30,9 @@ static struct workqueue_struct *kthrotld_workqueue;
- 
- struct throtl_data
- {
-+	/* protects throttle service queues and group runtime state */
-+	spinlock_t lock;
-+
- 	/* service tree for active throtl groups */
- 	struct throtl_service_queue service_queue;
- 
-@@ -346,11 +349,16 @@ static void tg_update_has_rules(struct throtl_grp *tg)
- static void throtl_pd_online(struct blkg_policy_data *pd)
- {
- 	struct throtl_grp *tg = pd_to_tg(pd);
-+	struct throtl_data *td = tg->td;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&td->lock, flags);
- 	/*
- 	 * We don't want new groups to escape the limits of its ancestors.
- 	 * Update has_rules[] after a new group is brought online.
+diff --git a/drivers/nvdimm/nd_virtio.c b/drivers/nvdimm/nd_virtio.c
+index 4176046627be..13d1ed1c466c 100644
+--- a/drivers/nvdimm/nd_virtio.c
++++ b/drivers/nvdimm/nd_virtio.c
+@@ -115,13 +115,13 @@ int async_pmem_flush(struct nd_region *nd_region, struct bio *bio)
+ 	 * parent bio. Otherwise directly call nd_region flush.
  	 */
- 	tg_update_has_rules(tg);
-+	spin_unlock_irqrestore(&td->lock, flags);
- }
+ 	if (bio && bio->bi_iter.bi_sector != -1) {
+-		struct bio *child = bio_alloc(bio->bi_bdev, 0,
+-					      REQ_OP_WRITE | REQ_PREFLUSH,
+-					      GFP_ATOMIC);
++		struct bio *child = bio_alloc_atomic(0,
++						REQ_OP_WRITE | REQ_PREFLUSH);
  
- static void tg_release(struct rcu_head *rcu)
-@@ -368,7 +376,7 @@ static void throtl_pd_free(struct blkg_policy_data *pd)
- {
- 	struct throtl_grp *tg = pd_to_tg(pd);
- 
--	timer_delete_sync(&tg->service_queue.pending_timer);
-+	timer_shutdown_sync(&tg->service_queue.pending_timer);
- 	call_rcu(&pd->rcu_head, tg_release);
- }
- 
-@@ -1142,9 +1150,9 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 	else
- 		q = td->queue;
- 
--	spin_lock_irq(&q->queue_lock);
-+	spin_lock_irq(&td->lock);
- 
--	if (!q->root_blkg)
-+	if (!READ_ONCE(q->root_blkg))
- 		goto out_unlock;
- 
- again:
-@@ -1168,9 +1176,9 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 			break;
- 
- 		/* this dispatch windows is still open, relax and repeat */
--		spin_unlock_irq(&q->queue_lock);
-+		spin_unlock_irq(&td->lock);
- 		cpu_relax();
--		spin_lock_irq(&q->queue_lock);
-+		spin_lock_irq(&td->lock);
- 	}
- 
- 	if (!dispatched)
-@@ -1193,7 +1201,7 @@ static void throtl_pending_timer_fn(struct timer_list *t)
- 		queue_work(kthrotld_workqueue, &td->dispatch_work);
- 	}
- out_unlock:
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock_irq(&td->lock);
- }
- 
- /**
-@@ -1209,7 +1217,6 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
- 	struct throtl_data *td = container_of(work, struct throtl_data,
- 					      dispatch_work);
- 	struct throtl_service_queue *td_sq = &td->service_queue;
--	struct request_queue *q = td->queue;
- 	struct bio_list bio_list_on_stack;
+ 		if (!child)
+ 			return -ENOMEM;
+-		bio_clone_blkg_association(child, bio);
++		child->bi_bdev = bio->bi_bdev;
++			bio_clone_blkg_association(child, bio);
+ 		child->bi_iter.bi_sector = -1;
+ 		bio_chain(child, bio);
+ 		submit_bio(child);
+diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
+index d12784aaaa4b..ec70f3b62837 100644
+--- a/fs/ocfs2/cluster/heartbeat.c
++++ b/fs/ocfs2/cluster/heartbeat.c
+@@ -10,6 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/fs.h>
+ #include <linux/bio.h>
++#include <linux/blk-cgroup.h>
+ #include <linux/blkdev.h>
+ #include <linux/delay.h>
+ #include <linux/file.h>
+@@ -519,16 +520,24 @@ static struct bio *o2hb_setup_one_bio(struct o2hb_region *reg,
  	struct bio *bio;
- 	struct blk_plug plug;
-@@ -1217,11 +1224,11 @@ static void blk_throtl_dispatch_work_fn(struct work_struct *work)
+ 	struct page *page;
  
- 	bio_list_init(&bio_list_on_stack);
- 
--	spin_lock_irq(&q->queue_lock);
-+	spin_lock_irq(&td->lock);
- 	for (rw = READ; rw <= WRITE; rw++)
- 		while ((bio = throtl_pop_queued(td_sq, NULL, rw)))
- 			bio_list_add(&bio_list_on_stack, bio);
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock_irq(&td->lock);
- 
- 	if (!bio_list_empty(&bio_list_on_stack)) {
- 		blk_start_plug(&plug);
-@@ -1299,7 +1306,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 	rcu_read_unlock();
- 
- 	/*
--	 * We're already holding queue_lock and know @tg is valid.  Let's
-+	 * We're already holding td->lock and know @tg is valid.  Let's
- 	 * apply the new config directly.
- 	 *
- 	 * Restart the slices for both READ and WRITES. It might happen
-@@ -1327,6 +1334,7 @@ static int blk_throtl_init(struct gendisk *disk)
- 		return -ENOMEM;
- 
- 	INIT_WORK(&td->dispatch_work, blk_throtl_dispatch_work_fn);
-+	spin_lock_init(&td->lock);
- 	throtl_service_queue_init(&td->service_queue);
- 
- 	memflags = blk_mq_freeze_queue(disk->queue);
-@@ -1381,6 +1389,7 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
- 		v = U64_MAX;
- 
- 	tg = blkg_to_tg(ctx.blkg);
-+	spin_lock_irq(&tg->td->lock);
- 	tg_update_carryover(tg);
- 
- 	if (is_u64)
-@@ -1389,6 +1398,7 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
- 		*(unsigned int *)((void *)tg + of_cft(of)->private) = v;
- 
- 	tg_conf_updated(tg, false);
-+	spin_unlock_irq(&tg->td->lock);
- 	ret = 0;
- 
- unprep:
-@@ -1563,6 +1573,7 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 		goto close_bdev;
- 
- 	tg = blkg_to_tg(ctx.blkg);
-+	spin_lock_irq(&tg->td->lock);
- 	tg_update_carryover(tg);
- 
- 	v[0] = tg->bps[READ];
-@@ -1586,11 +1597,11 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 		p = tok;
- 		strsep(&p, "=");
- 		if (!p || (sscanf(p, "%llu", &val) != 1 && strcmp(p, "max")))
--			goto unprep;
-+			goto unlock;
- 
- 		ret = -ERANGE;
- 		if (!val)
--			goto unprep;
-+			goto unlock;
- 
- 		ret = -EINVAL;
- 		if (!strcmp(tok, "rbps"))
-@@ -1602,7 +1613,7 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 		else if (!strcmp(tok, "wiops"))
- 			v[3] = min_t(u64, val, UINT_MAX);
- 		else
--			goto unprep;
-+			goto unlock;
+-	/* Testing has shown this allocation to take long enough under
++	/*
++	 * Testing has shown this allocation to take long enough under
+ 	 * GFP_KERNEL that the local node can get fenced. It would be
+ 	 * nicest if we could pre-allocate these bios and avoid this
+-	 * all together. */
+-	bio = bio_alloc(reg_bdev(reg), 16, opf, GFP_ATOMIC);
++	 * all together.
++	 *
++	 * Use the atomic bio allocation helper so bio_init() does not create a
++	 * missing blkg. Heartbeat IO is cluster-liveness IO, so account it to
++	 * the root blkcg instead.
++	 */
++	bio = bio_alloc_atomic(16, opf);
+ 	if (!bio) {
+ 		mlog(ML_ERROR, "Could not alloc slots BIO!\n");
+ 		bio = ERR_PTR(-ENOMEM);
+ 		goto bail;
  	}
++	bio->bi_bdev = reg_bdev(reg);
++	bio_associate_blkg_from_css(bio, blkcg_root_css);
  
- 	tg->bps[READ] = v[0];
-@@ -1611,7 +1622,11 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 	tg->iops[WRITE] = v[3];
- 
- 	tg_conf_updated(tg, false);
-+	spin_unlock_irq(&tg->td->lock);
- 	ret = 0;
-+	goto unprep;
-+unlock:
-+	spin_unlock_irq(&tg->td->lock);
- unprep:
- 	blkg_conf_unprep(&ctx);
- close_bdev:
-@@ -1636,6 +1651,28 @@ static void throtl_shutdown_wq(struct request_queue *q)
- 	cancel_work_sync(&td->dispatch_work);
+ 	/* Must put everything in 512 byte sectors for the bio... */
+ 	bio->bi_iter.bi_sector = (reg->hr_start_block + cs) << (bits - 9);
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 8f33f717b14f..f7d94d37893f 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -366,6 +366,12 @@ static inline struct bio *bio_alloc(struct block_device *bdev,
+ 	return bio_alloc_bioset(bdev, nr_vecs, opf, gfp_mask, &fs_bio_set);
  }
  
-+static void throtl_shutdown_timers(struct request_queue *q)
++static inline struct bio *bio_alloc_atomic(unsigned short nr_vecs,
++					   blk_opf_t opf)
 +{
-+	struct throtl_data *td = q->td;
-+	struct blkcg_gq *blkg;
-+
-+	/*
-+	 * blkg_destroy_all() has already offlined the policy, but blkg policy
-+	 * data is freed asynchronously.  Shut down per-group timers before
-+	 * freeing td, as their callbacks still dereference tg->td.
-+	 */
-+	mutex_lock(&q->blkcg_mutex);
-+	list_for_each_entry(blkg, &q->blkg_list, q_node) {
-+		struct throtl_grp *tg = blkg_to_tg(blkg);
-+
-+		if (tg)
-+			timer_shutdown_sync(&tg->service_queue.pending_timer);
-+	}
-+	mutex_unlock(&q->blkcg_mutex);
-+
-+	timer_shutdown_sync(&td->service_queue.pending_timer);
++	return bio_alloc_bioset(NULL, nr_vecs, opf, GFP_ATOMIC, &fs_bio_set);
 +}
 +
- static void tg_flush_bios(struct throtl_grp *tg)
- {
- 	struct throtl_service_queue *sq = &tg->service_queue;
-@@ -1669,7 +1706,13 @@ static void tg_flush_bios(struct throtl_grp *tg)
+ void submit_bio(struct bio *bio);
  
- static void throtl_pd_offline(struct blkg_policy_data *pd)
- {
--	tg_flush_bios(pd_to_tg(pd));
-+	struct throtl_grp *tg = pd_to_tg(pd);
-+	struct throtl_data *td = tg->td;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&td->lock, flags);
-+	tg_flush_bios(tg);
-+	spin_unlock_irqrestore(&td->lock, flags);
- }
- 
- struct blkcg_policy blkcg_policy_throtl = {
-@@ -1725,6 +1768,7 @@ static void tg_cancel_writeback_bios(struct throtl_grp *tg,
- void blk_throtl_cancel_bios(struct gendisk *disk)
- {
- 	struct request_queue *q = disk->queue;
-+	struct throtl_data *td = q->td;
- 	struct cgroup_subsys_state *pos_css;
- 	struct blkcg_gq *blkg;
- 	struct bio_list cancel_bios[2] = { };
-@@ -1734,6 +1778,7 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
- 		return;
- 
- 	spin_lock_irq(&q->queue_lock);
-+	spin_lock(&td->lock);
- 	/*
- 	 * queue_lock is held, rcu lock is not needed here technically.
- 	 * However, rcu lock is still held to emphasize that following
-@@ -1752,6 +1797,7 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
- 		tg_cancel_writeback_bios(blkg_to_tg(blkg), cancel_bios);
- 	}
- 	rcu_read_unlock();
-+	spin_unlock(&td->lock);
- 	spin_unlock_irq(&q->queue_lock);
- 
- 	for (rw = READ; rw <= WRITE; rw++) {
-@@ -1791,7 +1837,6 @@ static bool tg_within_limit(struct throtl_grp *tg, struct bio *bio, bool rw)
- 
- bool __blk_throtl_bio(struct bio *bio)
- {
--	struct request_queue *q = bdev_get_queue(bio->bi_bdev);
- 	struct blkcg_gq *blkg = bio->bi_blkg;
- 	struct throtl_qnode *qn = NULL;
- 	struct throtl_grp *tg = blkg_to_tg(blkg);
-@@ -1801,7 +1846,7 @@ bool __blk_throtl_bio(struct bio *bio)
- 	struct throtl_data *td = tg->td;
- 
- 	rcu_read_lock();
--	spin_lock_irq(&q->queue_lock);
-+	spin_lock_irq(&td->lock);
- 	sq = &tg->service_queue;
- 
- 	while (true) {
-@@ -1877,7 +1922,7 @@ bool __blk_throtl_bio(struct bio *bio)
- 	}
- 
- out_unlock:
--	spin_unlock_irq(&q->queue_lock);
-+	spin_unlock_irq(&td->lock);
- 
- 	rcu_read_unlock();
- 	return throttled;
-@@ -1886,17 +1931,19 @@ bool __blk_throtl_bio(struct bio *bio)
- void blk_throtl_exit(struct gendisk *disk)
- {
- 	struct request_queue *q = disk->queue;
-+	struct throtl_data *td = q->td;
- 
- 	/*
- 	 * blkg_destroy_all() already deactivate throtl policy, just check and
- 	 * free throtl data.
- 	 */
--	if (!q->td)
-+	if (!td)
- 		return;
- 
--	timer_delete_sync(&q->td->service_queue.pending_timer);
-+	throtl_shutdown_timers(q);
- 	throtl_shutdown_wq(q);
--	kfree(q->td);
-+	q->td = NULL;
-+	kfree(td);
- }
- 
- static int __init throtl_init(void)
+ extern void bio_endio(struct bio *);
 -- 
 2.51.0
 
