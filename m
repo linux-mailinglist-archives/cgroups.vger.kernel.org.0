@@ -1,150 +1,263 @@
-Return-Path: <cgroups+bounces-17484-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17485-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hTOQFWKiSGqhsAAAu9opvQ
-	(envelope-from <cgroups+bounces-17484-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 08:04:18 +0200
+	id l6NoFlxkSWqp1AAAu9opvQ
+	(envelope-from <cgroups+bounces-17485-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:51:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF7AB706CBE
-	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 08:04:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A0CD7084EA
+	for <lists+cgroups@lfdr.de>; Sat, 04 Jul 2026 21:51:55 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=XYFOk2kT;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=eyGDj+l9;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17484-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17484-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17485-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17485-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9814030A6685
-	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2026 05:59:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ABEE93025D34
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2026 19:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E34738E8DB;
-	Sat,  4 Jul 2026 05:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0448C2FD665;
+	Sat,  4 Jul 2026 19:51:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABE338B7BB;
-	Sat,  4 Jul 2026 05:58:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913BF12FF69;
+	Sat,  4 Jul 2026 19:51:45 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783144705; cv=none; b=bolGQlWJ7zw/u0e+vkiy6TEEOl0EHTL7UpAxg9EmS2GLIeWELTLRz1SCeciTLhZT8qAUNY8FHbqb3OVRaj/LBI1DcdrU0zErZQPRclpNFHumS4+IKfwPidOJadi7FfeX1ZLn2IpZ+pGF+wvI7WnyjdB5xP554SlmNuSNvdHuhmA=
+	t=1783194706; cv=none; b=dJw1M9tQFxTmFTs7hFoPKxWLyMqd4DpYp1aW4JAYoNFgNhfL/EKqBGKfs7PtnkN67Tlgbf0ec2QzjF1lVOQ0jXk5jJ5jZPMtytyF1864FS0YHCyBuBpi6ykhJfMSBMJuVPZ4QNzi2e2omV8dvgm2NSV1tf+Bs1iyDKcr0Eboq0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783144705; c=relaxed/simple;
-	bh=hOn6we4RfMiN12EwAa+NNmEUJkAWQI4gee4tcRfPRxA=;
-	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=fcQn7+HCgwsb7BeugnmL5tgK3u6jlH/KX5bf+0AHUs4zHvoADA9GNWfskASTRv2FZT98pQYhYuP2n3BusCM1RuI1lUTts1cWKcFG5yJuRp/5zKDx3Wb/ztOwpgTunIMnn2JBawnHrdtPXdxn/u0Q98PAMZsSmc6k38GRuNT6/+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XYFOk2kT; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C5E41F000E9;
-	Sat,  4 Jul 2026 05:58:23 +0000 (UTC)
+	s=arc-20240116; t=1783194706; c=relaxed/simple;
+	bh=SzNrAnwW1lRUyp0FZqIxKmarVC5X/hKSnp3uWTm97d8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cgMzkZSQ0YOcYcq/uWaz/0WgIHt5OC50VM4GLb7ey0jhxUdLYIsax21CgPKr+yuqmLnhcq3uL4Wl3n0NGorgC84WG4KdWiyUy6SHWTE58EyCBdITHWQglzyCdLqmXtvV5mYHRR4hi1kpTP4kI7rYUs1pZuFRBo00XwWhzJfxrnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eyGDj+l9; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB6A41F000E9;
+	Sat,  4 Jul 2026 19:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783144703;
-	bh=V83zC+ABVvPZfpSItIVfm+fybD7L3iVSBZB+nvmmqYw=;
-	h=In-Reply-To:References:Subject:From:To:Cc:Date;
-	b=XYFOk2kTGPelgRFBCFOy1e5BFq8MR3j2nf5Ucpe7/CKek5scCr344MHbsGfXFuNmW
-	 SM7L6Nm0FhGYcdqcF8sq95YTmN0Jhh+1bvL01+d4I8L3OqZb4nzcM0a44QZmuUkEqK
-	 GL49THk2qh/CLM2VQDUspnlQBGKR/fve39dyxR7GqFTAptP9L5MO2Hq3rvvtkOWVZb
-	 Tn2Lg0iLNmYHqqjLDR/XddQRkS9/G3DRPLcAYbxwcsrcrXuPBWPj2upPA87MZvt0mG
-	 oG8Ag4kev34nRzv78qXAbeBSXty8O5zELZDATZ+bH8paUbrgk/ra1kgfGxNbJW11hx
-	 muNf0rKM83uCw==
-Content-Type: multipart/mixed; boundary="===============8802271696774654361=="
+	s=k20260515; t=1783194705;
+	bh=XBefwgHbcKa8lF9fx4CimAkm/mOI1OLeJiYAKnbJMVM=;
+	h=From:To:Cc:Subject:Date;
+	b=eyGDj+l9ou1O5f59vydhkXwbA3fDVbVY5wPAk+z0treKXGPKqXslTE3lUBAsGocd7
+	 j4HWvk4BMNpWicrOIm4gLY3YVgF3Q6UEhK7cReG0YCnUSyd7h/IgSYc0DKYXfWNGK2
+	 4NTeA2Sr3moCGhheLA2o94lnROHcghNi1lucHAcN49jDn2x5ypWvXlRjRz19Rb4+79
+	 D3BUC+ZGPqCZb8zqM+3k0kbrkEvOlPw3Ll9PYCZOu2J/UuiBjkZaboSHjLU787V9b2
+	 JaEC6vggxII6Lo1jd3LNPsKr4cE4QactM2ublptM5aeMxzXzOBZq6U+mCcpHFheYal
+	 aWylKO5MUd0xw==
+From: Yu Kuai <yukuai@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>,
+	Tejun Heo <tj@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Keith Busch <kbusch@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Alasdair Kergon <agk@redhat.com>,
+	Benjamin Marzinski <bmarzins@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	Dongsheng Yang <dongsheng.yang@linux.dev>,
+	Zheng Gu <cengku@gmail.com>,
+	Coly Li <colyli@fygo.io>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Yu Kuai <yukuai@fygo.io>,
+	Nilay Shroff <nilay@linux.ibm.com>,
+	linux-block@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-nvme@lists.infradead.org,
+	dm-devel@lists.linux.dev,
+	linux-bcache@vger.kernel.org
+Subject: [RFC PATCH v1 00/17] blk-cgroup: protect blkgs with blkcg_mutex
+Date: Sun,  5 Jul 2026 03:51:07 +0800
+Message-ID: <20260704195124.1375075-1-yukuai@kernel.org>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <c48aa4a4b43fe15d313761d70e2113405c73ad058911cd87d573946ae1740b9e@mail.kernel.org>
-In-Reply-To: <20260704045617.487664-4-ziyang.meme@gmail.com>
-References: <20260704045617.487664-4-ziyang.meme@gmail.com>
-Subject: Re: [PATCH 3/3] selftests/bpf: add memcg_stat_churn_percpu BPF-vs-memory.stat benchmark under cross-CPU churn
-From: bot+bpf-ci@kernel.org
-To: ziyang.meme@gmail.com,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,eddyz87@gmail.com,memxor@gmail.com,bpf@vger.kernel.org
-Cc: martin.lau@linux.dev,song@kernel.org,yonghong.song@linux.dev,jolsa@kernel.org,emil@etsalapatis.com,shuah@kernel.org,roman.gushchin@linux.dev,kernel-team@meta.com,linux-mm@kvack.org,cgroups@vger.kernel.org,linux-kselftest@vger.kernel.org,linux-kernel@vger.kernel.org,ziyang.meme@gmail.com,shakeel.butt@linux.dev,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Sat,  4 Jul 2026 05:58:23 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.66 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	CTYPE_MIXED_BOGUS(1.00)[];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+];
-	TAGGED_FROM(0.00)[bounces-17484-lists,cgroups=lfdr.de,bpf-ci];
+	TAGGED_FROM(0.00)[bounces-17485-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[linux.dev,kernel.org,etsalapatis.com,meta.com,kvack.org,vger.kernel.org,gmail.com,iogearbox.net];
-	FORGED_RECIPIENTS(0.00)[m:ziyang.meme@gmail.com,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:eddyz87@gmail.com,m:memxor@gmail.com,m:bpf@vger.kernel.org,m:martin.lau@linux.dev,m:song@kernel.org,m:yonghong.song@linux.dev,m:jolsa@kernel.org,m:emil@etsalapatis.com,m:shuah@kernel.org,m:roman.gushchin@linux.dev,m:kernel-team@meta.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:shakeel.butt@linux.dev,m:martin.lau@kernel.org,m:clm@meta.com,m:ihor.solodrai@linux.dev,m:ziyangmeme@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:axboe@kernel.dk,m:tj@kernel.org,m:hch@lst.de,m:kbusch@kernel.org,m:sagi@grimberg.me,m:agk@redhat.com,m:bmarzins@redhat.com,m:snitzer@kernel.org,m:mpatocka@redhat.com,m:dongsheng.yang@linux.dev,m:cengku@gmail.com,m:colyli@fygo.io,m:kent.overstreet@linux.dev,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:dm-devel@lists.linux.dev,m:linux-bcache@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,kernel.org,iogearbox.net,vger.kernel.org];
-	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	TO_DN_NONE(0.00)[];
+	FORGED_SENDER(0.00)[yukuai@kernel.org,cgroups@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	URIBL_MULTI_FAIL(0.00)[fygo.io:server fail,vger.kernel.org:server fail,sea.lore.kernel.org:server fail];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[yukuai@kernel.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[lst.de,kernel.org,grimberg.me,redhat.com,linux.dev,gmail.com,fygo.io,toxicpanda.com,linux.ibm.com,vger.kernel.org,lists.infradead.org,lists.linux.dev];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_NO_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.kernel.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,fygo.io:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: CF7AB706CBE
+X-Rspamd-Queue-Id: 9A0CD7084EA
 
---===============8802271696774654361==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Yu Kuai <yukuai@fygo.io>
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/memcg_stat_churn_percpu.c b/tools/testing/selftests/bpf/prog_tests/memcg_stat_churn_percpu.c
-> new file mode 100644
+This RFC moves queue-local blkg topology synchronization from
+q->queue_lock to q->blkcg_mutex.
 
-[ ... ]
+q->queue_lock is a hot block-layer spinlock used by request queue runtime
+paths, and it is also used in irq-disabled or otherwise atomic contexts.
+Using it to protect blkg topology makes blkg lookup, creation,
+destruction, policy activation, and policy-state walks inherit those atomic
+locking constraints.  That forces awkward preallocation schemes such as
+radix-tree preloading and prevents missing-blkg creation from sleeping,
+even though blkg creation is a blkcg control-plane operation rather than a
+queue dispatch fast-path operation.
 
-> +static void settle_flush(void)
-> +{
+q->blkcg_mutex is a better fit for blkg protection because it is already a
+queue-local blkcg lock, it can serialize the full lookup/create/destroy and
+policy activation path, and it allows allocation and parent lookup to run
+from sleepable contexts.  Moving blkg topology under q->blkcg_mutex also
+separates blkcg topology from queue runtime locking, reducing queue_lock
+scope and making the locking rules for blkcg policy users explicit.
 
-The settle_flush() comment explains the reset with:
+bio_set_dev() and bio allocation with a bdev can associate a bio with the
+destination queue's blkg.  Once missing blkg creation is serialized by
+q->blkcg_mutex, those helpers may sleep when they create a blkg.  The first
+part of the series therefore audits callers that can reach these helpers
+from completion, spinlocked, irq-disabled, GFP_NOWAIT, or other
+non-blocking paths, and either moves association to process context or uses
+a nowait association path that avoids sleeping.
 
-> + * ~15% window asymmetry, enough to invert bpf_matched vs bpf_full on
-> + * flush-dominated cases (e.g. "hot": few cgroups churned from many CPUs).
+The preparatory patches cover NVMe multipath requeue, dm-thin and
+dm-snapshot map paths, blk-throttle's private runtime lock, atomic bio
+allocation helpers, bcache, dm-bufio, dm-pcache, DM NOWAIT clones/remaps,
+and BFQ's locked cgroup update path.  The final blkcg patches then move
+blkg lookup/create/destroy, policy activation, and configuration
+preparation to q->blkcg_mutex; remove radix-tree preloading; move blkg
+allocation into blkg_create(); and share creation code between bio
+association and config preparation.
 
-This isn't a bug, but the cases in this file are narrow/wide/widest, and
-there is no "hot" case here (or in the sibling tests).  The timed reads also
-always run with collect_full = 1, so there is no bpf_matched-vs-bpf_full
-comparison in this test.  Does this example still describe this file, or was
-it carried over from another test?
+This is RFC because the locking conversion changes a central blkcg lifetime
+path and relies on all non-sleepable bio association users either being
+converted or tolerating nowait association failure.
 
-[ ... ]
+One intentional tradeoff is left in the nowait paths.  They first associate
+with an existing blkg.  If a thread issues IO to a queue for the first time
+from a GFP_NOWAIT or otherwise non-blocking path, the cgroup's blkg for
+that queue may not exist yet.  After blkg topology moves to q->blkcg_mutex,
+preemptible task-context callers try q->blkcg_mutex and attempt blkg
+creation.  Once allocation moves into blkg_create(), that opportunistic
+nowait creation uses GFP_ATOMIC.  If the caller is in atomic context,
+q->blkcg_mutex is contended, or allocation fails, the nowait helper still
+fails and the caller needs to retry from a blocking context, defer the
+association, or fall back to an existing slow path.
 
-> +#define CHURN_GAP_US	(50 * 1000)
+Patch layout:
 
-The gap comment just above this says:
+Patch 1: move NVMe multipath failover bio retargeting to requeue work so
+bio_set_dev() runs from process context instead of completion context.
 
-> + * pays that flush inside its timed region.  This gives all four reads
-> + * (file/bpf x matched/full) approximately the same start state and folds the
+Patches 2-3: remove or avoid bio_set_dev() while dm-thin and dm-snapshot
+locks are held, and restore blkcg association later where needed.
 
-This isn't a bug, but the sampling loop does one file_pass() and one
-bpf_pass() per sample (bpf_pass always sets collect_full = 1), so there are
-two reads per sample rather than the "four reads (file/bpf x matched/full)"
-described here.  Should this be reworded for this test?
+Patch 4: give blk-throttle its own runtime-state lock so blkcg topology
+can be moved away from queue_lock.
+
+Patches 5-7: add bio_alloc_atomic(), make bio association nowait-aware,
+and make bio allocation with a bdev fail rather than sleep for
+non-blocking callers.
+
+Patches 8-12: convert bcache, dm-bufio, dm-pcache, block helper
+allocations, and DM NOWAIT remaps/clones to the new nowait or deferred
+association model.
+
+Patch 13: avoid a sleeping blkg lookup from BFQ while bfqd->lock is held.
+
+Patch 14: protect queue-local blkg lookup, creation, destruction, policy
+activation, and policy state walks with q->blkcg_mutex.  This also makes
+preemptible nowait bio association try q->blkcg_mutex instead of failing
+immediately after an RCU lookup miss.
+
+Patch 15: remove radix-tree preloading after blkg creation no longer runs
+under queue_lock.
+
+Patch 16: allocate blkgs inside blkg_create() and use GFP_ATOMIC for the
+nowait bio-association trylock creation path.
+
+Patch 17: share blkg creation between bio association and config
+preparation.
+
+Yu Kuai (17):
+  nvme-multipath: retarget failedover bios from requeue work
+  dm thin: avoid bio_set_dev under pool lock
+  dm snapshot: avoid bio_set_dev in locked map paths
+  blk-throttle: protect throttle state with td lock
+  block: add bio_alloc_atomic() for atomic bio users
+  blk-cgroup: support non-blocking bio association
+  block: support non-blocking bio allocation with a bdev
+  bcache: avoid sleeping blkg association from locked paths
+  dm bufio: avoid blkg association from GFP_NOWAIT bio init
+  dm pcache: handle non-blocking bio clone init failure
+  block: avoid scheduling from non-blocking helper allocations
+  dm: avoid sleeping blkg association from NOWAIT remaps
+  bfq: avoid blkg lookup from locked cgroup update
+  blk-cgroup: protect blkgs with blkcg_mutex
+  blk-cgroup: remove blkg radix tree preloading
+  blk-cgroup: allocate blkgs in blkg_create
+  blk-cgroup: share blkg creation between lookup and config prep
+
+ block/bfq-cgroup.c                 |  26 +-
+ block/bio.c                        |  50 +++-
+ block/blk-cgroup.c                 | 397 ++++++++++++-----------------
+ block/blk-cgroup.h                 |  16 +-
+ block/blk-crypto-fallback.c        |   2 +-
+ block/blk-iocost.c                 |   5 +-
+ block/blk-iolatency.c              |   7 +-
+ block/blk-lib.c                    |   3 +-
+ block/blk-map.c                    |   7 +-
+ block/blk-throttle.c               |  93 +++++--
+ drivers/md/bcache/journal.c        |   9 +-
+ drivers/md/bcache/request.c        |   4 +-
+ drivers/md/dm-bufio.c              |   9 +-
+ drivers/md/dm-linear.c             |   2 +-
+ drivers/md/dm-pcache/backing_dev.c |  10 +-
+ drivers/md/dm-snap.c               |  29 ++-
+ drivers/md/dm-stripe.c             |   6 +-
+ drivers/md/dm-switch.c             |   2 +-
+ drivers/md/dm-thin.c               |   3 -
+ drivers/md/dm-unstripe.c           |   2 +-
+ drivers/md/dm.c                    |  28 +-
+ drivers/md/md.c                    |   2 +-
+ drivers/nvdimm/nd_virtio.c         |  11 +-
+ drivers/nvme/host/multipath.c      |   4 +-
+ fs/gfs2/lops.c                     |   3 +-
+ fs/ocfs2/cluster/heartbeat.c       |  15 +-
+ include/linux/bio.h                |  53 ++--
+ include/linux/device-mapper.h      |   8 +
+ include/linux/writeback.h          |   2 +-
+ mm/page_io.c                       |   2 +-
+ 30 files changed, 467 insertions(+), 343 deletions(-)
 
 
----
-AI reviewed your patch. Please fix the bug or email reply why it's not a bug.
-See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
-
-CI run summary: https://github.com/kernel-patches/bpf/actions/runs/28695985027
---===============8802271696774654361==--
+base-commit: a1c8bdbbd72564cebb0d02948c1ed57b80b2e773
+-- 
+2.51.0
 
