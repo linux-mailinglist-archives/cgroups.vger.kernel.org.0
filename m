@@ -1,251 +1,294 @@
-Return-Path: <cgroups+bounces-17533-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17537-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id KtOkHrOdS2o5XAEAu9opvQ
-	(envelope-from <cgroups+bounces-17533-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 14:21:07 +0200
+	id gVSAJEG2S2odZAEAu9opvQ
+	(envelope-from <cgroups+bounces-17537-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 16:05:53 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C1871073A
-	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 14:21:06 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28229711B5B
+	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 16:05:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=Cr2OF1YO;
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17533-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17533-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=IuqhZc3d;
+	dmarc=pass (policy=none) header.from=linux.dev;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17537-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17537-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BB9FF304D688
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2026 12:07:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B26E83032CFD
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2026 12:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7659D42464E;
-	Mon,  6 Jul 2026 12:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD14342A140;
+	Mon,  6 Jul 2026 12:30:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B0642378D
-	for <cgroups@vger.kernel.org>; Mon,  6 Jul 2026 12:07:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B40741F7D9
+	for <cgroups@vger.kernel.org>; Mon,  6 Jul 2026 12:30:03 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783339652; cv=none; b=MSwx7HnnxF/E/lkg/jXk9PhxzFIOR16Bx6OH+bN3fuo0wBwauLY33QWW3AXW0mJePhsbhN+WUUFFR0IQql7eMJyFNpA14RzjSNuFuNgurukMF8zJhtEfUU1qQ+oUJ23UQw5TkBxyddE1LlqwBWbCYhBtQB8/qoPxYFm7nQS+zmE=
+	t=1783341007; cv=none; b=c60k5lvQmFk4BzlsG0Ye+JZNxJ9D6DVrocFzfdox9hRZQ2pt/XOLx3JWydi50zsbYMFMjFI9pf0RaaU9A6AjGXQKBUXxgNVkJeub88lsPY/If7gsCxn9YkTFZzxLKZQkYlFP5KvVz0XmD0zLWBy9ic5XdzdXo7dWsZwn6talKBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783339652; c=relaxed/simple;
-	bh=eavUpsZxei5UtAZevT1ijzwKnp6hdPdATdDPDVBgwss=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Kj3vk4/6dsHqgQ+SNk7DA5031R0ptX0HIQBnhoO6wAiEiq7gqllu6nV+HV+gI0kOHBXiWu5KSpVLChC44ujjyt3aVsKWrBp3R3UShrrATXMSqQxqKRz5MnxHQzzOo7rPNf3oBWIT3ft8f/uu3kMwkj5tvfFiFx3RMK7WsCijkoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cr2OF1YO; arc=none smtp.client-ip=170.10.129.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783339649;
+	s=arc-20240116; t=1783341007; c=relaxed/simple;
+	bh=/d69IgB7ICNdwJ5rJUowDVy0KaubtLaYxEewf/TRfaI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IoZ18DBRLs8htcmmFXtxLqtEaCmJFptkvEngZbBsbLc3YCYj/3Ecez1Yv5136Mk365NnCBmhGuwZTr+eOogryIhZ4exZWpJXYIrHmIXCUlsUUm48VDSO9g7cWPrL6bKlMyTNQLsfwv/uRGmSSDfjat6jFoyA98o5DlhwepUhWNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IuqhZc3d; arc=none smtp.client-ip=95.215.58.186
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1783341001;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xYc4YxXkMADptX22VOsP9bchD2b9RbGYp9Ru3MzZ4oY=;
-	b=Cr2OF1YOJOJHWixRaPAtpGSPD+Pn4hdPY0dI/NUxtepeRkfF7RTwvw8xde27rQw4/tFNJG
-	8mXKSnx3CRxBTUQr9ATZfAUEkwlcMf2T+TV9oFplw8oVvUMF8rT68OjPTtR2lJAi7XnrLY
-	3VMqRr9SqA3V73GO6yMTLnxr6HyL+9A=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-171-XCFaqTxaOBuOoyEENnVGTA-1; Mon,
- 06 Jul 2026 08:07:26 -0400
-X-MC-Unique: XCFaqTxaOBuOoyEENnVGTA-1
-X-Mimecast-MFC-AGG-ID: XCFaqTxaOBuOoyEENnVGTA_1783339644
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 570EB180AC4F;
-	Mon,  6 Jul 2026 12:07:07 +0000 (UTC)
-Received: from [192.168.1.153] (headnet05.pony-001.prod.iad2.dc.redhat.com [10.2.32.117])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EA75418005B5;
-	Mon,  6 Jul 2026 12:07:04 +0000 (UTC)
-From: Albert Esteve <aesteve@redhat.com>
-Date: Mon, 06 Jul 2026 14:06:43 +0200
-Subject: [PATCH v5 4/4] selftests: cgroup: handle vmtest-dmem -b to test
- locally built kernel
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IiKzO679j946ruJWISndrjcXB8nvv67rJegLpTIoBQw=;
+	b=IuqhZc3dWKvM2dM8E56GYDoiXtJLX/9wst49KebJUrRJM4YyoAcWG2HpVx7Gs4AysucrLy
+	maCYO/OmWmNi089aXRjrb9D7xFKHAxat2lOhx0nypoM3tbt4gqTXpKFzB8Qe/9j/KB30o8
+	Epiek91tCVyyA3oMTRIfJCjmYoHzgIU=
+From: Usama Arif <usama.arif@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	david@kernel.org,
+	ljs@kernel.org,
+	liam@infradead.org,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	kasong@tencent.com,
+	qi.zheng@linux.dev,
+	shakeel.butt@linux.dev,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	chrisl@kernel.org,
+	nphamcs@gmail.com,
+	baoquan.he@linux.dev,
+	youngjun.park@lge.com,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	rientjes@google.com,
+	kernel-team@meta.com
+Cc: Usama Arif <usama.arif@linux.dev>
+Subject: [PATCH 0/1] mm/vmscan: reduce lru_lock contention via vmstat-derived scan-balance cost
+Date: Mon,  6 Jul 2026 05:28:25 -0700
+Message-ID: <20260706122954.3552990-1-usama.arif@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260706-kunit_cgroups-v5-4-6c42c8753468@redhat.com>
-References: <20260706-kunit_cgroups-v5-0-6c42c8753468@redhat.com>
-In-Reply-To: <20260706-kunit_cgroups-v5-0-6c42c8753468@redhat.com>
-To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Albert Esteve <aesteve@redhat.com>, 
- Eric Chanudet <echanude@redhat.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783339614; l=3899;
- i=aesteve@redhat.com; s=20260303; h=from:subject:message-id;
- bh=eavUpsZxei5UtAZevT1ijzwKnp6hdPdATdDPDVBgwss=;
- b=AbCyhwt+t21HQ5QLdnZrJSOifdRH4CW6kSPFNO1vmqGvbeFe5p02I69VqqDxq1FGC15h7T6dY
- UlIWl+1NetYBL9VLgLdI2uAIHZvej77n4Q8tH4rcTO5hhfLx3rJTxo7
-X-Developer-Key: i=aesteve@redhat.com; a=ed25519;
- pk=YSFz6sOHd2L45+Fr8DIvHTi6lSIjhLZ5T+rkxspJt1s=
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:chrisl@kernel.org,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:youngjun.park@lge.com,m:hannes@cmpxchg.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:rientjes@google.com,m:kernel-team@meta.com,m:usama.arif@linux.dev,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17533-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:aesteve@redhat.com,m:echanude@redhat.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[aesteve@redhat.com,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,infradead.org,google.com,suse.com,tencent.com,linux.dev,gmail.com,lge.com,cmpxchg.org,kvack.org,vger.kernel.org,meta.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17537-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[aesteve@redhat.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,vmtest-dmem.sh:url]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:dkim,linux.dev:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 64C1871073A
+X-Rspamd-Queue-Id: 28229711B5B
 
-Currently vmtest-dmem.sh relies on the host's running kernel or a
-pre-built one when booting the virtme-ng VM, with no option to
-configure and build a local kernel tree directly.
+The anon/file scan balance heuristic in get_scan_count() is fed by two
+scalars in struct lruvec (anon_cost, file_cost) that every reclaim
+producer updates under lruvec->lru_lock. The cost-recording work
+itself is trivial, but it both contends for and contributes to
+contention on lru_lock - which is often a contention point on
+memory-pressured workloads. Specifically:
 
-This adds friction to the development cycle: the user must manually
-run vng --kconfig with the correct config fragment, build the kernel,
-and pass the result to the script.
+- shrink_inactive_list() re-acquires lru_lock at function exit just
+  to call lru_note_cost_unlock_irq().
+- shrink_active_list() does the same after rotation accounting.
+- workingset_refault() takes folio_lruvec_lock_irq() purely to
+  record the refault cost.
+- prepare_scan_control() snapshots anon_cost/file_cost under
+  lru_lock.
+- lru_note_cost_unlock_irq() itself walks parent_lruvec() and
+  re-acquires lru_lock on every ancestor, multiplying the cost
+  of every update by memcg-hierarchy depth.
 
-Add a -b flag that automates this workflow.  When set, handle_build()
-configures the kernel using vng --kconfig with the selftest config
-fragment, builds it with make -j$(nproc), and run_vm() passes the
-local tree to vng --run so the VM boots the freshly built kernel.
+This patch removes those producer-side acquisitions entirely. The
+producer-local inputs (PGROTATE_*, PGRECLAIM_PAGEOUT_*) become
+per-LRU vmstat counters; WORKINGSET_RESTORE_* already captures the
+refault input. prepare_scan_control() reads the raw cost signal
+lock-free from those vmstats and folds the delta into a per-lruvec
+accumulator. A dedicated per-lruvec cost_lock, not touched by
+isolate_lru_folios(), move_folios_to_lru(), or folio_add_lru(),
+serialises the accumulator RMW and the lrusize/4 halving check.
+Hierarchy aggregation is implicit in rstat propagation, so the
+parent_lruvec() walk and the lru_reparent_memcg() cost-splice both
+disappear.
 
-Signed-off-by: Eric Chanudet <echanude@redhat.com>
-Signed-off-by: Albert Esteve <aesteve@redhat.com>
----
- tools/testing/selftests/cgroup/vmtest-dmem.sh | 47 ++++++++++++++++++++++++---
- 1 file changed, 43 insertions(+), 4 deletions(-)
+Johannes pointed out that moving accumulation and decay to the reclaim
+side also improves the cost model across reclaim gaps. With producer-side
+decay, events that happen while reclaim is idle still age each other
+before reclaim ever samples the costs. If a workload refaults a large
+anon set and then a smaller file set before reclaim runs again, the
+later file activity can age the earlier anon activity out of the cost model.
+The new scheme observes the whole between-reclaim delta and decays anon
+and file proportionally, so the scan-balance history better represents
+what happened since the last reclaim pass.
 
-diff --git a/tools/testing/selftests/cgroup/vmtest-dmem.sh b/tools/testing/selftests/cgroup/vmtest-dmem.sh
-index 0bb6529112b54..4d0e2c0511e5b 100755
---- a/tools/testing/selftests/cgroup/vmtest-dmem.sh
-+++ b/tools/testing/selftests/cgroup/vmtest-dmem.sh
-@@ -15,6 +15,7 @@ readonly KERNEL_CHECKOUT="$(realpath "${SCRIPT_DIR}"/../../../../)"
- 
- source "${SCRIPT_DIR}"/../kselftest/ktap_helpers.sh
- 
-+BUILD=0
- QEMU="qemu-system-$(uname -m)"
- VERBOSE=0
- SHELL_MODE=0
-@@ -26,10 +27,22 @@ function usage() {
- 	cat <<EOF
- $0 [OPTIONS]
- Options:
-+	-b	Build kernel from source tree before booting
- 	-q	QEMU binary/path (default: ${QEMU})
- 	-s	Start interactive shell in VM instead of running tests
- 	-v	Verbose output (vng boot logs on stdout)
- 	-h	Display this help
-+
-+If you build your kernel using KBUILD_OUTPUT= or O= options, these
-+can be passed as environment variables to the script:
-+
-+  O=<build_path> $0 -b
-+
-+or
-+
-+  KBUILD_OUTPUT=<build_path> $0 -b
-+
-+O= takes precedence over KBUILD_OUTPUT= if both are set.
- EOF
- }
- 
-@@ -60,17 +73,41 @@ function check_deps() {
- 	done
- }
- 
-+function handle_build() {
-+	[[ "${BUILD}" -eq 1 ]] || return 0
-+
-+	[[ -f "${KERNEL_CHECKOUT}/kernel/cgroup/dmem_selftest.c" ]] || \
-+		fail "-b requires vmtest-dmem.sh called from the kernel source tree"
-+
-+	# Figure out where the kernel is being built.
-+	# O takes precedence over KBUILD_OUTPUT.
-+	local out_args=()
-+	if [[ -n "${O:-}" ]]; then
-+		out_args=(O="${O}")
-+	elif [[ -n "${KBUILD_OUTPUT:-}" ]]; then
-+		out_args=(KBUILD_OUTPUT="${KBUILD_OUTPUT}")
-+	fi
-+
-+	pushd "${KERNEL_CHECKOUT}" &>/dev/null
-+	vng --kconfig --config "${SCRIPT_DIR}"/config "${out_args[@]}" || \
-+		fail "failed to generate .config for kernel source tree (${KERNEL_CHECKOUT})"
-+	make "${out_args[@]}" -j"$(nproc 2>/dev/null || echo 1)" || \
-+		fail "failed to build kernel from source tree (${KERNEL_CHECKOUT})"
-+	popd &>/dev/null
-+}
-+
- # Run vng with common flags. Extra arguments are appended by the caller:
- #   --exec <script>  for automated test runs
- #   (nothing)        for interactive shell mode
- function run_vm() {
--	local verbose_opt=""
-+	local vng_args=()
- 
--	[[ "${VERBOSE}" -eq 1 ]] && verbose_opt="--verbose"
-+	[[ "${BUILD}" -eq 1 ]] && vng_args+=("${KERNEL_CHECKOUT}")
-+	[[ "${VERBOSE}" -eq 1 ]] && vng_args+=("--verbose")
- 
- 	vng \
- 		--run \
--		${verbose_opt:+"${verbose_opt}"} \
-+		"${vng_args[@]}" \
- 		--qemu="$(command -v "${QEMU}")" \
- 		--user root \
- 		--rw \
-@@ -78,10 +115,11 @@ function run_vm() {
- }
- 
- function main() {
--	while getopts ':hvq:s' opt; do
-+	while getopts ':hvq:sb' opt; do
- 		case "${opt}" in
- 		v) VERBOSE=1 ;;
- 		q) QEMU="${OPTARG}" ;;
-+		b) BUILD=1 ;;
- 		s) SHELL_MODE=1 ;;
- 		h) usage; exit 0 ;;
- 		*) usage; exit 1 ;;
-@@ -89,6 +127,7 @@ function main() {
- 	done
- 
- 	check_deps
-+	handle_build
- 
- 	if [[ "${SHELL_MODE}" -eq 1 ]]; then
- 		echo "Starting interactive shell in VM. Exit to stop VM."
+Trade-offs:
+  - Cost reads see rstat-aggregated values that can lag until periodic /
+    reader-triggered flushing.
+  - Per-lruvec footprint grows by 2 unsigned longs + a spinlock,
+    which is a small cost.
+
+== Numbers ==
+
+Tested on a 176-core, 256 GB host. The benchmark drives sustained
+swap-out/refault inside a tight memcg using vm-scalability/usemem:
+
+  usemem -n 16 --prealloc --prefault --random $((256*1024*1024))
+
+run inside a two-level memcg with memory.max=512M on the leaf
+(4 GB anon working set has to fit in 512 MB -> continuous
+shrink_inactive_list + workingset_refault). A 16 GB swap file
+is used. Measurement is a 30 s `perf lock record -a` window
+over otherwise-idle hardware.
+
+Workload rates are identical on both kernels (the bench drives the
+same memory pressure):
+
+                          baseline    patched      delta
+  pgscan_direct  / s      172,662     171,817      ~0%
+  pgsteal_direct / s       67,162      66,306      ~0%
+  workingset_refault_anon / s
+                           40,696      39,830      ~0%
+
+perf lock contention (total wait per 30 s window):
+
+  Lock Name                Before      After     % change
+  shrink_lruvec+0x770     722.84 ms    0         -100% (eliminated)
+        (= lru_note_cost_unlock_irq)
+  workingset_refault+0x167 385.26 ms   0         -100% (eliminated)
+        (= lru_note_cost_refault)
+  shrink_node+0x4ad       689.43 ms    26.95 ms  -96%
+  shrink_active_list      208.34 ms    15.97 ms  -92%
+  lru_add_drain_cpu+0x34    1.96 s    917.71 ms  -53%
+
+  Total LRU lock wait      ~4.23 s     ~1.66 s   -61%
+
+The two specific contention sites the patch removes
+(shrink_lruvec+0x770 = lru_note_cost_unlock_irq;
+workingset_refault+0x167 = lru_note_cost_refault) are completely
+absent from the patched perf-lock-contention output.
+Secondary reductions in shrink_node, shrink_active_list,
+lru_add_drain_cpu and pgrefill/pgactivate look like knock-on
+effects from removing the cost-recording overhead and the
+parent_lruvec walk.
+
+The remaining ~1.66 s of LRU lock wait on the patched kernel is
+dominated by the per-CPU pagevec drain (lru_add_drain_cpu) and the
+main reclaim path in shrink_lruvec.
+
+The numbers above can be reproduced using the script in [1].
+
+== Alternatives considered ==
+
+1. cost_lock for both producer and consumer (no vmstat indirection):
+   Keep the producer loop, just swap lru_lock for a new per-lruvec
+   cost_lock. Decouples cost from LRU manipulation, but producers
+   still synchronously contend on cost_lock, the parent_lruvec()
+   walk is still required (O(memcg-depth) acquisitions per recording,
+   now on cost_lock), and lru_reparent_memcg() still needs explicit
+   cost-splice. We can do much better and this series removes the
+   producer lock entirely and gets hierarchy propagation for "free"
+   via rstat.
+
+2. Attempt to switch to using MGLRU's scan model:
+   MGLRU has no anon_cost/file_cost at all. It replaces the cost
+   heuristic with generation-based aging: per-LRU sequence numbers
+   (min_seq/max_seq) age folios into generations, and the
+   older-generation type is the one to scan. So
+   lru_note_cost_unlock_irq() / lru_note_cost_refault() are simply
+   not called when lru_gen_enabled() — by design it sidesteps every
+   concern this patch addresses.
+   But MGLRU is not a substitute for fixing classic LRU:
+     - It relies on a lot of things including per-lruvec generation
+       lists, bloom filters, mm_struct walk infrastructure, working-set
+       protection tiers and a whole sysfs interface. Replacing
+       classic LRU's cost recording with the MGLRU model would
+       mean dragging in all of that.
+     - It changes scan-balance semantics, not just the locking, so
+       it's a heuristic change we would need to evaluate separately.
+       There are known regressions (database/anon-heavy workloads
+       sensitive to swappiness, or file-cache-dominated workloads
+       where MGLRU's bloom-filter protection differs from classic
+       refault tracking).
+   This patch keeps classic LRU's scan-balance model and fixes where
+   its cost history is sampled and aged.
+
+3. Atomic cost counter:
+   lrusize/4 halving has no clean atomic form, and the parent
+   walk still has to run explicitly. Reusing vmstats gives per-CPU
+   aggregation AND rstat hierarchy propagation for free.
+
+4. Drop cost_lock from the existing patch and reuse lru_lock in the
+   consumer (prepare_scan_control()):
+   Saves 1 lock space per lruvec but re-couples the cost path to LRU
+   manipulation, though just from the consumer side this time.
+   prepare_scan_control() runs at the start of every shrink_lruvec()
+   cycle, so under sustained memory pressure it would take lru_lock
+   on the hot path and block isolate_lru_folios() /
+   move_folios_to_lru() / folio_add_lru() i.e. when reclaim is
+   in flight. A dedicated cost_lock is never taken by anyone except
+   the consumer cost calculation.
+
+[1] https://gist.github.com/uarif1/a4eb33a86c5b2d7bbc55b42f0956e884
+
+RFC -> v1: https://lore.kernel.org/all/20260626122009.75334-1-usama.arif@linux.dev/
+- Document in coverletter and commit message  how the read-side vmstat accumulator
+  improves cost-model aging across reclaim gaps (Johannes)
+- Fully decay the cost_accum below lrusize / 4 using a while loop (sashiko)
+
+Usama Arif (1):
+  mm/vmscan: reduce lru_lock contention via vmstat-derived scan-balance
+    cost
+
+ include/linux/mmzone.h | 11 +++++--
+ include/linux/swap.h   |  3 --
+ mm/memcontrol-v1.c     |  4 +--
+ mm/memcontrol.c        |  4 +++
+ mm/mmzone.c            |  1 +
+ mm/swap.c              | 69 ------------------------------------------
+ mm/vmscan.c            | 67 ++++++++++++++++++++++++++++++++++------
+ mm/vmstat.c            |  4 +++
+ mm/workingset.c        |  5 ---
+ 9 files changed, 77 insertions(+), 91 deletions(-)
 
 -- 
-2.54.0
+2.53.0-Meta
 
 
