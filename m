@@ -1,216 +1,213 @@
-Return-Path: <cgroups+bounces-17539-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17540-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id GuNRFz2sS2pDYQEAu9opvQ
-	(envelope-from <cgroups+bounces-17539-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 15:23:09 +0200
+	id QmTdLX3bS2odbgEAu9opvQ
+	(envelope-from <cgroups+bounces-17540-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 18:44:45 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B7371134A
-	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 15:23:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E297271373B
+	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 18:44:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=CxSA+Lc1;
-	dkim=pass header.d=redhat.com header.s=google header.b=f3K6Jtan;
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17539-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17539-lists+cgroups=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=intel.com header.s=Intel header.b="IiEjoMl/";
+	dmarc=pass (policy=none) header.from=intel.com;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17540-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17540-lists+cgroups=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 46822305C6DB
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2026 13:16:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A7BF131DCB92
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2026 14:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CEC40A92C;
-	Mon,  6 Jul 2026 13:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E613379EE1;
+	Mon,  6 Jul 2026 14:28:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB58C372663
-	for <cgroups@vger.kernel.org>; Mon,  6 Jul 2026 13:16:03 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783343765; cv=pass; b=j8TIZ/IMRloweOUYfu01jUQLe7mo4Gk4LIW6gtQMEcuXmCAghcgsKJ+In/xM124UDfRiP9Nr1keehUJKXwmGbWjIouH0Jbum+PrbYLrWXrMoHEsCmt2DLs0UEmvj5z+c5NzwR7eZDm5Mj21lHEZndhmF2lxC4UMmcrtEL0184vw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783343765; c=relaxed/simple;
-	bh=ZG4slmePuA8hAwfYnmF/1n5HJkJeLXV2KFDHoBeiAmc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=STN97/KnIGF31sP/Kv8rkKskDiagg8m5vypuFdcjfHCx+dIx1wNGDprVaCOKQLyaz8K12igZkLDIm2YFkS+XI1lpbJvFJYc+9pgW19Qpk+iSSRboU0eT11TREQICbyO1ln+BNgB3Z525E2UmZQK1ZYP2WgbImahhZk7vhjN0uaQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CxSA+Lc1; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=f3K6Jtan; arc=pass smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783343763;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AxMOA32PrhBgJC1rEErLDcIUQtikuP/rNGrPj73qrKE=;
-	b=CxSA+Lc1ttmV6E3ihZHLeSTzE87AL/TAUAhffhYqZBQrOqVfR4kV5aaMb2jC2ihvtEIlRs
-	UfKxj9MsrHi9qR+PKUpq7EJNUhuccd4stO+bP792h/ywbYjxEy/AaJO4FJDCoHSovACndl
-	+vqldmk868fRcC/z/pctQbtaGJcEXQk=
-Received: from mail-yx1-f69.google.com (mail-yx1-f69.google.com
- [74.125.224.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-618-KGfaxJ7OM4OmmZDQ4Xp4YQ-1; Mon, 06 Jul 2026 09:16:01 -0400
-X-MC-Unique: KGfaxJ7OM4OmmZDQ4Xp4YQ-1
-X-Mimecast-MFC-AGG-ID: KGfaxJ7OM4OmmZDQ4Xp4YQ_1783343761
-Received: by mail-yx1-f69.google.com with SMTP id 956f58d0204a3-6652046121eso6063832d50.0
-        for <cgroups@vger.kernel.org>; Mon, 06 Jul 2026 06:16:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783343761; cv=none;
-        d=google.com; s=arc-20260327;
-        b=me8Hx/kzWeoHKZiP/j3n8pv9XICM6gi2d5qUDC5c5C1+o0I3Uc6s3BIMYA12DQkiYO
-         Lzk9NsrKBtuZl/zgliU9bu9s7IrGZzN8XJc2mUjIq+DdkFP3FmVLPZtnRi/PKZqde1dx
-         Hxu5LrfRpsz6odssAVksHDCJKHZbhcj0DSMV2Wycqg3LdZktO82FJcK03+9C2avzvxdt
-         gX0Quy8z/hbOkP25VZuSbR1+kVXbbDetGgloqd9SlunWAL/HJLVlrjmVB6kRsOb1TQ2w
-         DERYtYesEAAGyBreVoZZs2wg+omG8c5M++CXx7jIr1r+7mLrnTCfDyrmrTF4ErbruHRu
-         l2mA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=AxMOA32PrhBgJC1rEErLDcIUQtikuP/rNGrPj73qrKE=;
-        fh=0brJsvj1fX16fAaKY+8l+7MXtVC5jUjtlFu9iaIG+6o=;
-        b=bFC3I/2NtSViEDu6JckDWm/I0j4+YV5kzq8ikPFFPcutT3a52YkFVNBo3MKJ5hZ2PI
-         hBA3tJOF//kMHvN8FZBuZrUJfhaSgCXG72rCJa1FZttmNDb9fFN4XMITeSpsHwu7EqKW
-         KLO9UBnrX6MbSjyfoXlt/iLXv0l4zZ4Qig6boTY4IHkkpPZoyR4n0oSK+DwB6/WUDPlk
-         cBq5wLfXhpODME3Bwc8YofxkLu6Jq/1I7xLeTNzVcK2VvtO3N/f0NI1MlW8x6Cg7EdU4
-         vatfpSdcZAYiagZHErN1t07fOrG5rzfMZya6Xz+anSkOxTX4wd0cwspD5vqGX6DcBJyy
-         pjZg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1783343761; x=1783948561; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AxMOA32PrhBgJC1rEErLDcIUQtikuP/rNGrPj73qrKE=;
-        b=f3K6JtanNgJILT3uUd5Ns5F6a/HpxST2yALn4yZ8Lix/FKn1ujbu9sGfoS423cym3T
-         +Bf9peWZMif98A5vl49Q91m0qXy1i8MngpA0+aPMEOf2OdPKi4QbndK4ti+C19ofqzUY
-         uNlGCgIXgt3QEV+YxZsSLtiCR3wXKPe/Alo6rChn+7aKleuqGdVnpjj6l2slNeg6ClPo
-         kA0rqNfWcaYQdfJ/u63uFsy3/q1RW3nuPtQT3oM3nT1eafHIgxgF4HOQ5tazb7Qc+gQN
-         jH9HrvnXA2rWfginu9fNo+kLd/0OqCchRd8nPSfx5MEJDalpSkaVoLw0kstiXDhhh7XF
-         4RTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783343761; x=1783948561;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=AxMOA32PrhBgJC1rEErLDcIUQtikuP/rNGrPj73qrKE=;
-        b=B6D+3csnbpXlLS1zSbUmSW+h8IXrcj352OmvVS9FfeKqxHAxaAr5xFQeUKM3U18UXK
-         +7PivHkapYJt38ZlYAY2P0o3wKJcqs3TVKMieil35Z+rOJhbJlN7RCppmlh5eYd7J2dw
-         hVzMsAIXcvTQkzwmXN1LT4TTB0bT+J+d5vBExzJFbPEE+0Zh7/q3lHQ48H0bTxyG/pdf
-         WecXEamN7FN5KDr6ZGT7e1iLy37m38k6HX7ta1HYZoqcLDRytosL261DzsODC7DnFeQ0
-         AvVd+TybqdPOb2LdwKQfSlNcdK7f5HMDV6rpPdMFQsUxgbm1CASUCYQNy1zPlrGFacJo
-         +pzA==
-X-Forwarded-Encrypted: i=1; AHgh+Rry6h9sLxZQxS0nA3qu16GEDRCvdxAvU389lJE0FfGom/dRjX7uDl5440BVlmjuP2wAdrtop8Ge@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/NIApu+nl2VQ4GdwZpabQ7jc6FuVa0o4S223BBcAvx6uOQsyc
-	oCGB6ih6TgaQnvW11143bqTLDVHnNr26PRm8Fme8f6iG0xb/T+0ODWxirWSECSeH3OBlkOo/DVm
-	dqDh7weJoExdy/QLAMCMM1C3t50vMlMLJ8zxEU/yR3gflcR3fIJ0uBOj7GuR//mF+ru7HWP8CaS
-	d1PSLg4X0bN/IATdE4NVhik9QUIUH7TIlscQ==
-X-Gm-Gg: AfdE7cmwYvKo8i2wEok0z+75yYuOimi0Qc9IRYtFS1D/6bmUZsXVBxgyR7RDKSjdL2o
-	CM4VXrAui/GHX8gMe1DiLx4R2ZcxnBdctZfzZN2qeUGdzrS8Im5VvmIpgxRB++3eFjsajs63dky
-	Ms5seosy4H6rzRBfj/NJMzl7GqrGXsXvh8xMWOLfR7OpEQ4xcUgG0Ly7d5gRlth5ESq2QcXCJod
-	ULL4E4iuQ6rD8+7ohDKoTGsJtWnWIA1982hx45NE1XWUOebnFaRabQ=
-X-Received: by 2002:a05:690e:2027:b0:666:53bb:bc1f with SMTP id 956f58d0204a3-6677fa5a3efmr346419d50.1.1783343761032;
-        Mon, 06 Jul 2026 06:16:01 -0700 (PDT)
-X-Received: by 2002:a05:690e:2027:b0:666:53bb:bc1f with SMTP id
- 956f58d0204a3-6677fa5a3efmr346388d50.1.1783343760532; Mon, 06 Jul 2026
- 06:16:00 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF032329E7E
+	for <cgroups@vger.kernel.org>; Mon,  6 Jul 2026 14:28:27 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783348110; cv=none; b=m6DC5VgSYiyZICPiF0WS1VyIQ+puaipKlhGMH9GsShMpJjG/Pe81QwadRqy+Jat1sLoFGxsYNahd8uuD5BDt1lIfwxjSnxze+ooEvz0NiLex+yCfwY9uQqBAv1x/N/YSKhHeeyg5MZ6KVUMJn0FI8Vx+iKG2RN14bQYNX36156k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783348110; c=relaxed/simple;
+	bh=vZWrmCgooqGaeLMQA0CJMhP9+N3djHYev7afW/QNC5s=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=R17vJ72Btiwi7NNuq6lIjreX2KigHFOCvRhNc2t1dpaa5fN7sr9jGg8ViLdeV23zY9si4RSmy7YqF2EN1wgW6qKdPB71L30uo2i/ZiB/MnJL8mX1/uC5D4W/2Wvk6P0CU0l1r3ysTerMKKHXXgBwAPK9e6lLgd+DQBAUOOEJWQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IiEjoMl/; arc=none smtp.client-ip=198.175.65.15
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1783348108; x=1814884108;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=vZWrmCgooqGaeLMQA0CJMhP9+N3djHYev7afW/QNC5s=;
+  b=IiEjoMl/bwXTQUJUe12HovqzwD7Kxq63mWfl11hE1B2QAauQzJqJnpOq
+   44ariqOKeKujwN2iRu5cjt192KfaQO9tBH+Z7E2nw/F66c3EGSjlHF7zE
+   MRBSlgnJY9G7vD7aOhJSQH0rROQdJclrsDHHFT1QTPAGUK329lDHU/cL/
+   G6HXmB4IRy3wgVN+/oIkxozFVp2GzNAu4kRpoQKFownASxKzu2424SPf7
+   3dWRodUOZhyJrEyArUGRfCeBM2uKPCwE4UhU0kT5yxBzeJXQOWNfoQhhz
+   01Iot8mWfF8Jkv/pFymmfWTnXYrE0GGYjwSFTqoZQhIbsseSeCM0mgtGG
+   w==;
+X-CSE-ConnectionGUID: gDmc13RqS0+RH8qJRvnRqg==
+X-CSE-MsgGUID: 1hltQxgWTiSI9KQB+fzgVQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11838"; a="87662092"
+X-IronPort-AV: E=Sophos;i="6.25,149,1779174000"; 
+   d="scan'208";a="87662092"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2026 07:28:27 -0700
+X-CSE-ConnectionGUID: Zf/XojuVTFmI51ZpegllVg==
+X-CSE-MsgGUID: 7fDr0dcwSFqbvx5P0d3NwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.25,149,1779174000"; 
+   d="scan'208";a="251049438"
+Received: from conormcd-mobl2.ger.corp.intel.com (HELO [10.245.244.132]) ([10.245.244.132])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2026 07:28:24 -0700
+Message-ID: <c5f38603809c5385d2eb8937762b92c4f56c18f9.camel@linux.intel.com>
+Subject: Re: drm/ttm/memcg/lru: enable memcg tracking for ttm, xe and amdgpu
+ driver (part 2) (v2).
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
+To: Dave Airlie <airlied@gmail.com>, dri-devel@lists.freedesktop.org, 
+	tj@kernel.org, christian.koenig@amd.com, Johannes Weiner
+ <hannes@cmpxchg.org>,  Michal Hocko <mhocko@kernel.org>, Roman Gushchin
+ <roman.gushchin@linux.dev>, Shakeel Butt	 <shakeel.butt@linux.dev>, Muchun
+ Song <muchun.song@linux.dev>
+Cc: cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>,
+ simona@ffwll.ch, 	intel-xe@lists.freedesktop.org
+Date: Mon, 06 Jul 2026 16:28:22 +0200
+In-Reply-To: <CAPM=9txKzx6qji23YpY=d6Wrd-se-abZoOmDUW32HCx5YsL0tA@mail.gmail.com>
+References: <20260706052330.1110909-1-airlied@gmail.com>
+	 <CAPM=9txKzx6qji23YpY=d6Wrd-se-abZoOmDUW32HCx5YsL0tA@mail.gmail.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHc6FU4tz8-HmEf2_XKT0NT8N=rv5OMcY79PxTACkXAVLOAUpg@mail.gmail.com>
- <akZEjH2Hf8-RR8yQ@infradead.org> <akhaWrUHXcubQQab@casper.infradead.org>
-In-Reply-To: <akhaWrUHXcubQQab@casper.infradead.org>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Mon, 6 Jul 2026 15:15:49 +0200
-X-Gm-Features: AVVi8CeZ90TZOgMX_QaiF2EyLUwZK6uqeXE5eQFowT0YnNBZfC21D0pOzkVqfoY
-Message-ID: <CAHc6FU4-GsE1jtw8kXe0h_-T6VK2bB5QuVm2w16Ek6FiUV77tg@mail.gmail.com>
-Subject: Re: iomap_writepages WARN_ON_ONCE(PF_MEMALLOC)
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Christian Brauner <brauner@kernel.org>, 
-	"Darrick J. Wong" <djwong@kernel.org>, gfs2 <gfs2@lists.linux.dev>, linux-xfs@vger.kernel.org, 
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17539-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:willy@infradead.org,m:hch@infradead.org,m:brauner@kernel.org,m:djwong@kernel.org,m:gfs2@lists.linux.dev,m:linux-xfs@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:linux-mm@kvack.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FORGED_SENDER(0.00)[agruenba@redhat.com,cgroups@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[agruenba@redhat.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FORGED_RECIPIENTS(0.00)[m:airlied@gmail.com,m:dri-devel@lists.freedesktop.org,m:tj@kernel.org,m:christian.koenig@amd.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:longman@redhat.com,m:simona@ffwll.ch,m:intel-xe@lists.freedesktop.org,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,lists.freedesktop.org,kernel.org,amd.com,cmpxchg.org,linux.dev];
+	TAGGED_FROM(0.00)[bounces-17540-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	FORGED_SENDER(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
 	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.intel.com:mid,linux.intel.com:from_mime,intel.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A7B7371134A
+X-Rspamd-Queue-Id: E297271373B
 
-On Sat, Jul 4, 2026 at 2:57=E2=80=AFAM Matthew Wilcox <willy@infradead.org>=
- wrote:
-> On Thu, Jul 02, 2026 at 03:59:24AM -0700, Christoph Hellwig wrote:
-> > On Wed, Jul 01, 2026 at 10:51:06PM +0200, Andreas Gruenbacher wrote:
-> > > Do you have any suggestions?
-> > >
-> > > The above is on RHEL-8, but a similar code path exists in cgroups v2,
-> > > triggered via:
-> > >
-> > >   echo reclaim_amount > /sys/fs/cgroup/.../memory.reclaim
-> > >
-> > > That code path starts with:
-> > >
-> > > memory_reclaim -> user_proactive_reclaim -> try_to_free_mem_cgroup_pa=
-ges ->
-> >
-> > PF_MEMALLOC is a sign of direct reclaim.  cgroup code is doing really
-> > weird things when it is set and it is doing writeback.
->
-> If we're going to blame the cgroup people for doing weird things, let's
-> cc them so they stand a chance of seeing this ... original at:
->
-> https://lore.kernel.org/linux-fsdevel/CAHc6FU4tz8-HmEf2_XKT0NT8N=3Drv5OMc=
-Y79PxTACkXAVLOAUpg@mail.gmail.com/
+On Mon, 2026-07-06 at 17:55 +1000, Dave Airlie wrote:
+> On Mon, 6 Jul 2026 at 15:23, Dave Airlie <airlied@gmail.com> wrote:
+> >=20
+> > This is just a repost with a number of sashiko identified problems
+> > that I fixed.
+> >=20
+> > I committed the vmstat counters and list lru changes, and they are
+> > now in tree.
+> >=20
+> > This is the remainder of this series. Intel have expressed interest
+> > in getting
+> > this landed for xe, we can drop the amdgpu changes for now if they
+> > can't get
+> > across the line.
+>=20
+> I've put the latest code at
+> https://github.com/airlied/linux/tree/ttm-memcg-objcg
+>=20
+> I've been fixing more sashiko found issues in there before I repost
+> in
+> a few days.
+>=20
+> I've reordered things a little in the branch but mostly the same
+> code.
+>=20
+> Dave.
 
-This is all pretty ugly: inode_lru_isolate() selects inodes that have
-a clear i_state to evict. Among the inodes selected is at least one
-gfs2 inode that has the GLF_LFLUSH glock flag is set in
-GFS2_I(inode)->i_gl->gl_flags. That flag means that evicting the inode
-requires flushing out revokes. Before that log flush can happen,
-ordered inodes need to be flushed (ordered journalling mode). And this
-is where iomap_writepages() got called.
+I have a couple of additional patches to this series to ensure shmem
+memory allocated as part of shrinking or swapout ends up accounted to
+the same cgroup that allocated the TTM memory. It looks like recursive
+per-cgroup shrinking is not an issue, since somebody thought about that
+already.
 
-Unfortunately, filesystems cannot refuse to evict inodes once they are
-chosen by inode_lru_isolate().
+>=20
+> >=20
+> > I've dropped all previous acks/reviews.
+> >=20
+> > This series adds the memcg counters for GPU active and GPU reclaim
+> > to align
+> > with the two global vmstats. It adds an accounting flag to TTM
+> > alloc/populate,
+> > and enables memcg tracking and shrinker support in TTM.
+> >=20
+> > Then it adds amdgpu and xe support.
+> >=20
+> > I think for this to land, Christian holds the main objection which
+> > I still fail
+> > to fully understand beyond it doesn't solve all the problems we
+> > ever have had
+> > with cgroups and drm, so we shouldn't even bother, and maybe we
+> > could do it at
+> > the object level, and integrated with dmem, and android cross
+> > process accounting,
+> > but I still feel this is a good baseline.
+> >=20
+> > I think this is the right layer to hook this into TTM, where we
+> > allocate memory
+> > and I think accounting for this memory in a proper way should be
+> > done.
+> >=20
+> > Intel folks (Thomas/Maarten) please review and express concerns as
+> > well.
 
-An acceptable way out may be to set an i_state flag whenever the
-GLF_LFLUSH glock flag is set so that inode_lru_isolate() will skip
-those problematic inodes.
+The initial use-case for us is being able to pin rather substantial
+amounts of system memory due to potential upcoming hardware features.
+While RDMA is using RLIMIT_MEMLOCK for this, that is per process and an
+attacker could easily launch a number of processes and pin all of
+system memory, so the thing optionally protecting from the DoS is the
+memcg limit. So regardless of whether we also account against
+RLIMIT_MEMLOCK or not, we need an additional cgroups limit.
+
+Moving forward, there also a need of limiting the amount of allocated
+graphics memory only, due to the way certain apps behave when probing
+for available memory. :/.
+
+I have unfortunately missed large parts of the memcg vs dmemcg
+discussion, but I asked Claude to fish out as much of the essentials as
+possible from the mailing lists so I can read up.
 
 Thanks,
-Andreas
+Thomas
 
+
+> >=20
+> > Regards,
+> > Dave.
+> >=20
 
