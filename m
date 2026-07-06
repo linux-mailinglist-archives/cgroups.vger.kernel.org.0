@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-17532-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17534-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TBsLGaGdS2oyXAEAu9opvQ
-	(envelope-from <cgroups+bounces-17532-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 14:20:49 +0200
+	id XPQ9BOSdS2pJXAEAu9opvQ
+	(envelope-from <cgroups+bounces-17534-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 14:21:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56354710723
-	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 14:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BAF7710750
+	for <lists+cgroups@lfdr.de>; Mon, 06 Jul 2026 14:21:55 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=GacUHo+M;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=BDWTD7tY;
 	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17532-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17532-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17534-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17534-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D3535304C19A
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2026 12:07:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9DC283052874
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2026 12:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5EAF423795;
-	Mon,  6 Jul 2026 12:07:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3288B42467B;
+	Mon,  6 Jul 2026 12:07:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EF30424647
-	for <cgroups@vger.kernel.org>; Mon,  6 Jul 2026 12:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB2B424665
+	for <cgroups@vger.kernel.org>; Mon,  6 Jul 2026 12:07:33 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783339649; cv=none; b=SsMk3aPBUokCGezM4laxqfF/72LxLkp8tnQps9Wdt9DzKVQn8tr6vz0COuZ/sDqH6PB0fgsuKd3+C38RTg9OarhwHCBoHmpXhn0KJKTZ+j8cTkRZ2NhQplGcx3kaQYsUkaLrWNQeRZ12TXvmlSwruuimegin2cZsnWWPr+hDVkM=
+	t=1783339656; cv=none; b=ijol75APqLm7uYuaD8o8Rqe35yBFQdtrnpeIBRmfZk1tWVWlCNLHocBbiIBtoFf/7OIBvnxQAkWlvQ1+Xp98ArfRMns5TMn/nWAklfrVDFEoY/IVsFY5+YNG6B7FiLDdfl1IAVkjWXfvt2bKArfzURFX0tThaDmlbjgqf5/eBNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783339649; c=relaxed/simple;
-	bh=apTiBjcxVK24LBvkYWNEBawfEW1dEeAN4dJhk3rDuQQ=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dMvwUha5+iYwAVcf3wUH2m3SH/nip1Fjk++xhvVB7guziSG2fifEpnEeDUuNYUOY9nXOoHtV6cZQeA9qEG8TWIUH7RKSH22v8xlqHnBQHCRTIk1Q66qvCqELHxOHjsAupDGMn9QJ5LRhDLOjyN4MpbPUCLA5IPLn2dDQNNJeEQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GacUHo+M; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1783339656; c=relaxed/simple;
+	bh=b0uhyHgcitgdJu8EHxYVU9yrFQx/k/3SAU8gunPREJQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=Nm0bEOwsSbuPhHBXRYUIuKpLa1M3LU4VXNVoRds4VOz2POgjYKV2u9nlUiJ8XNuEMwjTHxQCxBAtXH2CfycHi9WQuAc+xG1VB9gWgJrJ1AdMZ/etcGcN53oG95kMFZUAFVNSlDiSrpQqb69PALuGatLyP3QD/qzHavzX+D1z9nE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BDWTD7tY; arc=none smtp.client-ip=170.10.129.124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783339647;
+	s=mimecast20190719; t=1783339653;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=IpTCLpoP72HvCckwdmId2yggkVlEZn3IaRv8GeRmMF8=;
-	b=GacUHo+Mg/fKnPe1znSRDrbyWZl7r0nrTbuTZ7cadwr40jrIfxnmDSyMAEWFaRjj42JCZx
-	+ddYZnY+lp9lIl5LfIfPQgYEBT560qPw9Gjcs9AlDCLMi1Jf/mFO322msaLXjOJ3P7adMG
-	piLzMxF9E9uEaNkDsdeJBZ2pM1ahw0I=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6Y+J4mspfj+iaS4h6p2ZHVGaApKsDVI/YeTxxCK1gsE=;
+	b=BDWTD7tYQsH4NuNQKACMFqPFZfz5UL7eE0kc0SAOUAfDuze4Pd+/lwyWKWvSFWVbYsMm9+
+	Nxiu1b8nPWT+a0oJXRp7kTdFfjK6P2LfNWnjLgvtc92KgvRDSv4lWqaaG7FhtKmwgLVWEH
+	QrY9AmIdtgJZbdYpRziaoBzrM9klXTU=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-616-7DdviG42Oc-H-9yD8dCJ2A-1; Mon,
- 06 Jul 2026 08:07:23 -0400
-X-MC-Unique: 7DdviG42Oc-H-9yD8dCJ2A-1
-X-Mimecast-MFC-AGG-ID: 7DdviG42Oc-H-9yD8dCJ2A_1783339642
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-47-CzEl7AvrOSqwFywmpm4LnA-1; Mon,
+ 06 Jul 2026 08:07:32 -0400
+X-MC-Unique: CzEl7AvrOSqwFywmpm4LnA-1
+X-Mimecast-MFC-AGG-ID: CzEl7AvrOSqwFywmpm4LnA_1783339649
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 47C1E1845449;
-	Mon,  6 Jul 2026 12:06:57 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BB7561920C21;
+	Mon,  6 Jul 2026 12:06:59 +0000 (UTC)
 Received: from [192.168.1.153] (headnet05.pony-001.prod.iad2.dc.redhat.com [10.2.32.117])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CBEC918005B7;
-	Mon,  6 Jul 2026 12:06:54 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A49F01800591;
+	Mon,  6 Jul 2026 12:06:57 +0000 (UTC)
 From: Albert Esteve <aesteve@redhat.com>
-Subject: [PATCH v5 0/4] cgroup: dmem: add selftest helper, coverage, and VM
- runner
-Date: Mon, 06 Jul 2026 14:06:39 +0200
-Message-Id: <20260706-kunit_cgroups-v5-0-6c42c8753468@redhat.com>
+Date: Mon, 06 Jul 2026 14:06:40 +0200
+Subject: [PATCH v5 1/4] cgroup: Add dmem_selftest module
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,23 +71,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/2XM0WrCMBTG8VeRXC9ykpwmjVe+h8hI0hMbxlpJa
- nFI390oA7d6+X3w+99YoZyosN3mxjLNqaRxqKP52LDQu+FEPHV1MwlSgxIt/7oMafoMpzxezoW
- b6MFb0gjCsGrOmWK6PnuHY919KtOYf575WTze35I0q9IsOHBrhFfBKOsA9pm63k3bMH6zR2qWL
- 45SrLms3HutTdO1Em144+rFG8A1V5UjuWDBGx2teOP4hwu75lh51EFGtG10hP/4six3q0N5CGg
- BAAA=
-X-Change-ID: 20260318-kunit_cgroups-7fb0b9e64017
+Message-Id: <20260706-kunit_cgroups-v5-1-6c42c8753468@redhat.com>
+References: <20260706-kunit_cgroups-v5-0-6c42c8753468@redhat.com>
+In-Reply-To: <20260706-kunit_cgroups-v5-0-6c42c8753468@redhat.com>
 To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
  =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
  Shuah Khan <shuah@kernel.org>
 Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Albert Esteve <aesteve@redhat.com>, 
- Eric Chanudet <echanude@redhat.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783339614; l=3898;
+ linux-kselftest@vger.kernel.org, Albert Esteve <aesteve@redhat.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783339614; l=7478;
  i=aesteve@redhat.com; s=20260303; h=from:subject:message-id;
- bh=apTiBjcxVK24LBvkYWNEBawfEW1dEeAN4dJhk3rDuQQ=;
- b=iNuQ+fkdHFGf+OxI55Em3l9TA/NkJppdKoCSJigqbMbuNGI9lFETUPPtJvPC6OiMNG8lgoc8d
- HEwBO0B9bzDBtRdkHpsRSD+0wnbjsr6T2g/g/fHi9CudW58wdL6iKNZ
+ bh=b0uhyHgcitgdJu8EHxYVU9yrFQx/k/3SAU8gunPREJQ=;
+ b=teQKe3rIscRwQNL1c2jBzLnEg6vqgzsctGOFPFrC/rT4qAzwXJMt81+aOr4wGnLl0TvN3l/y+
+ 0IF1ocDEHScBZ/1eGSAfS3iDX50hAccriRKYAKpamxdXBvOMAY+Qldh
 X-Developer-Key: i=aesteve@redhat.com; a=ed25519;
  pk=YSFz6sOHd2L45+Fr8DIvHTi6lSIjhLZ5T+rkxspJt1s=
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
@@ -101,9 +97,9 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17532-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17534-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:aesteve@redhat.com,m:echanude@redhat.com,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:aesteve@redhat.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[redhat.com:+];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -119,102 +115,283 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vmtest-dmem.sh:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 56354710723
+X-Rspamd-Queue-Id: 0BAF7710750
 
-Hi all,
+Currently, dmem charging is driver-driven through direct
+calls to dmem_cgroup_try_charge(), so cgroup selftests
+do not have a generic way to trigger charge and uncharge
+paths from userspace.
 
-This small series adds practical test coverage for the dmem
-cgroup controller.
+This limits any selftest coverage to configuration/readout
+checks unless a specific driver exposing charge hooks is
+present in the test environment.
 
-The motivation came from following the recent dmem API discussion in
-thread [1]. That discussion considered changing the dmem API and
-adding a new knob. Currently there are no dedicated tests covering
-dmem behaviour, which makes such changes riskier.
+Add kernel/cgroup/dmem_selftest.c as a helper module
+(CONFIG_DMEM_SELFTEST) that registers a synthetic dmem region
+(dmem_selftest) and exposes debugfs control files:
+/sys/kernel/debug/dmem_selftest/charge
+/sys/kernel/debug/dmem_selftest/uncharge
 
-Adding selftests has an additional challenge: dmem charging paths
-are driver-driven today, so regression testing is harder unless a
-suitable driver is present in the test environment.
+Writing a size to charge triggers dmem_cgroup_try_charge() for
+the calling task's cgroup (the module calls kstrtou64()).
+Writing to uncharge releases the outstanding charge via
+dmem_cgroup_uncharge(). Only a single outstanding charge
+is supported.
 
-This series addresses that by adding:
-- a kernel-side selftest helper module to trigger charge/uncharge
-  from userspace in a controlled way,
-- cgroup selftests covering dmem accounting and protection semantics
-  (including dmem.max enforcement and byte-granularity checks),
-- a virtme-based VM runner for repeatable execution of the dmem tests.
-
-The goal is to make dmem behavior easier to validate when evolving the API
-and implementation, while keeping tests deterministic and driver-independent.
-
-Thanks.
-
-[1] - https://lore.kernel.org/all/aZoHfloupKvF2oSu@fedora/
+This provides a deterministic, driver-independent mechanism
+for exercising dmem accounting paths in selftests.
 
 Signed-off-by: Albert Esteve <aesteve@redhat.com>
 ---
-Changes in v5:
-- Change parse_first_region() by find_selftest_region to scan
-  dmem.capacity lines
-- Use exact equality for limit readback, not values_close()
-- Write VM tempfile to $SCRIPT_DIR
-- Fix KTAP by dropping outer framing in test_dmem
-- Use array for optional vng args to handle paths with spaces
-- Respect O=/KBUILD_OUTPUT= when building, per bpf/vmtest.sh convention
-- Link to v4: https://lore.kernel.org/r/20260519-kunit_cgroups-v4-0-f6c2f498fae4@redhat.com
+ init/Kconfig                  |  12 +++
+ kernel/cgroup/Makefile        |   1 +
+ kernel/cgroup/dmem_selftest.c | 198 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 211 insertions(+)
 
-Changes in v4:
-- Fix charged_pool leak in dmem_selftest_init()
-- Replace ssh-based VM approach in vmtest-dmem.sh with vng --exec
-- Add main() wrapper to vmtest-dmem.sh
-- Other small fixes suggested by Sashiko
-- Link to v3: https://lore.kernel.org/r/20260504-kunit_cgroups-v3-0-4eac90b76f91@redhat.com
+diff --git a/init/Kconfig b/init/Kconfig
+index 5230d4879b1c8..6fab65d6b44ea 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1267,6 +1267,18 @@ config CGROUP_DMEM
+ 	  As an example, it allows you to restrict VRAM usage for applications
+ 	  in the DRM subsystem.
+ 
++config DMEM_SELFTEST
++	tristate "dmem cgroup selftest helper module"
++	depends on CGROUP_DMEM && DEBUG_FS
++	default n
++	help
++	  Builds a small loadable module that registers a dmem region named
++	  "dmem_selftest" and exposes debugfs files under
++	  /sys/kernel/debug/dmem_selftest/ so kselftests can trigger
++	  dmem charge/uncharge operations from userspace.
++
++	  Say N unless you run dmem selftests or develop the dmem controller.
++
+ config CGROUP_FREEZER
+ 	bool "Freezer controller"
+ 	help
+diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
+index ede31601a363a..febc36e60f9f9 100644
+--- a/kernel/cgroup/Makefile
++++ b/kernel/cgroup/Makefile
+@@ -8,4 +8,5 @@ obj-$(CONFIG_CPUSETS) += cpuset.o
+ obj-$(CONFIG_CPUSETS_V1) += cpuset-v1.o
+ obj-$(CONFIG_CGROUP_MISC) += misc.o
+ obj-$(CONFIG_CGROUP_DMEM) += dmem.o
++obj-$(CONFIG_DMEM_SELFTEST) += dmem_selftest.o
+ obj-$(CONFIG_CGROUP_DEBUG) += debug.o
+diff --git a/kernel/cgroup/dmem_selftest.c b/kernel/cgroup/dmem_selftest.c
+new file mode 100644
+index 0000000000000..625ab2d73923b
+--- /dev/null
++++ b/kernel/cgroup/dmem_selftest.c
+@@ -0,0 +1,198 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Kselftest helper for the dmem cgroup controller.
++ *
++ * Registers a dmem region and debugfs files so tests can trigger charges
++ * from the calling task's cgroup.
++ *
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/cgroup_dmem.h>
++#include <linux/debugfs.h>
++#include <linux/fs.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/mutex.h>
++#include <linux/module.h>
++#include <linux/string.h>
++#include <linux/uaccess.h>
++
++#include "../../tools/testing/selftests/kselftest_module.h"
++
++#define DM_SELFTEST_REGION_NAME	"dmem_selftest"
++#define DM_SELFTEST_REGION_SIZE	(256ULL * 1024 * 1024)
++
++KSTM_MODULE_GLOBALS();
++
++static struct dmem_cgroup_region *selftest_region;
++static struct dentry *dbg_dir;
++
++static struct dmem_cgroup_pool_state *charged_pool;
++static u64 charged_size;
++static DEFINE_MUTEX(charge_lock);
++
++static ssize_t dmem_selftest_charge_write(struct file *file, const char __user *user_buf,
++					  size_t count, loff_t *ppos)
++{
++	struct dmem_cgroup_pool_state *pool = NULL, *limit = NULL;
++	u64 size;
++	char buf[32];
++	int ret;
++
++	if (!selftest_region)
++		return -ENODEV;
++
++	if (count == 0 || count >= sizeof(buf))
++		return -EINVAL;
++
++	if (copy_from_user(buf, user_buf, count))
++		return -EFAULT;
++	buf[count] = '\0';
++
++	ret = kstrtou64(strim(buf), 0, &size);
++	if (ret)
++		return ret;
++	if (!size || size > DM_SELFTEST_REGION_SIZE)
++		return -EINVAL;
++
++	mutex_lock(&charge_lock);
++	if (charged_pool) {
++		mutex_unlock(&charge_lock);
++		return -EBUSY;
++	}
++
++	ret = dmem_cgroup_try_charge(selftest_region, size, &pool, &limit);
++	if (ret == -EAGAIN && limit)
++		dmem_cgroup_pool_state_put(limit);
++	if (ret) {
++		mutex_unlock(&charge_lock);
++		return ret;
++	}
++
++	charged_pool = pool;
++	charged_size = size;
++	mutex_unlock(&charge_lock);
++
++	return count;
++}
++
++static ssize_t dmem_selftest_uncharge_write(struct file *file, const char __user *user_buf,
++					    size_t count, loff_t *ppos)
++{
++	if (!count)
++		return -EINVAL;
++
++	mutex_lock(&charge_lock);
++	if (!charged_pool) {
++		mutex_unlock(&charge_lock);
++		return -EINVAL;
++	}
++
++	dmem_cgroup_uncharge(charged_pool, charged_size);
++	charged_pool = NULL;
++	charged_size = 0;
++	mutex_unlock(&charge_lock);
++
++	return count;
++}
++
++static const struct file_operations dmem_selftest_charge_fops = {
++	.write = dmem_selftest_charge_write,
++	.llseek = noop_llseek,
++};
++
++static const struct file_operations dmem_selftest_uncharge_fops = {
++	.write = dmem_selftest_uncharge_write,
++	.llseek = noop_llseek,
++};
++
++static int __init dmem_selftest_register(void)
++{
++	int ret = 0;
++
++	selftest_region = dmem_cgroup_register_region(
++		DM_SELFTEST_REGION_SIZE, DM_SELFTEST_REGION_NAME);
++	if (IS_ERR(selftest_region))
++		return PTR_ERR(selftest_region);
++	if (!selftest_region)
++		return -EINVAL;
++
++	dbg_dir = debugfs_create_dir("dmem_selftest", NULL);
++	if (IS_ERR(dbg_dir)) {
++		ret = PTR_ERR(dbg_dir);
++		goto dbgfs_error;
++	}
++
++	debugfs_create_file("charge", 0200, dbg_dir, NULL, &dmem_selftest_charge_fops);
++	debugfs_create_file("uncharge", 0200, dbg_dir, NULL, &dmem_selftest_uncharge_fops);
++
++	pr_info("region '%s' registered; debugfs at dmem_selftest/{charge,uncharge}\n",
++		DM_SELFTEST_REGION_NAME);
++	return ret;
++
++dbgfs_error:
++	dmem_cgroup_unregister_region(selftest_region);
++	dbg_dir = NULL;
++	selftest_region = NULL;
++	return ret;
++}
++
++static void dmem_selftest_remove(void)
++{
++	debugfs_remove_recursive(dbg_dir);
++	dbg_dir = NULL;
++
++	if (selftest_region) {
++		dmem_cgroup_unregister_region(selftest_region);
++		selftest_region = NULL;
++	}
++
++	mutex_lock(&charge_lock);
++	if (charged_pool) {
++		dmem_cgroup_uncharge(charged_pool, charged_size);
++		charged_pool = NULL;
++	}
++	mutex_unlock(&charge_lock);
++}
++
++static void __init selftest(void)
++{
++	KSTM_CHECK_ZERO(!selftest_region);
++	KSTM_CHECK_ZERO(IS_ERR_OR_NULL(dbg_dir));
++}
++
++static int __init dmem_selftest_init(void)
++{
++	int report_rc;
++	int err;
++
++	err = dmem_selftest_register();
++	if (err)
++		return err;
++
++	pr_info("loaded.\n");
++	add_taint(TAINT_TEST, LOCKDEP_STILL_OK);
++	selftest();
++	report_rc = kstm_report(total_tests, failed_tests, skipped_tests);
++	if (report_rc) {
++		dmem_selftest_remove();
++		return report_rc;
++	}
++
++	return 0;
++}
++
++static void __exit dmem_selftest_exit(void)
++{
++	pr_info("unloaded.\n");
++	dmem_selftest_remove();
++}
++
++module_init(dmem_selftest_init);
++module_exit(dmem_selftest_exit);
++
++MODULE_AUTHOR("Albert Esteve <aesteve@redhat.com>");
++MODULE_DESCRIPTION("Kselftest helper for cgroup dmem controller");
++MODULE_LICENSE("GPL");
 
-Changes in v3:
-- Set charged flag on unexpected over-limit charge success.
-- Add CONFIG_DMEM_SELFTEST=m to selftest config.
-- Simplify -v to a boolean; single -v was a no-op.
-- Unquote kernel_opt to avoid empty-string arg to vng.
-- Document -b in usage() output.
-- Link to v2: https://lore.kernel.org/r/20260421-kunit_cgroups-v2-0-bb6675d8249c@redhat.com
-
-Changes in v2:
-- Fix debugfs_create_dir() error check
-- Fix module teardown race: call dmem_selftest_remove() before
-  uncharging so debugfs files are torn down
-- Use IS_ERR_OR_NULL() in selftest() sanity check
-- Add CONFIG_CGROUP_DMEM=y to the cgroup selftest config
-- Replace config-file parsing in check_guest_requirements() with
-  a direct check of /sys/fs/cgroup/cgroup.controllers
-- Add new patch 4 (from Eric Chanudet): vmtest-dmem.sh -b flag
-  to configure and build a local kernel tree
-- Link to v1: https://lore.kernel.org/r/20260327-kunit_cgroups-v1-0-971b3c739a00@redhat.com
-
----
-Albert Esteve (4):
-      cgroup: Add dmem_selftest module
-      selftests: cgroup: Add dmem selftest coverage
-      selftests: cgroup: Add vmtest-dmem runner script
-      selftests: cgroup: handle vmtest-dmem -b to test locally built kernel
-
- init/Kconfig                                  |  12 +
- kernel/cgroup/Makefile                        |   1 +
- kernel/cgroup/dmem_selftest.c                 | 198 +++++++++++
- tools/testing/selftests/cgroup/.gitignore     |   1 +
- tools/testing/selftests/cgroup/Makefile       |   4 +-
- tools/testing/selftests/cgroup/config         |   2 +
- tools/testing/selftests/cgroup/test_dmem.c    | 486 ++++++++++++++++++++++++++
- tools/testing/selftests/cgroup/vmtest-dmem.sh | 188 ++++++++++
- 8 files changed, 891 insertions(+), 1 deletion(-)
----
-base-commit: 8cdeaa50eae8dad34885515f62559ee83e7e8dda
-change-id: 20260318-kunit_cgroups-7fb0b9e64017
-
-Best regards,
 -- 
-Albert Esteve <aesteve@redhat.com>
+2.54.0
 
 
