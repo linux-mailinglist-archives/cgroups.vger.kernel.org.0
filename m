@@ -1,144 +1,168 @@
-Return-Path: <cgroups+bounces-17550-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17547-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /96lEcihTGpknQEAu9opvQ
-	(envelope-from <cgroups+bounces-17550-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 08:50:48 +0200
+	id djzIGGBbTGpSjgEAu9opvQ
+	(envelope-from <cgroups+bounces-17547-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 03:50:24 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8A89718229
-	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 08:50:47 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 841B2716AF1
+	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 03:50:23 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Q2mbDs3M;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17550-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17550-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=iGuO03Qb;
+	dmarc=pass (policy=none) header.from=linux.dev;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17547-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17547-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 995BE3036F9C
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jul 2026 06:44:43 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 073B73026735
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jul 2026 01:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A39683AA4F1;
-	Tue,  7 Jul 2026 06:44:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CEA2FDC5E;
+	Tue,  7 Jul 2026 01:50:21 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A382226CF6;
-	Tue,  7 Jul 2026 06:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A1523BD06
+	for <cgroups@vger.kernel.org>; Tue,  7 Jul 2026 01:50:14 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783406680; cv=none; b=n75cEobzUKA35D/lcYj9+G0khYvDp4jE6oomGpHxRTgRP7LwrVlJIwqJVGl281gShj24EIikSG6vYM8Pd8ub5kqX6Bh9p4zADDn9Q/2C/GCGvENTaxjnh+Eyl+edsDX/gLzXuYmC5awgW0tu6ziEmXRi7PCgTdhfW+7SybJlg80=
+	t=1783389020; cv=none; b=o+Le50v48qvkPunTSsnsW08VcZXgsaufmMt7poMcBVqyjpEc3LeFxN0M9yKlORdH3i5KndAaJJxzzagbkndjC8nV1ijwBdhqa/4jTWQ3yCQOeyoGPpI8ezuYfApbMO+cGnY4eRu918vD+qSP7l4gcPcOFV3lhbcyf2mLaWGEi18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783406680; c=relaxed/simple;
-	bh=3vmTg1Nf17vATetjK6+dGNn9UUpDdzDbpAWCw+9ZISQ=;
-	h=Message-ID:From:To:Cc:Subject:In-Reply-To:References:Date:
-	 Content-Type; b=O/XRZHJZdg8QbeZEy1CTEcjdlg2ZdK/LVcuvuWng1aDrPw7jqodFb8AIKcbQF3E09KBIXpe67hDGWq6pfJGDugmvtYlDFAXgN+7YuRoMetfCk5ocB7Fu0txmfV4PgKgAp9t2jcA3J7o/vU0eZj+Ikq5rpugsfQjHzC4BoMLacow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q2mbDs3M; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C53EF1F000E9;
-	Tue,  7 Jul 2026 06:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783406679;
-	bh=gQOyUCAfoqT5OpmxBYtWbyLMl+/h1XpIpduhJW2dwoE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date;
-	b=Q2mbDs3MmdGtgKAxCBGgKIcteT5aC71zrR1b+SwKTV1Lb0Mbq+uxvQxO+IC//s99f
-	 OvQGSSzoi4o4dI1jvEzRpULA/qiD9TopS1PzTerCrzqeRQtcmfkoA+SE79TX5V+M0h
-	 hYWHWGmLfs0vndBwQBM7T4dInfon0r5Wm6InfqBhegKzxqSaIv1N62umOc3HgoKFN4
-	 8x0URZctrli0kmi4tQNRKbeQr9QAZhsAWqH1oUfDHNghsu+H9hWHv+2uPwfr93aTAX
-	 TvS5RQJ4Mh32wODT8FvWmJlgt7RAEzrpWHDVUJqNR/cNAhXHyWAhEvQNTdhLvo6jiD
-	 WaGYbCvnI1ulQ==
-Message-ID: <e254af713b5345aec3d086771ecf1e71@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Ridong Chen <ridong.chen@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, =?utf-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, Shuah Khan <shuah@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, Aaron Tomlin <atomlin@atomlin.com>, Guopeng Zhang <guopeng.zhang@linux.dev>
-Subject: Re: [PATCH-next v10 10/11] cgroup/cpuset: Support multiple destination cpusets for cpuset_*attach()
-In-Reply-To: <20260702214757.579012-11-longman@redhat.com>
-References: <20260702214757.579012-1-longman@redhat.com> <20260702214757.579012-11-longman@redhat.com>
-Date: Mon, 06 Jul 2026 14:57:31 -1000
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1783389020; c=relaxed/simple;
+	bh=C9KKzrMhbHQ4j6vaR8/cSitMU7Oq2QiOexBUmdy+Mi8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H5csYFBhpDxq2aXPJWX/AyCkhuKELbGgNLA2UvSZyoMKNOQsIJgG1e3e7Fdozx5vJvICNZoMVO2kLYfJ/AURNFqoVQnjdQ2ekP1xYUO27Rud+vrqpDisVIyYlqnWJPThoyJ0yxLnUVnnqVsNlKQC5/Uss2ChOqgTZWFItqsLqyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iGuO03Qb; arc=none smtp.client-ip=91.218.175.173
+Date: Mon, 6 Jul 2026 18:50:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1783389012;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pTk3bWiQbEnp9NY0pyiBv+XodrV//lC9BoLhtxJEGoA=;
+	b=iGuO03QbteJKA9aIihTwgX5AqWkgRqrX05rDKfDWlAWxDk7BNPcW0y5ca39Xps5t56uFb/
+	16s4rxVCluAQKhlh0zAY3smINquMtK0ZkTszFMX2OyuRCmfoPf5vVYOqLwrcLGYWDiEW8h
+	Qjag8AlxR8nfinWL6s7frKd+vQzT4ls=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Ziyang Men <ziyang.meme@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>, 
+	Emil Tsalapatis <emil@etsalapatis.com>, Shuah Khan <shuah@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, kernel-team@meta.com, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] selftests/bpf: compare BPF and memory.stat memcg
+ stat readers
+Message-ID: <akxW5dzvR9e2CfGq@linux.dev>
+References: <20260704045617.487664-1-ziyang.meme@gmail.com>
+ <bc12730fe6eccde10d36e6544607ae2464357e05.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc12730fe6eccde10d36e6544607ae2464357e05.camel@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	MISSING_MIME_VERSION(2.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17550-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:eddyz87@gmail.com,m:ziyang.meme@gmail.com,m:ast@kernel.org,m:daniel@iogearbox.net,m:andrii@kernel.org,m:memxor@gmail.com,m:bpf@vger.kernel.org,m:martin.lau@linux.dev,m:song@kernel.org,m:yonghong.song@linux.dev,m:jolsa@kernel.org,m:emil@etsalapatis.com,m:shuah@kernel.org,m:roman.gushchin@linux.dev,m:kernel-team@meta.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ziyangmeme@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17547-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:ridong.chen@linux.dev,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:juri.lelli@redhat.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	TAGGED_RCPT(0.00)[cgroups];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,iogearbox.net,vger.kernel.org,linux.dev,etsalapatis.com,meta.com,kvack.org];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:from_mime,linux.dev:dkim,linux.dev:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E8A89718229
+X-Rspamd-Queue-Id: 841B2716AF1
 
-Hello, Waiman.
+On Mon, Jul 06, 2026 at 05:17:50PM -0700, Eduard Zingerman wrote:
+> On Fri, 2026-07-03 at 21:56 -0700, Ziyang Men wrote:
+> 
+> [...]
+> 
+> Hi Ziyang,
+> 
+> I'm a bit hesitant adding 2.5K lines of code to the BPF selftests,
+> as this code would need to be (a) maintained, (b) run at each CI invocation.
+> Hence, the tests added need to be relevant for the BPF sub-system.
+> 
+> Regarding the benchmarking part, as you state yourself:
+> 
+>   > In my testing (a 60-CPU VM) the BPF path is roughly an order of magnitude
+>   > faster than the per-cgroup memory.stat parse for a whole-tree scan, mainly
+>   > because it avoids the per-cgroup open/read and string parsing.
+> 
+> With this, I think the benchmarking code can be dropped altogether.
+> 
+> Next, the three memcg_stat_{reader,churn,churn_percpu}.c files share a
+> lot of utility code almost verbatim (e.g. tree definition/construction).
+> Such duplication should be avoided.
+> 
+> Finally, from the BPF point of view the test exercises the following functionality:
+> - kfuncs:
+>   - bpf_mem_cgroup_page_state
+>   - bpf_mem_cgroup_vm_events
+>   - bpf_put_mem_cgroup
+>   - bpf_get_mem_cgroup
+> - main iterator logic.
+> 
+> All kfuncs but bpf_get_mem_cgroup() are thin wrappers around mm/memcontrol.c code,
+> all kfuncs including the bpf_get_mem_cgroup() are already exercised in the selftests.
+> The iterator logic itself is covered by 8 sub-tests in the prog_tests/cgroup_iter.c.
+> Hence two questions:
+> - What do these new tests add in terms of tests coverage?
+> - Why do BPF selftests need to exercise the churn and churn_percpu scenarios?
+> 
+> Shakeel, could you please comment as well?
 
-On Thu, Jul 02, 2026 at 05:47:56PM -0400, Waiman Long wrote:
-> It is assumed that a given cpuset cannot be both a source and a
-> destination cpuset. [...] it will print a warning and fail the attach
-> operation in these unexpected cases [...]
+Hi Eduard,
 
-This assumption doesn't hold - the WARN_ON_ONCE() and -EINVAL fire on a
-legitimate migration. It's the case sashiko flagged, and it does reach
-can_attach().
+Thanks a lot for taking a look. The main motivation I had behind requesting
+Ziyang to send this series (beside making him learn the tooling and process of
+sending patches to lkml) was to have a reference implementation and performance
+comparison for BPF based cgroup/memcg stats collection.
 
-Threaded subtree with partial cpuset delegation:
+However you have correctly pointed out that selftests might not be the right
+place for such kind of code as selftests are more focused on functional tests
+and run by a lot of CIs while this is a performance benchmarking code.
 
-  P (+cpuset)
-  |- R (cpuset)        <- destination
-  |  `- C (no cpuset)  -> effective cpuset == R
-  `- W (cpuset)
+I am wondering if there is a place for this benchmarking code in kernel under
+tools folder but archiving it on lkml might be good enough and should be easily
+searchable. Anyways thanks again for your time.
 
-Group leader in R, thread_a in C, thread_b in W; migrate the whole
-process into R (echo $PID > R/cgroup.procs). thread_a moves C->R: its
-cgroup changes so compare_css_sets() keeps it in the taskset, but its
-cpuset css is unchanged (C inherits R's), so task_cs() == cs == R. cpuset
-is in ss_mask because thread_b (W->R) changed. can_attach() then tags R
-as a source (thread_a) and the destination (thread_b):
-
-  WARNING: kernel/cgroup/cpuset.c:3054 at cpuset_can_attach_check+0xcd/0x130
-   cpuset_can_attach+0x131/0x2f0
-   cgroup_migrate_execute+0x367/0x450
-  cgroup.procs write returns -EINVAL
-
-So a thread already in the destination's effective cpuset does show up in
-the iteration when it reaches that cpuset through a different, non-cpuset
-child - compare_css_sets() keys on the cgroup, not the cpuset css.
-
-1-9 handle this correctly (the migration succeeds); the patch 10 guard
-regresses it. I've taken 1-9 into for-7.3 - please respin 10-11. One
-option: when oldcs == cs the pair is a cpuset no-op, so skip it and add
-it to neither list.
-
-Thanks.
---
-tejun
+thanks,
+Shakeel
 
