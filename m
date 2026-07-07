@@ -1,277 +1,186 @@
-Return-Path: <cgroups+bounces-17563-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17564-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id YDiuNRtATWptxQEAu9opvQ
-	(envelope-from <cgroups+bounces-17563-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 20:06:19 +0200
+	id L64wF6FETWo8xgEAu9opvQ
+	(envelope-from <cgroups+bounces-17564-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 20:25:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id D13DA71E7AD
-	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 20:06:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A0571EA06
+	for <lists+cgroups@lfdr.de>; Tue, 07 Jul 2026 20:25:36 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amd.com header.s=selector1 header.b=JcVxcm4f;
-	dmarc=pass (policy=quarantine) header.from=amd.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17563-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17563-lists+cgroups=lfdr.de@vger.kernel.org";
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=B8R9IeOm;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17564-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17564-lists+cgroups=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 09BD430091D3
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jul 2026 18:06:16 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B5395300FFA6
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jul 2026 18:25:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99D943B6E9;
-	Tue,  7 Jul 2026 18:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE5E43B6D3;
+	Tue,  7 Jul 2026 18:25:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011070.outbound.protection.outlook.com [52.101.62.70])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A311231987D;
-	Tue,  7 Jul 2026 18:06:09 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783447571; cv=fail; b=jvHQV22WSPKirBo2HTxa+AfxYenVt8kSU0Omxv2eBDwurX0Buw/BbZBN156kHoJPrti0lgKhDP6EnWwxrSiscnrJB+6s4+hyvGqtr27mlC3QGlKsGWJOV2XrSX5pRUiOmJT+DYho31KnyHch6GmYMFuvbSC+HvBdeJIYOmMqcp0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783447571; c=relaxed/simple;
-	bh=aqqtH58T6+kX3JWrMkQfWn3MxDyC0EDTbySkXT5a4tE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DjplWCbxArFtTWisz+81ujHOiQqsChA1ffdu1shR5VtdHdTiJxfWdorAyR6SPrtDAIBUncvmle6eAozk4JsSJx/fWDUkt1j4scV2zP816E+ZXYc/CeSMiLc3JvjQpdnOwZioI9tiH0k0gMq+C/DbBqqtXHVsqd9rwoQs2OcCKs4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JcVxcm4f; arc=fail smtp.client-ip=52.101.62.70
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Rs03I55BnEeQJ/63qLbNR3+iyMUQxuF2i/39jbXld2Q0AiAINpdRvlxKMxWJxtA4UTsUaM2Ndwi7ESXxfcM3R9knRdOtFCPzC4z2Mgd7jD5pj7Lsktc8VICZKjNSdDY0W5BAXqsiha2fsniDmWyjoO9/o0OstRD1Y3D3qJSZbiyXvjn4BKsfNwYaUrnkD+0IV/Xe2spqzxRQ0C1l2Z3+XE//uoXPyxtDpz2rj/S5cKTA9iIuq6Y3d/MQmLUEvNfxA1xrkANSv8F1Axej8mACl36olEEuVVj2Ge0fZCM6ynqA53By1sp4JVqXlNp45sphoSJJuQDOF85C9IvdjbKKpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4DV9QgixgGJnct6ZGQhlxnA1riKOLAEdR6ycjknjIwk=;
- b=rF95YC8QJxbpGE0qCwwVspDbfwK+O1M9RXBhx0gXIY30x5gfXM38XrsKwRT2U4uQwIpY5nCGoWKLPQBSQd2qpQiADnDYr8QwTQn27sh+2oBSnHyuZt1pan72a+vbZYyPZjgg3obePK35gzMy7vfrOvJxY1LYtKoJRxGq6v7zzyvF6y+j1iDTn8KoLvZAksr3fdLFV4eNqLCu5lmfRuXZsL4wuEsxR/JSuO6RVCJGjvdfRnwhalrnoMeYK9X9awg6l58YbZOV9qwkZSXujf1bcUVf8yiSbEBsj3WI6uZjKchJc1XFS1ZpaJ8gXfocAlXXxPSiwhzePJ8OvyHkacrMGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4DV9QgixgGJnct6ZGQhlxnA1riKOLAEdR6ycjknjIwk=;
- b=JcVxcm4fDw2HcYZu4FuXPbJ9PYE8E+VC/Hp0TH/BSeUqC2pBqxyEAcdsKhr5dgjifA+edA0cOfm+cY+nOTxQv3TRWPG1bhr3jQCyKMMzdRmGq1T/oKELDyexI1xj61/o+Vg9+UwKTFzbT5KxZ3oIVCScGfyx2/F6/MVDZDiQZrg=
-Received: from DM4PR12MB5039.namprd12.prod.outlook.com (2603:10b6:5:38a::18)
- by SJ0PR12MB6830.namprd12.prod.outlook.com (2603:10b6:a03:47c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.181.10; Tue, 7 Jul
- 2026 18:06:01 +0000
-Received: from DM4PR12MB5039.namprd12.prod.outlook.com
- ([fe80::762:6408:ca99:701d]) by DM4PR12MB5039.namprd12.prod.outlook.com
- ([fe80::762:6408:ca99:701d%3]) with mapi id 15.21.0159.015; Tue, 7 Jul 2026
- 18:06:01 +0000
-Message-ID: <9c8b4367-c029-4731-8ea8-b8263e11ada1@amd.com>
-Date: Tue, 7 Jul 2026 23:35:49 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 1/6] drm/amdgpu: Fix init ordering in
- amdgpu_vram_mgr_init()
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
- intel-xe@lists.freedesktop.org
-Cc: Sashiko-bot <sashiko-bot@kernel.org>,
- Friedrich Vock <friedrich.vock@gmx.de>, Maarten Lankhorst
- <dev@lankhorst.se>, Tejun Heo <tj@kernel.org>,
- Maxime Ripard <mripard@kernel.org>, Alex Deucher
- <alexander.deucher@amd.com>, amd-gfx@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, stable@vger.kernel.org,
- Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, cgroups@vger.kernel.org,
- Huang Rui <ray.huang@amd.com>, Matthew Brost <matthew.brost@intel.com>,
- Matthew Auld <matthew.auld@intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, Simona Vetter <simona@ffwll.ch>,
- David Airlie <airlied@gmail.com>,
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>, linux-kernel@vger.kernel.org
-References: <20260703130541.2686-1-thomas.hellstrom@linux.intel.com>
- <20260703130541.2686-2-thomas.hellstrom@linux.intel.com>
- <9eae1a5c-d2ef-4d75-a581-58299ca37a1f@amd.com>
-Content-Language: en-US
-From: Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>
-In-Reply-To: <9eae1a5c-d2ef-4d75-a581-58299ca37a1f@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN4P287CA0051.INDP287.PROD.OUTLOOK.COM
- (2603:1096:c01:270::8) To DM4PR12MB5039.namprd12.prod.outlook.com
- (2603:10b6:5:38a::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07C143C7D6
+	for <cgroups@vger.kernel.org>; Tue,  7 Jul 2026 18:25:29 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783448731; cv=none; b=aMAyytLnp8sXBYBcRmyKwQ8gVVog0x8YFSUkhZgXueaC/OL5Pwkhv3tx6V9s6NKG4/rIPZdgWqU4HEOoVd/5Q1cPlYDhwfPhPFwdGhLQHUVZaV4OB+e7Z5O/vSTIPyK5aUYSOgTX5SVimuW5jLzphm8gO2ETgFF4Z1O0sYacX0w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783448731; c=relaxed/simple;
+	bh=WDatReQ1diJxMnQ27gX5bGDxa/1pmcVJt3crJPRj6lE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d40R6d3c8p6rOBJue9alFgXENjGBpJiIKnA6ZkBovwLWBO92CPsIkvpJjHv1qL/eFYPs4jVUYjsrhXOsMRIHeOZ838ME1qYH9gE9Db+FAQr2cyTfujsZZFKbrmWmjIpMGDoXmHsvXSEfL8rtXk/z7/PsZmGNU1vWXrwkpJS5oiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B8R9IeOm; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B78FF1F00AC4
+	for <cgroups@vger.kernel.org>; Tue,  7 Jul 2026 18:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783448729;
+	bh=UodfhMWHJOTmOaDJSgPxCuKgMVhusPF/cnVjRAHGFO4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=B8R9IeOmQ/w6CN0kw35IGwlxxnZpEu99nbMX4c/Uz0ZcV4rgegRJI/jZiko7++/tb
+	 c7yvthhV1zfsHkolcBeQOX7HTX0sx6KH3vp7Q3YMAFi/s1gGzciFZzeli/XT38Q9XE
+	 jIUj0Ye1Vn5XWYnys16iy4Z9wVohuuK2k9yXDeBgmwTe3+cqlvBbVGw5OjeRnTJXaA
+	 62BCKeNy8ZiHZVWFCkEqfEs0r5Bljrmi6XyIu93HnVEejHreDAPSoHcaQutzY/dk8r
+	 cqIupSIZo4R9LvAy9nA4m6/IzjGrfi2efqDUvgDh8BiMKdxtEm00EAfxT4kT2Xs2Xg
+	 r6ZyRyoPdR1gA==
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-699fbcd23ccso5958692a12.1
+        for <cgroups@vger.kernel.org>; Tue, 07 Jul 2026 11:25:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/aqCxiyvvP4829aXGLz6MBffvSfhMB2WIe415BrvrfgDvKzAhEHKnsTw8y120WjJIG2ZMK4/PQ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7CSuDvFtTr2tlZ+9HnNMkxhCoGoICthDRCPCuvEdMLLch0TK/
+	DbqdoiWYnM3nqY2sJ47Zgspx2RUxl6BtpzUt+SRv0c+BDSZ/sMIvYDwg/FqiyrNMA2LJEglDrwD
+	Yid9Qkjd7017MV7rbmHkM7yPvJ9O4Bpc=
+X-Received: by 2002:a17:907:ea8:b0:c15:b27d:51e4 with SMTP id
+ a640c23a62f3a-c15b27d5823mr202693266b.20.1783448728654; Tue, 07 Jul 2026
+ 11:25:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5039:EE_|SJ0PR12MB6830:EE_
-X-MS-Office365-Filtering-Correlation-Id: 11e68940-b02a-4da3-666f-08dedc526719
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|23010399003|7416014|376014|366016|1800799024|18002099003|22082099003|4143699003|11063799006|56012099006|6133799003;
-X-Microsoft-Antispam-Message-Info:
-	+3E3fQqn6lD7wdGfgeN+sD33bzFP5EtcXa72j+hENQG2cpmW8gW1DL0SvSLQvKdCIFOGu70N29Qf8IAD3oR9jj7KsJ9N2sIXALkwOuxqQdE7t7+feVUghu+h0e63TvtJYujp0I75NqSkRN0QCNun3lkvYflO4xRH+o2LEOokeH4FeuusB/SyZMGk3fRWKCdpQ5s7Os7atte+P0h78p3nGk5rVrOrVYk6pPx0/6NooCoJeWFyd2bJAvTcmEs+ixjuq0GLbya7hTJPWqSRgBoiI4sHdpOu4el3i9KfjVpb/0KztBqpX5bnbyXly5rCZerZqve2QkoTOdtCmn0kZCvh8+RIl2IjgakJVohjGDV96z4enXvD/VxiK4CzUf9ttdt+/FUf91wHrQGzYY6GmI9AqGU8FhxACrAdGh6nm1I9oVtwMI22iT15QSMPoP7Jw8E3bLUQ0l1zsOgeAwQtIAxF8uz6tpoEKE2okCKPpWLKGntsLEnUQM+Eo2N3I6ik0e17SIT/2Sx//3GGOwg0CCxhWw1s6MyR1+CaQrVRboY7AagAdD8sbn2r5i+x60Yz2dqhiV9tTrZZ6+x81l4okK31s4p8cjOlVzWZzz+ca3dCcPk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5039.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(7416014)(376014)(366016)(1800799024)(18002099003)(22082099003)(4143699003)(11063799006)(56012099006)(6133799003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cVN5OUd0aFlzQWtyMjEvWlVjQ2VUS25hdFlyNTVjdTJSK0MreTltTDgwczZp?=
- =?utf-8?B?dXdFWFIrczJ1aUNjaXd5WjN5WCtJQy9yTWlrZUg0TE4rRzBzdnBPVWRSYUVp?=
- =?utf-8?B?TC9mdFNhTS9BYXdnTFBxQUswcTlFNmZvMlhVKyt6cTNyOFd3ODdaY0ZvQS8z?=
- =?utf-8?B?UHFWLytiQjZTdURSZnc0T1BPQThnMDU4RUFIWXQyVS9EWWJnOVhJR2NpNXF1?=
- =?utf-8?B?cVlvSnRtVmQyVU9XT21HcHVFYWVkeitlSWRzdkFUNHdndk1UczJobGFnMEND?=
- =?utf-8?B?OHhUTWozOG9COTVzTHBwZ0VHZ1c5bVhaMk1Oa2RNWkVtbytpNFBlNzN4Mit6?=
- =?utf-8?B?KzBTMUJFREtXa0doTHVCZmRNcVczRHVlZ0Q2cmx6Mi9jcENxZGc3Y1FZOGJs?=
- =?utf-8?B?QWFVR1lET01yWCtFMllEVll2eW9RRnlLVUducENLdHlmWnk1VGNKWXFJN1Rj?=
- =?utf-8?B?d1hCZ3h1WjBvVTArbTYvMExYdmNBUGIyNy9CQ3h6VGo3WUtxbjdMRGM5djYy?=
- =?utf-8?B?dDU1MTI2aFhvQkxicjZYbVdvemdJOUFzZXZtdjNYZ0J0a2hnZTNISWVkY1Nv?=
- =?utf-8?B?L2xJMWF5RmU0UGNnVW5UVUp2YnBmSlFkQnNMRnIxcUlDTEVkL0FLWlJHOENm?=
- =?utf-8?B?Nk1ibmV5amdTZjhwM20zS20zUXZFTEpYT0VWam5pMDBNUDFOQ082SzdQbERy?=
- =?utf-8?B?eW5WT256MGNudWkrSE9UYU1VWE44MjNTdEdxclU5RVZENVdzL0MyUG45dHUy?=
- =?utf-8?B?Q05FUzFSOHdJUHI4dHhBdG1Iam01ZU50ekhYb0NUTkhQclJwdklPbU01eXhQ?=
- =?utf-8?B?cjZRUCtHTXdqUzd0cks5UnY2REhXZWNNMmRBK3p5YXRILzRyK2Q0RmptYkFy?=
- =?utf-8?B?L3pvdTN3c3d1amd1Y0thRUZ1YjhNVW1KaTh5RzJjSTlCWUV0N1lGbTNnQUR2?=
- =?utf-8?B?MWpaeXpsWDJhVy9BKzIvRjZqUGVMa09PM0pvRzBnUWtEdFQyUTJncTFuZnlq?=
- =?utf-8?B?c0tXN0t2ZWhWVDAvN3RUd0pWYVE3UjN2QXFQV2VsOHUrYmMzODlyTysyMDhr?=
- =?utf-8?B?dE5KcVgzeUhGakFKM1kwbTJjNjJuZHM0UVhLV1FPQkg0OXplczVlMVhSUFFq?=
- =?utf-8?B?eFpWZFo2c2hCbkhIWjNpbkJCTmNsYXVrOUIvNVFMaXBQaTg0blBqd2tJVU53?=
- =?utf-8?B?aFNCdU5XSUZtdnJ4RnJjSS9RRjdvd2YzbmNZVlFkRysxcnRiSE1Pc1g5UmNi?=
- =?utf-8?B?TTNNMjgzeS9zNGVvUURUeVNnTmdHQjRiNGMrZzdGTHJweW0zeGd0Z3VhYUl4?=
- =?utf-8?B?M1FwVkxmbVEvYkIwdjRaM0hobXpYQUY4UHNKQXF3VVZNanA5aGhHSUl6NUtS?=
- =?utf-8?B?L1RhM21heXBnMWR2aWpZSTl2WnFEYVV4WjN6QUNSVGp1Zy92dHJ2bnBIZ3lh?=
- =?utf-8?B?VGJPdHpkbzM0TnR4SDFiSEQ4Z1Z1bTd4bWJMWllWNFRlU2R6ZmFPL21KQTVG?=
- =?utf-8?B?ZmdDanZrT2ZGTnhTNUM3YjlDZHVTcXBsSk9qQmhxbjJCb1YvTG9WRExkUkdm?=
- =?utf-8?B?N3JHdkNrR3c4M1FKNHZzbUp6YXZFRXRzS0pzZzFlaTc3OXJHRE5KL3FqalBu?=
- =?utf-8?B?UFJEd2ZhMG02LytDOWxDUVlYRlUvTmZGcHBPTHoxVmV5SWExeEtSTHlXZ240?=
- =?utf-8?B?YTh3MVppTVhpeDR2Vkk3MnBWRDlnWWlVK0FUWDFmMldYY29Gb2RqemFKSStl?=
- =?utf-8?B?UlRseTBkV3NVVUd1b2JFNTNNaytFRVhadXplcEVsQnZJd3M3TS9ZQkhndXh6?=
- =?utf-8?B?RjNGeGYvUG1Ta0wyUnMwOXMyS1dDRXg3VVhtWmtCL29PQU56REhyY3BwS0FE?=
- =?utf-8?B?VWlobzRtVHk5dTJxUzRQcU02bEJjd2VyV2ZCenQ2YVh1cjN6bUZScFNSUHpB?=
- =?utf-8?B?K205bFJKdHdpVEtCd2QvdEZMaDRGY0VQb3NDMzRtdlhXeUVYS3IzRTJtVnJD?=
- =?utf-8?B?bjhjMk5TbWNwK2FSbDBidTRKZTlCeUtxTkM0M2VzVElWK0tvdzd6MGlEVkJh?=
- =?utf-8?B?NnZhR3Yxd2orcXdQZ2pVcE9jSGFvTU54S2lzZ2ZYc25iT3cwN0FjNG9SS1Ew?=
- =?utf-8?B?cmMyQUdEZ0plSnhHWEI5U1hHSXMxUXRXeTRqd01GaExrdTJtcmNTQ0p0VWwr?=
- =?utf-8?B?YjNyemZpaysrQVZEbjlhR0NnU1NrMDk3Y3NQMlliWWVIREJ1dm02MTlNR1lE?=
- =?utf-8?B?bGQvWTdQT2NIMVBCMzNxQjBjMWcxQldBRm5wVml0Ui9LT2pxMlZyV1JpMzIy?=
- =?utf-8?B?NW56TXI1b0ZwY3pmMjcvenJTemIzV1lTT2dMaFcyYklOVW5Ebm9nUT09?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11e68940-b02a-4da3-666f-08dedc526719
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5039.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2026 18:06:01.1760
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0HWtbM/zxRrjWtGuprl94nTxAAPlscQjYOYT5HjTCDbiFORb0+hTCI5EL1EzSrAme5GJx0FpObtTzl/AT2UWwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6830
+References: <c0970cee-42c2-4844-b88e-229853f08e90@linux.dev>
+In-Reply-To: <c0970cee-42c2-4844-b88e-229853f08e90@linux.dev>
+From: Yosry Ahmed <yosry@kernel.org>
+Date: Tue, 7 Jul 2026 11:25:16 -0700
+X-Gmail-Original-Message-ID: <CAO9r8zNJh65SZzdW8Cc8_8N5Wr+ORuRtU3kuaAX_DhLaESFYTA@mail.gmail.com>
+X-Gm-Features: AVVi8CfOmsujy8Bb6nVmdtBpnu4IHHs228GbFDG2jlrs3NnSjCrtP5K0xKzG314
+Message-ID: <CAO9r8zNJh65SZzdW8Cc8_8N5Wr+ORuRtU3kuaAX_DhLaESFYTA@mail.gmail.com>
+Subject: Re: cgroup/test_zswap failed with "zswpout does not increase after
+ test program"
+To: Zenghui Yu <zenghui.yu@linux.dev>
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	hannes@cmpxchg.org, nphamcs@gmail.com, chengming.zhou@linux.dev, 
+	tj@kernel.org, mkoutny@suse.com, Shuah Khan <shuah@kernel.org>, mhocko@kernel.org, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17563-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:christian.koenig@amd.com,m:thomas.hellstrom@linux.intel.com,m:intel-xe@lists.freedesktop.org,m:sashiko-bot@kernel.org,m:friedrich.vock@gmx.de,m:dev@lankhorst.se,m:tj@kernel.org,m:mripard@kernel.org,m:alexander.deucher@amd.com,m:amd-gfx@lists.freedesktop.org,m:dri-devel@lists.freedesktop.org,m:stable@vger.kernel.org,m:natalie.vock@gmx.de,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:cgroups@vger.kernel.org,m:ray.huang@amd.com,m:matthew.brost@intel.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:tzimmermann@suse.de,m:simona@ffwll.ch,m:airlied@gmail.com,m:cascardo@igalia.com,m:rodrigo.vivi@intel.com,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[arunpravin.paneerselvam@amd.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,gmx.de,lankhorst.se,amd.com,lists.freedesktop.org,vger.kernel.org,cmpxchg.org,suse.com,intel.com,linux.intel.com,suse.de,ffwll.ch,gmail.com,igalia.com];
+	TAGGED_FROM(0.00)[bounces-17564-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,cmpxchg.org,gmail.com,linux.dev,kernel.org,suse.com,linux-foundation.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:zenghui.yu@linux.dev,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:hannes@cmpxchg.org,m:nphamcs@gmail.com,m:chengming.zhou@linux.dev,m:tj@kernel.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:akpm@linux-foundation.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[arunpravin.paneerselvam@amd.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[amd.com:+];
+	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D13DA71E7AD
+X-Rspamd-Queue-Id: B9A0571EA06
 
-
-
-On 7/3/2026 6:38 PM, Christian König wrote:
-> Arun please take a look at this.
-Sure Christian. This fix looks correct to me.
-Reviewed-by: Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
-
-Thanks,
-Arun.
+On Tue, Jul 7, 2026 at 2:38=E2=80=AFAM Zenghui Yu <zenghui.yu@linux.dev> wr=
+ote:
 >
-> Thanks,
-> Christian.
+> Hi,
 >
-> On 7/3/26 15:05, Thomas Hellström wrote:
->> drmm_cgroup_register_region() is called before INIT_LIST_HEAD() and
->> gpu_buddy_init() in amdgpu_vram_mgr_init(). If it fails, the function
->> returns early and bypasses those initializations.
->>
->> Since adev->mman.initialized is set to true before amdgpu_vram_mgr_init()
->> is called, a failure triggers amdgpu_ttm_fini(), which calls
->> amdgpu_vram_mgr_fini(), which then:
->>
->>   - Calls list_for_each_entry_safe() on reservations_pending and
->>     reserved_pages, whose list_head::next pointers are zero-initialized
->>     (NULL). The loop does not recognize them as empty and dereferences NULL.
->>
->>   - Calls gpu_buddy_fini(), which iterates free_trees[] unconditionally
->>     via for_each_free_tree(). Since mm->free_trees is NULL
->>     (never allocated), this dereferences NULL.
->>
->> Both result in a kernel panic on the module load error path.
->>
->> Fix by moving drmm_cgroup_register_region() to after the list and buddy
->> allocator are fully initialized, so the teardown path is safe to run.
->>
->> Reported-by: Sashiko-bot <sashiko-bot@kernel.org>
->> Closes: https://sashiko.dev/#/patchset/20260428073116.15687-1-thomas.hellstrom@linux.intel.com?part=4
->> Fixes: 2b624a2c1865 ("drm/ttm: Handle cgroup based eviction in TTM")
->> Cc: Friedrich Vock <friedrich.vock@gmx.de>
->> Cc: Maarten Lankhorst <dev@lankhorst.se>
->> Cc: Tejun Heo <tj@kernel.org>
->> Cc: Maxime Ripard <mripard@kernel.org>
->> Cc: Christian König <christian.koenig@amd.com>
->> Cc: Alex Deucher <alexander.deucher@amd.com>
->> Cc: amd-gfx@lists.freedesktop.org
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: <stable@vger.kernel.org> # v6.14+
->> Assisted-by: GitHub_Copilot:claude-sonnet-4.6
->> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->> index 2a241a5b12c4..ac3f71d77140 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
->> @@ -918,9 +918,6 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
->>   	struct ttm_resource_manager *man = &mgr->manager;
->>   	int err;
->>   
->> -	man->cg = drmm_cgroup_register_region(adev_to_drm(adev), "vram", adev->gmc.real_vram_size);
->> -	if (IS_ERR(man->cg))
->> -		return PTR_ERR(man->cg);
->>   	ttm_resource_manager_init(man, &adev->mman.bdev,
->>   				  adev->gmc.real_vram_size);
->>   
->> @@ -935,6 +932,10 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
->>   	if (err)
->>   		return err;
->>   
->> +	man->cg = drmm_cgroup_register_region(adev_to_drm(adev), "vram", adev->gmc.real_vram_size);
->> +	if (IS_ERR(man->cg))
->> +		return PTR_ERR(man->cg);
->> +
->>   	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_VRAM, &mgr->manager);
->>   	ttm_resource_manager_set_used(man, true);
->>   	return 0;
+> Running cgroup/test_zswap on my arm64 box failed immediately with:
+>
+>   [root@localhost cgroup]# ./test_zswap
+>   TAP version 13
+>   1..8
+>   # zswpout does not increase after test program
+>   not ok 1 test_zswap_usage
+>   [...]
+>
+> I'm sure that pages are successfully written into zswap by checking the
+> count_memcg_events(.., idx=3DZSWPOUT, ..) trace events. But "zswpout_afte=
+r"
+> in test_zswap_usage() is 0 and results in this failure.
+>
+> I guess the problem is that (in this particular case) the memcg stats has
+> not been flushed when userspace reads it.
+>
+>  memcg_stat_format()
+>    mem_cgroup_flush_stats()
+>      __mem_cgroup_flush_stats(.., force=3Dfalse)
+>        needs_flush =3D memcg_vmstats_needs_flush();
+>
+>  static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
+>  {
+>         return atomic_long_read(&vmstats->stats_updates) >
+>                 MEMCG_CHARGE_BATCH * num_online_cpus();
+>  }
+>
+> I can image that memcg_vmstats_needs_flush() will return false because I'=
+m
+> testing a 16k-page-size kernel on a box with 96 cpus..
+>
+> As we have a periodic flusher flushed all the stats every 2 seconds, I us=
+e
+> the following diff to wait the flusher to expose the accurate stats to
+> userspace.
+>
+> diff --git a/tools/testing/selftests/cgroup/lib/cgroup_util.c b/tools/tes=
+ting/selftests/cgroup/lib/cgroup_util.c
+> index 3ce134509041..9596f294da0b 100644
+> --- a/tools/testing/selftests/cgroup/lib/cgroup_util.c
+> +++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
+> @@ -95,6 +95,8 @@ int cg_read(const char *cgroup, const char *control, ch=
+ar *buf, size_t len)
+>
+>         snprintf(path, sizeof(path), "%s/%s", cgroup, control);
+>
+> +       sleep(2);
+> +
+>         ret =3D read_text(path, buf, len);
+>         return ret >=3D 0 ? 0 : ret;
+>  }
+>
+> I have no idea how to "fix" it properly. Please have a look!
 
+We were discussing a way for userspace to explicitly trigger a flush
+before, which would come in handy for testing. However, we decided not
+to expose flushing as a concept to userspace.
+
+Unfortunately I think the only way to "fix" the test is to allocate
+more memory, enough to trigger a flush on most interesting setups.
+Perhaps we should scale the amount of memory with the number of CPUs
+so that we don't have to keep playing whack-a-mole.
 
