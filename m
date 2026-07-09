@@ -1,83 +1,113 @@
-Return-Path: <cgroups+bounces-17624-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17625-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8F5RJQ60T2oVnAIAu9opvQ
-	(envelope-from <cgroups+bounces-17624-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 16:45:34 +0200
+	id d2X4NHy8T2oWngIAu9opvQ
+	(envelope-from <cgroups+bounces-17625-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 17:21:32 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1C887326DB
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 16:45:33 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F25D5732C78
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 17:21:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=Btk+aZVn;
-	dmarc=pass (policy=none) header.from=linux.dev;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17624-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17624-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b="TzAp/f7N";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17625-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17625-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9DE393162810
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 14:24:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5FEF83008D3D
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 14:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D940331EDB;
-	Thu,  9 Jul 2026 14:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F3F382379;
+	Thu,  9 Jul 2026 14:51:39 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CA41C84CB
-	for <cgroups@vger.kernel.org>; Thu,  9 Jul 2026 14:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 367F0381E95
+	for <cgroups@vger.kernel.org>; Thu,  9 Jul 2026 14:51:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783607076; cv=none; b=Bxsunok0u3hiD0g8GkJM4Np1NyR7WaKZk+V1DdeTwsQPeCJJrPE1OHg7+eQ7BsVHzA1Lj4n2KC0NdTJ8kYM/udHPl53HWB65H2IuIN8EwWrA5hJMHyVBikghICgPpykZThWu2fvP0hORjKgQe+vqFGx83ffxZNkP3bHutZHAaFc=
+	t=1783608699; cv=none; b=VJkSwgFCnUKzE3mZc/gPZwpWKl9dWmzDjKpSnGTFkXfYL4r5o5wdb+4gwiGgeUOLO0ZV0oK3IXmkjPbjmpVkPriLZXY9cV1qM35zVk4J5O+HjbhwxxCtQKclgL/M3jsPrU0OB/khpwonFDg03E9XaCNa5wZYwz8VwO74XbCMO/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783607076; c=relaxed/simple;
-	bh=tIHEGyT5ldvtsed8frzfaU4agFhwf0M8sm55kkXf0oA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cPKIRlPV3mL6XSRrOJnudua98rTqy3YwWIjQ356YENirLpvzqLGZKh98Gl8vu1uM5hiOb/nMpFI9uSU2SltnScqe23kS5eDbgP8747qO6Cz27nyWE71aUNQ7ivOm2V/vEdeIk5sNdcjP93ANdW5ZcXGuZkMsS5iKp8CcatHNGo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Btk+aZVn; arc=none smtp.client-ip=95.215.58.188
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783607062;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EUy+Ri2pT7wvVY/ajX0BV3e3H7R/seUWuMeezghtcHk=;
-	b=Btk+aZVnVrfetD0/oZcoqxzqskUtquanN86nBAQQy2GMIakYKxG6K18qS76Eb9X434e39/
-	TvJH+sZo7/dtDfDgg+nTqQa5FHgW7AALn/bO2K+ZBt7ZDy5exPzUJd+zdv2IRElB9yMvXd
-	Q9FVDnwysjJC2HD9vFL2xq2PDCIZK9k=
-From: Usama Arif <usama.arif@linux.dev>
-To: Usama Arif <usama.arif@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	david@kernel.org,
-	ljs@kernel.org,
-	liam@infradead.org,
-	vbabka@kernel.org,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	kasong@tencent.com,
-	qi.zheng@linux.dev,
-	shakeel.butt@linux.dev,
-	axelrasmussen@google.com,
-	yuanchu@google.com,
-	weixugc@google.com,
-	chrisl@kernel.org,
-	nphamcs@gmail.com,
-	baoquan.he@linux.dev,
-	youngjun.park@lge.com,
-	hannes@cmpxchg.org,
-	roman.gushchin@linux.dev,
-	muchun.song@linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1783608699; c=relaxed/simple;
+	bh=//lOxaht6je70+0qNvcjr8b5x27jQ+froO0+EuCVbKQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=trY1QCVmOTPkZKyAnJHHdmIOz2K8w/rGrSS8l/NRqOA1E3Kf6w9zkQvnToTz6et/RVLwBL0QRU1E6vnQYasgPMQ4iw20CndVmWTeDK/ODsd/rt4zH6lpLTMfz69qE0WxFZYaixd72kL2XCj3rcS6+r7nBAc6aAjCfHalmL0uOaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzAp/f7N; arc=none smtp.client-ip=209.85.215.170
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c8612812170so177869a12.2
+        for <cgroups@vger.kernel.org>; Thu, 09 Jul 2026 07:51:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783608697; x=1784213497; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=UT00T4Ch1e//1CySv92Ba/vSdArYfFyOvtjbEmuqjN4=;
+        b=TzAp/f7NN/EkEvuJ9Likje7BK/CTS5geolbApgJ1dLIgfRE2KHxnfW16m7oYpCHm/s
+         7hqp78UpfU5O3NiL6kxn1Yf1V+g8bcbma+SW6/HDABAPRvChRGYNCAgT6TxDMQ0BmTSb
+         uDRNwA7C+2mM85V2E2ySl8pbpDDYls9aZBkI5CEdifrjIGTfFiLWl0ER5Wgqa/5dJn/S
+         U3XLumBBv9x8mLFGl7MnvcCmc4cwZSQ35Zt8Lr93jA+Se8K4xG7Opf18fzDv2+mDbPqz
+         FAtNOEDBg2NAw1ziIG+wEef69Uxm6h2lftH+SBthq8JKBjZQw3wEAhFfjyZxZdyPhNPl
+         6bXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783608697; x=1784213497;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=UT00T4Ch1e//1CySv92Ba/vSdArYfFyOvtjbEmuqjN4=;
+        b=lAq6ARv3KHQdNAvZUu+EPUD3b/ypwURztpn5KRcZrC2fsvzBGhZB8J5XJsL2oLB2+G
+         tJZUR9Dj6ITSvOakvcnHzcSV3JzrzVy8qu82tT/MrmmPx3Yh2dtDVrswf6H5XMqinS9z
+         1E5OPJ8CueFB7f6d+kdkTLh5W7gXqOZb2mf1BLBFAz2ceClgUtv9JWOtDRFqOnzVYyvU
+         2tyMbwA7lQsYOpm+L2sUdr2kwVGZAAW0nPRYdIOaR52pvoYYQzdHeKKnAsakB17j+pPI
+         un8xKWl0Zf5TlhfdDnM96mW7oRQ7x09KYkbtfacS8qPrwa5EQJXTDDdzztEY7KFzale3
+         zq9Q==
+X-Forwarded-Encrypted: i=1; AHgh+RrEJ8QC8CiL/ePIQh8ok+1JaKca4Ad33WsfWDC3cfNXdXV4BEKy0VwlJdhPhbc0KImOXxJOz7tK@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5oCeQw4ISZLVBJY1IY6luUv3dqfU5SiAhY5wgxEvsew9MbdmU
+	TjNv7vevy9IJXFfA+tq9/8Q4eaaRZIe3xYB0KGpuuEI+d9UKYezNvgrA
+X-Gm-Gg: AfdE7cmrOppiWoy38rLYpa2PvlmC/SH+6wDHYLJbjUS3tdITSHUNQ7v+XulVzHZ+rtv
+	4WGG77V0hwbn2BvxXlSTgBmIyaEWXQ5AKF756s2Aj7q/GoEMhiDc/QpP6uBpPgciM7zwNTdNP+P
+	7Al5ixlRGgJ4/IvVhnRhewpvvjFo39N/eQ3J2HGGj0up3LmslEc/GC11jwuNqcIbOH9FFhd7XRi
+	oD6kvArH4fzkkO9MeZZFlYQhEaJht5HhdVhby8eOi+XQf8kwAda0wMl7W5fA0F/bim6700iPakh
+	VQX+bqJVZLdHvJSyJATeGV7gHQnhMJq5aZ5zPl73dh3M2piYa42eIrXBRDZfXvIIbI7TcOMP3ko
+	g35vFSI1UF0fEqKxkduKujIb1GGPZVnQZbTuMV4tUUkw9uSZB0Bcza4HFcM98qQXuhUuxnFSY+q
+	wOwp4Enfca35m+wshnn8G0KA93Qn2MRb7gHfbyTvm6+DaZcBXG1T5zcd0u7hK/N4XLHqXlLdHIN
+	zWDhne7zVG25a9nqw==
+X-Received: by 2002:a17:90b:5287:b0:381:2788:a437 with SMTP id 98e67ed59e1d1-38a1f1dbefamr3445540a91.1.1783608697342;
+        Thu, 09 Jul 2026 07:51:37 -0700 (PDT)
+Received: from debian.lan ([240e:391:ea3:6910:38e7:894b:82e3:a58b])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-38a57dc5820sm1286917a91.10.2026.07.09.07.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2026 07:51:36 -0700 (PDT)
+From: Xueyuan Chen <xueyuan.chen21@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
-	rientjes@google.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH 0/1] mm/vmscan: reduce lru_lock contention via vmstat-derived scan-balance cost
-Date: Thu,  9 Jul 2026 07:24:11 -0700
-Message-ID: <20260709142412.91707-1-usama.arif@linux.dev>
-In-Reply-To: <20260706122954.3552990-1-usama.arif@linux.dev>
-References: 
+	Barry Song <baohua@kernel.org>,
+	Nanzhe Zhao <zhaonanzhe@xiaomi.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Chris Li <chrisl@kernel.org>,
+	Kairui Song <kasong@tencent.com>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Nhat Pham <nphamcs@gmail.com>,
+	Baoquan He <bhe@redhat.com>,
+	Youngjun Park <youngjun.park@lge.com>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	"Liam R . Howlett" <liam@infradead.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Qi Zheng <qi.zheng@linux.dev>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>,
+	Wei Xu <weixugc@google.com>,
+	Xueyuan Chen <xueyuan.chen21@gmail.com>
+Subject: [RFC PATCH v2 0/3] mm: avoid large folio splits when swap is unavailable
+Date: Thu,  9 Jul 2026 22:51:21 +0800
+Message-ID: <20260709145124.764807-1-xueyuan.chen21@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,100 +115,101 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,infradead.org,google.com,suse.com,tencent.com,linux.dev,gmail.com,lge.com,cmpxchg.org,kvack.org,vger.kernel.org,meta.com];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17624-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[27];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:usama.arif@linux.dev,m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:chrisl@kernel.org,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:youngjun.park@lge.com,m:hannes@cmpxchg.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:rientjes@google.com,m:kernel-team@meta.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-17625-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:baohua@kernel.org,m:zhaonanzhe@xiaomi.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:youngjun.park@lge.com,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:qi.zheng@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:xueyuan.chen21@gmail.com,m:xueyuanchen21@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER(0.00)[xueyuanchen21@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,xiaomi.com,cmpxchg.org,linux.dev,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,infradead.org,google.com];
+	FORWARDED(0.00)[lists@lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_NEQ_ENVFROM(0.00)[xueyuanchen21@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E1C887326DB
+X-Rspamd-Queue-Id: F25D5732C78
 
-On Mon,  6 Jul 2026 05:28:25 -0700 Usama Arif <usama.arif@linux.dev> wrote:
+This is an RFC v2 of Barry's original RFC patch, "mm: Avoiding split
+large folios if swap has no space":
 
-> The anon/file scan balance heuristic in get_scan_count() is fed by two
-> scalars in struct lruvec (anon_cost, file_cost) that every reclaim
-> producer updates under lruvec->lru_lock. The cost-recording work
-> itself is trivial, but it both contends for and contributes to
-> contention on lru_lock - which is often a contention point on
-> memory-pressured workloads. Specifically:
-> 
-> - shrink_inactive_list() re-acquires lru_lock at function exit just
->   to call lru_note_cost_unlock_irq().
-> - shrink_active_list() does the same after rotation accounting.
-> - workingset_refault() takes folio_lruvec_lock_irq() purely to
->   record the refault cost.
-> - prepare_scan_control() snapshots anon_cost/file_cost under
->   lru_lock.
-> - lru_note_cost_unlock_irq() itself walks parent_lruvec() and
->   re-acquires lru_lock on every ancestor, multiplying the cost
->   of every update by memcg-hierarchy depth.
-> 
-> This patch removes those producer-side acquisitions entirely. The
-> producer-local inputs (PGROTATE_*, PGRECLAIM_PAGEOUT_*) become
-> per-LRU vmstat counters; WORKINGSET_RESTORE_* already captures the
-> refault input. prepare_scan_control() reads the raw cost signal
-> lock-free from those vmstats and folds the delta into a per-lruvec
-> accumulator. A dedicated per-lruvec cost_lock, not touched by
-> isolate_lru_folios(), move_folios_to_lru(), or folio_add_lru(),
-> serialises the accumulator RMW and the lrusize/4 halving check.
-> Hierarchy aggregation is implicit in rstat propagation, so the
-> parent_lruvec() walk and the lru_reparent_memcg() cost-splice both
-> disappear.
+https://lore.kernel.org/r/20260618221720.71768-1-baohua@kernel.org
 
-Another update on this, I was profiling another Meta workload that suffers
-from very heavy reclaim and has a lot of cgroups. I ran:
+Barry's RFC showed the no-swap case with MADV_PAGEOUT on 16KB mTHP: the
+large-folio split counter increased by 1024 even though no swapout
+progress was possible. Skipping the split in that case kept the counter
+at 0.
 
-bpftrace -q -e 'profile:hz:99 { @[kstack, comm] = count(); }'
+This version keeps that behavior, but makes folio_alloc_swap() classify
+the failure. The helper has both the swap allocation result and the memcg
+swap charge result, so vmscan only needs to split when folio_alloc_swap()
+reports that a smaller folio might still be swapped out.
 
-The biggest entry was below:
-@[
-        lru_note_cost_unlock_irq+146
-        shrink_lruvec+1913
-        shrink_node+869
-        do_try_to_free_pages+197
-        try_to_free_mem_cgroup_pages+311
-        __mem_cgroup_charge+1832
-        filemap_add_folio+127
-        page_cache_ra_unbounded+347
-        filemap_fault+956
-        __do_fault+40
-        handle_mm_fault+4034
-        do_user_addr_fault+406
-        exc_page_fault+105
-        asm_exc_page_fault+34
-, Func___]: 5354
+Patch #1 adds page_counter_margin(), a small helper that computes the
+minimum remaining chargeable space across a page_counter hierarchy.
 
-5354 represents 51.42% of all kernel samples collected.
+Patch #2 uses that helper in the memcg swap path and lets
+folio_alloc_swap() distinguish large-folio swap allocation failures:
 
-A very signifcant amount of time was being spent just in lru_note_cost_unlock_irq
+  - -E2BIG: splitting may let smaller folios make progress
+  - -ENOSPC: no global swap space is available
+  - -ENOMEM: splitting is not expected to help, including memcg swap
+    charge failures with no remaining swap capacity
+
+Patch #3 makes vmscan split a large folio only when folio_alloc_swap()
+returns -E2BIG. Other failures keep the existing activation path and avoid
+destroying the large folio when no smaller part can be backed by swap
+either.
+
+RFC v1 -> RFC v2:
+- Split the RFC into helper, swap allocation, and vmscan patches.
+- Add page_counter_margin() and use it for hierarchical memcg swap
+  capacity checks.
+- Make folio_alloc_swap() return -E2BIG only when a smaller folio may
+  still be swapped out.
+- Return -ENOSPC for no global swap space and -ENOMEM when splitting is
+  not expected to help, including memcg swap exhaustion.
+- Make vmscan split large folios only on -E2BIG from folio_alloc_swap().
+
+Barry Song (Xiaomi) (1):
+  mm/vmscan: avoid pointless large folio splits without swap
+
+Xueyuan Chen (2):
+  mm: add page_counter_margin()
+  mm: distinguish large folio swap allocation failures
+
+ include/linux/page_counter.h |  1 +
+ include/linux/swap.h         | 10 ++++++----
+ mm/memcontrol.c              | 15 ++++++++++-----
+ mm/page_counter.c            | 20 ++++++++++++++++++++
+ mm/swapfile.c                | 21 +++++++++++++++------
+ mm/vmscan.c                  |  7 +++++--
+ 6 files changed, 57 insertions(+), 17 deletions(-)
+
+-- 
+2.47.3
 
