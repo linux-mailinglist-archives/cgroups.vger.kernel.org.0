@@ -1,210 +1,207 @@
-Return-Path: <cgroups+bounces-17600-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17601-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Du0/HFNuT2pjggIAu9opvQ
-	(envelope-from <cgroups+bounces-17600-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 11:48:03 +0200
+	id Sq3rI85uT2qBggIAu9opvQ
+	(envelope-from <cgroups+bounces-17601-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 11:50:06 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1E272F1DB
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 11:48:03 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4866672F20D
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 11:50:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=intel.com header.s=Intel header.b=AjVxzibm;
-	dmarc=pass (policy=none) header.from=intel.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17600-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17600-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=suse.com header.s=google header.b=PovcRIVX;
+	dmarc=pass (policy=quarantine) header.from=suse.com;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17601-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17601-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5A6FA30078AB
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 09:48:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A5161301704C
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 09:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D303E5ED7;
-	Thu,  9 Jul 2026 09:48:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F8B4028FA;
+	Thu,  9 Jul 2026 09:50:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C183FE66F;
-	Thu,  9 Jul 2026 09:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBFBA401A13
+	for <cgroups@vger.kernel.org>; Thu,  9 Jul 2026 09:49:51 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783590479; cv=none; b=kzwKQD3qDH39wuwdx7EbjX8gg3pB2XDEfzHGBX43/tzbyE/crvWKF4FVCNWBP7XXhXS79YgUjlEKPYAfWmAwAQlekvwhg/Q8lxg+4C5itzb4/HzlXJWbBhvTCUEnXAOiDsGRTvNU5PYjuCxySRm844qVayVQf0f2yJn+4rQhwtk=
+	t=1783590595; cv=none; b=u1zFU+WGEKPZosgygrHkIQu2/bIQof5IGLIDmnZyx6+gFVXwu6J3g/vnuhnkUMZ+vkM+MIfzsRjWIOhPzbhNH9vqrfHXFRqY3qNRF5r7J0n7vg3MqS4kxpRb7A6iNnZyXhItsVpMI6MwSB2yQ1Kr9uVYspzWYSC86dS4vX3cmYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783590479; c=relaxed/simple;
-	bh=SSuJLx9SE57A7qIxtS+wkjg1DUj+y6sjOCSXMaWQQak=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=peMla/atiKBRcKw8gM8VOU5Eh7xgmnvcntafQ+C134aXrorcIYi1Qe6aOKHvYFRNfyd1/8Sau2+ZnOqSTZLeYjXVC7gff84Tev2dosYBBgxYzKiNxL14zqJWi0NdY5QzVlPVTiKNN8g9MV9+peKmxA0OW6D+1XCRh1bsq91JbUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AjVxzibm; arc=none smtp.client-ip=192.198.163.15
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1783590475; x=1815126475;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=SSuJLx9SE57A7qIxtS+wkjg1DUj+y6sjOCSXMaWQQak=;
-  b=AjVxzibmyO214EGZ4e7wsWTmGI0V9C0XpRPvHLzBCJ+N3ET1xmcZUqLq
-   QMxK+rNDOKnqt6Z5VqAHo1bXEL4asZt0NZ54psLNrMKWr2AHTQJiOg571
-   AKm3u+mkiAuVF1Mp6bqRCs0yBi5K/NcAkvKurEAQX/Klys9eu1iqoo/8O
-   WDuhgHalTKm64LqYte2tkfsMtIW3ETlRf1LXab++Tp/kkiJwQn/hN/RtS
-   okLdv7tV71f2cFxAcWrwJHenFx+lwAJL67C+BGjk9uk8SvKs4tVo5S3yU
-   oCyDZaSugK3yPx4KjPvLEvkH5AcZUYT1aLEdgxXcGw7navMhDoRhogLKK
-   w==;
-X-CSE-ConnectionGUID: c1fheDprQeOYeLxTuwV7Og==
-X-CSE-MsgGUID: 7ufVOjO2TbGgD6QX7BL7Pg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11841"; a="84380019"
-X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
-   d="scan'208";a="84380019"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2026 02:47:48 -0700
-X-CSE-ConnectionGUID: 4ygGpAhyTYeln8kGMGST4g==
-X-CSE-MsgGUID: th6FiBwhSfakI1Bu3JJT6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.25,154,1779174000"; 
-   d="scan'208";a="258142936"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.244.44]) ([10.245.244.44])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2026 02:47:41 -0700
-Message-ID: <265737ad21d42a7509a8c43619975f0ef150f275.camel@linux.intel.com>
-Subject: Re: [PATCH v7] cgroup/dmem: implement dmem.high soft limit with
- proactive reclaim
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Jing Wu <realwujing@gmail.com>, matthew.brost@intel.com
-Cc: christian.koenig@amd.com, ray.huang@amd.com, matthew.auld@intel.com, 
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de,
- 	airlied@gmail.com, simona@ffwll.ch, tj@kernel.org, hannes@cmpxchg.org, 
-	mkoutny@suse.com, natalie.vock@gmx.de, mhocko@kernel.org,
- roman.gushchin@linux.dev, 	shakeel.butt@linux.dev, muchun.song@linux.dev,
- intel-xe@lists.freedesktop.org, 	dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, 	cgroups@vger.kernel.org, linux-mm@kvack.org
-Date: Thu, 09 Jul 2026 11:47:38 +0200
-In-Reply-To: <20260709061114.1623774-1-realwujing@gmail.com>
-References: <ak81RUK6vRZaMN2D@gsse-cloud1.jf.intel.com>
-	 <20260709061114.1623774-1-realwujing@gmail.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	s=arc-20240116; t=1783590595; c=relaxed/simple;
+	bh=jTFvyUggpn9b7ir5dJXF/0vV6aESSqllkJsE1EJX8x0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hG307hoUIIqPzmQ4WMOeTdjKcsXppIilYZumiS9tjXr2NlcdYCqDGm8bz+KMHxbRK8sSzaDtInCYlR4CvxTGJQiIzEQwqntEXE6m4//dKozOFif2Tiib/rHqtb94Ckkhr7wP1NCVJHruzXlRxabsCfmTYNxVgrnLGwCS9T/L1fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PovcRIVX; arc=none smtp.client-ip=209.85.128.54
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-493b61b52b6so15647435e9.1
+        for <cgroups@vger.kernel.org>; Thu, 09 Jul 2026 02:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1783590589; x=1784195389; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=MXemn+RWgfgniHXL+Z+iccp115cwF5wMpUS4nNjdkFs=;
+        b=PovcRIVXEPSF/FJeQlxhlzoXjqZOrbs3CiE5bUYuum/kokSouOcrfuWzkJz+QZ+EEU
+         bXZutBCPHghMPuDpORpgqEkhwf9ItYai/C2Wls7hXpV8JBACI0ISAzSZohMkmVLXApNn
+         fZlxwp5LQbRlt1W9WkBqq04596J259cyQGkTEsx5D5ai1Vpe/8NCZrLqgzS5soekf8Zd
+         N1CUWCeoaHYptaJl5ecJ1ZzDp9e7jZkz7Z27dZDIG4LQ8N1cI1J5HRitdDR0mFAuAiJK
+         tCK2hnhPLuoPo29pU3Y3TxhIiW33KldSOjrnaQ78LbO8JgLXI4Yv8EB+9OvmBldN7dCE
+         StRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783590589; x=1784195389;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=MXemn+RWgfgniHXL+Z+iccp115cwF5wMpUS4nNjdkFs=;
+        b=HzU+AR75no3HyhG+5F+UWpzo4sK+kXc5dRlXSDBg0t0CMUXnmsVmeuDVuVFqkfjAo5
+         bA4v7YlXkbMNGYIlsxImkfYYN3HvBpj+T8JcwTkWWaJmNBAX//8uym820bYz98cgjBrG
+         21c7ZuCOyq2TOwXcK9xt7Nl8ZjUboMLu5QBiKWYpu36yR9Du++LKi1j5hsjvmBLvd9Uy
+         WYOd6Lucd7WKX51+4XM5u+3apgNEcl2RpYloq+vdZgthzetMLH5uR9mgPZG9Ifv/XO0C
+         O+ueMMVGhsfSGP8UyCCeyUBoJglvUuXcXvfjQpkz++S2rqs/31ysEoC5kzx3x5dCDn9p
+         IJ3Q==
+X-Forwarded-Encrypted: i=1; AHgh+Rpdp8r8cTNekRpMKMPyYN7ASMMnMnycoNhn+eL82MPhpXo8YphS36LBE33UF/AYCHzao0YfD5kt@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAPs7yAWf+2366bn2IdJCRWtwTM2KZUxlerTLEvFs3n8WvuGYu
+	nq19U2UBW8DP+2Lx8knV4VqB1N/omzGDqJujLcv7L+qwLjIe0Ese7uUnkG1Fa8wcTn0=
+X-Gm-Gg: AfdE7cky+mhdzOGQO1doL+puD6WaseQWi3gFkUnPQv54P0SvdmEk1ZlYDBqExzhvrNy
+	WoAaQwDleG3lX9sj81JIwy4nti8EHByy9T/0ZabRFf5D52+fRV4rhCXEpKjHye7tqwYmhPrj4Zi
+	7rKbcsMmvHj20d0K5++Nnw9rQhf9rt1bL6uFj7BJsc8qFepkvDO8t9NbWXPX0TjQMalXv5SXAmR
+	s91fYAYnMpgNYphYrYofTpN0ZsbO2tDmw18uF0mwtC0cQmzSpA4/dXwbwkOJ7xEAwf+4AFchCS2
+	O7w/dG8damJ4zzv8MdjKpRmZYK0Q7jac5qZBCaoNl4+73p4u1er/0Wi1NPEbSUdKPWMTrMytj+U
+	JQ/G+tA0ApIZa3rPrN7a6aZD/PvefbzxfRsuhlQMu8MQVEclh1iyxF5EduAA4mJ6t/QMqWaq+rt
+	zQ19hc928TI+fqz+DwrI9I+2LyGOSh2W+BSQ==
+X-Received: by 2002:a05:600c:c1d7:20b0:490:9782:3eb8 with SMTP id 5b1f17b1804b1-493e68c3535mr47652155e9.25.1783590588957;
+        Thu, 09 Jul 2026 02:49:48 -0700 (PDT)
+Received: from [192.168.42.79] (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493eb6d53absm47837275e9.6.2026.07.09.02.49.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2026 02:49:48 -0700 (PDT)
+Message-ID: <3e2ae6e8-41ad-45f0-a885-131a5711c276@suse.com>
+Date: Thu, 9 Jul 2026 11:49:45 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] umh, treewide: Explicitly include linux/umh.h where
+ needed
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+ Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Philipp Reisner <philipp.reisner@linbit.com>,
+ Lars Ellenberg <lars.ellenberg@linbit.com>,
+ =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Jens Axboe <axboe@kernel.dk>, Johan Hovold <johan@kernel.org>,
+ Alex Elder <elder@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Michal Januszewski <spock@gentoo.org>, Helge Deller <deller@gmx.de>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+ Chuck Lever <cel@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
+ Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+ Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+ Joseph Qi <joseph.qi@linux.alibaba.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ Daniel Gomez <da.gomez@kernel.org>, Sami Tolvanen <samitolvanen@google.com>,
+ Aaron Tomlin <atomlin@atomlin.com>, Pavel Machek <pavel@kernel.org>,
+ Len Brown <lenb@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+ Danilo Krummrich <dakr@kernel.org>, Nikolay Aleksandrov
+ <razor@blackwall.org>, Ido Schimmel <idosch@nvidia.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>, David Howells <dhowells@redhat.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
+ Kentaro Takeda <takedakn@nttdata.co.jp>,
+ Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+ linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+ drbd-dev@lists.linux.dev, linux-block@vger.kernel.org,
+ greybus-dev@lists.linaro.org, linuxppc-dev@lists.ozlabs.org,
+ linux-acpi@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
+ linux-nfs@vger.kernel.org, ocfs2-devel@lists.linux.dev,
+ cgroups@vger.kernel.org, linux-modules@vger.kernel.org,
+ linux-pm@vger.kernel.org, driver-core@lists.linux.dev,
+ bridge@lists.linux.dev, netdev@vger.kernel.org, keyrings@vger.kernel.org,
+ linux-security-module@vger.kernel.org
+References: <20260708154510.6794-1-petr.pavlu@suse.com>
+ <20260708154510.6794-2-petr.pavlu@suse.com>
+ <ak6STbqZd-Q-c56v@localhost.localdomain>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <ak6STbqZd-Q-c56v@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[intel.com:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17600-lists,cgroups=lfdr.de];
-	FORGED_SENDER(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,intel.com];
-	FORGED_RECIPIENTS(0.00)[m:realwujing@gmail.com,m:matthew.brost@intel.com,m:christian.koenig@amd.com,m:ray.huang@amd.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:airlied@gmail.com,m:simona@ffwll.ch,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:natalie.vock@gmx.de,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:intel-xe@lists.freedesktop.org,m:dri-devel@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,s:lists@lfdr.de];
-	HAS_ORG_HEADER(0.00)[];
-	FREEMAIL_CC(0.00)[amd.com,intel.com,linux.intel.com,kernel.org,suse.de,gmail.com,ffwll.ch,cmpxchg.org,suse.com,gmx.de,linux.dev,lists.freedesktop.org,vger.kernel.org,kvack.org];
+	FORGED_SENDER(0.00)[petr.pavlu@suse.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[intel.com,alien8.de,kernel.org,redhat.com,linux.intel.com,zytor.com,linbit.com,kernel.dk,linuxfoundation.org,gentoo.org,gmx.de,zeniv.linux.org.uk,suse.cz,brown.name,oracle.com,talpey.com,fasheh.com,evilplan.org,linux.alibaba.com,cmpxchg.org,google.com,atomlin.com,linux-foundation.org,blackwall.org,nvidia.com,davemloft.net,paul-moore.com,namei.org,hallyn.com,nttdata.co.jp,i-love.sakura.ne.jp,vger.kernel.org,lists.linux.dev,lists.linaro.org,lists.ozlabs.org,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-17601-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:mkoutny@suse.com,m:tony.luck@intel.com,m:bp@alien8.de,m:tglx@kernel.org,m:mingo@redhat.com,m:dave.hansen@linux.intel.com,m:x86@kernel.org,m:hpa@zytor.com,m:philipp.reisner@linbit.com,m:lars.ellenberg@linbit.com,m:christoph.boehmwalder@linbit.com,m:axboe@kernel.dk,m:johan@kernel.org,m:elder@kernel.org,m:gregkh@linuxfoundation.org,m:rafael@kernel.org,m:spock@gentoo.org,m:deller@gmx.de,m:viro@zeniv.linux.org.uk,m:brauner@kernel.org,m:jack@suse.cz,m:trondmy@kernel.org,m:anna@kernel.org,m:cel@kernel.org,m:jlayton@kernel.org,m:neil@brown.name,m:okorniev@redhat.com,m:Dai.Ngo@oracle.com,m:tom@talpey.com,m:mark@fasheh.com,m:jlbec@evilplan.org,m:joseph.qi@linux.alibaba.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mcgrof@kernel.org,m:da.gomez@kernel.org,m:samitolvanen@google.com,m:atomlin@atomlin.com,m:pavel@kernel.org,m:lenb@kernel.org,m:akpm@linux-foundation.org,m:dakr@kernel.org,m:razor@blackwall.org,m:idosch@nvidia.com,m:davem@davemloft.net,m:edumazet@google.com,m:k
+ uba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:dhowells@redhat.com,m:jarkko@kernel.org,m:paul@paul-moore.com,m:jmorris@namei.org,m:serge@hallyn.com,m:takedakn@nttdata.co.jp,m:penguin-kernel@i-love.sakura.ne.jp,m:linux-edac@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:drbd-dev@lists.linux.dev,m:linux-block@vger.kernel.org,m:greybus-dev@lists.linaro.org,m:linuxppc-dev@lists.ozlabs.org,m:linux-acpi@vger.kernel.org,m:linux-fbdev@vger.kernel.org,m:dri-devel@lists.freedesktop.org,m:linux-fsdevel@vger.kernel.org,m:linux-nfs@vger.kernel.org,m:ocfs2-devel@lists.linux.dev,m:cgroups@vger.kernel.org,m:linux-modules@vger.kernel.org,m:linux-pm@vger.kernel.org,m:driver-core@lists.linux.dev,m:bridge@lists.linux.dev,m:netdev@vger.kernel.org,m:keyrings@vger.kernel.org,m:linux-security-module@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[petr.pavlu@suse.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_GT_50(0.00)[76];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,intel.com:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:from_mime,suse.com:email,suse.com:mid,suse.com:dkim,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0C1E272F1DB
+X-Rspamd-Queue-Id: 4866672F20D
 
-On Thu, 2026-07-09 at 14:11 +0800, Jing Wu wrote:
-> On Wed, Jul 09, 2026 at 12:44:37AM -0700, Matthew Brost wrote:
-> > This looks quite similar to work Thomas is doing here [1].
->=20
-> Thank you for the pointer, Matt.=C2=A0 We were not aware of Thomas's
-> series
-> before your mail.=C2=A0 After reviewing Thomas's v7 [1], the two series
-> turn
-> out to address different =E2=80=94 and complementary =E2=80=94 problems:
->=20
-> =C2=A0 - Thomas's series hooks a reclaim callback into the dmem.max write
-> =C2=A0=C2=A0=C2=A0 path: when an administrator lowers dmem.max below curr=
-ent usage,
-> the
-> =C2=A0=C2=A0=C2=A0 kernel calls the driver's reclaim callback to bring de=
-vice memory
-> =C2=A0=C2=A0=C2=A0 usage down to the new limit.=C2=A0 This is analogous t=
-o what happens
-> in
-> =C2=A0=C2=A0=C2=A0 memcg when memory.max is written below current usage.
->=20
-> =C2=A0 - Our series adds dmem.high as a soft limit enforced in the charge
-> =C2=A0=C2=A0=C2=A0 path: when a successful allocation pushes a cgroup's u=
-sage above
-> =C2=A0=C2=A0=C2=A0 dmem.high, TTM proactively evicts one BO from that cgr=
-oup before
-> =C2=A0=C2=A0=C2=A0 returning.=C2=A0 This mirrors memory.high semantics in=
- memcg, where
-> =C2=A0=C2=A0=C2=A0 reclaim is triggered per-allocation to keep usage belo=
-w the soft
-> =C2=A0=C2=A0=C2=A0 threshold.
->=20
-> Both mechanisms coexist independently in memcg and serve distinct
-> purposes: the max write path handles capacity reconfiguration by
-> operators, while the high-limit path provides automatic backpressure
-> for workloads approaching their quota.=C2=A0 Having both in the dmem
-> cgroup
-> controller seems correct.
->=20
-> > Are either of you two aware of this seemly overlapping work?
->=20
-> We were not, until your mail.=C2=A0 Now that we are, we would like to
-> coordinate with Thomas on a few interaction points:
->=20
-> =C2=A0 1. API intersection: Thomas's v5+ replaces the bare u64 size
-> argument
-> =C2=A0=C2=A0=C2=A0=C2=A0 in dmem_cgroup_register_region() with struct dme=
-m_cgroup_init
-> (which
-> =C2=A0=C2=A0=C2=A0=C2=A0 bundles the region size, reclaim ops, and driver=
- private data).=C2=A0
-> If
-> =C2=A0=C2=A0=C2=A0=C2=A0 Thomas's series lands first, we will adapt our p=
-atches to the
-> new
-> =C2=A0=C2=A0=C2=A0=C2=A0 registration interface.
->=20
-> =C2=A0 2. File-level conflicts: both series modify ttm_resource.c and
-> =C2=A0=C2=A0=C2=A0=C2=A0 ttm_bo.c.=C2=A0 The changes are semantically ind=
-ependent and should
-> =C2=A0=C2=A0=C2=A0=C2=A0 compose cleanly after a rebase, whichever lands =
-second.
->=20
-> Thomas, would you be open to coordinating on merge ordering?=C2=A0 We are
-> happy to rebase our dmem.high series on top of yours once it lands,
-> or
-> to split out any shared infrastructure as a common prerequisite if
-> that
-> helps.
+On 7/8/26 8:13 PM, Michal Koutný wrote:
+> Hi Petr.
+> 
+> On Wed, Jul 08, 2026 at 05:44:29PM +0200, Petr Pavlu <petr.pavlu@suse.com> wrote:
+>> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+>> index a4337c9b5287..60eb994c32ae 100644
+>> --- a/kernel/cgroup/cgroup-v1.c
+>> +++ b/kernel/cgroup/cgroup-v1.c
+>> @@ -16,6 +16,7 @@
+>>  #include <linux/pid_namespace.h>
+>>  #include <linux/cgroupstats.h>
+>>  #include <linux/fs_parser.h>
+>> +#include <linux/umh.h>
+>>  
+>>  #include <trace/events/cgroup.h>
+> 
+> There is kmod.h in here too but it's unnecessary, no module lazy loading
+> in this code.
 
-Sure. Let's notify eachother of imminent merge plans. I will rebase my
-series on yours if yours go in first. If needed let's look at a topic
-branch that we can merge into drm or vice versa.
+You're right. I'll remove the kmod.h include from
+kernel/cgroup/cgroup-v1.c. I went through all the files again and it
+seems this was the only place I missed.
 
-My work is stalled on lack of reviews ATM.
-
+-- 
 Thanks,
-Thomas
-
->=20
-> Thanks,
-> Jing Wu
+Petr
 
