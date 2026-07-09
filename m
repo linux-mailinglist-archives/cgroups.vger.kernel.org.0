@@ -1,178 +1,199 @@
-Return-Path: <cgroups+bounces-17630-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17631-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id vJ2tBxG7T2qjnQIAu9opvQ
-	(envelope-from <cgroups+bounces-17630-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 17:15:29 +0200
+	id 87okGcDET2ptoAIAu9opvQ
+	(envelope-from <cgroups+bounces-17631-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 17:56:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A006E732B2A
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 17:15:28 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 546E47332F3
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 17:56:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=cmpxchg.org header.s=google header.b="M/V57GL2";
-	dmarc=pass (policy=none) header.from=cmpxchg.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17630-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17630-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b="MW/3wwQs";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17631-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17631-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DB6E6314B9C5
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 15:05:01 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 57B24300BC6D
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 15:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DF1339708;
-	Thu,  9 Jul 2026 15:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 509E03839AA;
+	Thu,  9 Jul 2026 15:39:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C01331EC4
-	for <cgroups@vger.kernel.org>; Thu,  9 Jul 2026 15:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04661F3D56
+	for <cgroups@vger.kernel.org>; Thu,  9 Jul 2026 15:39:34 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783609468; cv=none; b=MiVwXAECTPg4B3WpUpCuHw4m9bwTVDpK7AJg1mG4YfOQxAza64XtqgAqgumIGPrWcpi1U50UBCqGnPHdEoiUhAtqBDyGbJnSyohOL+X6Uxz0+7/Rs6QDzaNPCiP9zjdMKovW5XGD7/GtqKgk7OB+SiRmnIY0N5A4sN5ozxexPYc=
+	t=1783611576; cv=none; b=V7iLiKOMi+UjqhrWict7hTuZmqjN+eEuXr9oRQkWlwhe0CNvDmOQdKTGwTkdYqygi3+Nszg7ff1ll2DrPBl+ovIdolgWnEWKj14+7dJSONIMGhRvZ55cWzzMXmtHhouO8KHDJhl9+hW99NqQjzZwI4Kh46HncNmSTe7co1CpUDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783609468; c=relaxed/simple;
-	bh=CLG1b+QXiyTp9wRZepf5NQ7+h52yfCipkiE9EHYeuBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=paNDCoNHZLWmOX92LGMSr9+gx5eAzMVYo8ym3jVQRN8/M6/rExMWAfX2Un17P4G2R2ET3p0WF7Rij2ltfmhz5hPqLNj5OPY/FgO+ZAx5Thl3Srn6j1O1EujjDuoEDcXuU/flCq4e1oLL8J6ldHbNv0x46fNbJNnoTSJYSc2R520=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=M/V57GL2; arc=none smtp.client-ip=209.85.161.43
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-6a324d200c2so1286828eaf.3
-        for <cgroups@vger.kernel.org>; Thu, 09 Jul 2026 08:04:27 -0700 (PDT)
+	s=arc-20240116; t=1783611576; c=relaxed/simple;
+	bh=R07iPGczI9CMuDV0hOy0iNA4x3E3zIrOkLWW9OgU5bY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iFhbEast0Lrs/ZBcn6OHZkP26XvXccmfZ3iRc6tD4HG9+3izQrePTdQ7bklCEMNpGgyHWthlQXoQdf494fa+XPn3NaL3fE+rWpaWNSFn7uxMlnC5KQo10mwQZUybjOeAJyTM8XPQ3t41HvhGAkLAc2wymWUBqpWO6NhuEd+05KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MW/3wwQs; arc=none smtp.client-ip=209.85.210.169
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-84537d04408so101554b3a.0
+        for <cgroups@vger.kernel.org>; Thu, 09 Jul 2026 08:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1783609466; x=1784214266; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+        d=gmail.com; s=20251104; t=1783611574; x=1784216374; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=C2q8Czx79ilwPj1ckt21CqhzkvzJ8d/ykcAORqubNh4=;
-        b=M/V57GL2f7nBlpgKWU0ZBRQ2aSGTh/Wq0CCPAGIBBfT/DJwxmqaxxar4XOeVKIIEGm
-         FRHRrSgk/Igd8mLs/RV5LJqVAGIwesaJTt6FawBfAEzo3Ae44XS9O3YGf8Y/C1vENIcM
-         4uAP5ZhvhGAttZJhd1awAb77E8oKYBTYg5lakpt9vkBJSfQ162BSGXOS9LvXMMNTdG4N
-         Y1BYNFGXl4GHT9rLcwz/Wujr8hx5c88J3ALqbwxBBFC/PQvzIXTOLCUC8rhsj7x0dADX
-         7dBGKOiM6rAF2n5tGRhSiVu8B6v1PTNOymfNqXw6P+72oTT1X3i+LywWyu+G/3irsycj
-         apKA==
+        bh=lXXGap0Q/LiZLJdfHOXl3AEYRU8Fj6byPx+ImpQAltY=;
+        b=MW/3wwQsArRbjmfHx+GQxCpb6sE0rnlhThiXJj//cFt2f/8ukD5D8wdhC426OqIWU1
+         coDhkkEQcyW3icnPBFtdEGu6nv64V1ASjWaxf8kEImoFA8WhIvzYWXCG5fIK5Fazeml6
+         glcLUAuT2vjIh/U2dSYGGIppYT8sBIHT1nK6VLDIOCo+ILE0J5cJ1BA6adfL9Ka9/JHL
+         J8PpRSMhN7bDh20AciNAFPBOzLspj+nFr13DYWSBM24UqISksYiE2jMpsYQ0NLXlzQwL
+         V2AQ7BY9wmuZWBxGQvUlBfZgzrojL3pd/OTO9rYULPM8oecXJO0oq4YtuxlQi6UWyrhT
+         mNrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783609466; x=1784214266;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
+        d=1e100.net; s=20251104; t=1783611574; x=1784216374;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=C2q8Czx79ilwPj1ckt21CqhzkvzJ8d/ykcAORqubNh4=;
-        b=hDQAFhavWlufanfi80a6utLsWF+asX1Atc8D3BwiSkziFSyjuMuLo2shXJbUecMDMq
-         QAoVydsU4xqmSprjxzwnuWFVt2vnJkx0zSGil8naC8T0IE2yupyPeQ0YiPEZNsNVBgKc
-         k8GFSxp7VJcc2Cp0DJIBP+r+XxOmctpCr4WTODaMzIkjeT4Fw+BsO+MNDYV91/13qm3Y
-         XC2GgARfoHd7l6uarA7oNmOkuLGlFc+oO0hx40rcQ5PTv8hNDZIQ21rFzEitB2HCOiLZ
-         tHretEGFN4JB3pcxlgVzVo3qxhGCLFU6k9w/CXddSwsnLgoGN2RIJGVSReaJMYGVM55w
-         DfTg==
-X-Forwarded-Encrypted: i=1; AFNElJ/+VU/0RBMz0RPNyQC92ulrbFGXnfk7/2SKrFGWOxBrgRYCAIsRiz9UyCNXBbDXCgS4WfiXBu55@vger.kernel.org
-X-Gm-Message-State: AOJu0YzID7SskSarMEIIiPcS7iedX2PM+u4bBr02U9yG8TRoNtBLt2D8
-	MeQuiTs0BwqH/L2do/GJlaR0uup6J31TIkNWl8AZv76o8fD1gW969D4n/g/GfpdWhBE=
-X-Gm-Gg: AfdE7ckSHqQ+wNpHY5FvjFF4QY3dn/5rEqbwVd/PQrHB8LX5H0HkzSi6Ex6BeTidoFu
-	orWbotLl6HrEFCMpiPJcJBG/ISioWabr7sMk2ZZWidNWuvnRXcprmCn0e3VEiXYjFeC3ZgkMOhR
-	W1KCjEZbF1JmD+5hnNNgSKS9SPoQK+DxW8l1QKkePVZTIvNibSVQOh7gR2FIV5lH57h24TDBBMi
-	c+Uo5/wu3KTt2BVJH5vkVhJzZv+T/MK+p/YZ7SqnexEbfnsn5ZLjApcAR+Qo3kvmKdatmcsItw9
-	LWTkOXK8IILcrA2FiszDdfABz2IA+Hq6JSlmIZDojdwrl+zlIV3k+P6dTFXyAB6CNs59npVi1ds
-	xsV0a7FOLUp+IoLNwz/+YyiDUJgisAOAut26pfaAIL7bIj6HYUk4iTA0AWjQmzWAi9/YflxCJO9
-	M41QIs2z0VLPk=
-X-Received: by 2002:a05:6820:2007:b0:6a1:189a:daf1 with SMTP id 006d021491bc7-6a36d85f68amr6255352eaf.4.1783609466197;
-        Thu, 09 Jul 2026 08:04:26 -0700 (PDT)
-Received: from localhost ([2603:7001:f100:500:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-92e90cbd6c9sm1674520885a.33.2026.07.09.08.04.24
+        bh=lXXGap0Q/LiZLJdfHOXl3AEYRU8Fj6byPx+ImpQAltY=;
+        b=X+TJmyuPnJwkuNlwR6/aKGQFVgqq5g6WOHLBbCptJyuew1wEZR59HkZM61R262T5jy
+         65kxj/JTshuTaOQJmJJEmYYfbEJaoN5RXKIatlkT6eO23zatyYXZDjEX9N1uDuiCDA/p
+         vMwS176wQwOv3rrM1YdlZ9w2RyC2aU9nlrW7xxzhF0s4jODsyH1pYLdgssXAdkS7+vJ5
+         02FsRgofSTU2npjgu8nO+P7GamYdL2Y73zkNQui69FFV0Y4WbaMRqqQIFsw5jCKqw+k3
+         54zmVFhk6ubLRh9jwloxmtKCXUJrwKLpnodQj/YW8gWWnYnffqzfTFd2EN0oWfAnrAyM
+         Lghg==
+X-Forwarded-Encrypted: i=1; AHgh+RppRbLlZllRwib1RsmdEh7wivup5i6lzSGw8WO7Xw8Jr3NrFl7O7/Y9sSsHXb/JH9T5EPb/lo7N@vger.kernel.org
+X-Gm-Message-State: AOJu0YwacsyFfjwViliksjCFNpo4vjxZssQc755xmBlY+aF3bYTmHJXu
+	UiIlTJ1QEMjekMAH6Ig8GeaCXbmES82Md/vgg8hB5ZXBCP5Xqgb+Hx08
+X-Gm-Gg: AfdE7cl5UtXiSR0TSZVH5Dj8GNdC2dtUErKEFyYNmEjCBCgbS5MFzDzR1/GdXLd4yy1
+	fB9BYzzat2cXu4BNeKFzvTDTQslwSqrEVbETWxhdxrM2YIcfFL/ps5sXutoCY+6w6WhzbzLI5fK
+	J/PH6fxxM5HNPg7JzflTt+D+mwCUHcn2NN8ZS/EATkB60OXUfPsNCRKXl+VTtYw4vK1xmtNRqA3
+	lgI24eyf4iOeWi2GGjfidwKTgJh+AFjAT0520iokAe6EoSavMdwsZSTbRrbkZ87yS5ojwq6cXju
+	LIJ0meZWJNmNUPJGzIl9QRxY0EBbdfxOlFFPya8olpERa+cj/UI5RZoEVYrv0JyJ1WZFAJiROYo
+	Yyy5jzCfs6TKmi9Te8O2uf56WKAmxnhkdTjjell+xyiHO2cBKnMA/Q2SMNFFboQH31GVeRe/Lnm
+	tX3a9TkVP+euEOFdyDrxBpuRpyTT3bJA3KbgqHrETTHOSuPv5BdLfnk9Q=
+X-Received: by 2002:a05:6a00:a93:b0:847:8971:87d8 with SMTP id d2e1a72fcca58-848560021c5mr3191674b3a.6.1783611574014;
+        Thu, 09 Jul 2026 08:39:34 -0700 (PDT)
+Received: from debian.lan ([240e:391:ea3:6910::1])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-84856d5d619sm1491303b3a.39.2026.07.09.08.39.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 08:04:25 -0700 (PDT)
-Date: Thu, 9 Jul 2026 11:04:23 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Xueyuan Chen <xueyuan.chen21@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Barry Song <baohua@kernel.org>, Nanzhe Zhao <zhaonanzhe@xiaomi.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, Chris Li <chrisl@kernel.org>,
-	Kairui Song <kasong@tencent.com>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
-	Youngjun Park <youngjun.park@lge.com>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R . Howlett" <liam@infradead.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Qi Zheng <qi.zheng@linux.dev>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>
-Subject: Re: [RFC PATCH v2 2/3] mm: distinguish large folio swap allocation
- failures
-Message-ID: <ak-4d67hVnC2_BBH@cmpxchg.org>
-References: <20260709145124.764807-1-xueyuan.chen21@gmail.com>
- <20260709145124.764807-3-xueyuan.chen21@gmail.com>
- <ak-3r4i2qdejYzSP@cmpxchg.org>
+        Thu, 09 Jul 2026 08:39:33 -0700 (PDT)
+From: Xueyuan Chen <xueyuan.chen21@gmail.com>
+To: hannes@cmpxchg.org
+Cc: xueyuan.chen21@gmail.com,
+	akpm@linux-foundation.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	baohua@kernel.org,
+	zhaonanzhe@xiaomi.com,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	chrisl@kernel.org,
+	kasong@tencent.com,
+	shikemeng@huaweicloud.com,
+	nphamcs@gmail.com,
+	bhe@redhat.com,
+	youngjun.park@lge.com,
+	david@kernel.org,
+	ljs@kernel.org,
+	liam@infradead.org,
+	vbabka@kernel.org,
+	rppt@kernel.org,
+	surenb@google.com,
+	qi.zheng@linux.dev,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com
+Subject: Re: [RFC PATCH v2 2/3] mm: distinguish large folio swap allocation failures
+Date: Thu,  9 Jul 2026 23:39:24 +0800
+Message-ID: <20260709153924.772408-1-xueyuan.chen21@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <ak-4d67hVnC2_BBH@cmpxchg.org>
+References: <ak-4d67hVnC2_BBH@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ak-3r4i2qdejYzSP@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17630-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,kvack.org,vger.kernel.org,kernel.org,xiaomi.com,linux.dev,tencent.com,huaweicloud.com,redhat.com,lge.com,infradead.org,google.com];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kvack.org,vger.kernel.org,kernel.org,xiaomi.com,linux.dev,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,infradead.org,google.com];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	FORGED_RECIPIENTS(0.00)[m:xueyuan.chen21@gmail.com,m:akpm@linux-foundation.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:baohua@kernel.org,m:zhaonanzhe@xiaomi.com,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:youngjun.park@lge.com,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:qi.zheng@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:xueyuanchen21@gmail.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17631-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER(0.00)[xueyuanchen21@gmail.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:xueyuan.chen21@gmail.com,m:akpm@linux-foundation.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:baohua@kernel.org,m:zhaonanzhe@xiaomi.com,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:shikemeng@huaweicloud.com,m:nphamcs@gmail.com,m:bhe@redhat.com,m:youngjun.park@lge.com,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:qi.zheng@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:xueyuanchen21@gmail.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[cmpxchg.org:+];
+	FROM_NEQ_ENVFROM(0.00)[xueyuanchen21@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cmpxchg.org:from_mime,cmpxchg.org:email,cmpxchg.org:mid,cmpxchg.org:dkim,vger.kernel.org:from_smtp]
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A006E732B2A
+X-Rspamd-Queue-Id: 546E47332F3
 
-On Thu, Jul 09, 2026 at 11:01:12AM -0400, Johannes Weiner wrote:
-> On Thu, Jul 09, 2026 at 10:51:23PM +0800, Xueyuan Chen wrote:
-> > @@ -5550,10 +5558,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
-> >  
-> >  	if (mem_cgroup_disabled() || do_memsw_account())
-> >  		return nr_swap_pages;
-> > -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
-> > -		nr_swap_pages = min_t(long, nr_swap_pages,
-> > -				      READ_ONCE(memcg->swap.max) -
-> > -				      page_counter_read(&memcg->swap));
-> > +	nr_swap_pages = min(nr_swap_pages, page_counter_margin(&memcg->swap));
-> 
-> This hunk is unrelated to this patch. Don't mix refactor work with new
-> functionality. Make the previous patch a pure refactor job (where you
-> add page_counter_margin() and use it here ^), like I had proposed.
 
-I also liked my version of mem_cgroup_get_nr_swap_pages() a bit
-better. Please just use my patch, keep the From: and you can add
+On Thu, Jul 09, 2026 at 11:04:23AM -0400, Johannes Weiner wrote:
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Hi Johannes,
+
+>On Thu, Jul 09, 2026 at 11:01:12AM -0400, Johannes Weiner wrote:
+>> On Thu, Jul 09, 2026 at 10:51:23PM +0800, Xueyuan Chen wrote:
+>> > @@ -5550,10 +5558,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>> >  
+>> >  	if (mem_cgroup_disabled() || do_memsw_account())
+>> >  		return nr_swap_pages;
+>> > -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg))
+>> > -		nr_swap_pages = min_t(long, nr_swap_pages,
+>> > -				      READ_ONCE(memcg->swap.max) -
+>> > -				      page_counter_read(&memcg->swap));
+>> > +	nr_swap_pages = min(nr_swap_pages, page_counter_margin(&memcg->swap));
+>> 
+>> This hunk is unrelated to this patch. Don't mix refactor work with new
+>> functionality. Make the previous patch a pure refactor job (where you
+>> add page_counter_margin() and use it here ^), like I had proposed.
+
+You're right, that refactor doesn't belong in patch 2.
+
+>I also liked my version of mem_cgroup_get_nr_swap_pages() a bit
+>better. Please just use my patch, keep the From: and you can add
+>
+>Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+
+I'll use your version in v3, keep your From: and Signed-off-by, and make
+patch 1 a pure refactor patch that adds page_counter_margin() and
+converts mem_cgroup_get_nr_swap_pages() to use it.
+
+Patch 2 will only keep the functional folio_alloc_swap()/memcg charge
+changes.
+
+Thanks,
+Xueyuan
 
