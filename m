@@ -1,204 +1,121 @@
-Return-Path: <cgroups+bounces-17594-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17595-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id ZIkaJ5Q7T2o2cgIAu9opvQ
-	(envelope-from <cgroups+bounces-17594-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 08:11:32 +0200
+	id 89wTMHg8T2p2cgIAu9opvQ
+	(envelope-from <cgroups+bounces-17595-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 08:15:20 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1019872CFFB
-	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 08:11:32 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BACB72D065
+	for <lists+cgroups@lfdr.de>; Thu, 09 Jul 2026 08:15:20 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=rKxOtsYv;
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17594-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17594-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lst.de (policy=none);
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17595-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17595-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C1843302E0E7
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 06:11:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C9871304DFF3
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jul 2026 06:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436363AFB1B;
-	Thu,  9 Jul 2026 06:11:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A873AFD0B;
+	Thu,  9 Jul 2026 06:12:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0573AD52F
-	for <cgroups@vger.kernel.org>; Thu,  9 Jul 2026 06:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24AA3AFAE0;
+	Thu,  9 Jul 2026 06:12:10 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783577486; cv=none; b=SXjYKZMaP3LJmwBiof7PYLdXMja3xuaXm/mx8fK0x5lhZjrPaqFVM/BZg86QBEOVjbs33JKWH/PBFVBCqRMkaNiZBsto34MAKlzhhn52W9D+XT2Hh+XY7Q2H1uatTR7ANbRHM4KEeRsSWQYDZnyvtrwYQGDbp+Dq8RGfGqkrMNw=
+	t=1783577532; cv=none; b=ckF3gjHsH+6EF9g0e1wWixCC6pA7d8A0RrnnMpKWlqjY/8yoWHx/CvCTgd2IUSp/AujW71ejbG6N91gMmpNfbjF7coW0DsLx2DNs6KdWanjmhu8Y1JizlP0dE6sCcRyl+eBFJxjtMPMJFJO9OCN0WvMd74hJ8CRSAx3KtTxSfF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783577486; c=relaxed/simple;
-	bh=EUgxUMI4K7JFDpVXkNKVUQFFCv3LFfWMvknmwoGt5yo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IJhJb4zshzkH7awZbZ+1pnEDqpoDuRNgBloVflPXUoyQyl1UBSHe9f9JAUyALAV4cmyj+8xogSIGDsGn3QrRnnh+hzKhw22hY9LgIclh6QkVgck8Huz5cOkz6y4MVjinmXUts15uAHEMBHFeS7xHRdocTHVXz7vgIeIM+xyGX/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rKxOtsYv; arc=none smtp.client-ip=209.85.214.172
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2c9bd2f8bf7so8063545ad.1
-        for <cgroups@vger.kernel.org>; Wed, 08 Jul 2026 23:11:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783577484; x=1784182284; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=Hd6GoWd0nNSvkzn4bZsOD9QjS5q1cvBf4vz24CQIaxI=;
-        b=rKxOtsYv1lWdrEy4qahWaetYQlPfcjAwdcMrO6qs0htyGPA050gFAozjx/uOqokN4U
-         h0XsY9vZ2CzBuMf3LAKxsTKK/ncyrKLceQjVDZ90mxWVn+o/PugBnxtP8KTGr095O4Xt
-         8Z4rmxaJOj/ETGqMU0Fgxj7No9WaaOdyzkzjvxK6xbsYUXF30foMT4wLJPM84E2SWApJ
-         6edOmneTAWrE8i0s8O29x3J+ouK5hWwwDNztBCP7kRBKDQLUzWuXafLAVKBtIW9s1KSi
-         Z/mIGQozLUM2LbioRdN8Y2FMXw5pdX0+SV52IxGN77J3jO3lz9dh2CVzx6AXDSVRdl5s
-         o0lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783577484; x=1784182284;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=Hd6GoWd0nNSvkzn4bZsOD9QjS5q1cvBf4vz24CQIaxI=;
-        b=s2zTD/Dv0Et8XPX1XVc3AnEKbkmDxN4kuEbQvimL/XmXlF04NXT7XDhUQzSYAFODnT
-         JsGkJjYs25+3Fxqwi3QxRZFfWPMjiAsoXRLU2ViDlRG2PdMqkWORcVJtcZfy9ADFDprR
-         eDQzheVIt4GbLhoHpTojQiQGjzvSaXoLQTCROkf+Yq3DEPYs+NAzvGVTJf/lxFwuYYi3
-         jZ4tGmD6bWC8IQjjjw2Iopo46B+GTTF5dSIYnTDRjgBLbmGOgZCw1l2nViEoX2hgsbKV
-         kluodiVIkamDhErAbr3mexyoMDqilK1NApdp7xDYe6zRCjTA8W1yxBOpX5wP+oQqOcMP
-         hgDg==
-X-Forwarded-Encrypted: i=1; AHgh+RriZgLwHO0Z/+RgkzH5fSz+n/YBymajgkjjqSy/LOch7Fp+eKrg6NcQjopy6l7fIc3nM4rt+m4y@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpZFbOw0RmGdhspyftJdbf3sdwu+LIdjAWfKf4lFL0o4PnrEQg
-	vw1dcZ4HwEX6AKOROJv633PVJmd+WtfkXAu1FWHUgassfsI5GjaTu3Wjb80hPcKrFDk=
-X-Gm-Gg: AfdE7cnNktAzp7bkfYuxgr1is6nW0Ba89GizBOb8URfbmJnqL+YSaYGaPoSui3u0WE2
-	EX0ijwjAcXG7ikGWzOYysBIt6gKDdTxCKjDHonbC9d7NeYNACfP1/Vn7UBT/nXLT0+8vfaWQ3tW
-	K72olefu1hIcDo9sBl6Wp5iBj7vnnTbLvVgbg1t4oD08+SXD6K6tbjMN2yQA1vuQ0wtrZlsATwF
-	esTsTz9QNYjck/z59SwkgEkPlAD3WnVJILtzuQllo7vQEIyNRAbUUu0ThrhhendXuVJk0pPUmgX
-	LyQ3jCLrNVyguKXfEOtWzAi9dn9yGHL3E1T4YlEhGP9rDJRBJDdOAS029x6m8pJ41d1HD5koVLR
-	tzIHnRvMWXDPYn0Wv0l320k3FdrScNFwQxH/t28elIAFEyocmwaAkq45U5FYsl6IHp0+BDFCctv
-	EFVccCv9c=
-X-Received: by 2002:a17:902:ce0d:b0:2c9:d27b:af11 with SMTP id d9443c01a7336-2cdd8a84479mr14704525ad.11.1783577484149;
-        Wed, 08 Jul 2026 23:11:24 -0700 (PDT)
-Received: from ubuntu.. ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9d602fdsm37778845ad.81.2026.07.08.23.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jul 2026 23:11:23 -0700 (PDT)
-From: Jing Wu <realwujing@gmail.com>
-To: matthew.brost@intel.com
-Cc: thomas.hellstrom@linux.intel.com,
-	christian.koenig@amd.com,
-	ray.huang@amd.com,
-	matthew.auld@intel.com,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	simona@ffwll.ch,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	natalie.vock@gmx.de,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	intel-xe@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	Jing Wu <realwujing@gmail.com>
-Subject: Re: [PATCH v7] cgroup/dmem: implement dmem.high soft limit with proactive reclaim
-Date: Thu,  9 Jul 2026 14:11:13 +0800
-Message-ID: <20260709061114.1623774-1-realwujing@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <ak81RUK6vRZaMN2D@gsse-cloud1.jf.intel.com>
-References: <ak81RUK6vRZaMN2D@gsse-cloud1.jf.intel.com>
+	s=arc-20240116; t=1783577532; c=relaxed/simple;
+	bh=4wKB2FReSHOYxifI0c50K522ehsaXrCCoiB0NObCy9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y7uXocKPjOYd9P+Vya+Qia96jQbtgWlcr7qT3R//YisknCCsv0PjgxYcpCqSnA91IVpK2h9CmX+TvFMHdqpnLhcutVd4XoCZPrVipt6mA+P0Q4aI4/EZl30bMRni6lmtX1JJZkHnROgQQIQuLsQrG0hBY+S82C1KtbgSILs1VTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id D915468CFE; Thu,  9 Jul 2026 08:12:07 +0200 (CEST)
+Date: Thu, 9 Jul 2026 08:12:07 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Yu Kuai <yukuai@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+	Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>, Alasdair Kergon <agk@redhat.com>,
+	Benjamin Marzinski <bmarzins@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	Dongsheng Yang <dongsheng.yang@linux.dev>,
+	Zheng Gu <cengku@gmail.com>, Coly Li <colyli@fygo.io>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Josef Bacik <josef@toxicpanda.com>, Yu Kuai <yukuai@fygo.io>,
+	Nilay Shroff <nilay@linux.ibm.com>, linux-block@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-nvme@lists.infradead.org,
+	dm-devel@lists.linux.dev,
+	"linux-bcache@vger.kernel.org Joseph Qi" <joseph.qi@linux.alibaba.com>
+Subject: Re: [RFC PATCH v1 05/17] block: add bio_alloc_atomic() for atomic
+ bio users
+Message-ID: <20260709061207.GC16504@lst.de>
+References: <20260704195124.1375075-1-yukuai@kernel.org> <20260704195124.1375075-6-yukuai@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260704195124.1375075-6-yukuai@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux.intel.com,amd.com,intel.com,kernel.org,suse.de,gmail.com,ffwll.ch,cmpxchg.org,suse.com,gmx.de,linux.dev,lists.freedesktop.org,vger.kernel.org,kvack.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17594-lists,cgroups=lfdr.de];
-	FORGED_SENDER(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_RECIPIENTS(0.00)[m:matthew.brost@intel.com,m:thomas.hellstrom@linux.intel.com,m:christian.koenig@amd.com,m:ray.huang@amd.com,m:matthew.auld@intel.com,m:maarten.lankhorst@linux.intel.com,m:mripard@kernel.org,m:tzimmermann@suse.de,m:airlied@gmail.com,m:simona@ffwll.ch,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:natalie.vock@gmx.de,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:intel-xe@lists.freedesktop.org,m:dri-devel@lists.freedesktop.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:realwujing@gmail.com,s:lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	FORWARDED(0.00)[lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:yukuai@kernel.org,m:axboe@kernel.dk,m:tj@kernel.org,m:hch@lst.de,m:kbusch@kernel.org,m:sagi@grimberg.me,m:agk@redhat.com,m:bmarzins@redhat.com,m:snitzer@kernel.org,m:mpatocka@redhat.com,m:dongsheng.yang@linux.dev,m:cengku@gmail.com,m:colyli@fygo.io,m:kent.overstreet@linux.dev,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:dm-devel@lists.linux.dev,m:joseph.qi@linux.alibaba.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[hch@lst.de,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	TAGGED_FROM(0.00)[bounces-17595-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.dk,kernel.org,lst.de,grimberg.me,redhat.com,linux.dev,gmail.com,fygo.io,toxicpanda.com,linux.ibm.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,linux.alibaba.com];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,lst.de:from_mime,fygo.io:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1019872CFFB
+X-Rspamd-Queue-Id: 0BACB72D065
 
-On Wed, Jul 09, 2026 at 12:44:37AM -0700, Matthew Brost wrote:
-> This looks quite similar to work Thomas is doing here [1].
+On Sun, Jul 05, 2026 at 03:51:12AM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai@fygo.io>
+> 
+> Add bio_alloc_atomic() for callers that need a GFP_ATOMIC bio from the
+> default bio set but cannot safely pass a bdev during allocation. The
+> helper returns an unattached bio, leaving callers to set bi_bdev and
+> attach blkcg state explicitly before submission.
+> 
+> Use the helper for virtio-pmem flush child bios and OCFS2 heartbeat I/O.
+> Both allocate bios from atomic paths and must avoid creating missing blkgs
+> once blkg creation is protected by q->blkcg_mutex. virtio-pmem clones the
+> parent bio's blkg association; OCFS2 binds heartbeat I/O to the root blkg.
 
-Thank you for the pointer, Matt.  We were not aware of Thomas's series
-before your mail.  After reviewing Thomas's v7 [1], the two series turn
-out to address different — and complementary — problems:
+Let's kill off the concept of atomic bio allocations instead.
+Joseph already has an outstanding patch for nd_virtio that needs a little
+bit more work, and ocfs2 should be easy enough as well.
 
-  - Thomas's series hooks a reclaim callback into the dmem.max write
-    path: when an administrator lowers dmem.max below current usage, the
-    kernel calls the driver's reclaim callback to bring device memory
-    usage down to the new limit.  This is analogous to what happens in
-    memcg when memory.max is written below current usage.
-
-  - Our series adds dmem.high as a soft limit enforced in the charge
-    path: when a successful allocation pushes a cgroup's usage above
-    dmem.high, TTM proactively evicts one BO from that cgroup before
-    returning.  This mirrors memory.high semantics in memcg, where
-    reclaim is triggered per-allocation to keep usage below the soft
-    threshold.
-
-Both mechanisms coexist independently in memcg and serve distinct
-purposes: the max write path handles capacity reconfiguration by
-operators, while the high-limit path provides automatic backpressure
-for workloads approaching their quota.  Having both in the dmem cgroup
-controller seems correct.
-
-> Are either of you two aware of this seemly overlapping work?
-
-We were not, until your mail.  Now that we are, we would like to
-coordinate with Thomas on a few interaction points:
-
-  1. API intersection: Thomas's v5+ replaces the bare u64 size argument
-     in dmem_cgroup_register_region() with struct dmem_cgroup_init (which
-     bundles the region size, reclaim ops, and driver private data).  If
-     Thomas's series lands first, we will adapt our patches to the new
-     registration interface.
-
-  2. File-level conflicts: both series modify ttm_resource.c and
-     ttm_bo.c.  The changes are semantically independent and should
-     compose cleanly after a rebase, whichever lands second.
-
-Thomas, would you be open to coordinating on merge ordering?  We are
-happy to rebase our dmem.high series on top of yours once it lands, or
-to split out any shared infrastructure as a common prerequisite if that
-helps.
-
-Thanks,
-Jing Wu
 
