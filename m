@@ -1,783 +1,172 @@
-Return-Path: <cgroups+bounces-17643-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17644-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id aqNNBeppUGoSygIAu9opvQ
-	(envelope-from <cgroups+bounces-17643-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2026 05:41:30 +0200
+	id u+8UG5lrUGqDygIAu9opvQ
+	(envelope-from <cgroups+bounces-17644-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2026 05:48:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DC697370AA
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2026 05:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4D847370CF
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2026 05:48:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=glN+hGKn;
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17643-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17643-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=Ci+at1OI;
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17644-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17644-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EBFB63077D47
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2026 03:30:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0F3753026AA6
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2026 03:48:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7C94332916;
-	Fri, 10 Jul 2026 03:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80A1243956;
+	Fri, 10 Jul 2026 03:48:15 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FFB0225A38
-	for <cgroups@vger.kernel.org>; Fri, 10 Jul 2026 03:30:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 235192D0603
+	for <cgroups@vger.kernel.org>; Fri, 10 Jul 2026 03:48:13 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783654209; cv=none; b=BO+u7x7LK/PI0lAj+5iDgkbeAaLKNzIHaVwln+/f75cpUcG9zs5wTj6xF9HQj9cPPffqyq0dv76V+xv7JfiO3YAjviwtYBcgDrlGQsgxqll5FO41K4UFQXZCU+H3UX3pAMnGWGlEtqI3BxqMvxnkV6l1wgxeEN/G0deYWXC3+KQ=
+	t=1783655295; cv=none; b=LnwaX2D9cKRgrKxwkqA/2fuB7EyZKWkqjF2o3s8EHyKjxJozTAkjrokSoiSWH8S+1Y3yjnW3kT2sLv9tWIXOK/DqDaPOqMw6F967dDPDJg+JFwIiwByyJ3RAj0w+sSiEgXgmg+YT/OeODMZECWmxq3kPygUC/mUL20Czm9/aVUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783654209; c=relaxed/simple;
-	bh=nWNwzN91YYBr3Xi6bx2bqBw0sf4Bqsx5uZpg5NO3D9g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rIeni1p3RuEtIPRclW7VrlcdRmyUXgi05I1NV8dPBu1rMvb6/LBfLZMkOTTL3l9GZVW2qN5xIRtf7mvpEMBWwnwHT/fd81VF0HRHaJjGUbvF5b1yN6K1lImbJNwidR0k6vCztV/282AoTsvuQcvyJipY62JKADsNuppK0twpSso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=glN+hGKn; arc=none smtp.client-ip=209.85.214.178
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2cc97653887so4484245ad.1
-        for <cgroups@vger.kernel.org>; Thu, 09 Jul 2026 20:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783654205; x=1784259005; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=QvfnVYRZ3tKllx+hig17bTx3GgJpR8NyPboIOl5+PGA=;
-        b=glN+hGKnY9/f3LddK8IkYraGH43ZoanQxvmOpQjElLGCxS9D4pYmRkPR9945RhTgXk
-         ACGY2Etp9TRFx3yEJBWlSPOBO8rSYoluG/sUVfDUF04E3snhXDoarhraKdrb1ozvPJgl
-         mmU4KSHad21hPwWFw4FXQ3swSSVzM1UGn7w9Qsp1BqhPcLWRlnRMZNZPEqiDJnuC4k9z
-         R2BE6iZMqwRtYXl9aKt97wHskFEZ7CErWDbK7SFR5JckXPGEtT/Zw9l+VXQjEQvD5swI
-         AlGW+eWPoENq2+ljFpf3Bsw1t7NNZ9KjisbmwFN6fPt/g4LhcL3kRr8Rf44D9WrE7dJB
-         hRDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783654205; x=1784259005;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :content-type:mime-version:subject:date:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=QvfnVYRZ3tKllx+hig17bTx3GgJpR8NyPboIOl5+PGA=;
-        b=ZeK3T+i6xntg17374EFnvgTn2OL219z4Ojd0sJIGdnxHiwuibuUyxfWi+qEqxO4u0Q
-         PP0Iba44GDyd05bb06+VyjKN12t3xulviYXcQBb3mKUyQWO77vZyH8QyFpGp52wgTtlU
-         RdAvavgNWyhzOddI0b0faVu734hR+sMmmUCSZ3vwoea3RM79w2R+FdpE/XyAGOuZ0okb
-         tbHo4XiFpX9Qhk4yj8gZ45nIz/8TjZNCdRdiHjlv6yicKqUGQNLa136p4z3rh0CxcuUf
-         Vu5roBEhbYAEnCEyCJxurrZBz3B5XH6v6K49C1LwQe2cadgHW+7UgUQCqbK3c8HiDCNq
-         3Jng==
-X-Forwarded-Encrypted: i=1; AHgh+Rq2h4XAUF5+bbICnm+eGiv5sIPNVGH0qj+F8BNZXG4dfElm0/QPSpZFY6TTIPhLmTUHUVyx8Ndn@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJRkDHfr73xmO0XgoXWrT9Jl1yBqQ/KtPCP7bq5H1YCQzfWdMw
-	xOlTz/nCfgvoTKtra1USIOEjcyIChDP2gVGfM7vnI2okJlZ/EVqy+uAU
-X-Gm-Gg: AfdE7cltVNDUQ5oz9M3GYAwz3NZ9QalwQyMNZ/uO/YN+Ok0t6DfeQ2mJaUsgVa4I5Ao
-	8VwpAx32ySlK9pd+bF1S3doxi1D4Kf0ROWD7Vf9bQgM4TP2s38KKC1Awvlyqx+aHlruRGqunsAJ
-	pT/YcFt9pAKUqZAJOGJPdzBRa21VYq3nPnAi2/m6TXVSeYMRep+fr4/NlEsGZw/sDGx8qXNSZuP
-	8N5SilYJ0zH1qL8vBZWyKYMxF+kfNyQ14/FoNSGLsB7T+uw7ziIGClmV9mN8NDA8ZVedRrOpHL1
-	p6ElFEVY+x5ovyN5SsBJ7QZBdGset828jgmQRMG158mmEsjceW5ry+ZVHOz5WGMegaJniTKIcJ9
-	IkeQtAny7ltd7zFdRjHI9g+HzZ/ms/ZPNQJeNbd9quWV71V6hNB1L7X7jFv3+sVlQ2DR3rQ3WmM
-	vYmeHDKn4cbTs=
-X-Received: by 2002:a17:902:e950:b0:2ca:3df2:919a with SMTP id d9443c01a7336-2ccea3a28c4mr91454235ad.33.1783654205335;
-        Thu, 09 Jul 2026 20:30:05 -0700 (PDT)
-Received: from [127.0.1.1] ([138.199.21.246])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ccc9bdb56fsm53436465ad.15.2026.07.09.20.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2026 20:30:04 -0700 (PDT)
-From: Jing Wu <realwujing@gmail.com>
-Date: Fri, 10 Jul 2026 11:28:22 +0800
-Subject: [PATCH v4 11/11] selftests/cgroup: add kernel-noise isolation test
- to cpuset selftest
+	s=arc-20240116; t=1783655295; c=relaxed/simple;
+	bh=/Fd6KrNmo6PySHgGRsYcL5y0JMVCNUErPiaGXKyuEQE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QbI4W+YYVN9kKQtqxyrpzua1BFe81cMeIR3uWcipb+JZyzHgry68WyVhl5b1Fg8gntEimOyzUs0gtncfSbSQOLOMhxV3Pxqsme4gHut0wIIjHqRlw+BfrUx6jgcaS0RBoK4/SY1Ioed/+trxOpkBjZRBNUt0b1N946XTuKWGxKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ci+at1OI; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1783655293;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kTM73mbrNFeg9NAnrcfOYiEcBbQPeq+yx3xgufQSvnQ=;
+	b=Ci+at1OIoektsy7UMphANkOFo3kBH8ZgXFXsvuBdFMVjhZWSi4ym4le5Wjz4iR49mTDMkv
+	f79im1J2SZGe7YInRmN5V52cfuOWmOlS0AxooZdI0O32lLglQEgytXDmyTyTjk9uVz3y0b
+	R1IvZlgMdlqNO1IvanBOHxjiJEMPuSA=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-711-3xlsM3t9O3uzBfC4kNmdZg-1; Thu,
+ 09 Jul 2026 23:48:07 -0400
+X-MC-Unique: 3xlsM3t9O3uzBfC4kNmdZg-1
+X-Mimecast-MFC-AGG-ID: 3xlsM3t9O3uzBfC4kNmdZg_1783655286
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 89EB01956042;
+	Fri, 10 Jul 2026 03:48:05 +0000 (UTC)
+Received: from [10.22.80.240] (unknown [10.22.80.240])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7172A1800348;
+	Fri, 10 Jul 2026 03:48:03 +0000 (UTC)
+Message-ID: <e117b3e9-3973-40de-8976-eb0ebef18c4c@redhat.com>
+Date: Thu, 9 Jul 2026 23:48:02 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20260710-wujing-dhm-v4-11-2e912e5d9645@gmail.com>
-References: <20260710-wujing-dhm-v4-0-2e912e5d9645@gmail.com>
-In-Reply-To: <20260710-wujing-dhm-v4-0-2e912e5d9645@gmail.com>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
- Juri Lelli <juri.lelli@redhat.com>, 
- Vincent Guittot <vincent.guittot@linaro.org>, 
- Dietmar Eggemann <dietmar.eggemann@arm.com>, 
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, 
- "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
- Joel Fernandes <joelagnelf@nvidia.com>, 
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
- Uladzislau Rezki <urezki@gmail.com>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Tejun Heo <tj@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
- Shuah Khan <shuah@kernel.org>, Thomas Gleixner <tglx@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org, 
- rcu@vger.kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Jing Wu <realwujing@gmail.com>, 
- Qiliang Yuan <yuanql9@chinatelecom.cn>
-X-Mailer: b4 0.13.0
-X-Rspamd-Action: add header
-X-Spamd-Result: default: False [7.34 / 15.00];
-	URIBL_BLACK(7.50)[chinatelecom.cn:email];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-next v10 10/11] cgroup/cpuset: Support multiple
+ destination cpusets for cpuset_*attach()
+To: Tejun Heo <tj@kernel.org>
+Cc: Ridong Chen <ridong.chen@linux.dev>, Johannes Weiner
+ <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Shuah Khan <shuah@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Aaron Tomlin <atomlin@atomlin.com>,
+ Guopeng Zhang <guopeng.zhang@linux.dev>
+References: <20260702214757.579012-1-longman@redhat.com>
+ <20260702214757.579012-11-longman@redhat.com>
+ <e254af713b5345aec3d086771ecf1e71@kernel.org>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <e254af713b5345aec3d086771ecf1e71@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	R_DKIM_ALLOW(0.00)[gmail.com:s=20251104];
-	FORGED_RECIPIENTS(0.00)[m:mingo@redhat.com,m:peterz@infradead.org,m:juri.lelli@redhat.com,m:vincent.guittot@linaro.org,m:dietmar.eggemann@arm.com,m:rostedt@goodmis.org,m:bsegall@google.com,m:mgorman@suse.de,m:vschneid@redhat.com,m:paulmck@kernel.org,m:frederic@kernel.org,m:neeraj.upadhyay@kernel.org,m:joelagnelf@nvidia.com,m:josh@joshtriplett.org,m:boqun@kernel.org,m:urezki@gmail.com,m:mathieu.desnoyers@efficios.com,m:jiangshanlai@gmail.com,m:qiang.zhang@linux.dev,m:anna-maria@linutronix.de,m:tj@kernel.org,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:shuah@kernel.org,m:tglx@kernel.org,m:longman@redhat.com,m:linux-kernel@vger.kernel.org,m:rcu@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:realwujing@gmail.com,m:yuanql9@chinatelecom.cn,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-17643-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[redhat.com,infradead.org,linaro.org,arm.com,goodmis.org,google.com,suse.de,kernel.org,nvidia.com,joshtriplett.org,gmail.com,efficios.com,linux.dev,linutronix.de,lwn.net,linuxfoundation.org];
-	FORGED_SENDER(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	GREYLIST(0.00)[pass,body];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	FORWARDED(0.00)[lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17644-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:ridong.chen@linux.dev,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:juri.lelli@redhat.com,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:atomlin@atomlin.com,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,gmail.com,chinatelecom.cn];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[gmail.com,none];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[test_cpuset_prs.sh:url,chinatelecom.cn:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8DC697370AA
-X-Spam: Yes
+X-Rspamd-Queue-Id: C4D847370CF
 
-Add test_hk_noise_isolated() to test_cpuset_prs.sh to verify that
-creating and destroying an isolated partition updates the kernel-noise
-housekeeping state, including the /sys/devices/system/cpu/nohz_full
-attribute.  Add the cpu_in_cpulist() helper to correctly test membership
-against a cpulist that may contain ranges.
+On 7/6/26 8:57 PM, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Thu, Jul 02, 2026 at 05:47:56PM -0400, Waiman Long wrote:
+>> It is assumed that a given cpuset cannot be both a source and a
+>> destination cpuset. [...] it will print a warning and fail the attach
+>> operation in these unexpected cases [...]
+> This assumption doesn't hold - the WARN_ON_ONCE() and -EINVAL fire on a
+> legitimate migration. It's the case sashiko flagged, and it does reach
+> can_attach().
+>
+> Threaded subtree with partial cpuset delegation:
+>
+>    P (+cpuset)
+>    |- R (cpuset)        <- destination
+>    |  `- C (no cpuset)  -> effective cpuset == R
+>    `- W (cpuset)
+>
+> Group leader in R, thread_a in C, thread_b in W; migrate the whole
+> process into R (echo $PID > R/cgroup.procs). thread_a moves C->R: its
+> cgroup changes so compare_css_sets() keeps it in the taskset, but its
+> cpuset css is unchanged (C inherits R's), so task_cs() == cs == R. cpuset
+> is in ss_mask because thread_b (W->R) changed. can_attach() then tags R
+> as a source (thread_a) and the destination (thread_b):
+>
+>    WARNING: kernel/cgroup/cpuset.c:3054 at cpuset_can_attach_check+0xcd/0x130
+>     cpuset_can_attach+0x131/0x2f0
+>     cgroup_migrate_execute+0x367/0x450
+>    cgroup.procs write returns -EINVAL
+>
+> So a thread already in the destination's effective cpuset does show up in
+> the iteration when it reaches that cpuset through a different, non-cpuset
+> child - compare_css_sets() keys on the cgroup, not the cpuset css.
+>
+> 1-9 handle this correctly (the migration succeeds); the patch 10 guard
+> regresses it. I've taken 1-9 into for-7.3 - please respin 10-11. One
+> option: when oldcs == cs the pair is a cpuset no-op, so skip it and add
+> it to neither list.
 
-Also detect and report whether the test is running in zero-boot-param
-mode (no nohz_full= in /proc/cmdline).  When in zero-boot-param mode
-the test confirms that nohz_full is activated by the DHM runtime path,
-verifying that dhm_cycle_isolated_cpus() correctly enables tick
-isolation without any boot-time setup.
+Sorry for the late reply. I was offline for a few days because my labtop 
+SSD was having problem.
 
-Co-developed-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
-Signed-off-by: Qiliang Yuan <yuanql9@chinatelecom.cn>
-Signed-off-by: Jing Wu <realwujing@gmail.com>
----
- tools/testing/selftests/cgroup/test_cpuset_prs.sh | 580 +++++++++++++++++++++-
- 1 file changed, 579 insertions(+), 1 deletion(-)
+Yes, I realize that my assumption about oldcs != cs is incorrect. I will 
+revise the remaining patch to address the issue.
 
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index a56f4153c64df..ce16734545505 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -20,7 +20,7 @@ skip_test() {
- WAIT_INOTIFY=$(cd $(dirname $0); pwd)/wait_inotify
- 
- # Find cgroup v2 mount point
--CGROUP2=$(mount -t cgroup2 | head -1 | awk -e '{print $3}')
-+CGROUP2=$(mount -t cgroup2 | head -1 | awk '{print $3}')
- [[ -n "$CGROUP2" ]] || skip_test "Cgroup v2 mount point not found!"
- SUBPARTS_CPUS=$CGROUP2/.__DEBUG__.cpuset.cpus.subpartitions
- CPULIST=$(cat $CGROUP2/cpuset.cpus.effective)
-@@ -1204,9 +1204,587 @@ test_inotify()
- 	echo "" > cpuset.cpus
- }
- 
-+#
-+# cpu_in_cpulist <cpu> <cpulist>
-+#
-+# Return 0 if <cpu> appears in <cpulist> (a kernel cpumask list such as
-+# "0-3,8-31"), non-zero otherwise.  The kernel cpulist format uses ranges
-+# ("lo-hi") and comma-separated items; a simple grep cannot detect that a
-+# number falls in the middle of a range, so walk each element explicitly.
-+#
-+cpu_in_cpulist()
-+{
-+	local cpu=$1 list=$2 range lo hi
-+	for range in $(echo "$list" | tr ',' ' '); do
-+		if [[ "$range" == *-* ]]; then
-+			lo=${range%-*}
-+			hi=${range#*-}
-+			[[ $cpu -ge $lo && $cpu -le $hi ]] && return 0
-+		else
-+			[[ $cpu -eq $range ]] && return 0
-+		fi
-+	done
-+	return 1
-+}
-+
-+#
-+# verify_nohz_exact <baseline> <active_cpus> <current>
-+#
-+# Verify that <current> nohz_full equals <baseline> ∪ <active_cpus>.
-+# <active_cpus> may be a cpulist range ("4-7") or empty string ("").
-+# Catches both missing CPUs and unexpected extra CPUs.
-+#
-+verify_nohz_exact()
-+{
-+	local baseline=$1 active=$2 current=$3 cpu exp got
-+	for cpu in $(seq 0 $((NR_CPUS - 1))); do
-+		exp=0; got=0
-+		cpu_in_cpulist $cpu "$baseline" && exp=1
-+		[[ -n "$active" ]] && cpu_in_cpulist $cpu "$active" && exp=1
-+		cpu_in_cpulist $cpu "$current" && got=1
-+		[[ $exp -eq $got ]] || {
-+			if [[ $got -eq 0 ]]; then
-+				echo "FAIL: cpu${cpu} expected in nohz_full but absent" \
-+				     "(baseline='$baseline' active='$active'" \
-+				     "current='$current')"
-+			else
-+				echo "FAIL: cpu${cpu} unexpectedly in nohz_full" \
-+				     "(baseline='$baseline' active='$active'" \
-+				     "current='$current')"
-+			fi
-+			return 1
-+		}
-+	done
-+	return 0
-+}
-+
-+#
-+# Test that isolated partition creation/destruction drives kernel-noise
-+# housekeeping mask updates and remains correct under pressure.
-+#
-+# Requires: >=8 CPUs, no isolcpus= boot conflict, root
-+#
-+
-+#
-+# hk_noise_check_nocb_affinity <cpulist> <expect_isolated>
-+#
-+# When expect_isolated=1: verify rcuop/N kthreads for CPUs in cpulist do NOT
-+# include those CPUs in their scheduler affinity (RCU NOCB active — callbacks
-+# for the isolated CPU are offloaded to a different CPU).
-+# When expect_isolated=0: verify CPUs are back in affinity (NOCB restored).
-+# Silently skips CPUs whose rcuop/N thread is absent (no NOCB support).
-+#
-+hk_noise_check_nocb_affinity()
-+{
-+	local cpulist=$1 expect_isolated=$2
-+	local cpu lo hi range pid aff_hex rev_hex nibble_pos nibble_char
-+	local nibble_val bit_in_nibble bit failed=0
-+
-+	command -v taskset > /dev/null 2>&1 || return 0
-+
-+	for range in $(echo "$cpulist" | tr ',' ' '); do
-+		if [[ "$range" == *-* ]]; then
-+			lo=${range%-*}; hi=${range#*-}
-+		else
-+			lo=$range; hi=$range
-+		fi
-+		for cpu in $(seq "$lo" "$hi"); do
-+			pid=$(ps -eo pid,comm | awk -v c="rcuop/$cpu" '$2==c{print $1}')
-+			[[ -n "$pid" ]] || continue
-+			aff_hex=$(taskset -p "$pid" 2>/dev/null | awk '{print $NF}')
-+			[[ -n "$aff_hex" ]] || continue
-+
-+			# Extract bit <cpu> from the hex affinity mask.
-+			# Each hex digit covers 4 CPUs; reverse the string to
-+			# work from the LSB side.
-+			rev_hex=$(echo "$aff_hex" | rev)
-+			nibble_pos=$((cpu / 4))
-+			nibble_char=${rev_hex:$nibble_pos:1}
-+			if [[ -z "$nibble_char" ]]; then
-+				nibble_val=0
-+			else
-+				nibble_val=$((16#$nibble_char))
-+			fi
-+			bit_in_nibble=$((cpu % 4))
-+			bit=$(( (nibble_val >> bit_in_nibble) & 1 ))
-+
-+			if [[ $expect_isolated -eq 1 && $bit -eq 1 ]]; then
-+				echo "FAIL: rcuop/$cpu affinity still includes" \
-+				     "CPU$cpu after isolation (mask=0x$aff_hex)"
-+				failed=1
-+			elif [[ $expect_isolated -eq 0 && $bit -eq 0 ]]; then
-+				echo "FAIL: rcuop/$cpu affinity still excludes" \
-+				     "CPU$cpu after de-isolation (mask=0x$aff_hex)"
-+				failed=1
-+			fi
-+		done
-+	done
-+	return $failed
-+}
-+
-+test_hk_noise_isolated()
-+{
-+	local ISOL_BEFORE TEST_CPUS i PART ISOL_AFTER ISOL_RESTORE
-+	local NOHZ_FILE NOHZ_BEFORE NOHZ_AFTER NOHZ_RESTORE
-+	local HK_NOHZ_CHECK=0
-+	local LOOPS=100
-+	local CMDLINE HAS_BOOT_NOHZ=0
-+	local DMESG_LINES_START
-+	DMESG_LINES_START=$(dmesg | wc -l)
-+
-+	[[ $NR_CPUS -ge 8 ]] || {
-+		echo "HK-noise test skipped: need >=8 CPUs, have $NR_CPUS"
-+		return 0
-+	}
-+
-+	# Detect whether CONFIG_NO_HZ_FULL is active: the sysfs attribute
-+	# /sys/devices/system/cpu/nohz_full exposes the current nohz_full
-+	# cpumask and is only present when NO_HZ_FULL is enabled.
-+	NOHZ_FILE=/sys/devices/system/cpu/nohz_full
-+	[[ -r "$NOHZ_FILE" ]] && HK_NOHZ_CHECK=1
-+
-+	# Determine if running in zero-boot-param mode.  DHM activates tick
-+	# and RCU-NOCB isolation at runtime; no nohz_full= or rcu_nocbs=
-+	# kernel boot parameters are required.
-+	{ read -r CMDLINE < /proc/cmdline; } 2>/dev/null || CMDLINE=""
-+	[[ $CMDLINE = *nohz_full=* ]] && HAS_BOOT_NOHZ=1
-+	if [[ $HAS_BOOT_NOHZ -eq 0 ]]; then
-+		console_msg "HK-noise: zero-boot-param mode" \
-+		            "(no nohz_full= in /proc/cmdline -- testing DHM runtime path)"
-+	else
-+		console_msg "HK-noise: boot-param mode (nohz_full= present at boot)"
-+	fi
-+
-+	cd $CGROUP2/test
-+	echo member > cpuset.cpus.partition 2>/dev/null
-+	echo "" > cpuset.cpus 2>/dev/null
-+
-+	ISOL_BEFORE=$(cat $CGROUP2/cpuset.cpus.isolated)
-+	[[ $HK_NOHZ_CHECK -eq 1 ]] && NOHZ_BEFORE=$(cat $NOHZ_FILE)
-+	TEST_CPUS="4-7"
-+	echo $TEST_CPUS > cpuset.cpus
-+
-+	#
-+	# Basic create/destroy cycle — verify domain isolation and
-+	# kernel-noise (nohz_full) changes together.
-+	#
-+	console_msg "HK-noise: basic create/destroy cycle"
-+	echo isolated > cpuset.cpus.partition
-+
-+	ISOL_AFTER=$(cat $CGROUP2/cpuset.cpus.isolated)
-+	[[ $ISOL_AFTER != "$ISOL_BEFORE" ]] || {
-+		echo "FAIL: isolated set unchanged after partition create"
-+		exit 1
-+	}
-+
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		NOHZ_AFTER=$(cat $NOHZ_FILE)
-+		verify_nohz_exact "$NOHZ_BEFORE" "$TEST_CPUS" "$NOHZ_AFTER" || exit 1
-+		console_msg "HK-noise: nohz_full after isolation: $NOHZ_AFTER"
-+	fi
-+
-+	# Verify RCU NOCB: rcuop/N kthreads for isolated CPUs must have those
-+	# CPUs removed from their scheduler affinity mask.
-+	hk_noise_check_nocb_affinity "$TEST_CPUS" 1 || exit 1
-+
-+	echo member > cpuset.cpus.partition
-+
-+	ISOL_RESTORE=$(cat $CGROUP2/cpuset.cpus.isolated)
-+	[[ $ISOL_RESTORE = "$ISOL_BEFORE" ]] || {
-+		echo "FAIL: expected '$ISOL_BEFORE' after destroy, got '$ISOL_RESTORE'"
-+		exit 1
-+	}
-+
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		NOHZ_RESTORE=$(cat $NOHZ_FILE)
-+		verify_nohz_exact "$NOHZ_BEFORE" "" "$NOHZ_RESTORE" || exit 1
-+	fi
-+
-+	# Verify RCU NOCB restored: isolated CPUs must reappear in rcuop/N affinity.
-+	hk_noise_check_nocb_affinity "$TEST_CPUS" 0 || exit 1
-+
-+	#
-+	# Reject all-CPU isolation (must leave at least one housekeeping CPU)
-+	#
-+	console_msg "HK-noise: reject all-CPU isolation"
-+	echo 0-$((NR_CPUS - 1)) > cpuset.cpus
-+	echo isolated > cpuset.cpus.partition
-+	PART=$(cat cpuset.cpus.partition)
-+	[[ $PART = *invalid* || $PART = member ]] || {
-+		echo "FAIL: all-CPU isolation was not rejected, got '$PART'"
-+		exit 1
-+	}
-+
-+	#
-+	# SMT safety: partial sibling isolation
-+	#
-+	console_msg "HK-noise: SMT sibling constraint"
-+	echo $TEST_CPUS > cpuset.cpus
-+	echo isolated > cpuset.cpus.partition
-+	PART=$(cat cpuset.cpus.partition)
-+	[[ $PART = isolated ]] || {
-+		echo "FAIL: could not create isolated partition, got '$PART'"
-+		exit 1
-+	}
-+	echo member > cpuset.cpus.partition
-+
-+	#
-+	# Non-hotpluggable CPU: must be skipped with a kernel warning without
-+	# rejecting the partition; hotpluggable peers must still be isolated.
-+	#
-+	# A CPU whose online file is absent (e.g. CPU 0 on x86-64) has hotplug
-+	# disabled.  DHM emits pr_warn_once and keeps it in the tick/RCU-NOCB
-+	# housekeeping set; it must not appear in nohz_full after isolation.
-+	# The remaining hotpluggable CPUs in the partition must still be isolated.
-+	#
-+	local FIXED_CPU="" c NOHZ_NOW
-+	for c in $(seq 0 $((NR_CPUS - 1))); do
-+		[[ -f /sys/devices/system/cpu/cpu${c}/online ]] || {
-+			FIXED_CPU=$c
-+			break
-+		}
-+	done
-+	if [[ -n "$FIXED_CPU" ]]; then
-+		console_msg "HK-noise: non-hotpluggable CPU${FIXED_CPU} skip"
-+		echo "${FIXED_CPU},${TEST_CPUS}" > cpuset.cpus
-+		echo isolated > cpuset.cpus.partition
-+		PART=$(cat cpuset.cpus.partition)
-+		[[ $PART = isolated ]] || {
-+			echo "FAIL: partition rejected when including non-hotpluggable" \
-+			     "CPU${FIXED_CPU}: got '$PART'"
-+			exit 1
-+		}
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			if cpu_in_cpulist $FIXED_CPU "$NOHZ_NOW"; then
-+				echo "FAIL: non-hotpluggable CPU${FIXED_CPU} appeared" \
-+				     "in nohz_full (should be skipped)"
-+				exit 1
-+			fi
-+			local lo hi
-+			lo=${TEST_CPUS%%-*}
-+			hi=${TEST_CPUS##*-}
-+			for cpu in $(seq "$lo" "$hi"); do
-+				if ! cpu_in_cpulist $cpu "$NOHZ_NOW"; then
-+					echo "FAIL: hotpluggable cpu${cpu} missing from" \
-+					     "nohz_full in mixed partition (got: '$NOHZ_NOW')"
-+					exit 1
-+				fi
-+			done
-+			console_msg "HK-noise: CPU${FIXED_CPU} absent, ${TEST_CPUS} present" \
-+			            "in nohz_full: $NOHZ_NOW"
-+		fi
-+		echo member > cpuset.cpus.partition
-+		echo $TEST_CPUS > cpuset.cpus
-+	else
-+		console_msg "HK-noise: all CPUs hotpluggable; skip non-hotpluggable subtest"
-+	fi
-+
-+	#
-+	# Delta isolation: modify cpuset.cpus while the partition is isolated.
-+	# dhm_prev_isolated must track the delta and update nohz_full in step.
-+	#
-+	local lo hi mid lower_cpus upper_cpu
-+	lo=${TEST_CPUS%%-*}
-+	hi=${TEST_CPUS##*-}
-+	mid=$(( lo + (hi - lo) / 2 ))
-+	lower_cpus="${lo}-${mid}"
-+	upper_cpu=$(( mid + 1 ))
-+	console_msg "HK-noise: delta isolation (shrink ${TEST_CPUS} → ${lower_cpus})"
-+	echo $TEST_CPUS > cpuset.cpus
-+	echo isolated > cpuset.cpus.partition
-+	PART=$(cat cpuset.cpus.partition)
-+	[[ $PART = isolated ]] || {
-+		echo "FAIL: delta test: initial isolation failed, got '$PART'"
-+		exit 1
-+	}
-+	echo $lower_cpus > cpuset.cpus
-+	PART=$(cat cpuset.cpus.partition)
-+	if [[ $PART = isolated ]]; then
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			verify_nohz_exact "$NOHZ_BEFORE" "$lower_cpus" "$NOHZ_NOW" || exit 1
-+		fi
-+		# Expand back to full TEST_CPUS and re-verify
-+		echo $TEST_CPUS > cpuset.cpus
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			verify_nohz_exact "$NOHZ_BEFORE" "$TEST_CPUS" "$NOHZ_NOW" || exit 1
-+		fi
-+		echo member > cpuset.cpus.partition
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			verify_nohz_exact "$NOHZ_BEFORE" "" "$NOHZ_NOW" || exit 1
-+		fi
-+	else
-+		console_msg "HK-noise: delta test: partition invalidated on shrink" \
-+		            "('$PART') -- cpuset constraint, not a DHM bug; skipping"
-+		echo member > cpuset.cpus.partition 2>/dev/null || true
-+	fi
-+	echo $TEST_CPUS > cpuset.cpus
-+
-+	#
-+	# Nested partition: parent root → child isolated
-+	#
-+	console_msg "HK-noise: nested partition inheritance"
-+	echo $TEST_CPUS > cpuset.cpus
-+	test_partition root
-+	mkdir -p HK_SUB
-+	cd HK_SUB
-+	echo "${lo}-$((lo + 1))" > cpuset.cpus
-+	echo isolated > cpuset.cpus.partition
-+	ISOL_AFTER=$(cat $CGROUP2/cpuset.cpus.isolated)
-+	[[ -n $ISOL_AFTER ]] || {
-+		echo "FAIL: nested isolated partition not reflected in cpuset.cpus.isolated"
-+		exit 1
-+	}
-+	echo member > cpuset.cpus.partition
-+	cd $CGROUP2/test
-+	echo member > cpuset.cpus.partition
-+	rmdir HK_SUB 2>/dev/null
-+
-+	#
-+	# Pressure test: 100 create/destroy cycles with nohz_full verified
-+	# on every cycle to catch mid-run state corruption.
-+	#
-+	console_msg "HK-noise: pressure test ($LOOPS cycles)"
-+	echo $TEST_CPUS > cpuset.cpus
-+	for i in $(seq 1 $LOOPS); do
-+		echo isolated > cpuset.cpus.partition
-+		PART=$(cat cpuset.cpus.partition)
-+		[[ $PART = isolated ]] || {
-+			echo "FAIL: cycle $i create failed, got '$PART'"
-+			exit 1
-+		}
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			verify_nohz_exact "$NOHZ_BEFORE" "$TEST_CPUS" "$NOHZ_NOW" || {
-+				echo "FAIL: nohz_full wrong at cycle $i (isolated)"
-+				exit 1
-+			}
-+		fi
-+		echo member > cpuset.cpus.partition
-+		PART=$(cat cpuset.cpus.partition)
-+		[[ $PART = member ]] || {
-+			echo "FAIL: cycle $i destroy failed, got '$PART'"
-+			exit 1
-+		}
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			verify_nohz_exact "$NOHZ_BEFORE" "" "$NOHZ_NOW" || {
-+				echo "FAIL: nohz_full wrong at cycle $i (member)"
-+				exit 1
-+			}
-+		fi
-+	done
-+
-+	#
-+	# Stability: after pressure test, verify final state
-+	#
-+	console_msg "HK-noise: post-pressure cleanup"
-+	echo isolated > cpuset.cpus.partition
-+	ISOL_AFTER=$(cat $CGROUP2/cpuset.cpus.isolated)
-+	[[ -n $ISOL_AFTER ]] || {
-+		echo "FAIL: isolated set empty after pressure test"
-+		exit 1
-+	}
-+	echo member > cpuset.cpus.partition
-+	echo "" > cpuset.cpus
-+	ISOL_RESTORE=$(cat $CGROUP2/cpuset.cpus.isolated)
-+	[[ $ISOL_RESTORE = "$ISOL_BEFORE" ]] || {
-+		echo "FAIL: final isolated '$ISOL_RESTORE' != '$ISOL_BEFORE'"
-+		exit 1
-+	}
-+
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		NOHZ_RESTORE=$(cat $NOHZ_FILE)
-+		[[ "$NOHZ_RESTORE" = "$NOHZ_BEFORE" ]] || {
-+			echo "FAIL: nohz_full not restored after pressure test:" \
-+			     "expected '$NOHZ_BEFORE', got '$NOHZ_RESTORE'"
-+			exit 1
-+		}
-+	fi
-+
-+	#
-+	# Pressure with resident task: create/destroy cycles while a sleeping
-+	# task occupies the isolated partition.  Exercises the dhm_cycling_cpus
-+	# suppression path that prevents false partition invalidation when a
-+	# task is present during hotplug cycling steps.
-+	#
-+	console_msg "HK-noise: pressure with resident task ($LOOPS cycles)"
-+	echo $TEST_CPUS > cpuset.cpus
-+	sleep 600 &
-+	local TASK_PID=$!
-+	echo $TASK_PID > cgroup.procs
-+	for i in $(seq 1 $LOOPS); do
-+		echo isolated > cpuset.cpus.partition
-+		PART=$(cat cpuset.cpus.partition)
-+		[[ $PART = isolated ]] || {
-+			echo "FAIL: task-occupied cycle $i create failed, got '$PART'"
-+			kill $TASK_PID 2>/dev/null; wait $TASK_PID 2>/dev/null
-+			exit 1
-+		}
-+		if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+			NOHZ_NOW=$(cat $NOHZ_FILE)
-+			verify_nohz_exact "$NOHZ_BEFORE" "$TEST_CPUS" "$NOHZ_NOW" || {
-+				kill $TASK_PID 2>/dev/null; wait $TASK_PID 2>/dev/null
-+				exit 1
-+			}
-+		fi
-+		echo member > cpuset.cpus.partition
-+		PART=$(cat cpuset.cpus.partition)
-+		[[ $PART = member ]] || {
-+			echo "FAIL: task-occupied cycle $i destroy failed, got '$PART'"
-+			kill $TASK_PID 2>/dev/null; wait $TASK_PID 2>/dev/null
-+			exit 1
-+		}
-+	done
-+	kill $TASK_PID 2>/dev/null
-+	wait $TASK_PID 2>/dev/null
-+	echo "" > cpuset.cpus
-+
-+	#
-+	# Concurrent partitions: two sibling cgroups each holding half of
-+	# TEST_CPUS simultaneously isolated.  Verifies independent isolation
-+	# and correct union in cpuset.cpus.isolated / nohz_full.
-+	#
-+	local lo hi mid lower_half upper_half NOHZ_BOTH
-+	lo=${TEST_CPUS%%-*}; hi=${TEST_CPUS##*-}
-+	mid=$(( lo + (hi - lo) / 2 ))
-+	lower_half="${lo}-${mid}"
-+	upper_half="$((mid + 1))-${hi}"
-+	console_msg "HK-noise: concurrent partitions ($lower_half and $upper_half)"
-+	echo $TEST_CPUS > cpuset.cpus
-+	echo root > cpuset.cpus.partition
-+	mkdir -p HK_A HK_B
-+	echo "$lower_half" > HK_A/cpuset.cpus
-+	echo isolated > HK_A/cpuset.cpus.partition
-+	echo "$upper_half" > HK_B/cpuset.cpus
-+	echo isolated > HK_B/cpuset.cpus.partition
-+	local PA PB
-+	PA=$(cat HK_A/cpuset.cpus.partition)
-+	PB=$(cat HK_B/cpuset.cpus.partition)
-+	[[ $PA = isolated ]] || {
-+		echo "FAIL: concurrent partition HK_A not isolated, got '$PA'"
-+		echo member > HK_A/cpuset.cpus.partition 2>/dev/null
-+		echo member > HK_B/cpuset.cpus.partition 2>/dev/null
-+		rmdir HK_A HK_B 2>/dev/null
-+		echo member > cpuset.cpus.partition 2>/dev/null
-+		exit 1
-+	}
-+	[[ $PB = isolated ]] || {
-+		echo "FAIL: concurrent partition HK_B not isolated, got '$PB'"
-+		echo member > HK_A/cpuset.cpus.partition 2>/dev/null
-+		echo member > HK_B/cpuset.cpus.partition 2>/dev/null
-+		rmdir HK_A HK_B 2>/dev/null
-+		echo member > cpuset.cpus.partition 2>/dev/null
-+		exit 1
-+	}
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		NOHZ_BOTH=$(cat $NOHZ_FILE)
-+		verify_nohz_exact "$NOHZ_BEFORE" "$TEST_CPUS" "$NOHZ_BOTH" || {
-+			echo member > HK_A/cpuset.cpus.partition 2>/dev/null
-+			echo member > HK_B/cpuset.cpus.partition 2>/dev/null
-+			rmdir HK_A HK_B 2>/dev/null
-+			echo member > cpuset.cpus.partition 2>/dev/null
-+			exit 1
-+		}
-+	fi
-+	hk_noise_check_nocb_affinity "$TEST_CPUS" 1 || {
-+		echo member > HK_A/cpuset.cpus.partition 2>/dev/null
-+		echo member > HK_B/cpuset.cpus.partition 2>/dev/null
-+		rmdir HK_A HK_B 2>/dev/null
-+		echo member > cpuset.cpus.partition 2>/dev/null
-+		exit 1
-+	}
-+	echo member > HK_A/cpuset.cpus.partition
-+	echo member > HK_B/cpuset.cpus.partition
-+	rmdir HK_A HK_B
-+	echo member > cpuset.cpus.partition
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		NOHZ_NOW=$(cat $NOHZ_FILE)
-+		verify_nohz_exact "$NOHZ_BEFORE" "" "$NOHZ_NOW" || exit 1
-+	fi
-+	hk_noise_check_nocb_affinity "$TEST_CPUS" 0 || exit 1
-+	echo "" > cpuset.cpus
-+
-+	#
-+	# Concurrent create/destroy: two background subshells race on the same
-+	# partition simultaneously.  Verifies that concurrent cpuset writes
-+	# do not corrupt kernel state or trigger warnings.
-+	#
-+	console_msg "HK-noise: concurrent create/destroy race"
-+	echo $TEST_CPUS > cpuset.cpus
-+	local RACE_LOOPS=30 RACE_PID1 RACE_PID2
-+	(for i in $(seq 1 $RACE_LOOPS); do
-+		echo isolated > cpuset.cpus.partition 2>/dev/null
-+		echo member   > cpuset.cpus.partition 2>/dev/null
-+	done) &
-+	RACE_PID1=$!
-+	(for i in $(seq 1 $RACE_LOOPS); do
-+		echo member   > cpuset.cpus.partition 2>/dev/null
-+		echo isolated > cpuset.cpus.partition 2>/dev/null
-+	done) &
-+	RACE_PID2=$!
-+	wait $RACE_PID1 $RACE_PID2
-+	# Drive to a known-good state regardless of who won the last write.
-+	echo member > cpuset.cpus.partition 2>/dev/null || true
-+	PART=$(cat cpuset.cpus.partition)
-+	[[ $PART = member ]] || {
-+		echo "FAIL: concurrent race left partition in bad state: '$PART'"
-+		exit 1
-+	}
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		NOHZ_NOW=$(cat $NOHZ_FILE)
-+		verify_nohz_exact "$NOHZ_BEFORE" "" "$NOHZ_NOW" || exit 1
-+	fi
-+	echo "" > cpuset.cpus
-+
-+	#
-+	# Kernel hard-error check: none of the above scenarios must have
-+	# triggered a BUG, OOPS, panic, or RCU stall in the kernel log.
-+	# Also catch WARNINGs that implicate our subsystems (cpuset / rcu /
-+	# nohz / housekeeping / irq_affinity); ignore unrelated WARNINGs from
-+	# other kernel subsystems or user-space processes.
-+	#
-+	console_msg "HK-noise: checking kernel log for errors"
-+	local new_errors
-+	new_errors=$(dmesg | tail -n "+$((DMESG_LINES_START + 1))" | \
-+		grep -c -E \
-+		  'kernel BUG at|OOPS|Kernel panic|RCU Stall|scheduling while atomic' \
-+		|| true)
-+	local new_subsys_warns
-+	new_subsys_warns=$(dmesg | tail -n "+$((DMESG_LINES_START + 1))" | \
-+		grep 'WARNING:' | \
-+		grep -c -E 'cpuset|rcu|nohz|housekeeping|irq_affinity|dhm' \
-+		|| true)
-+	local total_errors=$(( new_errors + new_subsys_warns ))
-+	[[ $total_errors -eq 0 ]] || {
-+		echo "FAIL: $total_errors kernel error(s)/warning(s) during HK-noise test:"
-+		dmesg | tail -n "+$((DMESG_LINES_START + 1))" | \
-+			grep -E 'kernel BUG at|OOPS|Kernel panic|RCU Stall|scheduling while atomic' | head -10
-+		dmesg | tail -n "+$((DMESG_LINES_START + 1))" | \
-+			grep 'WARNING:' | grep -E 'cpuset|rcu|nohz|housekeeping|irq_affinity|dhm' | head -10
-+		exit 1
-+	}
-+
-+	cd $CGROUP2
-+	if [[ $HK_NOHZ_CHECK -eq 1 ]]; then
-+		if [[ $HAS_BOOT_NOHZ -eq 0 ]]; then
-+			console_msg "HK-noise: PASSED" \
-+			            "(zero-boot-param: nohz_full verified via DHM runtime path)"
-+		else
-+			console_msg "HK-noise: PASSED (with nohz_full verification)"
-+		fi
-+	else
-+		console_msg "HK-noise: PASSED (nohz_full skipped: CONFIG_NO_HZ_FULL not active)"
-+	fi
-+}
-+
- trap cleanup 0 2 3 6
- run_state_test TEST_MATRIX
- run_remote_state_test REMOTE_TEST_MATRIX
- test_isolated
- test_inotify
-+test_hk_noise_isolated
- echo "All tests PASSED."
-
--- 
-2.43.0
+Thanks,
+Longman
 
 
