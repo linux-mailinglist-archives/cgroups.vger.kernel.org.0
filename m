@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-17673-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17674-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id bx46EArTU2pUfQMAu9opvQ
-	(envelope-from <cgroups+bounces-17673-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 12 Jul 2026 19:46:50 +0200
+	id 5lQ+EiLTU2pXfQMAu9opvQ
+	(envelope-from <cgroups+bounces-17674-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 12 Jul 2026 19:47:14 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C084174584E
-	for <lists+cgroups@lfdr.de>; Sun, 12 Jul 2026 19:46:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E39745861
+	for <lists+cgroups@lfdr.de>; Sun, 12 Jul 2026 19:47:13 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=NEk9xRIk;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=js8IV0Pp;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17673-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17673-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17674-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17674-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0521B3015465
-	for <lists+cgroups@lfdr.de>; Sun, 12 Jul 2026 17:46:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6C0B83023DF6
+	for <lists+cgroups@lfdr.de>; Sun, 12 Jul 2026 17:46:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04451367B84;
-	Sun, 12 Jul 2026 17:46:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1058736896D;
+	Sun, 12 Jul 2026 17:46:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FDB1FECBA;
-	Sun, 12 Jul 2026 17:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC9B366557;
+	Sun, 12 Jul 2026 17:46:23 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783878383; cv=none; b=TRtJHwLxm0RR3GfHcmqhT4uuo4Mw2BlPClKjTykRFt7CEtqAixNNAVNz7Zcn0vPHuxBM5lWfjAqvrHU/E2uwiJjaNYQqkb5kqytKjzMLoEi+zb+6Lra4Iv6pf3wCgesqtNhxwOa/OgVO2iN/Fvrtz1xk3ZFD0evpG9XPui0DCEA=
+	t=1783878384; cv=none; b=G6p50wZutVrX++4BAATjeZiNtW8jEMI+zWYSntzS9xM3KYvjxvxZY8WX67/N+cQEfMPnWgLkaZWs6sXnuU09nB6X2QJEBI6c10CAfr2CQhbsosSbYp5sXIM66G9mdFA03Zm8cE6BZm43QvZXdyU0ZJMbSgpUpCbFRrs0XRrxrmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783878383; c=relaxed/simple;
-	bh=dd9DydwuzWfB7mrA3K1kl7Uw+IIFI8jI8bGIUnpXkdM=;
+	s=arc-20240116; t=1783878384; c=relaxed/simple;
+	bh=JY71zZN3AcJoRLbQ7PXiopJJONv12qYKHQGDvpxrzvw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OFIGjDZt8P89PI/zJojxk2ZjBWrBzKvp0c39fTcD5Y/9eXniz+2dKQFVuFvR35MoobWz30KxXjiw79U8breneA8uCg+n0ZTgepIaQvRPitAxrGZaj/00EaA1LTLuM49wcSmbMVUEvKSPVuLdA4qR0qPANQC2phMrLcXrFk+e/3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NEk9xRIk; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D40161F00A3A;
-	Sun, 12 Jul 2026 17:46:21 +0000 (UTC)
+	 MIME-Version; b=q3SXOg9SYRJyQAxug23I+BtLRDGNDmT565MyoY24c3GttrlH1c0l/KHGamDt5aku9rStq5ZVRmONfz+xsr2NnL7l0A6cppOZFTQAflpZ408FDosUH2WmecIXlMkLJv39x5vcPBKwm+DvZUImA4Zk+W8E0ul8k2qAFoSmsoLgbMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=js8IV0Pp; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5D421F000E9;
+	Sun, 12 Jul 2026 17:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783878382;
-	bh=1A/B42dHCXjGKT30DcsWli9CeAPqs+vigW+mgj1O7Qg=;
+	s=k20260515; t=1783878383;
+	bh=KHF9t7moUNFfnXNPE/xe3rLfSjmB8jjCrzAU8dZt5Zo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=NEk9xRIkMsRX9+C8wQ1e8iVbtP2T6yFIxiByfrDG01CaTjkSnqgnPXV7bcOxa592E
-	 lQHCOGGEMTPWVyKruZE0uoVeePAUPFXu/atbHGolGFi1wCqNAQhGJwN8xKVzSS1b1d
-	 +DNcfK7vFyVI0nQdI6fTQplOoL695cxzq4I4/qz85QtYoDNXlvjxaS+mZxnzjfAdDG
-	 X8ywp2ddJLNO+5okHMJr8fiZvxqTBS932uz+kRTYiI0mAf7BCWgxHjnsO+KGiC6cjj
-	 NByQOifow2V/vTYEGRhFENYAzyhu8i8THamgT+vXMqJ8Sg6c78dqyxMsPpEffZ6SQr
-	 jjeg8ph3G5g4g==
+	b=js8IV0Ppj6bhl38+QsXSYNXuCjtoHIN4n45z8F28u65ZiwZK9blz5bEkRIreaeWS2
+	 fbtG2ZYbQI69WxTizRxtKORWglkuNQJFMvJAg9ffu50QPNS7J2CORVwaHSpFiP4HC4
+	 0YE5bqC1y+91Om4Q4/x52MoRvOeGEzxBJNSQ6pBE77KRHM3o0GI+JLOEGODEVia5FN
+	 MLBP8D7EhDzY70MagAnd5iSwbGlacRB74XqQ4w0KBf4PPUIhKxDvS0dgGZBENSRhyd
+	 ms/dmcD5+x0JHg0cmKKRdgdwhxQu+1RebmifGXDt3oagLDYCbjVqeMdMY3bkeWNBmN
+	 YKVuSSg10K/FA==
 From: Tejun Heo <tj@kernel.org>
 To: Matt Fleming <matt@readmodwrite.com>
 Cc: David Vernet <void@manifault.com>,
@@ -65,10 +65,11 @@ Cc: David Vernet <void@manifault.com>,
 	linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org,
 	kernel-team@cloudflare.com,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 1/2] sched/psi: Create the psimon kthread outside of cgroup_mutex
-Date: Sun, 12 Jul 2026 07:46:18 -1000
-Message-ID: <20260712174619.3553231-2-tj@kernel.org>
+	Tejun Heo <tj@kernel.org>,
+	Sashiko AI <sashiko-bot@kernel.org>
+Subject: [PATCH 2/2] sched/psi: Shut down rtpoll_timer in psi_cgroup_free()
+Date: Sun, 12 Jul 2026 07:46:19 -1000
+Message-ID: <20260712174619.3553231-3-tj@kernel.org>
 X-Mailer: git-send-email 2.55.0
 In-Reply-To: <20260712174619.3553231-1-tj@kernel.org>
 References: <20260712174619.3553231-1-tj@kernel.org>
@@ -86,17 +87,17 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17673-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_FROM(0.00)[bounces-17674-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:matt@readmodwrite.com,m:void@manifault.com,m:arighi@nvidia.com,m:changwoo@igalia.com,m:hannes@cmpxchg.org,m:surenb@google.com,m:peterz@infradead.org,m:eadavis@qq.com,m:chenridong@huaweicloud.com,m:zhaoyang.huang@unisoc.com,m:ziwei.dai@unisoc.com,m:ke.wang@unisoc.com,m:mfleming@cloudflare.com,m:sched-ext@lists.linux.dev,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:kernel-team@cloudflare.com,m:tj@kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:matt@readmodwrite.com,m:void@manifault.com,m:arighi@nvidia.com,m:changwoo@igalia.com,m:hannes@cmpxchg.org,m:surenb@google.com,m:peterz@infradead.org,m:eadavis@qq.com,m:chenridong@huaweicloud.com,m:zhaoyang.huang@unisoc.com,m:ziwei.dai@unisoc.com,m:ke.wang@unisoc.com,m:mfleming@cloudflare.com,m:sched-ext@lists.linux.dev,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:kernel-team@cloudflare.com,m:tj@kernel.org,m:sashiko-bot@kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -111,231 +112,71 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cloudflare.com:email,qq.com:email,cmpxchg.org:email,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C084174584E
+X-Rspamd-Queue-Id: D0E39745861
 
-a5b98009f16d ("sched/psi: fix race between file release and pressure write")
-made pressure_write() hold cgroup_mutex across psi_trigger_create(), which
-forks the psimon kthread for the first rtpoll trigger. As kthread creation
-depends on the whole fork path, the commit inadvertently created a lot of
-unwanted locking dependencies from cgroup_mutex.
+psi_schedule_rtpoll_work() is called locklessly from the scheduler hotpath
+and can race psi_trigger_destroy() taking down the last rtpoll trigger under
+rtpoll_trigger_lock:
 
-sched_ext got hit by one: its enable path blocks forks and then grabs
-cgroup_mutex, so a pressure write racing a scheduler enable deadlocks, with
-every other fork piling up behind.
+  psi_schedule_rtpoll_work()        psi_trigger_destroy()
 
-Fix it by splitting trigger creation so that the worker is forked with
-cgroup_mutex dropped and the kernfs active reference left broken. The latter
-matters because rmdir and cgroup.pressure writes drain active references
-under cgroup_mutex. Publishing the trigger last keeps error reporting
-synchronous and preserves the of->priv lifetime rules.
+  rcu_read_lock();
+  task = rcu_dereference(rtpoll_task);
+                                    rcu_assign_pointer(rtpoll_task, NULL);
+                                    timer_delete(&rtpoll_timer);
+  mod_timer(&rtpoll_timer, ...);
+  rcu_read_unlock();
+                                    synchronize_rcu();
+                                    kthread_stop(task_to_destroy);
 
-The trigger registered in the first stage pins the group's rtpoll machinery
-across the unlocked window, leaving only creation races to resolve. The
-catch-up poll on installation covers scheduling attempts dropped while there
-was no worker.
+The group can then be freed with the re-armed timer still pending, and
+poll_timer_fn() runs on freed memory.
 
-v2: Retagged sched/psi (was cgroup).
+461daba06bdc ("psi: eliminate kthread_worker from psi trigger scheduling
+mechanism") deleted the timer synchronously after the synchronize_rcu(),
+which prevented this but raced trigger creation instead: the deletion could
+cancel the timer that a new trigger set armed during the grace period and,
+as creation also reinitialized the timer at the time, corrupt it.
+8f91efd870ea ("psi: Fix race between psi_trigger_create/destroy") moved the
+initialization into group_init() and the deletion into the locked section,
+trading the creation races for the window above.
 
-Fixes: a5b98009f16d ("sched/psi: fix race between file release and pressure write")
-Cc: stable@vger.kernel.org
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Edward Adam Davis <eadavis@qq.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>
-Reported-by: Matt Fleming <mfleming@cloudflare.com>
-Closes: https://lore.kernel.org/all/20260710100441.2653477-1-matt@readmodwrite.com/
+Neither placement in the destruction path works. A pending timer firing
+while the group is alive is harmless though. poll_timer_fn() just wakes the
+rtpoll waitqueue and doesn't re-arm itself. Bind the timer to the group's
+lifetime instead and shut it down in psi_cgroup_free(). Nothing can arm it
+by then. timer_shutdown_sync() because the timer is never armed again.
+
+Fixes: 8f91efd870ea ("psi: Fix race between psi_trigger_create/destroy")
+Cc: stable@vger.kernel.org # v5.10+
+Reported-by: Sashiko AI <sashiko-bot@kernel.org>
+Closes: https://lore.kernel.org/all/20260711000434.36C4A1F000E9@smtp.kernel.org/
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/psi.h    |  4 ++-
- kernel/cgroup/cgroup.c | 23 +++++++++++++-
- kernel/sched/psi.c     | 69 ++++++++++++++++++++++++++++++++----------
- 3 files changed, 78 insertions(+), 18 deletions(-)
+ kernel/sched/psi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/linux/psi.h b/include/linux/psi.h
-index e0745873e3f2..7966e3ac03b9 100644
---- a/include/linux/psi.h
-+++ b/include/linux/psi.h
-@@ -25,7 +25,9 @@ void psi_memstall_leave(unsigned long *flags);
- int psi_show(struct seq_file *s, struct psi_group *group, enum psi_res res);
- struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
- 				       enum psi_res res, struct file *file,
--				       struct kernfs_open_file *of);
-+				       struct kernfs_open_file *of,
-+				       bool *need_rtpoll_worker);
-+int psi_trigger_create_rtpoll_worker(struct psi_group *group);
- void psi_trigger_destroy(struct psi_trigger *t);
- 
- __poll_t psi_trigger_poll(void **trigger_ptr, struct file *file,
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 38f8d9df8fbc..b5b461d4418b 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3996,6 +3996,7 @@ static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
- 	struct psi_trigger *new;
- 	struct cgroup *cgrp;
- 	struct psi_group *psi;
-+	bool need_rtpoll_worker;
- 	ssize_t ret = 0;
- 
- 	cgrp = cgroup_kn_lock_live(of->kn, false);
-@@ -4015,12 +4016,32 @@ static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
- 	}
- 
- 	psi = cgroup_psi(cgrp);
--	new = psi_trigger_create(psi, buf, res, of->file, of);
-+	new = psi_trigger_create(psi, buf, res, of->file, of,
-+				 &need_rtpoll_worker);
- 	if (IS_ERR(new)) {
- 		ret = PTR_ERR(new);
- 		goto out_unlock;
- 	}
- 
-+	/*
-+	 * The worker fork must run with neither cgroup_mutex nor the file's
-+	 * kernfs active reference held. The latter is broken since
-+	 * cgroup_kn_lock_live(). @of->priv may be released while unlocked, so
-+	 * recheck before publishing @new.
-+	 */
-+	if (need_rtpoll_worker) {
-+		cgroup_unlock();
-+		ret = psi_trigger_create_rtpoll_worker(psi);
-+		cgroup_lock();
-+
-+		if (!ret && !of->priv)
-+			ret = -ENODEV;
-+		if (ret) {
-+			psi_trigger_destroy(new);
-+			goto out_unlock;
-+		}
-+	}
-+
- 	smp_store_release(&ctx->psi.trigger, new);
- 
- out_unlock:
 diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index d9c9d9480a45..565ec7b80743 100644
+index 565ec7b80743..e2e825dcd088 100644
 --- a/kernel/sched/psi.c
 +++ b/kernel/sched/psi.c
-@@ -1292,9 +1292,44 @@ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
- 	return 0;
- }
+@@ -1134,6 +1134,12 @@ void psi_cgroup_free(struct cgroup *cgroup)
+ 		return;
  
-+/*
-+ * Create @group's rtpoll worker after psi_trigger_create() reported the need
-+ * for one. kthread creation depends on the whole fork path and we don't want
-+ * all of that nested inside cgroup_mutex, so the caller must drop it and any
-+ * other lock that forks can wait behind. If two callers race, the loser stops
-+ * its never-woken kthread.
-+ */
-+int psi_trigger_create_rtpoll_worker(struct psi_group *group)
-+{
-+	struct task_struct *task;
-+
-+	task = kthread_create(psi_rtpoll_worker, group, "psimon");
-+	if (IS_ERR(task))
-+		return PTR_ERR(task);
-+
-+	scoped_guard(mutex, &group->rtpoll_trigger_lock) {
-+		if (!rcu_access_pointer(group->rtpoll_task)) {
-+			atomic_set(&group->rtpoll_wakeup, 0);
-+			wake_up_process(task);
-+			rcu_assign_pointer(group->rtpoll_task, task);
-+
-+			/*
-+			 * Poll once to catch up on scheduling attempts dropped
-+			 * while there was no rtpoll worker.
-+			 */
-+			psi_schedule_rtpoll_work(group, 1, true);
-+			return 0;
-+		}
-+	}
-+
-+	kthread_stop(task);
-+	return 0;
-+}
-+
- struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
- 				       enum psi_res res, struct file *file,
--				       struct kernfs_open_file *of)
-+				       struct kernfs_open_file *of,
-+				       bool *need_rtpoll_worker)
- {
- 	struct psi_trigger *t;
- 	enum psi_states state;
-@@ -1302,6 +1337,8 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
- 	bool privileged;
- 	u32 window_us;
- 
-+	*need_rtpoll_worker = false;
-+
- 	if (static_branch_likely(&psi_disabled))
- 		return ERR_PTR(-EOPNOTSUPP);
- 
-@@ -1362,26 +1399,14 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group, char *buf,
- 	if (privileged) {
- 		mutex_lock(&group->rtpoll_trigger_lock);
- 
--		if (!rcu_access_pointer(group->rtpoll_task)) {
--			struct task_struct *task;
--
--			task = kthread_create(psi_rtpoll_worker, group, "psimon");
--			if (IS_ERR(task)) {
--				kfree(t);
--				mutex_unlock(&group->rtpoll_trigger_lock);
--				return ERR_CAST(task);
--			}
--			atomic_set(&group->rtpoll_wakeup, 0);
--			wake_up_process(task);
--			rcu_assign_pointer(group->rtpoll_task, task);
--		}
--
- 		list_add(&t->node, &group->rtpoll_triggers);
- 		group->rtpoll_min_period = min(group->rtpoll_min_period,
- 			div_u64(t->win.size, UPDATES_PER_WINDOW));
- 		group->rtpoll_nr_triggers[t->state]++;
- 		group->rtpoll_states |= (1 << t->state);
- 
-+		*need_rtpoll_worker = !rcu_access_pointer(group->rtpoll_task);
-+
- 		mutex_unlock(&group->rtpoll_trigger_lock);
- 	} else {
- 		mutex_lock(&group->avgs_lock);
-@@ -1541,6 +1566,8 @@ static ssize_t psi_write(struct file *file, const char __user *user_buf,
- 	size_t buf_size;
- 	struct seq_file *seq;
- 	struct psi_trigger *new;
-+	bool need_rtpoll_worker;
-+	int ret;
- 
- 	if (static_branch_likely(&psi_disabled))
- 		return -EOPNOTSUPP;
-@@ -1565,12 +1592,22 @@ static ssize_t psi_write(struct file *file, const char __user *user_buf,
- 		return -EBUSY;
- 	}
- 
--	new = psi_trigger_create(&psi_system, buf, res, file, NULL);
-+	new = psi_trigger_create(&psi_system, buf, res, file, NULL,
-+				 &need_rtpoll_worker);
- 	if (IS_ERR(new)) {
- 		mutex_unlock(&seq->lock);
- 		return PTR_ERR(new);
- 	}
- 
-+	if (need_rtpoll_worker) {
-+		ret = psi_trigger_create_rtpoll_worker(&psi_system);
-+		if (ret) {
-+			psi_trigger_destroy(new);
-+			mutex_unlock(&seq->lock);
-+			return ret;
-+		}
-+	}
-+
- 	smp_store_release(&seq->private, new);
- 	mutex_unlock(&seq->lock);
- 
+ 	cancel_delayed_work_sync(&cgroup->psi->avgs_work);
++	/*
++	 * A psi_schedule_rtpoll_work() call racing the last trigger's
++	 * destruction may have re-armed the timer after psi_trigger_destroy()
++	 * deleted it. Spurious firing while the group is alive is harmless.
++	 */
++	timer_shutdown_sync(&cgroup->psi->rtpoll_timer);
+ 	free_percpu(cgroup->psi->pcpu);
+ 	/* All triggers must be removed by now */
+ 	WARN_ONCE(cgroup->psi->rtpoll_states, "psi: trigger leak\n");
 -- 
 2.55.0
 
