@@ -1,221 +1,605 @@
-Return-Path: <cgroups+bounces-17723-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17724-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Z2BIH9HzVGqVhwAAu9opvQ
-	(envelope-from <cgroups+bounces-17723-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 16:18:57 +0200
+	id RprNFuz5VGobiQAAu9opvQ
+	(envelope-from <cgroups+bounces-17724-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 16:45:00 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DBAA74C47F
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 16:18:57 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89EB974C8D1
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 16:44:58 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=pS9y55re;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17723-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17723-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=google.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=linux.dev header.s=key1 header.b=cbVCV1kL;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17724-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17724-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B3C393032409
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:09:03 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 16DF330A63DC
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1085439015;
-	Mon, 13 Jul 2026 14:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC15943802B;
+	Mon, 13 Jul 2026 14:29:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326064279EE
-	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 14:08:08 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783951689; cv=pass; b=LAxrZZMzb5StwMZlltNATHnP6odQqdb+/M8CBPcn81eTXR8cpVNui9wl5SncODosydgH1Z6XiQxrT3eh8ljD3HOuZhDX4aIm8z0+rbbOhtSA/Dlx5p2l/8PhDfgNZUOi4uWESNCWM/MNkq24L6z7U5D+SUmyzyX3JsM5V7KqxHM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783951689; c=relaxed/simple;
-	bh=vqIlEswSbjH4NuGZq6lHoJhIaehD2d6A+4RCBsh341k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TrLrXwPoQMvH+qHTttsGQiBYpwBFpADCfj2ylizK5XNNZJM3marENuPH22e5qfIFG3UckP72as99MO9TDNj8DjBT79+ktXYBFa2Zl1bvI5mhY9BBgTfHQa66KQXp4RTT0Gyhn0QcR0due9hrzWnZkwLINBIQXvdiaD37lERiotA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pS9y55re; arc=pass smtp.client-ip=209.85.160.177
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-51c01c79467so499401cf.0
-        for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 07:08:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783951687; cv=none;
-        d=google.com; s=arc-20260327;
-        b=TLtHLo//jleF3TzbjY7/zRlfacGemAYKBo0KglsgFoGzPLIkubbjMZb9ZzIGeSZXRK
-         zrlPFewZh2UXopcqoKnFmRWhAX23jwzIEcRSdn2DsmgiIgcWmcBfOzzs1a+TJgrMElfO
-         d3a9OTvX/B9JRSx3N10B90IPEXPKLFyCCe4Xxi7ko/eHk6aDiXe7JDeVciEri2Pfc2IQ
-         hi+uaLft0PuvguvjoC0QYb2SqUBdYveXSCSgGkP4oGRKXqkbFklt7ZfDl3yyKOoURkab
-         XUJfXnxLDoqkKt+HnfMmfp9d2QYxEBfg1fHEhPejJwN98pDKKYIvELL6ZD8AfvaqAHTB
-         cFlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=P/B4jzAbemKAfn1pqP8eoojQzyZ93X8qz1xTXY8DGb8=;
-        fh=o+IQUuK5/xgyDIVYdOND1ZUo0LxCBcVuXNR/3a2wPUQ=;
-        b=YgMIjQEJYjNv+G5CY6JAYCrze1yoKQx8MvYad+NseTl++PBqgSzv7/amPMmow/ZT/E
-         P+hm4ReaKwA33LG4ZBCCyOeW1or597rIolNXcJi3fSp/nkf+D2R5v+7uZnpHX+9ukK/U
-         awKaW/MyCkyyfqif5OdT6HAHoiK3QlFaKfRnKkfUNugZjx1MG7YH5kFh4oXdn5wbgSn/
-         aXVSlHK0abmkYpRW3ar15D/q33j0Fe6S3eNcNJxYASWaNxLo+hnzA+KMR4g1P8beimpc
-         d4giksSfDyPvmO6gQclxqZGWIjM9JHSMgEJ0CsCgiPkkBBTMSeWcNzozmAeUQ/KF4Rig
-         sXmg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1783951687; x=1784556487; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=P/B4jzAbemKAfn1pqP8eoojQzyZ93X8qz1xTXY8DGb8=;
-        b=pS9y55reWilK7flI1go7NlrWlU39RPZg9bFvJWoSZj0FMI+nLkhXrWIerGcrCMO40r
-         DrwZa6m2vvOtaIacxmfFAt5Q4wmX/ZvOY9LtgOOuEaoEeb+LkG33TUoYXeGeYJgkOrOe
-         DxL3XQi+Ax5MJP5RwXnYD5KpbOy1zHNEJf9h0/hnh5tAcB0PEkq/CEViW2L/zDgOLEbG
-         Domgdv4gOVDIfX5TZ0chgk1Y09MQR919qtj8fxYbaKqhR1l58WHRoZncN49POGe/+FRV
-         aEWKEtKEvHpEHdHl5Oo+vjAKkfxPOuRaOQ4lgCmuI2jmsrr4xMjAGvx3amWKUQOPY2mK
-         9s3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783951687; x=1784556487;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=P/B4jzAbemKAfn1pqP8eoojQzyZ93X8qz1xTXY8DGb8=;
-        b=hhTSvGgWcld4EpcoWeoJUqC/K/PweMoCovQnKsM4Y/ifahDID+qKPQXT95j9HOEb4/
-         nOzMtLOYOmmmuBdiFySJiBS3ktlirenM1sS1TT5P+q21SJvkFeLg5sWxNIeqczz3geoO
-         nO23QFi2ileiOzoQDDv001cXBI89Gy2Gs3VBoAa+rRnR6VKzT3Xvp2z97Ceq96GUz8Lw
-         o9Tc/N3j81JGyG1vP4smz9Wekd0CR2g5EiRsMhNO4xm9cpln0cOenf9Xt8oThCBjUmQI
-         PB6lNH6Sco907M4nWnfNbHNN2kjgjliufIkGdD4SOjiTCHwxnb7+bsyrVbtEJ2q8XqVg
-         3x8Q==
-X-Forwarded-Encrypted: i=1; AHgh+RqgwLqUxJfosESsJf8s6+ngawdCdDE3rn1AGsLUjTOSlwwhozfPfq9Y/AgvyOAU6BjRuhT9QD/E@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywe1Z6FOYJxYHyFlrbRO1LmqUjQ5ghdGfw0BLHf892HwUYZGNR5
-	/Pj8YxY69TExe6NuUcLjaljrvvpyp0QSvdVMSZZqn5Z+llg1xkkIre80JP/osNR+J3e9GVueFzZ
-	nNWTypkdpsKdCBAtqcaNGlVBqE2NqcehczJdH7Z8T
-X-Gm-Gg: AfdE7cn7NVvvPCrXvfX+oLoSmhcL+3nBLXplPRs0SPjt7i0TLCGJkkHdLADD4sbvaZ7
-	6KjiE71JVT+gZBcGNJZ4jFALQFlzISUo3g3+e+ecLyJZC3eP0ZUk/Q4YRPrF2hewI90tyM545mN
-	9KwfPsreHOKGTerOGL9TOlxH6drndWpCahmNGp00bN+MZnLESmu5W2YgE+dzQZ0+r+LA0AWecce
-	iK4k3eNTi6ri8AAaSrA6a4BKGUOGuXSnCY4NXZmZVmsbYS4vECKepp1GJAK0cP7PJGI8mYSJzHd
-	Dz4sUA==
-X-Received: by 2002:ac8:7d03:0:b0:51c:104c:100c with SMTP id
- d75a77b69052e-51d71546a1cmr3059641cf.2.1783951686232; Mon, 13 Jul 2026
- 07:08:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EBE43746A
+	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 14:29:08 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783952952; cv=none; b=X12d1WWWn7WfKBHhsSmg1YA9WKQmoVC/tB2Ol00uLm/2Lf6fYS5V+yJycL3d4SzxnM4Aw+6rByohBQ0Kcc690cIAcL27d/it+oT8lB0RRck2tpPToz4+WnWTZFMWFL1ChRcu3m1OVSdQYlQrFfWg/1Id3CTXqFHR4VUqaPn2oJM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783952952; c=relaxed/simple;
+	bh=a1J6DSvCKUhiqjpZ4ZkSzXKoE4U2LBsXWz1FgJSSC/M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DgsI4mJrMu4I5l7FXmWRdhvx5mRQXYOiJ0Oqk9q4Esg+GNown5rZO7b5zo+RuCbBOs6MrFeYVmAXhs08JeFS+8hrF4g+G/iaFpWsexZ3x+QaPSEvrWiPHH+EoVDkq//u8bUHxB9ic6e2UOv0MaOfkEQb9NqRBFphB1M8G8qEu9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cbVCV1kL; arc=none smtp.client-ip=95.215.58.173
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1783952946;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9fwkSG/cihlqebzAAwt4+4D1OKdB52rOus0L6mq/ges=;
+	b=cbVCV1kLiL4J8T7gyL4uwj2ZNMlAdDzUL5Ctmrs1Z3VS3eEXpuMNqbMnPAj0I2gTppzXcG
+	bKbVDym0SK2HwL1oKXMsibK/mmvHPsNMjU8hSJH8JQwJiMYHKmZqYDHGHgBftyYplV57Ns
+	qJxmO56+MxcfU8IOUDp+gzd1+5q6m7Y=
+From: Usama Arif <usama.arif@linux.dev>
+To: Youngjun Park <youngjun.park@lge.com>
+Cc: Usama Arif <usama.arif@linux.dev>,
+	akpm@linux-foundation.org,
+	chrisl@kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kasong@tencent.com,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	shikemeng@huaweicloud.com,
+	baoquan.he@linux.dev,
+	baohua@kernel.org,
+	yosry@kernel.org,
+	joshua.hahnjy@gmail.com,
+	gunho.lee@lge.com,
+	taejoon.song@lge.com,
+	hyungjun.cho@lge.com,
+	baver.bae@lge.com,
+	her0gyugyu@gmail.com
+Subject: Re: [PATCH v10 2/6] mm: swap: associate swap devices with tiers
+Date: Mon, 13 Jul 2026 07:28:53 -0700
+Message-ID: <20260713142856.102257-1-usama.arif@linux.dev>
+In-Reply-To: <20260713025644.170839-3-youngjun.park@lge.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260712174619.3553231-1-tj@kernel.org> <20260712174619.3553231-3-tj@kernel.org>
- <20260713105655.GC276793@cmpxchg.org>
-In-Reply-To: <20260713105655.GC276793@cmpxchg.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 13 Jul 2026 07:07:55 -0700
-X-Gm-Features: AUfX_mySUXx60Yrl5QJFzFOTYBVkvBAoiyE97eRZFZR4z-qTHxpoqiaNZ1I-MdA
-Message-ID: <CAJuCfpEocgh+s_R_C6K25ESaSub=-vx6ZwqE-5HJddfBPMt7NA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] sched/psi: Shut down rtpoll_timer in psi_cgroup_free()
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>, Matt Fleming <matt@readmodwrite.com>, 
-	David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
-	Changwoo Min <changwoo@igalia.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Edward Adam Davis <eadavis@qq.com>, Chen Ridong <chenridong@huaweicloud.com>, 
-	Zhaoyang Huang <zhaoyang.huang@unisoc.com>, "ziwei . dai" <ziwei.dai@unisoc.com>, 
-	"ke . wang" <ke.wang@unisoc.com>, Matt Fleming <mfleming@cloudflare.com>, sched-ext@lists.linux.dev, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
-	kernel-team@cloudflare.com, Sashiko AI <sashiko-bot@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:hannes@cmpxchg.org,m:tj@kernel.org,m:matt@readmodwrite.com,m:void@manifault.com,m:arighi@nvidia.com,m:changwoo@igalia.com,m:peterz@infradead.org,m:eadavis@qq.com,m:chenridong@huaweicloud.com,m:zhaoyang.huang@unisoc.com,m:ziwei.dai@unisoc.com,m:ke.wang@unisoc.com,m:mfleming@cloudflare.com,m:sched-ext@lists.linux.dev,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:kernel-team@cloudflare.com,m:sashiko-bot@kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-17723-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17724-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:youngjun.park@lge.com,m:usama.arif@linux.dev,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:yosry@kernel.org,m:joshua.hahnjy@gmail.com,m:gunho.lee@lge.com,m:taejoon.song@lge.com,m:hyungjun.cho@lge.com,m:baver.bae@lge.com,m:her0gyugyu@gmail.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[surenb@google.com,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,readmodwrite.com,manifault.com,nvidia.com,igalia.com,infradead.org,qq.com,huaweicloud.com,unisoc.com,cloudflare.com,lists.linux.dev,vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[surenb@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,kernel.org,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,huaweicloud.com,gmail.com,lge.com];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,lge.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim,kvack.org:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5DBAA74C47F
+X-Rspamd-Queue-Id: 89EB974C8D1
 
-On Mon, Jul 13, 2026 at 3:56=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Sun, Jul 12, 2026 at 07:46:19AM -1000, Tejun Heo wrote:
-> > psi_schedule_rtpoll_work() is called locklessly from the scheduler hotp=
-ath
-> > and can race psi_trigger_destroy() taking down the last rtpoll trigger =
-under
-> > rtpoll_trigger_lock:
-> >
-> >   psi_schedule_rtpoll_work()        psi_trigger_destroy()
-> >
-> >   rcu_read_lock();
-> >   task =3D rcu_dereference(rtpoll_task);
-> >                                     rcu_assign_pointer(rtpoll_task, NUL=
-L);
-> >                                     timer_delete(&rtpoll_timer);
-> >   mod_timer(&rtpoll_timer, ...);
-> >   rcu_read_unlock();
-> >                                     synchronize_rcu();
-> >                                     kthread_stop(task_to_destroy);
-> >
-> > The group can then be freed with the re-armed timer still pending, and
-> > poll_timer_fn() runs on freed memory.
-> >
-> > 461daba06bdc ("psi: eliminate kthread_worker from psi trigger schedulin=
-g
-> > mechanism") deleted the timer synchronously after the synchronize_rcu()=
-,
-> > which prevented this but raced trigger creation instead: the deletion c=
-ould
-> > cancel the timer that a new trigger set armed during the grace period a=
-nd,
-> > as creation also reinitialized the timer at the time, corrupt it.
-> > 8f91efd870ea ("psi: Fix race between psi_trigger_create/destroy") moved=
- the
-> > initialization into group_init() and the deletion into the locked secti=
-on,
-> > trading the creation races for the window above.
-> >
-> > Neither placement in the destruction path works. A pending timer firing
-> > while the group is alive is harmless though. poll_timer_fn() just wakes=
- the
-> > rtpoll waitqueue and doesn't re-arm itself. Bind the timer to the group=
-'s
-> > lifetime instead and shut it down in psi_cgroup_free(). Nothing can arm=
- it
-> > by then. timer_shutdown_sync() because the timer is never armed again.
-> >
-> > Fixes: 8f91efd870ea ("psi: Fix race between psi_trigger_create/destroy"=
-)
-> > Cc: stable@vger.kernel.org # v5.10+
-> > Reported-by: Sashiko AI <sashiko-bot@kernel.org>
-> > Closes: https://lore.kernel.org/all/20260711000434.36C4A1F000E9@smtp.ke=
-rnel.org/
-> > Signed-off-by: Tejun Heo <tj@kernel.org>
->
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->
-> Both these patches look good to me, but Suren can you please also take
-> a look?
+On Mon, 13 Jul 2026 11:56:40 +0900 Youngjun Park <youngjun.park@lge.com> wrote:
 
-Yes, I'm on it. Need some time to remind myself of all the details of
-the implementation.
+> This patch connects swap devices to the swap tier infrastructure,
+> ensuring that devices are correctly assigned to tiers based on their
+> priority.
+> 
+> A `tier_mask` is added to identify the tier membership of swap devices.
+> Although tier-based allocation logic is not yet implemented, this
+> mapping is necessary to track which tier a device belongs to. Upon
+> activation, the device is assigned to a tier by matching its priority
+> against the configured tier ranges.
+> 
+> The infrastructure allows dynamic modification of tiers, such as
+> splitting or merging ranges. These operations are permitted provided
+> that the tier assignment of already configured swap devices remains
+> unchanged.
+> 
+> This patch also adds the documentation for the swap tier feature,
+> covering the core concepts, sysfs interface usage, and configuration
+> details.
+> 
+> Reviewed-by: Baoquan He <baoquan.he@linux.dev>
+> Signed-off-by: Youngjun Park <youngjun.park@lge.com>
+> ---
+>  Documentation/mm/index.rst     |   1 +
+>  Documentation/mm/swap-tier.rst | 150 +++++++++++++++++++++++++++++++++
+>  MAINTAINERS                    |   1 +
+>  include/linux/swap.h           |   1 +
+>  mm/swap_state.c                |   2 +-
+>  mm/swap_tier.c                 | 101 +++++++++++++++++++---
+>  mm/swap_tier.h                 |  13 ++-
+>  mm/swapfile.c                  |   2 +
+>  8 files changed, 257 insertions(+), 14 deletions(-)
+>  create mode 100644 Documentation/mm/swap-tier.rst
+> 
+> diff --git a/Documentation/mm/index.rst b/Documentation/mm/index.rst
+> index 13a79f5d092c..6afc45cd4b3d 100644
+> --- a/Documentation/mm/index.rst
+> +++ b/Documentation/mm/index.rst
+> @@ -34,6 +34,7 @@ see the :doc:`admin guide <../admin-guide/mm/index>`.
+>     page_reclaim
+>     swap
+>     swap-table
+> +   swap-tier
+>     page_cache
+>     shmfs
+>     oom
+> diff --git a/Documentation/mm/swap-tier.rst b/Documentation/mm/swap-tier.rst
+> new file mode 100644
+> index 000000000000..0fb4a1153a67
+> --- /dev/null
+> +++ b/Documentation/mm/swap-tier.rst
+> @@ -0,0 +1,150 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +:Author: Chris Li <chrisl@kernel.org> Youngjun Park <youngjun.park@lge.com>
+> +
+> +==========
+> +Swap Tier
+> +==========
+> +
+> +Swap tier is a collection of user-named groups classified by priority ranges.
+> +It acts as a facilitation layer, allowing users to manage swap devices based
+> +on their speeds.
+> +
+> +Users are encouraged to assign swap device priorities according to device
+> +speed to fully utilize this feature. While the current implementation is
+> +integrated with cgroups, the concept is designed to be extensible for other
+> +subsystems in the future.
+> +
+> +Priority Range
+> +--------------
+> +
+> +The specified tiers must cover the entire priority range from -1
+> +(DEF_SWAP_PRIO) to SHRT_MAX.
+> +
+> +Consistency
+> +-----------
+> +
+> +Tier consistency is guaranteed with a focus on maximizing flexibility. When a
+> +swap device is activated within a tier range, the tier covering that device's
+> +priority is guaranteed not to disappear or change while the device remains
+> +active. Adding a new tier may split the range of an existing tier, but the
+> +active device's tier assignment remains unchanged.
+> +
+> +However, specifying a tier in a cgroup does not guarantee the tier's existence.
+> +Consequently, the corresponding tier can disappear at any time.
+> +
+> +Configuration Interface
+> +-----------------------
+> +
+> +The swap tiers can be configured via the following interface:
+> +
+> +/sys/kernel/mm/swap/tiers
+> +
+> +Operations can be performed using the following syntax:
+> +
+> +* Add:    ``+"<tiername>":"<start_priority>"``
+> +* Remove: ``-"<tiername>"``
+> +
+> +Tier names must consist of alphanumeric characters and underscores. Multiple
+> +operations can be provided in a single write, separated by commas (",") or
+> +whitespace (spaces, tabs, newlines).
+> +
+> +When configuring tiers, the specified value represents the **start priority**
+> +of that tier. The end priority is automatically determined by the start
+> +priority of the next higher tier. Consequently, adding a tier
+> +automatically adjusts the ranges of adjacent tiers to ensure continuity.
+> +
+> +Examples
+> +--------
+> +
+> +**1. Initialization**
+> +
+> +A tier starting at -1 is mandatory to cover the entire priority range up to
+> +SHRT_MAX. In this example, 'HDD' starts at 50, and 'NET' covers the remaining
+> +lower range starting from -1.
+> +
+> +::
+> +
+> +    # echo "+HDD:50, +NET:-1" > /sys/kernel/mm/swap/tiers
+> +    # cat /sys/kernel/mm/swap/tiers
+> +    Name             Idx   PrioStart   PrioEnd
+> +    HDD              0     50          32767
+> +    NET              1     -1          49
+> +
+> +**2. Adding a New Tier (split)**
+> +
+> +A new tier 'SSD' is added at priority 100, splitting the existing 'HDD' tier.
+> +The ranges are automatically recalculated:
+> +
+> +* 'SSD' takes the top range (100 to SHRT_MAX).
+> +* 'HDD' is adjusted to the range between 'NET' and 'SSD' (50 to 99).
+> +* 'NET' remains unchanged (-1 to 49).
+> +
+> +::
+> +
+> +    # echo "+SSD:100" > /sys/kernel/mm/swap/tiers
+> +    # cat /sys/kernel/mm/swap/tiers
+> +    Name             Idx   PrioStart   PrioEnd
+> +    SSD              2     100         32767
+> +    HDD              0     50          99
+> +    NET              1     -1          49
+> +
+> +**3. Removal (merge)**
+> +
+> +Tiers can be removed using the '-' prefix.
+> +::
+> +
+> +    # echo "-SSD" > /sys/kernel/mm/swap/tiers
+> +
+> +When a tier is removed, its priority range is merged into the adjacent
+> +tier. The merge direction is always upward (the tier below expands),
+> +except when the lowest tier is removed — in that case the tier above
+> +shifts its starting priority down to -1 to maintain full range coverage.
+> +
+> +::
+> +
+> +    Initial state:
+> +    Name             Idx   PrioStart   PrioEnd
+> +    SSD              2     100         32767
+> +    HDD              1     50          99
+> +    NET              0     -1          49
+> +
+> +    # echo "-SSD" > /sys/kernel/mm/swap/tiers
+> +
+> +    Name             Idx   PrioStart   PrioEnd
+> +    HDD              1     50          32767       <- merged with SSD's range
+> +    NET              0     -1          49
+> +
+> +    # echo "-NET" > /sys/kernel/mm/swap/tiers
+> +
+> +    Name             Idx   PrioStart   PrioEnd
+> +    HDD              1     -1          32767       <- shifted down to -1
+> +
+> +**4. Interaction with Active Swap Devices**
+> +
+> +If a swap device is active (swapon), the tier covering that device's
+> +priority cannot be removed. Splitting the active tier's range is only
+> +allowed above the device's priority.
+> +
+> +Assume a swap device is active at priority 60 (inside 'HDD' tier).
+> +
+> +::
+> +
+> +    # swapon -p 60 /dev/zram0
+> +
+> +    Name             Idx   PrioStart   PrioEnd
+> +    HDD              0     50          32767
+> +    NET              1     -1          49
+> +
+> +    # echo "-HDD" > /sys/kernel/mm/swap/tiers
+> +    -bash: echo: write error: Device or resource busy
+> +
+> +    # echo "+SSD:60" > /sys/kernel/mm/swap/tiers
+> +    -bash: echo: write error: Device or resource busy
+> +
+> +    # echo "+SSD:100" > /sys/kernel/mm/swap/tiers
+> +
+> +    Name             Idx   PrioStart   PrioEnd
+> +    SSD              2     100         32767
+> +    HDD              0     50          99          <- device (prio 60) stays here
+> +    NET              1     -1          49
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e94d1af17c39..4485a0650984 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17237,6 +17237,7 @@ L:	linux-mm@kvack.org
+>  S:	Maintained
+>  F:	Documentation/ABI/testing/sysfs-kernel-mm-swap
+>  F:	Documentation/mm/swap-table.rst
+> +F:	Documentation/mm/swap-tier.rst
+>  F:	include/linux/swap.h
+>  F:	include/linux/swapfile.h
+>  F:	include/linux/swapops.h
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 4427c7aa16dc..2d647a8fa60f 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -244,6 +244,7 @@ struct swap_info_struct {
+>  	struct percpu_ref users;	/* indicate and keep swap device valid. */
+>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>  	signed short	prio;		/* swap priority of this type */
+> +	int tier_mask;			/* swap tier mask */
+>  	struct plist_node list;		/* entry in swap_active_head */
+>  	signed char	type;		/* strange name for an index */
+>  	unsigned int	max;		/* size of this swap device */
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index c18ff741f2e0..dcec1a6c92bd 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -1095,7 +1095,7 @@ static ssize_t tiers_store(struct kobject *kobj,
+>  		}
+>  	}
+>  
+> -	if (!swap_tiers_validate()) {
+> +	if (!swap_tiers_update()) {
+>  		ret = -EINVAL;
+>  		goto restore;
+>  	}
+> diff --git a/mm/swap_tier.c b/mm/swap_tier.c
+> index ac7a3c2a48cb..6b57cadb3e95 100644
+> --- a/mm/swap_tier.c
+> +++ b/mm/swap_tier.c
+> @@ -38,6 +38,8 @@ static LIST_HEAD(swap_tier_inactive_list);
+>  	(!list_is_first(&(tier)->list, &swap_tier_active_list) ? \
+>  	list_prev_entry((tier), list)->prio - 1 : SHRT_MAX)
+>  
+> +#define MASK_TO_TIER(mask) (&swap_tiers[__ffs((mask))])
+> +
+>  #define for_each_tier(tier, idx) \
+>  	for (idx = 0, tier = &swap_tiers[0]; idx < MAX_SWAPTIER; \
+>  		idx++, tier = &swap_tiers[idx])
+> @@ -59,6 +61,26 @@ static bool swap_tier_is_active(void)
+>  	return !list_empty(&swap_tier_active_list);
+>  }
+>  
+> +static bool swap_tier_prio_in_range(struct swap_tier *tier, short prio)
+> +{
+> +	if (tier->prio <= prio && TIER_END_PRIO(tier) >= prio)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +static bool swap_tier_prio_is_used(short prio)
+> +{
+> +	struct swap_tier *tier;
+> +
+> +	for_each_active_tier(tier) {
+> +		if (tier->prio == prio)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static struct swap_tier *swap_tier_lookup(const char *name)
+>  {
+>  	struct swap_tier *tier;
+> @@ -99,6 +121,7 @@ void swap_tiers_init(void)
+>  	int idx;
+>  
+>  	BUILD_BUG_ON(BITS_PER_TYPE(int) < MAX_SWAPTIER);
+> +	BUILD_BUG_ON(MAX_SWAPTIER > TIER_DEFAULT_IDX);
+>  
+>  	for_each_tier(tier, idx) {
+>  		INIT_LIST_HEAD(&tier->list);
+> @@ -149,17 +172,29 @@ static struct swap_tier *swap_tier_prepare(const char *name, short prio)
+>  	return tier;
+>  }
+>  
+> -static int swap_tier_check_range(short prio)
+> +static int swap_tier_can_split_range(short new_prio)
+>  {
+> +	struct swap_info_struct *p;
+>  	struct swap_tier *tier;
+>  
+>  	lockdep_assert_held(&swap_lock);
+>  	lockdep_assert_held(&swap_tier_lock);
+>  
+> -	for_each_active_tier(tier) {
+> -		/* No overwrite */
+> -		if (tier->prio == prio)
+> -			return -EINVAL;
+> +	plist_for_each_entry(p, &swap_active_head, list) {
+> +		if (p->tier_mask == TIER_DEFAULT_MASK)
+> +			continue;
+> +
+> +		tier = MASK_TO_TIER(p->tier_mask);
+> +		if (!swap_tier_prio_in_range(tier, new_prio))
+> +			continue;
+> +
+> +		/*
+> +		 * Device sits in a tier that spans new_prio;
+> +		 * splitting here would reassign it to a
+> +		 * different tier.
+> +		 */
+> +		if (p->prio >= new_prio)
+> +			return -EBUSY;
+>  	}
+>  
+>  	return 0;
+> @@ -199,7 +234,11 @@ int swap_tiers_add(const char *name, int prio)
+>  	if (!swap_tier_validate_name(name))
+>  		return -EINVAL;
+>  
+> -	ret = swap_tier_check_range(prio);
+> +	/* No overwrite */
+> +	if (swap_tier_prio_is_used(prio))
+> +		return -EBUSY;
+> +
+> +	ret = swap_tier_can_split_range(prio);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -226,6 +265,11 @@ int swap_tiers_remove(const char *name)
+>  	if (!tier)
+>  		return -EINVAL;
+>  
+> +	/* Simulate adding a tier to check for conflicts */
+> +	ret = swap_tier_can_split_range(tier->prio);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/* Removing DEF_SWAP_PRIO merges into the higher tier. */
+>  	if (!list_is_singular(&swap_tier_active_list)
+>  		&& tier->prio == DEF_SWAP_PRIO)
+> @@ -236,13 +280,15 @@ int swap_tiers_remove(const char *name)
+>  	return ret;
+>  }
+>  
+> -static struct swap_tier swap_tiers_snap[MAX_SWAPTIER];
+>  /*
+> - * XXX: When multiple operations (adds and removes) are submitted in a
+> - * single write, reverting each individually on failure is complex and
+> - * error-prone. Instead, snapshot the entire state beforehand and
+> - * restore it wholesale if any operation fails.
+> + * XXX: Static global snapshot buffer for batch operations. Small
+> + * and used once per write, so a static global is not bad.
+> + * When multiple adds/removes are submitted in a single write,
+> + * reverting each individually on failure is error-prone. Instead,
+> + * snapshot beforehand and restore wholesale if any operation fails.
+>   */
+> +static struct swap_tier swap_tiers_snap[MAX_SWAPTIER];
+> +
+>  void swap_tiers_snapshot(void)
+>  {
+>  	BUILD_BUG_ON(sizeof(swap_tiers_snap) != sizeof(swap_tiers));
+> @@ -282,10 +328,30 @@ void swap_tiers_snapshot_restore(void)
+>  	}
+>  }
+>  
+> -bool swap_tiers_validate(void)
+> +void swap_tiers_assign_dev(struct swap_info_struct *swp)
+>  {
+>  	struct swap_tier *tier;
+>  
+> +	lockdep_assert_held(&swap_lock);
+> +
+> +	for_each_active_tier(tier) {
+> +		if (swap_tier_prio_in_range(tier, swp->prio)) {
+> +			swp->tier_mask = TIER_MASK(tier);
+> +			return;
+> +		}
+> +	}
+> +
+> +	swp->tier_mask = TIER_DEFAULT_MASK;
+> +}
+> +
+> +bool swap_tiers_update(void)
+> +{
+> +	struct swap_tier *tier;
+> +	struct swap_info_struct *swp;
+> +
+> +	lockdep_assert_held(&swap_lock);
+> +	lockdep_assert_held(&swap_tier_lock);
+> +
+>  	/*
+>  	 * Initial setting might not cover DEF_SWAP_PRIO.
+>  	 * Swap tier must cover the full range (DEF_SWAP_PRIO to SHRT_MAX).
+> @@ -298,5 +364,16 @@ bool swap_tiers_validate(void)
+>  			return false;
+>  	}
+>  
+> +	/*
+> +	 * If applied initially, the swap tier_mask may change
+> +	 * from the default value.
+> +	 */
+> +	plist_for_each_entry(swp, &swap_active_head, list) {
+> +		/* Tier is already configured */
+> +		if (swp->tier_mask != TIER_DEFAULT_MASK)
+> +			break;
+> +		swap_tiers_assign_dev(swp);
+> +	}
+> +
+>  	return true;
+>  }
+> diff --git a/mm/swap_tier.h b/mm/swap_tier.h
+> index a1395ec02c24..3e355f857363 100644
+> --- a/mm/swap_tier.h
+> +++ b/mm/swap_tier.h
+> @@ -5,8 +5,15 @@
+>  #include <linux/types.h>
+>  #include <linux/spinlock.h>
+>  
+> +/* Forward declarations */
+> +struct swap_info_struct;
+> +
+>  extern spinlock_t swap_tier_lock;
+>  
+> +#define TIER_ALL_MASK		(~0)
+> +#define TIER_DEFAULT_IDX	(31)
+> +#define TIER_DEFAULT_MASK	(1U << TIER_DEFAULT_IDX)
+> +
+>  /* Initialization and application */
+>  void swap_tiers_init(void);
+>  ssize_t swap_tiers_sysfs_show(char *buf);
+> @@ -16,5 +23,9 @@ int swap_tiers_remove(const char *name);
+>  
+>  void swap_tiers_snapshot(void);
+>  void swap_tiers_snapshot_restore(void);
+> -bool swap_tiers_validate(void);
+> +bool swap_tiers_update(void);
+> +
+> +/* Tier assignment */
+> +void swap_tiers_assign_dev(struct swap_info_struct *swp);
+> +
+>  #endif /* _SWAP_TIER_H */
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index ff567ad893a4..f3cff586cf30 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3041,6 +3041,8 @@ static void _enable_swap_info(struct swap_info_struct *si)
+>  
+>  	/* Add back to available list */
+>  	add_to_avail_list(si, true);
+> +
+> +	swap_tiers_assign_dev(si);
+
+Could we move the assignment before the device is added to the active and
+available lists?
+
+After patch 4, swap allocation checks si->tier_mask while holding only
+swap_avail_lock. But here the new device is added to swap_avail_head
+before swap_tiers_assign_dev() initializes its mask.
+
+That creates a small window where reclaim can see this swap_info_struct
+with a stale tier_mask. swap_info_struct instances are reused across
+swapoff/swapon, so the stale mask can come from the previous device that
+occupied this slot. A memcg allowed to use the old tier could then
+temporarily allocate from the newly enabled device even if that device
+belongs to a different tier.
+
+
+>  }
+>  
+>  /*
+> -- 
+> 2.34.1
+> 
+> 
 
