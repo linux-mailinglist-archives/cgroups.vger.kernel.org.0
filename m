@@ -1,96 +1,96 @@
-Return-Path: <cgroups+bounces-17698-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17699-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /QA1Mca4VGpOqAMAu9opvQ
-	(envelope-from <cgroups+bounces-17698-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:07:02 +0200
+	id ElbKKHe5VGp0qAMAu9opvQ
+	(envelope-from <cgroups+bounces-17699-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:09:59 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1854A749A06
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:07:02 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1545C749A3D
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:09:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=suse.com header.s=google header.b=AIPV4hMS;
+	dkim=pass header.d=suse.com header.s=google header.b=G9usnbEc;
 	dmarc=pass (policy=quarantine) header.from=suse.com;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17698-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17698-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17699-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17699-lists+cgroups=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DE6CD300B601
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 10:07:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 01B673016B8B
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 10:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039633C81A9;
-	Mon, 13 Jul 2026 10:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4403E2AB7;
+	Mon, 13 Jul 2026 10:09:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDCB343896
-	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 10:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6353C81A9
+	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 10:09:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783937219; cv=none; b=c6M8bMzSmn5coDVc4xWOSfDJmbqJtNDLEt3uoW60asAD77C7Wbzz5xZHJw5etMJeBd0kz/dM6JDmbxbdOrePDjtPpVXA4bM3UAGPMv/9mJJQ+93x9zZ31eaFxz3UqA/dwdp4f5MNjfoivEe7mkzXvWFiKAq/EpYNGkPmzVrjZZQ=
+	t=1783937397; cv=none; b=nThqv5GE1NeYmVMX0kgl155CisajaMKOSVQuvLoO5Z56djIUmXhfsJoavbJKcIt/uqttb73RqHO1sgm24QNVMlf1J2dfh8owDG/S19VYkTO82KkPGX0IS9rHKEcQbzlEM1hDCH25crZHLtKzbnBtFqeQ/Yh1mkRt1/aZolRhlwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783937219; c=relaxed/simple;
-	bh=W7oqSuaZB2ccmyWneTUFNc7JdiJBHZKqqDjFcQtrvrU=;
+	s=arc-20240116; t=1783937397; c=relaxed/simple;
+	bh=gAekjFGKEHq9ATR/+uFuJYa0LCHO670PqMr8Feqyb08=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g4tFRf0WoCF9Kg1bq6+VPZfkaykg6/ywONVVLtDDtdQJguyHOlkETljHKVBNx6nAmrvb4WKxGP88kyrOqguP4bRZ+rcRAFhbBiLnN92b+9yisvFQ8mDwEXkhhDuEX2D/30caz0IA7BEjYzkFN9Hn6erm6n5skTaA8ne0YYDVeKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AIPV4hMS; arc=none smtp.client-ip=209.85.128.50
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-493b27c7451so48695115e9.0
-        for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 03:06:58 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=CIrEzULbg9ruCib3BwsYhZ+GQKejde18Fd/y21iyPEVbfIpT3zqY3EU5lTrkjPRY211w/ftKdQtdMw0R6AAV1PK3cBkEUgDoXKwxXVU2fidqdgMRam9M0dfHCltV1MwZBPD/K4bHq9Jjs2oR3bQ66IEFLxWHCmUcLeX5sEKl5CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=G9usnbEc; arc=none smtp.client-ip=209.85.221.47
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-475881b9a4bso2926235f8f.3
+        for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 03:09:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1783937217; x=1784542017; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1783937394; x=1784542194; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=vaLYxWzQpErVcY7Rt38G1DE6Q5Yue9eCJtuT5mqHvNM=;
-        b=AIPV4hMSp02bdoIWQbrYItPqT+39WHpu3vQmhNgR/RpoK30VDfMZqDgBqmpuAFKmQx
-         3RSD5g4EvhdLpUtNTLkzp03T+ciPBHVdFADjZ1fSrfLGBw2F5f4EC2ULVGBTZA7Xce/f
-         8pphmT2dDpvARapLSVcAn4nbwK1EhnW6IMWfp4Xf4AlRPZS8fkg41PVHlJrGWuaeZquY
-         qp83iIuInN1ou3sXR+8IUOwLGkkTE8se7TvjbQIbX1YxOP9JYHF3hyjAFKXKtqohA6Gk
-         igO1Bf1zzM8dgu6M3gOscX8Vo/o0kleeJR92+78eLZ96hXwlh3UB+nDzYlbxuaR6k3eE
-         Y4Bg==
+        bh=RMaPztzkv7mkAfMpEcEj82JplFx/jQM80q6OSMWqA9w=;
+        b=G9usnbEcxv3o9HfQLYYOUR/3sQnDQAz6Qkjmn80r+x/+4u93vIvNa0m3zk4U/Yhc0r
+         V4VTi76XwTEjbw6qJIAUSbk0UfAvtYxCAdP0Z2q8/pdWEt+pmE8Tz6RUmXE4G9kazoRW
+         BUbMRQSNA7EDcBpi6RGGe8ZGBh4KTIs6H9WkXWn4f016e+wjy/sIws1SgsBRWyA/5m0l
+         /C3AKpNmRVSVp2fmgOR4QJBFJm6ylnLsc0x7f1SdyhGN3vny+hI3jgoMdqxAhNzCG1mp
+         Q7TQ1ubMRLUSUm+r7qO3QrPMTSeQJS0mkbsWmPa7B2J1HHmU84F6PE2rq4HjZugbzXbF
+         ah2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783937217; x=1784542017;
+        d=1e100.net; s=20251104; t=1783937394; x=1784542194;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=vaLYxWzQpErVcY7Rt38G1DE6Q5Yue9eCJtuT5mqHvNM=;
-        b=kmpd6PiU0oHcOHrz2LbnC6I1KX3Q8/nqLqGdg6JTVPxBRbc46+ZKylSflp4Lpvna5f
-         sfEsJ7nAA/8vq5wrULUyCYGYXTdIpUAOwOf+OJrCtiOhgNdACFWI4Jz+Op2/TryhRuC9
-         mqcQedG84g3rTHavxyPud+kRmZNTY0mF9L6vuHTa/6wSZC8oQcEQCccdd2fvlLskT2Y/
-         Fs7V2rmkoBvsvbZiof9kYoaa0cw8v7NcKVOUSPsNfiP5pLyzY+UHWaXvcW0G7L8A9Ptq
-         /SrJkMq/cJzWkQtcBSeafBo0U/wUXR7IEZQHE474CUasm6xlCoreBaJKrCsXeNeNTpcv
-         2rnw==
-X-Forwarded-Encrypted: i=1; AHgh+RrINKpo91A5D2Z2Gfi3nWLgxl8/iEvHXpOLkN8BeuTDEazz8EmafgX/yi/bTQFaiW8a0wg+nxsW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwQcZgjyK4SblvKguQC997p7PHhJKcEWCIi1LUBmK5wmhC29vTC
-	YH/x+YOqku0hFuGTWiOtRh1GrAgIJzpHJXGhhckFhVj6uLEfKx/V1q2wavLsXX2hRPc=
-X-Gm-Gg: AfdE7clUpegOVZRZ07p+0XQ9dCTBQPkAOuS6prY1Z+8L6bXytwHRFJL62GTn8qotanf
-	xNfd2fimquoBX+7ldiNPxdr63js/Ox0xJwzha+dJdPrcPwVKVeqlDvtCs2r7RmN+igskN0Ihko2
-	X+xCI/rwpq+vtuA2ivTOHYLNpUlccRyR0tWw2UqUWAyRfx/3j4Q2U79ZdLirOop0L+4MbNniXXg
-	/bLXPqJPnTYhb502BWuK8F/kW5hEkB1scy9jH+TCpFgDm5jJBNtLhzpXIGIUHe3j6HzRWPuGH2z
-	WZuwAPdJx79SzVZz1SXr3hIrXuuaFbLCZaa+Gsyt57C27scmQcd18CoZulNmiyTYT3/v73KIV1j
-	5f5zYs0+jj4JgN0zQaDOy5TAibl5vxY6GX2y/DOf0wTH5w9OyGpFjnllLyhvCmClToNYzuctorb
-	e50mXKSYNrRqf0+vS4NhbaZ7tbMARRzW+Ynw==
-X-Received: by 2002:a05:6000:2f86:b0:46b:70db:2113 with SMTP id ffacd0b85a97d-47eee0b8778mr16404780f8f.0.1783937216714;
-        Mon, 13 Jul 2026 03:06:56 -0700 (PDT)
+        bh=RMaPztzkv7mkAfMpEcEj82JplFx/jQM80q6OSMWqA9w=;
+        b=kp99NIZpCktUI2nrgtzWorzaTyRd6WOG7vxgiZj1CMADha748ziGYOfiykIFFviOZ1
+         t0/NpjkUIOMVOAZauSBkHXH9dbx8V6c+u/nvyChK3jCk5bNk+USXp7X7Rxt23qxLRqiH
+         viRjLcrDicp1DBG/7+uTKagyIXMBU1frNS6H908AbLhBSBXHxSWft0Lo8mj69elkNlDm
+         2ZhQI9I/LhOcd0oPniFK17xTW0ORnFfpbR/cYlW06lfPzMMMTufF3K/RE5iTVMf3cqJk
+         1AHScMTP/cUzFE/0kk+4kj/EvzfPgzIByx7xXbiGDze11WMo+wCp4rO+/JP8FdTwysYu
+         hyuw==
+X-Forwarded-Encrypted: i=1; AHgh+RoVS1RPokQ0VS5sbI91I595NVFsqbF2pY85rB2xuVhtskjI7SxtzKRpfx7nNh485dFVZsy5YwxP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+hA8reN/2QbFAOrqC+iizxKxwrLFPeHKeysCIPrw1B6OSQjae
+	/oGGdqq6tmSwGXjRWYrZcgK0DW88wRaWTI1/0Ja0gpCN4Ys0ZcPuYJJvB4T4SXNUtcg=
+X-Gm-Gg: AfdE7cnjYCFxE6jNkO7SAtCp9UhWbAKX3hVByzXVVXYZedOCGACF3zCdPywIRAKGPQr
+	mbqdtG4Edt/1R3pgm1r14BKgu/iPCMo3ln2QFOn9z+w4hwK3Y3wLnF3o217uOn1R410PrxBUXdk
+	Ciu7gOOGpbKMWBx3HGKoDMB7i4UermtKO8+2CFdhzzNeC7Ittf50XoHXVN1pVtQdG9wN8XlZBR9
+	+rQtoSRuSMMRGQRgPbSi/14j/4C+jFx5tHlExIXor3LBKXJ/EfAs8ewEhLaiU3top2C+HdTXiCR
+	e/b5qVcIH3iGwsNcuXRhfoZ9CyZ2+FPHMubUaE911+nyjtglyMcNCA1Pmrdbg8goB4HSG2QNbdx
+	LuF/C9/nFRSwizaMTp0ViWqgTOiEJESzrvZ6YLwaW7Js7ZvXKW2n+qSuqtacr586wjRDJAwEeB7
+	hSx1SuCNN0c3BZdnJfOd6fvC0=
+X-Received: by 2002:a5d:64eb:0:b0:47d:edb2:a4ab with SMTP id ffacd0b85a97d-47f2dd2c919mr11096800f8f.43.1783937393990;
+        Mon, 13 Jul 2026 03:09:53 -0700 (PDT)
 Received: from localhost (109-81-90-85.rct.o2.cz. [109.81.90.85])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47a9e4d843csm83341119f8f.14.2026.07.13.03.06.56
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47aa039b0cesm86605884f8f.22.2026.07.13.03.09.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2026 03:06:56 -0700 (PDT)
-Date: Mon, 13 Jul 2026 12:06:55 +0200
+        Mon, 13 Jul 2026 03:09:52 -0700 (PDT)
+Date: Mon, 13 Jul 2026 12:09:52 +0200
 From: Michal Hocko <mhocko@suse.com>
 To: Guopeng Zhang <guopeng.zhang@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	Guopeng Zhang <zhangguopeng@kylinos.cn>
-Subject: Re: [PATCH] mm: memcg-v1: fix wrong linux-mm list address in
- deprecation warnings
-Message-ID: <alS4v5spUF224idW@tiehlicka>
-References: <20260713085756.2973549-1-guopeng.zhang@linux.dev>
+Subject: Re: [PATCH] mm: memcontrol: drop unused cpu argument from
+ flush_nmi_stats
+Message-ID: <alS5cDDzoOJUWhlm@tiehlicka>
+References: <20260713090010.2991906-1-guopeng.zhang@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -99,28 +99,28 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260713085756.2973549-1-guopeng.zhang@linux.dev>
+In-Reply-To: <20260713090010.2991906-1-guopeng.zhang@linux.dev>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17698-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17699-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:guopeng.zhang@linux.dev,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:zhangguopeng@kylinos.cn,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:guopeng.zhang@linux.dev,m:akpm@linux-foundation.org,m:shakeel.butt@linux.dev,m:hannes@cmpxchg.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:zhangguopeng@kylinos.cn,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -133,63 +133,27 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,suse.com:from_mime,suse.com:email,suse.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email,tiehlicka:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:from_mime,suse.com:email,suse.com:dkim,tiehlicka:mid,kylinos.cn:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1854A749A06
+X-Rspamd-Queue-Id: 1545C749A3D
 
-On Mon 13-07-26 16:57:56, Guopeng Zhang wrote:
+On Mon 13-07-26 17:00:10, Guopeng Zhang wrote:
 > From: Guopeng Zhang <zhangguopeng@kylinos.cn>
 > 
-> The deprecation warnings for memory.oom_control and
-> memory.pressure_level use linux-mm-@kvack.org instead of the linux-mm
-> mailing list address. Remove the extra hyphen.
+> flush_nmi_stats() does not use its cpu argument. Remove it from the
+> function and its !CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC stub. The
+> caller still uses cpu for the subsequent per-CPU rstat flush.
+> 
+> No functional change.
 > 
 > Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
 
+Looks like a left over from prior versions of the patch because there
+was no use in the 940b01fc8dc1a
+
 Acked-by: Michal Hocko <mhocko@suse.com>
-Thanks
 
-Altohough this is not a critical fix we would like to have that address
-correct also in older stable trees so I would recommend backporting to
-stable as well.
-
-> ---
->  mm/memcontrol-v1.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> index e8b6e1560278..178e1466d898 100644
-> --- a/mm/memcontrol-v1.c
-> +++ b/mm/memcontrol-v1.c
-> @@ -1182,13 +1182,13 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
->  		event->unregister_event = mem_cgroup_usage_unregister_event;
->  	} else if (!strcmp(name, "memory.oom_control")) {
->  		pr_warn_once("oom_control is deprecated and will be removed. "
-> -			     "Please report your usecase to linux-mm-@kvack.org"
-> +			     "Please report your usecase to linux-mm@kvack.org"
->  			     " if you depend on this functionality.\n");
->  		event->register_event = mem_cgroup_oom_register_event;
->  		event->unregister_event = mem_cgroup_oom_unregister_event;
->  	} else if (!strcmp(name, "memory.pressure_level")) {
->  		pr_warn_once("pressure_level is deprecated and will be removed. "
-> -			     "Please report your usecase to linux-mm-@kvack.org "
-> +			     "Please report your usecase to linux-mm@kvack.org "
->  			     "if you depend on this functionality.\n");
->  		event->register_event = vmpressure_register_event;
->  		event->unregister_event = vmpressure_unregister_event;
-> @@ -2340,7 +2340,7 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->  
->  	pr_warn_once("oom_control is deprecated and will be removed. "
-> -		     "Please report your usecase to linux-mm-@kvack.org if you "
-> +		     "Please report your usecase to linux-mm@kvack.org if you "
->  		     "depend on this functionality.\n");
->  
->  	/* cannot set to root cgroup and only 0 and 1 are allowed */
-> -- 
-> 2.43.0
-> 
-
+Thanks!
 -- 
 Michal Hocko
 SUSE Labs
