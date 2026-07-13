@@ -1,140 +1,181 @@
-Return-Path: <cgroups+bounces-17704-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17705-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id oz+sM42+VGo5qgMAu9opvQ
-	(envelope-from <cgroups+bounces-17704-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:31:41 +0200
+	id 5vtMHo3DVGpuSQAAu9opvQ
+	(envelope-from <cgroups+bounces-17705-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:53:01 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C83A749DAB
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:31:41 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2C0F74A025
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:53:00 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=t7KmIKiI;
-	dmarc=pass (policy=none) header.from=linux.dev;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17704-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17704-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=cmpxchg.org header.s=google header.b=JPVlFIdy;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17705-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17705-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=cmpxchg.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 449BA3061077
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 10:28:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 05B5F305F598
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 10:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628FA3EC2E3;
-	Mon, 13 Jul 2026 10:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E63F3E8C78;
+	Mon, 13 Jul 2026 10:51:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0AF3E92B9
-	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 10:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548513E63A6
+	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 10:51:28 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783938432; cv=none; b=LpqMOJeFEDKr8P3HzHzwCUfWjs9r4w3KfktSol6L8BSlGtsfc7bOKDzKnwht2tRC2B0fFldyQx+e9baMfg3Tw80MdGDQMQtLzj4pNT4C2k9/v0T0rsBne8LCndzAG+qSBdYjklT62XRZ1HzFKuMGqkF57P4WZQMCneSd7DKeUww=
+	t=1783939891; cv=none; b=H33aQQh7jzsr3lrvx2YRIj29S/4YSKejrP1xIri+0Ic/zoVy82M4Y7vN/7GXCpo5KXhJMBWNeybWmSMX3Ot6C8I8omUZkLIAuPVDZ/ImaIYv8R6H4tpJzCCR0kIXuccBeAc7CzIDVWAXKykHCpdxuErle4zgP3Jja8oGLOiVobA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783938432; c=relaxed/simple;
-	bh=tlSStQRjz7IsgoduonWvy/BiNHcyY6I1VMddmxBXKcc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Tv51Udd9/IrC2uASP+qvPn/7Rx5LSicxQ+2TEoxuUEjvpuOEkzJOOh/JWMkqagIhp1Q0BRiq6kGlrdZeofmQfYl9BIrCgnkp5bJMn29+qaQLlpH+q15FPjPE90QeegKb0+3QrqyZfO1cJOC1kio+Lg17BZ5j6DZxlwDJSFHxOUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t7KmIKiI; arc=none smtp.client-ip=91.218.175.173
-Message-ID: <877c39be-d4d6-4d9c-b824-18d9463c62c7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783938425;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hI0ulS+e7/Y2oO5fBiqc90A7kYsME7pKoySFXxv5Y8o=;
-	b=t7KmIKiIfaH9vl5ApL6tbaX1tiOn/PaCox8ALC8rjDdI01CWo4AmLTP0tK6BQlWieFWasG
-	0JO4hkTfq9GOdwbNl5DqBRt225BskLmxXZfbAVmz6vFMi2FQ7hPHhjyRUltdm1FqaK6hPs
-	48nvhCZmrCrmd0yqgcc0L3n3D12Qv8w=
-Date: Mon, 13 Jul 2026 18:26:58 +0800
+	s=arc-20240116; t=1783939891; c=relaxed/simple;
+	bh=z11t9LwXEAps95nmJFn9bgrfWgmUbK8OsamIUC9xo1A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RW3YUoQ9+baG5FB1ebBvAu/bUMS91xUF2BpX9iSLO7a4f7o3TDd5codOKZiUOXHk8whDRXIToXJoLX8fR/mIPQQnHEgtV/ILbVdePbIyIa0dWnM2SUHSNObCZzLuiglTsE12upQCE87DYE6GXJrKnp5ILIDp3ApP7A/o53byRWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=JPVlFIdy; arc=none smtp.client-ip=209.85.128.47
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-493c19bad03so26968065e9.2
+        for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 03:51:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg.org; s=google; t=1783939886; x=1784544686; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=0xXW5DaPK6zTkeDY542N1FQHx5XzZ6y+YRGl+QSs6T8=;
+        b=JPVlFIdyMwRdVhC86ydqr99/64xCRL6D6aF7eae8LtLF9rc06YsiWrtdCA6PObfymd
+         3/iU7jvxeokSR0uG0D5kNWpUvJbKcYUgyzH971ynv8JdInuUHCC0bQRP+EH77UqyPLZt
+         QCD0dX99TjviXX/e2LpI02dPhqLtVEwkJP8OMpRFTXpGek+0t/MceBgJ0OJB73KWgx3d
+         qkEO8VFFRzJ97pHa2OCT7TnGdGAxFpPzTQZvw9a1Ycgni+XHAUtcJdTVbP2A8hjEwFFM
+         d9N5tL+VwXNiTEbRZsNT9fODiW4YSz7GH8gqHcNZJRkbjMjKTC5cI+kWcNrEOE6OUQH0
+         LFBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783939886; x=1784544686;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=0xXW5DaPK6zTkeDY542N1FQHx5XzZ6y+YRGl+QSs6T8=;
+        b=hCY8rNXk8mKVIS5a5FNj23FYrR3JEmKS8FqJEev4A/TyzRGproxcJ1BcnilnFdMS51
+         IlWccGaNw/TTT0L3tZ5SmF97yeiY9hE4AEds9sLE6SrawAvIUrsGS+JWBFld5Cgq/d2a
+         zEJBYVQ1uDIgu0T7kGSrx5xwHR+CXExQ327gDkMPddAQSWjUEsM0ulceE17iaH+5c6Bn
+         8IFNrNBQ4GGeswnbF8gZqsjndoTe643KWwDOAfqniWNpzssW5GYXvGkGjj225pBhIOki
+         ALfS0RKJ99WN1V9wcv9lwfT8vK6pTPTA5qUpka26yvSRx1m87XjvWu/6siW7v6jODUBo
+         avKg==
+X-Forwarded-Encrypted: i=1; AHgh+RpppPG2oSbzAfJ5BQesh0os7AdZEY6lP5UP1uW1psbcFRx7GhWrpat7w2thOJ9C7jk8XPgCHEBV@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsUgr+OWuGPG9BNvy1b3SGVUFlb+yJS4CJ8fR7b406N+yKK0eq
+	n3lrsrPxIicVmS4D0WD+ZPLx7MDcgSwBCoQbVVsu7Q86Jp7sNJ1B9Io7EYiqjiqrNuc=
+X-Gm-Gg: AfdE7clBNdIbkSpccdfyGQ+PFioLsjcHvFCi10gm7t6cK6OPHvFEY86eHkYLBYPfbVZ
+	OkbPV7+N4DEaLX/PHtSKFmaBUIuGBE33ER93gUV8dDqOXygiNNy7ouYWqGWctOdY84+MmwnXp79
+	AyFmFPs9/mZPMkKrbCxoKcsphQkJeRGf0M8ropADw8v0bGgOga/mFRhFEhwD8onDmCsJ/3RBr1H
+	A7DOsWerfYVIHKMchqyBtjEQDTR58gqWHz27mNAI/0DHaCTrr0m+Rq0pBOwh6xrEBRaqxcmY+Yt
+	IbJ42XjvaFf/8yb9loDPbEc8oZGDZKI6ImyAHyjr+84Annq83U3Cxkn2mbBpTTs2rc1KATV0N/8
+	K3ydQpoO4zLp6vMVWQMWg4fDDvv9atSCVVKBnI7pfwfcokVygW6QRbgQNTkPfBYol0HqYmxbuUR
+	N1baXTG7vgwQ==
+X-Received: by 2002:a05:600c:1906:b0:493:c8a6:b517 with SMTP id 5b1f17b1804b1-493f883b7e8mr84731245e9.38.1783939886273;
+        Mon, 13 Jul 2026 03:51:26 -0700 (PDT)
+Received: from localhost ([2a02:8071:6401:180:d892:bf43:a0b4:83b])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493eb6f3b85sm573716585e9.2.2026.07.13.03.51.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2026 03:51:25 -0700 (PDT)
+Date: Mon, 13 Jul 2026 06:51:23 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Matt Fleming <matt@readmodwrite.com>, David Vernet <void@manifault.com>,
+	Andrea Righi <arighi@nvidia.com>,
+	Changwoo Min <changwoo@igalia.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Edward Adam Davis <eadavis@qq.com>,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+	"ziwei . dai" <ziwei.dai@unisoc.com>,
+	"ke . wang" <ke.wang@unisoc.com>,
+	Matt Fleming <mfleming@cloudflare.com>, sched-ext@lists.linux.dev,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH 1/2] sched/psi: Create the psimon kthread outside of
+ cgroup_mutex
+Message-ID: <20260713105123.GB276793@cmpxchg.org>
+References: <20260712174619.3553231-1-tj@kernel.org>
+ <20260712174619.3553231-2-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Cc: cui.tao@linux.dev, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
- cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Guopeng Zhang <zhangguopeng@kylinos.cn>
-Subject: Re: [PATCH] mm: memcg-v1: account vmpressure event allocations
-To: Guopeng Zhang <guopeng.zhang@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Stanislav Fort <stanislav.fort@aisle.com>
-References: <20260713085520.2953121-1-guopeng.zhang@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Tao Cui <cui.tao@linux.dev>
-In-Reply-To: <20260713085520.2953121-1-guopeng.zhang@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260712174619.3553231-2-tj@kernel.org>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
+	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17705-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_RECIPIENTS(0.00)[m:cui.tao@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:zhangguopeng@kylinos.cn,m:guopeng.zhang@linux.dev,m:akpm@linux-foundation.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:stanislav.fort@aisle.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-17704-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[readmodwrite.com,manifault.com,nvidia.com,igalia.com,google.com,infradead.org,qq.com,huaweicloud.com,unisoc.com,cloudflare.com,lists.linux.dev,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:matt@readmodwrite.com,m:void@manifault.com,m:arighi@nvidia.com,m:changwoo@igalia.com,m:surenb@google.com,m:peterz@infradead.org,m:eadavis@qq.com,m:chenridong@huaweicloud.com,m:zhaoyang.huang@unisoc.com,m:ziwei.dai@unisoc.com,m:ke.wang@unisoc.com,m:mfleming@cloudflare.com,m:sched-ext@lists.linux.dev,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:kernel-team@cloudflare.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[cmpxchg.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:from_mime,linux.dev:dkim,linux.dev:mid]
+	RCPT_COUNT_TWELVE(0.00)[18];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1C83A749DAB
+X-Rspamd-Queue-Id: E2C0F74A025
 
+On Sun, Jul 12, 2026 at 07:46:18AM -1000, Tejun Heo wrote:
+> a5b98009f16d ("sched/psi: fix race between file release and pressure write")
+> made pressure_write() hold cgroup_mutex across psi_trigger_create(), which
+> forks the psimon kthread for the first rtpoll trigger. As kthread creation
+> depends on the whole fork path, the commit inadvertently created a lot of
+> unwanted locking dependencies from cgroup_mutex.
+> 
+> sched_ext got hit by one: its enable path blocks forks and then grabs
+> cgroup_mutex, so a pressure write racing a scheduler enable deadlocks, with
+> every other fork piling up behind.
+> 
+> Fix it by splitting trigger creation so that the worker is forked with
+> cgroup_mutex dropped and the kernfs active reference left broken. The latter
+> matters because rmdir and cgroup.pressure writes drain active references
+> under cgroup_mutex. Publishing the trigger last keeps error reporting
+> synchronous and preserves the of->priv lifetime rules.
+> 
+> The trigger registered in the first stage pins the group's rtpoll machinery
+> across the unlocked window, leaving only creation races to resolve. The
+> catch-up poll on installation covers scheduling attempts dropped while there
+> was no worker.
+> 
+> v2: Retagged sched/psi (was cgroup).
+> 
+> Fixes: a5b98009f16d ("sched/psi: fix race between file release and pressure write")
+> Cc: stable@vger.kernel.org
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Edward Adam Davis <eadavis@qq.com>
+> Cc: Chen Ridong <chenridong@huaweicloud.com>
+> Reported-by: Matt Fleming <mfleming@cloudflare.com>
+> Closes: https://lore.kernel.org/all/20260710100441.2653477-1-matt@readmodwrite.com/
+> Signed-off-by: Tejun Heo <tj@kernel.org>
 
-
-在 2026/7/13 16:55, Guopeng Zhang 写道:
-> From: Guopeng Zhang <zhangguopeng@kylinos.cn>
-> 
-> Commit 72797d218b43 ("mm/memcg: v1: account event registrations and drop
-> world-writable cgroup.event_control") accounted cgroup v1 event
-> registration allocations with GFP_KERNEL_ACCOUNT, but missed struct
-> vmpressure_event.
-> 
-> Use GFP_KERNEL_ACCOUNT for this allocation as well.
-> 
-> Fixes: 72797d218b43 ("mm/memcg: v1: account event registrations and drop world-writable cgroup.event_control")
-> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
-> ---
->  mm/memcontrol-v1.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> index e8b6e1560278..f8424ec3734b 100644
-> --- a/mm/memcontrol-v1.c
-> +++ b/mm/memcontrol-v1.c
-> @@ -1721,7 +1721,7 @@ int vmpressure_register_event(struct mem_cgroup *memcg,
->  		mode = ret;
->  	}
->  
-> -	ev = kzalloc_obj(*ev);
-> +	ev = kzalloc_obj(*ev, GFP_KERNEL_ACCOUNT);
->  	if (!ev) {
->  		ret = -ENOMEM;
->  		goto out;
-Acked-by: Tao Cui <cuitao@kylinos.cn>
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
