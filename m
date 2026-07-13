@@ -1,129 +1,182 @@
-Return-Path: <cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17720-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id vxDjD53bVGrRfwAAu9opvQ
-	(envelope-from <cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:35:41 +0200
+	id pbUXO+7sVGpihQAAu9opvQ
+	(envelope-from <cgroups+bounces-17720-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 15:49:34 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85ACE74AFE7
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:35:40 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5037174BE00
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 15:49:34 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=upOGX7wO;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=readmodwrite-com.20251104.gappssmtp.com header.s=20251104 header.b=y0btpEGD;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17720-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17720-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 371BF303CE03
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:34:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 737A3301F8F2
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 13:48:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06FF2D9796;
-	Mon, 13 Jul 2026 12:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83577431E58;
+	Mon, 13 Jul 2026 13:48:40 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B6D40962C
-	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 12:34:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771BB4307B9
+	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 13:48:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783946095; cv=none; b=R6vFB6xgX7ZQI02LFldXhFKhq/fkETunJprSbU3sjFqpdVpyHZssGm8QZY+7uLrVwmolNG6RlykKsLVguJXVBKP6bMxR1g6WuVFf9eBQDc5YX6V5PGhAjQKCuw8YOrCAhMiAVjwuS1y92WKrrYen+2E7yhrjsDrSXfbajmWATTw=
+	t=1783950520; cv=none; b=PzuHBIz5Z4CigY5ITo6ayddPowX2CrAIVezaMQVnckWQZMEk069bnPL50ol8FMbF4s7MhwaRE9DqKfQhdnGLsoCUYGbYNmf+sn+e0ScIQULVJ2p5t1C3uMv+DbXM7km7gh0LtLHpHEVNtHqbHcWrZTa3gB3YxhXwE25Aj47OQX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783946095; c=relaxed/simple;
-	bh=3noOyco9YFZQY8GONL6s4RS3Jtn7BplwFjDiVSwHAnk=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=HTqGjFmgy/pUfro1WTVfNtW6qCVg0nUjpo3HLOosy91sTGSfukBjrtmRLXxssF0qi6wszmk8QfguXZJNM8aAw5k8b8URWBeyAKkCzBeb5kCDSQDwVmhnHuz5rvYUvJCzgLaXFJvdyr28XQu8Nkx4K+o46VTU7k4PhMuuOWenY10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=upOGX7wO; arc=none smtp.client-ip=91.218.175.171
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783946091;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lHypyUNn2HVnK1SWBb4ieypi03fXxl2jL6EyCeQIuUw=;
-	b=upOGX7wOzhWGgpudj11Mxbp9JfS5C7idfCct/CWgItwz6yiESe7f9bF5/CPTKMjaIboxnr
-	ogsLMVm068Qh/mKIhWwKZ7c3Eet0iUNESFG1ywQqF+pR0XHDKuGOVxwew6PraN4Q3T7XNf
-	LwbgzJX/8jCWTvzN96/xBOBpvEcM0Pw=
+	s=arc-20240116; t=1783950520; c=relaxed/simple;
+	bh=TZ3tsMwiJUiaaTsevwJ4o+L1EGJMO6hFNrbfM3qjrPE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HAzdkzFPznCwrxJEZbgen7/uA+h3ogOXBfqIES/dowciTr8xRlYuW+7r+ANut/9TIN+WOVyAZ2Byy2FP7g1h7etnbSxbKKhvgMdwMfw2snO1zxZTPozyGwKuRFiKM5Nw2I6fkuuAd6161Qh77u8CUumh9F+7CdV0ZRE+pBIyN34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20251104.gappssmtp.com header.i=@readmodwrite-com.20251104.gappssmtp.com header.b=y0btpEGD; arc=none smtp.client-ip=209.85.208.44
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-697de23bd7dso4183424a12.1
+        for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 06:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=readmodwrite-com.20251104.gappssmtp.com; s=20251104; t=1783950517; x=1784555317; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=C6DMbuqOtH23SHLzkFv4+Shmk8usPkwua39wHbFqGJE=;
+        b=y0btpEGDbt5xb744hsgMZGhHKUpiHWw9b4KFynYz0jcJ8dVx1IEWrEklT21Lyj4fUM
+         CFPIVyiqVQYrO8d3VlafwtzXvqmqR0gB7ONMopwOGiZip5fPUDvc+Zcyoqsb/R5E/Bsj
+         /e9qmHwqStA7aVraFVkxyMCAoguT4tQFh/3ooGqz6CCi6dg/V5+Zkt04uvQjkCq9N0Ae
+         lYMXa511DhWgy8HyBcCEGtnzM7DWxTJUnk+CwY8FdZgiNtdw/wav1RyQEt4bKqyt/Uv4
+         UZScHf1jzjTrc+83MBzcWDrrxPsrQkJ4Nkag/cxQ4dOvwsRDZT/17zWG4AwFwCodauUG
+         xoYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783950517; x=1784555317;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=C6DMbuqOtH23SHLzkFv4+Shmk8usPkwua39wHbFqGJE=;
+        b=Z5X4bzvItwqzl/Hz+/pPdoogpI91UDlreaOUS1LQtfdBJgKN+ptYDxdEK5Pbo3UyqT
+         Z9bGXlHSaczk45CTe0C2+SBZeH3SZLO8QyDfYJqpmWKFzOBqNqcO0lTHkjkLkRidmGGi
+         zYgLWOC59S8Cy0P1op5Dt1LjISWMFgtQECn3dgOk1oU2+6hq838GXc8FmfpgWqAjGq3n
+         v+EuQtD61msO7/GzKsRV2LRpVRMyhBHQGNwZ8l/fQuFazyuBKZPOT4TjT68nhc33Sk7L
+         /IV5iGHqWgp6uqlWVodBjNXp85uz+bolR5DnxhBuW82UTX9FIUYhvs5PZskXoGbUIlF2
+         CNwg==
+X-Forwarded-Encrypted: i=1; AHgh+RoEG0Fud+m6OfbsgGNZFBY9/hla1jJuFcOVW66S64zxh+GFh37O6ng17mqxuXmPwe68NEpYXnMt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzs7orqmVLqhBNJAJhdlulFb1flxvRbwIaJr+vXVCF1P5c0q4pL
+	sJdo/u30dVXmd4lUGcxfIxEG1LopRnmiuJQCZ7+m2zPXPbfKieD+p812Faw8LsKYVQg=
+X-Gm-Gg: AfdE7cmsIPCixTLxSZFgHiMKJADF+lCYip/anSv+Y+IcVNSvuf6RZGz95TCNJDuHsVA
+	J+5/MPXVedm5812SphOTrN9fnyXfmzunJp5SQHb5LyVOvTVPMPf4kFXhbpXI6gIk2v8MA2PoA9H
+	L3T7qRgdsICNZ+OxPxRsBzpIRu0DUsTUN8biTpKB/BBFX0FK8NgSf3onC8Kp/7BRWWmEqggAqbq
+	1o/EkJHE75Bk4/temlchPcCcjNYiRCV4X5gCAFRIpCDxaRhr8EezHs9L7OdWuLEg6ZsIcz0XJF6
+	7OxjzNFnHP8Zy70X2TU5CVYBy48jXy3kfi3uPWfLikdp5witYNnXWEV2zu8ZV2NzlTbCi7JEU7D
+	HI50/xP+s4rLNA7uaPtFmeFaLrQUk/V3c9/RyRQy6y284zzhUhmZ6i1ENt79BdFAl8O5Ufc82dh
+	Hm
+X-Received: by 2002:a05:6402:3585:b0:698:62b7:a4cc with SMTP id 4fb4d7f45d1cf-69c5ef82f71mr4143024a12.5.1783950516676;
+        Mon, 13 Jul 2026 06:48:36 -0700 (PDT)
+Received: from localhost ([2a09:bac6:37a8:1f19::319:116])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-69aa6dba523sm9753669a12.0.2026.07.13.06.48.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2026 06:48:36 -0700 (PDT)
+Date: Mon, 13 Jul 2026 14:48:35 +0100
+From: Matt Fleming <matt@readmodwrite.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: David Vernet <void@manifault.com>, Andrea Righi <arighi@nvidia.com>, 
+	Changwoo Min <changwoo@igalia.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Edward Adam Davis <eadavis@qq.com>, Chen Ridong <chenridong@huaweicloud.com>, 
+	Zhaoyang Huang <zhaoyang.huang@unisoc.com>, "ziwei . dai" <ziwei.dai@unisoc.com>, 
+	"ke . wang" <ke.wang@unisoc.com>, Matt Fleming <mfleming@cloudflare.com>, 
+	sched-ext@lists.linux.dev, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH 1/2] sched/psi: Create the psimon kthread outside of
+ cgroup_mutex
+Message-ID: <alTsERFTlUKCLw4C@matt-Precision-5490>
+References: <20260712174619.3553231-1-tj@kernel.org>
+ <20260712174619.3553231-2-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
-Subject: Re: [PATCH] mm: memcg-v1: make mem_cgroup_oom_notify_cb() return void
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20260713093737.3299646-1-guopeng.zhang@linux.dev>
-Date: Mon, 13 Jul 2026 20:34:14 +0800
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- cgroups@vger.kernel.org,
- linux-mm@kvack.org,
- linux-kernel@vger.kernel.org,
- Guopeng Zhang <zhangguopeng@kylinos.cn>
-Content-Transfer-Encoding: 7bit
-Message-Id: <F7C69746-C0A3-41AC-95EB-BCE6D73C2FF1@linux.dev>
-References: <20260713093737.3299646-1-guopeng.zhang@linux.dev>
-To: Guopeng Zhang <guopeng.zhang@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260712174619.3553231-2-tj@kernel.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[readmodwrite-com.20251104.gappssmtp.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:void@manifault.com,m:arighi@nvidia.com,m:changwoo@igalia.com,m:hannes@cmpxchg.org,m:surenb@google.com,m:peterz@infradead.org,m:eadavis@qq.com,m:chenridong@huaweicloud.com,m:zhaoyang.huang@unisoc.com,m:ziwei.dai@unisoc.com,m:ke.wang@unisoc.com,m:mfleming@cloudflare.com,m:sched-ext@lists.linux.dev,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:kernel-team@cloudflare.com,s:lists@lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17719-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:zhangguopeng@kylinos.cn,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
+	DMARC_NA(0.00)[readmodwrite.com];
+	FORGED_SENDER(0.00)[matt@readmodwrite.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-17720-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[manifault.com,nvidia.com,igalia.com,cmpxchg.org,google.com,infradead.org,qq.com,huaweicloud.com,unisoc.com,cloudflare.com,lists.linux.dev,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[matt@readmodwrite.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[readmodwrite-com.20251104.gappssmtp.com:+];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim]
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,cloudflare.com:email,qq.com:email,huaweicloud.com:email,readmodwrite-com.20251104.gappssmtp.com:dkim,readmodwrite.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 85ACE74AFE7
+X-Rspamd-Queue-Id: 5037174BE00
 
-
-
-> On Jul 13, 2026, at 17:37, Guopeng Zhang <guopeng.zhang@linux.dev> wrote:
+On Sun, Jul 12, 2026 at 07:46:18AM -1000, Tejun Heo wrote:
+> a5b98009f16d ("sched/psi: fix race between file release and pressure write")
+> made pressure_write() hold cgroup_mutex across psi_trigger_create(), which
+> forks the psimon kthread for the first rtpoll trigger. As kthread creation
+> depends on the whole fork path, the commit inadvertently created a lot of
+> unwanted locking dependencies from cgroup_mutex.
 > 
-> From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+> sched_ext got hit by one: its enable path blocks forks and then grabs
+> cgroup_mutex, so a pressure write racing a scheduler enable deadlocks, with
+> every other fork piling up behind.
 > 
-> Commit 7d74b06f240f ("memcg: use for_each_mem_cgroup") replaced the
-> mem_cgroup_walk_tree() call in mem_cgroup_oom_notify() with
-> for_each_mem_cgroup_tree(), but left mem_cgroup_oom_notify_cb() with the
-> int return type required by the old callback interface.
+> Fix it by splitting trigger creation so that the worker is forked with
+> cgroup_mutex dropped and the kernfs active reference left broken. The latter
+> matters because rmdir and cgroup.pressure writes drain active references
+> under cgroup_mutex. Publishing the trigger last keeps error reporting
+> synchronous and preserves the of->priv lifetime rules.
 > 
-> The function now has a single direct caller and no failure path. Make it
-> return void.
+> The trigger registered in the first stage pins the group's rtpoll machinery
+> across the unlocked window, leaving only creation races to resolve. The
+> catch-up poll on installation covers scheduling attempts dropped while there
+> was no worker.
 > 
-> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+> v2: Retagged sched/psi (was cgroup).
+> 
+> Fixes: a5b98009f16d ("sched/psi: fix race between file release and pressure write")
+> Cc: stable@vger.kernel.org
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Edward Adam Davis <eadavis@qq.com>
+> Cc: Chen Ridong <chenridong@huaweicloud.com>
+> Reported-by: Matt Fleming <mfleming@cloudflare.com>
+> Closes: https://lore.kernel.org/all/20260710100441.2653477-1-matt@readmodwrite.com/
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> ---
+>  include/linux/psi.h    |  4 ++-
+>  kernel/cgroup/cgroup.c | 23 +++++++++++++-
+>  kernel/sched/psi.c     | 69 ++++++++++++++++++++++++++++++++----------
+>  3 files changed, 78 insertions(+), 18 deletions(-)
 
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-
-
+Tested-by: Matt Fleming <mfleming@cloudflare.com>
 
