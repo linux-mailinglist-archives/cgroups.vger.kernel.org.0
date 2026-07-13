@@ -1,153 +1,134 @@
-Return-Path: <cgroups+bounces-17714-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17715-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id gFH3GkbYVGr3fgAAu9opvQ
-	(envelope-from <cgroups+bounces-17714-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:21:26 +0200
+	id Ts4ILZ/aVGqGfwAAu9opvQ
+	(envelope-from <cgroups+bounces-17715-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:31:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D513274AE10
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:21:25 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FB0E74AF48
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:31:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17714-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17714-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lst.de (policy=none);
+	dkim=pass header.d=linux.dev header.s=key1 header.b="JfRMoYe/";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17715-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17715-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8E73331FED4D
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:13:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2554C301B160
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:31:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806F8409134;
-	Mon, 13 Jul 2026 12:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9AF409114;
+	Mon, 13 Jul 2026 12:31:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303963F58CC;
-	Mon, 13 Jul 2026 12:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB4937DEA4
+	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 12:31:21 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783944775; cv=none; b=oGD+fS18slEfVGYgmC+i0l591ek3Y8xyxI0+PDkXUMnd5hkz1PHFhL+QDpIJ/I5VTOyaVG7Lxg/wYG6k13iEYsxlCL4g8fS/hIAryPIXu6t0zHlOgQU8FKwGyUoSFVQWfQAy9U6MgjJAqmwutDKq7DzGXY4YG5HpcgK71y9gJFk=
+	t=1783945883; cv=none; b=Qj7PitekSWEalYb1NmE7dwP1uukFF7/hCk0bpWkXFVX54jmKTsAa33ZeXXWlZHjwLlWi5buzJUC8XZWcIoAkmvaZoSSoDbO4fpQ8M3wMkdnvTZkV/0PIE9tF/+HG3T8Y8ioXgRLDg0UreCMrrE63b+sfyqD/1B8GMdMGUa4EaI0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783944775; c=relaxed/simple;
-	bh=GijumX0JE2j1JX91GbOsOLhMJNjDmmJ36d5S80X0KTE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lur+T+pmrrpnOO/iLCcnD5GkBcwKftGuMjy9l8OGFl5YoOildYXUuzSl7xc45xjSFGrf4NIW6Z/KDkCvHJlYGWoL/kFWguYdbcDlsB9pWTWIYFSoCDCo9e6Funw+LJRf+jXKKRUiEYKp+eg5ay+1oCLlZDsRGDknHjsxfDOTc0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 4694468BFE; Mon, 13 Jul 2026 14:12:45 +0200 (CEST)
-Date: Mon, 13 Jul 2026 14:12:44 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Hannes Reinecke <hare@suse.de>
-Cc: Yu Kuai <yukuai@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Tejun Heo <tj@kernel.org>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Alasdair Kergon <agk@redhat.com>,
-	Benjamin Marzinski <bmarzins@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Dongsheng Yang <dongsheng.yang@linux.dev>,
-	Zheng Gu <cengku@gmail.com>, Coly Li <colyli@fygo.io>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Josef Bacik <josef@toxicpanda.com>, Yu Kuai <yukuai@fygo.io>,
-	Nilay Shroff <nilay@linux.ibm.com>, linux-block@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-nvme@lists.infradead.org,
-	dm-devel@lists.linux.dev, linux-bcache@vger.kernel.org
-Subject: Re: [RFC PATCH v1 01/17] nvme-multipath: retarget failedover bios
- from requeue work
-Message-ID: <20260713121244.GA20084@lst.de>
-References: <20260704195124.1375075-1-yukuai@kernel.org> <20260704195124.1375075-2-yukuai@kernel.org> <0ded62a6-b3da-4790-adf0-566ded30ee43@suse.de>
+	s=arc-20240116; t=1783945883; c=relaxed/simple;
+	bh=JI+/o9g62QcrTsdBJA8Y9yefEkfCO4FlJVcAJIAYH+A=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=pUw7gePz9WvazJdqajM/L1xtAq5tKhM6u8FbKBqFtX7drIF4fM9n1UFHM6V6OJbVERkCUpp51ZXCCcr8lKu+wabMe7BOHVZE8tmdHpT5FnpbelYrzwSo/63Ucn6gQFa/5iEEhBp/FtTelB5WhdK23oIqs0/ehh5OAlckrT+qXPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JfRMoYe/; arc=none smtp.client-ip=91.218.175.186
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1783945869;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JI+/o9g62QcrTsdBJA8Y9yefEkfCO4FlJVcAJIAYH+A=;
+	b=JfRMoYe/osc67xC5UABSw/Jid07sqLX65BD/x+9RL9hscga8kjPX1PdLGZ8PW0DzBQwJRO
+	pH+MmCQrpYIYZwFKQCfjkAF0s5YR+BnX3cAxQIfMUrcSSoCrV9DdPJpof+re3Sdwlwsxbz
+	NHLsfxHkgMFEqPjPJnO7Ywt7bSI0IBc=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ded62a6-b3da-4790-adf0-566ded30ee43@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
+Subject: Re: [PATCH] mm: memcg-v1: account vmpressure event allocations
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20260713085520.2953121-1-guopeng.zhang@linux.dev>
+Date: Mon, 13 Jul 2026 20:30:31 +0800
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>,
+ Stanislav Fort <stanislav.fort@aisle.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>,
+ cgroups@vger.kernel.org,
+ linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org,
+ Guopeng Zhang <zhangguopeng@kylinos.cn>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <523274F8-9DE3-406A-80BF-00AF0610D033@linux.dev>
+References: <20260713085520.2953121-1-guopeng.zhang@linux.dev>
+To: Guopeng Zhang <guopeng.zhang@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:hare@suse.de,m:yukuai@kernel.org,m:axboe@kernel.dk,m:tj@kernel.org,m:hch@lst.de,m:kbusch@kernel.org,m:sagi@grimberg.me,m:agk@redhat.com,m:bmarzins@redhat.com,m:snitzer@kernel.org,m:mpatocka@redhat.com,m:dongsheng.yang@linux.dev,m:cengku@gmail.com,m:colyli@fygo.io,m:kent.overstreet@linux.dev,m:josef@toxicpanda.com,m:yukuai@fygo.io,m:nilay@linux.ibm.com,m:linux-block@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-nvme@lists.infradead.org,m:dm-devel@lists.linux.dev,m:linux-bcache@vger.kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[hch@lst.de,cgroups@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	TAGGED_FROM(0.00)[bounces-17714-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,kernel.dk,lst.de,grimberg.me,redhat.com,linux.dev,gmail.com,fygo.io,toxicpanda.com,linux.ibm.com,vger.kernel.org,lists.infradead.org,lists.linux.dev];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:stanislav.fort@aisle.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:stable@vger.kernel.org,m:zhangguopeng@kylinos.cn,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-17715-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,fygo.io:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:from_mime,lst.de:mid]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D513274AE10
+X-Rspamd-Queue-Id: 1FB0E74AF48
 
-On Mon, Jul 13, 2026 at 11:29:35AM +0200, Hannes Reinecke wrote:
-> On 7/4/26 9:51 PM, Yu Kuai wrote:
->> From: Yu Kuai <yukuai@fygo.io>
->>
->> bio_set_dev() is about to become explicitly sleepable because it can
->> associate the bio with a blkg for the destination queue.  NVMe failover
->> can run from request completion context, and nvme_failover_req() also holds
->> head->requeue_lock with interrupts disabled while it steals bios from the
->> failed request.  Calling bio_set_dev() there is not safe once the helper is
->> allowed to sleep.
->>
->> The requeue lock only protects head->requeue_list.  Keep the list
->> manipulation under that lock, but defer retargeting to nvme_requeue_work(),
->> which already drains the list from process context before resubmitting each
->> bio.  The bios remain private to the requeue list until the worker pops
->> them, so moving the device switch there preserves the existing retry flow
->> while avoiding a sleepable helper in completion context.
->>
->> Signed-off-by: Yu Kuai <yukuai@fygo.io>
->> ---
->>   drivers/nvme/host/multipath.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
->> index 9b9a657fa330..76baa180ae1c 100644
->> --- a/drivers/nvme/host/multipath.c
->> +++ b/drivers/nvme/host/multipath.c
->> @@ -149,7 +149,6 @@ void nvme_failover_req(struct request *req)
->>   	struct nvme_ns *ns = req->q->queuedata;
->>   	u16 status = nvme_req(req)->status & NVME_SCT_SC_MASK;
->>   	unsigned long flags;
->> -	struct bio *bio;
->>     	nvme_mpath_clear_current_path(ns);
->>   	atomic_long_inc(&ns->failover);
->> @@ -165,8 +164,6 @@ void nvme_failover_req(struct request *req)
->>   	}
->>     	spin_lock_irqsave(&ns->head->requeue_lock, flags);
->> -	for (bio = req->bio; bio; bio = bio->bi_next)
->> -		bio_set_dev(bio, ns->head->disk->part0);
->
-> If you remove this the original device remains being referenced by
-> the bio, so there might be a chance of some accidentally referencing
-> the (now invalid) bdev.
-> I think it might be better if you were set it to NULL here, to
-> signal that this bio currently has no bdev associated.
 
-What should reference it?  This moves setting bi_bdev from the only
-place adding to the list to the only place removing from the list.
+
+> On Jul 13, 2026, at 16:55, Guopeng Zhang <guopeng.zhang@linux.dev> =
+wrote:
+>=20
+> From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+>=20
+> Commit 72797d218b43 ("mm/memcg: v1: account event registrations and =
+drop
+> world-writable cgroup.event_control") accounted cgroup v1 event
+> registration allocations with GFP_KERNEL_ACCOUNT, but missed struct
+> vmpressure_event.
+>=20
+> Use GFP_KERNEL_ACCOUNT for this allocation as well.
+>=20
+> Fixes: 72797d218b43 ("mm/memcg: v1: account event registrations and =
+drop world-writable cgroup.event_control")
+> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+
+Reviewed-by: Muchun Song <muchun.song@linux.dev>
+
 
 
