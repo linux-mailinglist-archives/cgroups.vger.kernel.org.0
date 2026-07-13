@@ -1,74 +1,74 @@
-Return-Path: <cgroups+bounces-17718-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Mo8oKOfbVGrrfwAAu9opvQ
-	(envelope-from <cgroups+bounces-17718-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:36:55 +0200
+	id vxDjD53bVGrRfwAAu9opvQ
+	(envelope-from <cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:35:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C24174B00E
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:36:54 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85ACE74AFE7
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 14:35:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=XqnxdyNS;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17718-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17718-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=upOGX7wO;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17719-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BC776300AD8E
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:34:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 371BF303CE03
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jul 2026 12:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54FB2D9796;
-	Mon, 13 Jul 2026 12:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E06FF2D9796;
+	Mon, 13 Jul 2026 12:34:55 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160C91C860C
-	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 12:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B6D40962C
+	for <cgroups@vger.kernel.org>; Mon, 13 Jul 2026 12:34:53 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783946091; cv=none; b=OI0xbr+Bx5LOkZtYpijPNIwbx8hxIp1pRs74sr9rqSBoAQhGPjlzbHOrcL7nD3yaZK7iNH7ZHrjKprUGOVsJGxgEEr5LCWT4exOl0kQj29/jz1AezbKk35N0EIalEtneM0LA3zA37L67CvPV6B5JCqNpTUcgk4gYOo30cs+pWLE=
+	t=1783946095; cv=none; b=R6vFB6xgX7ZQI02LFldXhFKhq/fkETunJprSbU3sjFqpdVpyHZssGm8QZY+7uLrVwmolNG6RlykKsLVguJXVBKP6bMxR1g6WuVFf9eBQDc5YX6V5PGhAjQKCuw8YOrCAhMiAVjwuS1y92WKrrYen+2E7yhrjsDrSXfbajmWATTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783946091; c=relaxed/simple;
-	bh=U5MfuI69Ft1hR5jqHeDoj3qJTcgQ5f4Qpk1xwWp59hI=;
+	s=arc-20240116; t=1783946095; c=relaxed/simple;
+	bh=3noOyco9YFZQY8GONL6s4RS3Jtn7BplwFjDiVSwHAnk=;
 	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=IUIXXva41JyNdJ80fyfwJMLbGWN/Mw2Q2HZxwPvj2OeDugE+Y/M9m76GfMVcIbM320sDhJric2f/JIZBvxIItjSBiw+Qjd6dDPw1uh4aI/zd2pDzfDEPofONnoEe+UMXz451naLrA1WBrtHczbyT036fflA9UFKmY481jtza4wU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XqnxdyNS; arc=none smtp.client-ip=95.215.58.173
+	 Message-Id:References:To; b=HTqGjFmgy/pUfro1WTVfNtW6qCVg0nUjpo3HLOosy91sTGSfukBjrtmRLXxssF0qi6wszmk8QfguXZJNM8aAw5k8b8URWBeyAKkCzBeb5kCDSQDwVmhnHuz5rvYUvJCzgLaXFJvdyr28XQu8Nkx4K+o46VTU7k4PhMuuOWenY10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=upOGX7wO; arc=none smtp.client-ip=91.218.175.171
 Content-Type: text/plain;
 	charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783946087;
+	t=1783946091;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oBpjdqtbb2rhGpETSozc/NsckdAfaonoUVSLNlrevv0=;
-	b=XqnxdyNSZIzgO8zwA2kFyBgmgkh2Jcw+ncWitZMoz3Kw0IQLXn+O2Kxb0/6pD5GPT+lROt
-	jnJ63+rKvyE7k0cLuTpcwGZUw+3gYRhEkWVVz7qfhSEFnPT+XdPxF9pt59LBblAkqiKkjT
-	T1Zf0m79HVLADdHQMtAbfzDk0vsIvTw=
+	bh=lHypyUNn2HVnK1SWBb4ieypi03fXxl2jL6EyCeQIuUw=;
+	b=upOGX7wOzhWGgpudj11Mxbp9JfS5C7idfCct/CWgItwz6yiESe7f9bF5/CPTKMjaIboxnr
+	ogsLMVm068Qh/mKIhWwKZ7c3Eet0iUNESFG1ywQqF+pR0XHDKuGOVxwew6PraN4Q3T7XNf
+	LwbgzJX/8jCWTvzN96/xBOBpvEcM0Pw=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
-Subject: Re: [PATCH] mm: memcontrol: factor out memcg kmem uncharge sequence
+Subject: Re: [PATCH] mm: memcg-v1: make mem_cgroup_oom_notify_cb() return void
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20260713090304.3015329-1-guopeng.zhang@linux.dev>
-Date: Mon, 13 Jul 2026 20:33:54 +0800
+In-Reply-To: <20260713093737.3299646-1-guopeng.zhang@linux.dev>
+Date: Mon, 13 Jul 2026 20:34:14 +0800
 Cc: Andrew Morton <akpm@linux-foundation.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
  Johannes Weiner <hannes@cmpxchg.org>,
  Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
  Shakeel Butt <shakeel.butt@linux.dev>,
  cgroups@vger.kernel.org,
  linux-mm@kvack.org,
  linux-kernel@vger.kernel.org,
  Guopeng Zhang <zhangguopeng@kylinos.cn>
 Content-Transfer-Encoding: 7bit
-Message-Id: <5012E3D9-0989-4115-A17B-FE0050DFE25F@linux.dev>
-References: <20260713090304.3015329-1-guopeng.zhang@linux.dev>
+Message-Id: <F7C69746-C0A3-41AC-95EB-BCE6D73C2FF1@linux.dev>
+References: <20260713093737.3299646-1-guopeng.zhang@linux.dev>
 To: Guopeng Zhang <guopeng.zhang@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
@@ -77,13 +77,13 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	MV_CASE(0.50)[];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17718-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:roman.gushchin@linux.dev,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:shakeel.butt@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:zhangguopeng@kylinos.cn,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17719-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:zhangguopeng@kylinos.cn,m:guopeng.zhang@linux.dev,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
@@ -102,24 +102,24 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim,kylinos.cn:email,vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9C24174B00E
+X-Rspamd-Queue-Id: 85ACE74AFE7
 
 
 
-> On Jul 13, 2026, at 17:03, Guopeng Zhang <guopeng.zhang@linux.dev> wrote:
+> On Jul 13, 2026, at 17:37, Guopeng Zhang <guopeng.zhang@linux.dev> wrote:
 > 
 > From: Guopeng Zhang <zhangguopeng@kylinos.cn>
 > 
-> The kmem-uncharge sequence (mod_memcg_state(MEMCG_KMEM) +
-> memcg1_account_kmem + conditional memcg_uncharge) is duplicated verbatim
-> in obj_cgroup_release() and drain_obj_stock_slot(). Factor it into a
-> small memcg_uncharge_kmem() helper. The reference get/put stays at the
-> call sites, as they differ.
+> Commit 7d74b06f240f ("memcg: use for_each_mem_cgroup") replaced the
+> mem_cgroup_walk_tree() call in mem_cgroup_oom_notify() with
+> for_each_mem_cgroup_tree(), but left mem_cgroup_oom_notify_cb() with the
+> int return type required by the old callback interface.
 > 
-> No functional change.
+> The function now has a single direct caller and no failure path. Make it
+> return void.
 > 
 > Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
 
