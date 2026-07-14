@@ -1,74 +1,74 @@
-Return-Path: <cgroups+bounces-17766-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id JKvPEz8CVmpuxwAAu9opvQ
-	(envelope-from <cgroups+bounces-17766-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:32:47 +0200
+	id rUmMGpUCVmqFxwAAu9opvQ
+	(envelope-from <cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:34:13 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC48E752DFB
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:32:46 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2D58752E43
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:34:12 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b="A4RY5/zI";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17766-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17766-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=google.com header.s=20251104 header.b=CwzbUHAp;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0AECC3046940
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 09:32:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9B328303E20E
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 09:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB1D18DB2A;
-	Tue, 14 Jul 2026 09:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36DA843F8B0;
+	Tue, 14 Jul 2026 09:32:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+Received: from mail-wr1-f73.google.com (mail-wr1-f73.google.com [209.85.221.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9B43F4101
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 09:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4E53F8899
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 09:32:20 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784021540; cv=none; b=ZbAsaeQP0i+Vo76LtixZ16D7NKJ9/BtDDhYrabfoZb/nTSdQ1myRo1heFek+LoDFMZQRmtrafoShSC4q7ZG4/m/vnl0lWbWDY3loVfPz/OhvkMIURRCb8YURZ1t6sMeXQU+fEqXRcBOvBGmROyt/zUQ8yryiCgtWdaK/Am8AmX4=
+	t=1784021542; cv=none; b=EORRilYCjQ3wb+YiUC1ygB4v2lvQngisEu/iv7CcFzC5WP0ivwrxdNt8g1/V40F1dH+5159uDvA3NuWFieTHS7w1T9vt/G59e5l6jHVl0qzWdMA1GwrHm1JyTg+5MQnGSX8s4G4pBK/uzwR7cN68UsMNKlA4CH3nZ4HaO4FzATk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784021540; c=relaxed/simple;
-	bh=2l1s6SY91BitDP9Fk7cMfVdIRCiEIScYANH9F3mzM9w=;
+	s=arc-20240116; t=1784021542; c=relaxed/simple;
+	bh=loB3HG8brTXzmdSKSsUK401/V7kF9OMrAV2ZVZNmfIk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OpXE6a51fI7K4FA1HNpm9iNZYYOuOswprOr4eKDl7ZE0j4aLoOngGvmxP3mV46R4VzS3IIUGPUVpN8FqYW8yC6CV7+eThGZC8Bk4UkOuzatcTy/gq4cPQUbtYVgs14p5EUga0LGUEBRUED+t6hwu8oMpTicr2b15Vz5xOo1Up6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A4RY5/zI; arc=none smtp.client-ip=209.85.221.74
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-4767036f8faso2441271f8f.3
-        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 02:32:18 -0700 (PDT)
+	 To:Cc:Content-Type; b=DN3fNvr2e2eG8r5ZOqANCrCfz8qQjXjOlI/uZ0dXciGPfanW7R5wzMFR9vYERdMRzS/Ge4U6SgeHYIrZkDvg36gmL7fN+1glXGTMPtUNmqYGXyCZaj7YbxDU2mZLlzafJvPLnjVBKEl9l1Vs4Kl2u9EVKvYXBvo0xjakEOBEiN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CwzbUHAp; arc=none smtp.client-ip=209.85.221.73
+Received: by mail-wr1-f73.google.com with SMTP id ffacd0b85a97d-474170b59dfso2219525f8f.3
+        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 02:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1784021537; x=1784626337; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1784021539; x=1784626339; darn=vger.kernel.org;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=vZCDTy++eofJtCdYVj/00BJntfZC5+UGNjKSKN7oKjA=;
-        b=A4RY5/zIh0TYZFedQYRVq4GibqudS/PGANFqULJJkI1AeHSF25GC9aGJI6IIj7fmz8
-         GoRtz9Fduf0d8coiB3t0GZgA9NdzwYtTehv5Rx8j3QC5cORvB0Dv2fk3bJqL+TBVXY/p
-         Hq96JLyRP/BjLDQj+cvEAkma4WEL72YGwufL83QJEVUt5MBZw6Wt2/rVIqrnQ32j3+xJ
-         liSuBQlfbfScSbjyNB8iMaj7QUNuX77jJdAstKfOLyBNHcfpdNLWSH/O9KmJGs8FByLS
-         Mgr7a6WQzNMzERb8Y7xWWNaSSN28qBWPVHLfZWz8h/tOkAf5dotv1jg3PC7j5NaeJZ8Q
-         A42g==
+        bh=WzKR252Snnew5WaAvQzSvTHfEGNrnKkZ6pkR9ltqCAo=;
+        b=CwzbUHAp0nWlTHkFa+h0qE+RUS7GQe639KewU3gLAFfQD/wBRavxlakTZs2oWlw4e7
+         OhFqKlsR23PYvXtjoUo34/RYYcSEZvH6FUfQWzOR5uHO4LX3DFXcIH/DZTS8oDJ5BaNh
+         XvibGCVavGT9YxVHWIai8QygMc4C5+Fe3n6Nv9jfCRjI/maDD7nWdXtbpI/gk79wwBjH
+         tFJGiQ2PSY+E+GnjnTqzzPO2xf61oNxa68Ycy/flM7j4Q0euiw/v76i1/biVwNCmYLSG
+         TgEW1diK2i5iBioiIJv0D/cDBxSvbjwM0FS9D7BaPBoujTEmZ2djU9Dk7cJX0y2XxYdX
+         FhXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784021537; x=1784626337;
+        d=1e100.net; s=20251104; t=1784021539; x=1784626339;
         h=content-type:cc:to:from:subject:message-id:references:mime-version
          :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=vZCDTy++eofJtCdYVj/00BJntfZC5+UGNjKSKN7oKjA=;
-        b=hoNt5KwBecE4rnqU2W5mesKFvTMQXdRJClYiju0Xo/0HdW5rB4W+rWxk1EcqwcNeOQ
-         JOGKgPeFnv01lGZyM1vk+nSjbE5Vhrf25+YeQEF739a5xSFzUMYz9k9VZeNFkTHjgf9B
-         Orxrx+ZHLo3fEBXX/9ixylFvgRMidz1bYs70La30LAajPdYOWtFujbRt0MLVro/Dzc2n
-         E9N64lSCEXf115JAPKcWUHgdbvHgRHqEUNC5BmxfVpFyaVUQT//zNQbFTRKdr+eAneyw
-         zvKk2bBVay4Zpuu02WFr+DHHc5oU6RK+1uZmdUc3TXKQ1RbHPFgzPra+qBKsjEeBV+or
-         ci4g==
-X-Forwarded-Encrypted: i=1; AHgh+RoPjqTHqLdiS1R33tP7b0TaJLGHQZbu6/T2ALadxiDE0qbwdTBhz5mGA79lPqHndDrIeOoTrQTJ@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywin4dtoNqiUEO7o1BZlJDRLxsDVYWtPW9Rc+Q+Dn0Hq35zwYcx
-	vlHRDa4rsvA627aZGrY0Ivs4ArnBYnKV0eSCs3zW562u5Vz27horyvG4YAAyz2RzyRB/CKulGfp
-	XvCTxZYaJ/wYUNA==
-X-Received: from wmcv10.prod.google.com ([2002:a05:600c:428a:b0:493:bc21:e2be])
+        bh=WzKR252Snnew5WaAvQzSvTHfEGNrnKkZ6pkR9ltqCAo=;
+        b=QYl//gJAncXzKe3SFeiG+FTV0pVOP8DKEjNPdLQ43JkTO7iA3D3LromXAAG+V+NaSo
+         nwNdaN7nlEVfFaY2Lk1qSZL5Kmy3z0DBFL6QiWDhyJhAf4rD+MFFTGVuslE48Jv6pxOk
+         53jgZ4YahWflP+TyIgi0P/CDrvoRMA3iQTj8UhgKrxrkjqmJ0L9xDTG3dd9xGSR7XDku
+         lEgBVprf0h2342peIRSnjRpRyC40sUEY3mhupFPLamkEpzGFfmorh9djQqpKGEDPr4XR
+         q1X7lzbbVLlas0kPHWu1j0q42bEJjOpnJgHC5Y/sZ6SN9zH/nWi3FtuSALg258+YOncW
+         8kzg==
+X-Forwarded-Encrypted: i=1; AHgh+Rr/6xJGy3AMFXz5ndcX7MhKvUnZxB7Ue1YZjhRP4WvzqxkToAX25hMS8ih+C+3WZtZddh+PeVOx@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzp4SAq5fh/8tuJMSiJg2ENW5hGOiD/xf4xEQ5yvV3oUEVWkO66
+	G9DH55k0DmQSr2ARQU9e9ntWqZYa+rqIaNJKjY8+a0HHvj2urc/tvGYBuZHNcVnaBKxxeDXqarI
+	McMxKpTkJRZDzCg==
+X-Received: from wmo8.prod.google.com ([2002:a05:600c:2308:b0:493:bc2d:fea8])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:5297:b0:492:454c:347c with SMTP id 5b1f17b1804b1-494013134aemr75960445e9.7.1784021537240;
- Tue, 14 Jul 2026 02:32:17 -0700 (PDT)
-Date: Tue, 14 Jul 2026 09:32:01 +0000
+ 2002:a05:600c:8119:b0:493:b6e4:fb2b with SMTP id 5b1f17b1804b1-493f882cc20mr115137745e9.25.1784021538718;
+ Tue, 14 Jul 2026 02:32:18 -0700 (PDT)
+Date: Tue, 14 Jul 2026 09:32:02 +0000
 In-Reply-To: <20260714-spin-trylock-followup-v2-0-3c20ed032b14@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -78,8 +78,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260714-spin-trylock-followup-v2-0-3c20ed032b14@google.com>
 X-Mailer: b4 0.15.2
-Message-ID: <20260714-spin-trylock-followup-v2-3-3c20ed032b14@google.com>
-Subject: [PATCH v2 3/4] mm/page_alloc: fixup alloc_pages_nolock_noprof() comment
+Message-ID: <20260714-spin-trylock-followup-v2-4-3c20ed032b14@google.com>
+Subject: [PATCH v2 4/4] mm/page_alloc: remove a VM_BUG_ON()
 From: Brendan Jackman <jackmanb@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@kernel.org>, 
 	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
@@ -88,8 +88,7 @@ To: Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@kernel.or
 	Steven Rostedt <rostedt@goodmis.org>, Waiman Long <longman@redhat.com>, 
 	Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>, 
 	"=?utf-8?q?Michal_Koutn=C3=BD?=" <mkoutny@suse.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	sashiko-bot@kernel.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-1.66 / 15.00];
@@ -97,21 +96,21 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	MV_CASE(0.50)[];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:vbabka@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:jackmanb@google.com,m:hannes@cmpxchg.org,m:ziy@nvidia.com,m:bigeasy@linutronix.de,m:clrkwllms@kernel.org,m:rostedt@goodmis.org,m:longman@redhat.com,m:ridong.chen@linux.dev,m:tj@kernel.org,m:mkoutny@suse.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:sashiko-bot@kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:vbabka@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:jackmanb@google.com,m:hannes@cmpxchg.org,m:ziy@nvidia.com,m:bigeasy@linutronix.de,m:clrkwllms@kernel.org,m:rostedt@goodmis.org,m:longman@redhat.com,m:ridong.chen@linux.dev,m:tj@kernel.org,m:mkoutny@suse.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[jackmanb@google.com,cgroups@vger.kernel.org];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17766-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17767-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -122,34 +121,33 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,sashiko.dev:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: AC48E752DFB
+X-Rspamd-Queue-Id: F2D58752E43
 
-Update the comment to reflect the recent change to allow flags in
-gfp_nolock.
+VM_BUG_ON() is out of favour and on the way to removal, since I recently
+touched this code I am removing this invocation. If this precondition is
+violated, the system will soon crash anyway.
 
-Reported-by: sashiko-bot@kernel.org
-Link: https://sashiko.dev/#/patchset/20260703-alloc-trylock-v5-0-c87b714e19d3@google.com
+Suggested-by: Zi Yan <ziy@nvidia.com>
+Link: https://lore.kernel.org/all/7F866265-3F2E-4765-B9D4-9AB898A9C4AC@nvidia.com/
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- mm/page_alloc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/page_alloc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index f3f08d0313cfc..d53f858e518f7 100644
+index d53f858e518f7..0db1a7281fc33 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -7994,7 +7994,8 @@ struct page *alloc_frozen_pages_nolock_noprof(gfp_t gfp_flags, int nid, unsigned
- }
- /**
-  * alloc_pages_nolock - opportunistic reentrant allocation from any context
-- * @gfp_flags: GFP flags. Only __GFP_ACCOUNT allowed.
-+ * @gfp_flags: GFP flags. Only __GFP_ACCOUNT, plus some flags that get set
-+ *             internally regardless (see @gfp_nolock) are allowed.
-  * @nid: node to allocate from
-  * @order: allocation order size
-  *
+@@ -5438,7 +5438,6 @@ struct page *alloc_pages_node_noprof(int nid, gfp_t gfp_mask, unsigned int order
+ 	if (nid == NUMA_NO_NODE)
+ 		nid = numa_mem_id();
+ 
+-	VM_BUG_ON(nid < 0 || nid >= MAX_NUMNODES);
+ 	warn_if_node_offline(nid, gfp_mask);
+ 
+ 	return __alloc_pages_noprof(gfp_mask, order, nid, NULL, ALLOC_DEFAULT);
 
 -- 
 2.54.0
