@@ -1,94 +1,93 @@
-Return-Path: <cgroups+bounces-17774-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +/BQKtMeVmrJzQAAu9opvQ
-	(envelope-from <cgroups+bounces-17774-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:34:43 +0200
+	id /EwsFEYgVmoTzgAAu9opvQ
+	(envelope-from <cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:40:54 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE1E2753F08
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:34:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2385753F9B
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:40:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=mAvoqXa1;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17774-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17774-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=GEDllHkM;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AD9C930EC4BE
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:32:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6DB64313F495
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7E837188B;
-	Tue, 14 Jul 2026 11:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C5F381B02;
+	Tue, 14 Jul 2026 11:37:59 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BDF35BDDB
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 11:32:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5F6351C25
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 11:37:57 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784028769; cv=none; b=l3GyvmLeShnwf/ZKBOQJH2NjMR9GfkdtCG8oXTteZEVpmSMSQ9ogRlvsikKqHXblWht9RzEDwPyw3m9K5X8eHvG2lo2o3jVotHGs5/pzuoZhamWqWQB/vQrmsO7OLlzXCEhLxzmK28h0wu3HFbNy0HQtbcTVbYwfvTPSzEVJ2hU=
+	t=1784029079; cv=none; b=oJv0mRDoYm/RNkOQoDTa6NGd4hIAfPhJJa/qPg3VcIJJ60NbLiFbrZPMYTEw5hc57cOSMOxrKBbUWWSzl7PvWDg/09Lx4TCpfC+X8m2tRvmFIj/hUdxAicD30r+IFfWMSYv7QiAE+Yaw0kdZQNcndfsGfciQFE0iY9QZl39iQSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784028769; c=relaxed/simple;
-	bh=JW4SKwS9Sw6yTBXBo9sFe8ouOcRn4MEMwBkrwaQ4RB8=;
+	s=arc-20240116; t=1784029079; c=relaxed/simple;
+	bh=jvi/C9nTXOmhhjc0Lb9aktYocYiVVnB804trf7lfPrM=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I2aQmjdEKtBHZsjWM3M2wPoDbqBwbeREHQ4MIoYWoc4grQ8L4j8KrPGlPMnZ8CUwaQvsuvVwFwctteFYcYI1c+Qk3dQzrxTq6cDuE/bYx3/ZQt7OVxNrQa1UCXoets06/5jfcumaINMutHBS1EAhnz9ndq6ne/WEifLYDP7ibBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAvoqXa1; arc=none smtp.client-ip=209.85.221.48
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-472326ca506so3429653f8f.2
-        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 04:32:48 -0700 (PDT)
+	 MIME-Version:Content-Type; b=uWDTWZxX0Dif/v0WdOjT5cZYQ0x6wU2tByEVaRoJl02EnuAgKlECvuivAqM89yGYMhPPoZmXjU0qkRkOqkXAKX3120yLv1BL2Cubss8odf7hWkr8Z8YYyjtVJDmBFlsc+LGvdyV8krTXM+tXxXYQIk3CCZ5p8OaqrzjAFyp5T8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GEDllHkM; arc=none smtp.client-ip=209.85.221.48
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-4728c12ba97so1853691f8f.0
+        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 04:37:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784028766; x=1784633566; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1784029076; x=1784633876; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=hXVTwIzWV4cMwvPDxnoNwAyB741h/M12a9/WAB/GHT4=;
-        b=mAvoqXa12w5a9DWTYhc9WvB7EJLjOS6aPW6Yf+iYxxFFqEqVwadlEFH32yCmi/Ahnb
-         Fb1z7agoPA0hgq1p4H8eOgYUyxmwg1k1gIp11wflJ4JIhQjYRQUHkhaBc910DauPel73
-         1JsKuZogRlZjwndLp9eFjP+w5a1I/+5MM9dF9iI1EAfQ8HsUSJL/s/dHDfVbQ5ZUNfUY
-         jD9AoC0Swd5xVfI3XvDvvbM3UZgrcqQNftylxDIAv+NgJfC4taUDQoPRZFo9j4FRoAQu
-         2Rcu/ZhaucDJwU3/rsE9gt5dukYSFfjG/6rARMWoHiOLM0og54nl3jyttyTQUiWeDQto
-         4/Yg==
+        bh=b41+ZmPO1kjwWz2S29LAqh9eI9JWVyVGFI2NWPufoa4=;
+        b=GEDllHkMR41S+dFNps77d42LYWFFvUETZcKa6lXe5Jznb1xNebSNVqjLBft4ultjhH
+         qPDxg6pt6SzoDx06feDSqLh/R/K7JoAPcsjhcb5xP4Z9aHTtsfihFjuMh/JfMN4WLDNZ
+         R9oKnySqSg266qG6syoaTLWYm4rD1FlA5PcK0holyYlTikmax3zsgTXs7Zi5uLiG8nGs
+         jcKJBg2m0W4fb7Q3uk4qkVbyYvKB9be78gNuSW4O/uFxwxDKmalSJYbHlVhcUKGo8MBo
+         u5+gwFL/wAdlaKM2RYh+QyfMAASBhfJf8BvWMSjIACaGt4mBpYCGmV3Fra+To33aBy7H
+         Tt5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784028766; x=1784633566;
+        d=1e100.net; s=20251104; t=1784029076; x=1784633876;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=hXVTwIzWV4cMwvPDxnoNwAyB741h/M12a9/WAB/GHT4=;
-        b=IyaBBOmIp5q4OvotoEtYrEOBJbrltiRKMqQg3cpWEEJ48x3Q7RC1/WMTRcI9v1RfeP
-         idv434GdzIUF0ghkwkiR7huLs/6XXLrBfZn8Pho35ertuDN1TOq3KKJDWmPmyVROKIsQ
-         PK1Jv69bwVt7jJxdZlkWXQGV+z7NfAb+vgBcParaBIbZ+S+5vrTz89OD9tbx4lSAarJH
-         sHlp4f7U3ReqEOufg0uOhBo5bm/5rv3S/G2DVE/aArd1Yx+LgnxRvdO6FOo4KPaOaufU
-         hXNLcsPvUdA9UYc7v/dDYnXsioweDFMOGv8bxMdNAHLlS4S0sfYF+xaXVKEsZmWEE6Q9
-         ZQMw==
-X-Forwarded-Encrypted: i=1; AHgh+Rpll7cfO/zodT5VknzCyFs+7dPm65FfMgfWy2X3kUecHE9ASJIh2nw9CjajfogefhrmptBjKlz5@vger.kernel.org
-X-Gm-Message-State: AOJu0YwcG4NZ+o20qnhl0bljKf2/au24eCuWdqodUcru3J+knhf2SZs2
-	kGXD98UCvkxPb3s8beEx4fCPYaVvruDc3GFg/hNpEDCMeX8chI3oP4kt
-X-Gm-Gg: AfdE7cnMK+SMH6/QQZMFOK350Nlawi+BrK+aKHfGlcoMLLvdjXhnoyYhNqI9aG5L2xK
-	N0igHI/ilLWLEr+2qZXmzFO8rjZL0CZ+4pRvZY8Mqhdo8jBhEK78c5zktBoq2WiShInwbrQdGkt
-	g/Uux9KL2VOOQYpJfVZIA5MPFTiHIeXH9p77e5nLibyplNboD60EpcTknxwu9JYcGp+viAE4yh6
-	fRdkWn1Rf6fFZOnmPrVnHJxi/HP0+F1WmJSo/W9JIWPKfrPg0HGPA4qD8TQNeBrsU0Fk0z/KXR2
-	PXOhzy8lwyQnZG+fr1AriBxeQ5jKCQPrWCvH8YYDuiAxa19mos675V+G3T/212b63lnFi+9gMaY
-	xKLgi3yyN/xVGm0Tv6cO7m7AVjXQMpNv1S3amdQDfajbkvb0paMO2QGsyM4Z87KfjxwdhtDxVkj
-	mNa5YkajwQG5ED0hYUrF8c07L/e3V2IZSdzGm5HDMX5RZnoKEGoA==
-X-Received: by 2002:a5d:5d89:0:b0:47d:edab:1b4e with SMTP id ffacd0b85a97d-47f4632fcb7mr4290530f8f.8.1784028766331;
-        Tue, 14 Jul 2026 04:32:46 -0700 (PDT)
+        bh=b41+ZmPO1kjwWz2S29LAqh9eI9JWVyVGFI2NWPufoa4=;
+        b=kqXdk6mLRsS6k9Yt4tT1nOU8p+0XxBC9cvkE3vQcrgoTPg3zF9MDcMqAOd6GtUj+dp
+         nR6MYtEb23PVHNAmfBTLfOBnfJJ3ZWl5tFG+YwL/TVSu/u5z4fpTdU5xXURoNVeNfTfI
+         wmrGOwm0thURuZyORcNuEFLIWO1WJQSzUpBAdGu373bqwRAlivwz3se5iHKrdgXnffK3
+         pxb34mgBiFO2ZdJ+ZMmRC8VoEqGyoxi2fI1mwyp0q7PMLuOZ0jgs7KHIYirP2smEpGUt
+         sn0v5DdTkGyoeTxb1zxkHTjPhXUbFbQ1/JU9wamc27O6O3eH9872WRQhavzV+WyHyOTP
+         t+uQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rru3YvrGoGeG1z7k2HDxlDk7QFXMiz2UBYCIhJgS4tE3XN4TvIPRzJ6UCreDXGVeRQDnpSvEEgc@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBUwL3RPF1thQaV+7udlILJnBf2K7vEfRxOyzIMxjT60VytwSD
+	2St/np1+t+I+Hm8agmZeauJLu2wSQwcZ1v6URQ6UmC5oDlv9VTS0WwLB
+X-Gm-Gg: AfdE7cn91qQh5vfNKOhJg/yh5kVxJx7UQu73mZPuhFP/KT44VPc+L+ULzeG3qAzmL6V
+	yzSfej/hVM3lsJmlYMyfs/9LJhZdb77xSR5JmVckBYrJBk6+4m/l9j32dV4iHY7R7iyUMEoTHMq
+	vlVxIedQadhc3N+QnGKJijUxZdHSVOEtC25Jd2iB+1HfY523G/2YInxYZ24MlagP1TBllZ9U0bL
+	WpwcyLfPADUSS83Tgh3a53kZK/4SpcjKDZDdJioMnYkuew5J6qIedF4hGEOrQ28bOr45ugvBD3T
+	K02RKgwfZLGaZ/hOiPEWXwaWInWybEZxmnleFDEHJfphxV4Sk7MTSEh+hLRFktTefk8E2WptWcZ
+	S7ctHBJGw332rVQ1Voo3MgP2eyi4jc7Sq80IqZPRniijwYhJJgcQNjF8TsXULabGQ8CoU9TWH8F
+	fF9hTCKl9r/Iu/I8+s7hkrtT2KZjwyIyKm5scm4V4Rs+Q9NHIwsA==
+X-Received: by 2002:a05:6000:240f:b0:475:f0f0:9f01 with SMTP id ffacd0b85a97d-47f2dd05108mr15393267f8f.56.1784029076179;
+        Tue, 14 Jul 2026 04:37:56 -0700 (PDT)
 Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f464c7c96sm7312549f8f.33.2026.07.14.04.32.45
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f464d6fa7sm7440719f8f.37.2026.07.14.04.37.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 04:32:46 -0700 (PDT)
-Date: Tue, 14 Jul 2026 12:32:44 +0100
+        Tue, 14 Jul 2026 04:37:55 -0700 (PDT)
+Date: Tue, 14 Jul 2026 12:37:54 +0100
 From: David Laight <david.laight.linux@gmail.com>
 To: Tao Cui <cui.tao@linux.dev>
 Cc: axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
  cgroups@vger.kernel.org, linux-block@vger.kernel.org,
  linux-kernel@vger.kernel.org, Tao Cui <cuitao@kylinos.cn>
-Subject: Re: [PATCH 1/2] blk-throttle: avoid ilog2(0) in
- calculate_bytes_allowed()
-Message-ID: <20260714123244.69fbec98@pumpkin>
-In-Reply-To: <20260714103028.1334831-2-cui.tao@linux.dev>
-References: <20260714103028.1334831-1-cui.tao@linux.dev>
-	<20260714103028.1334831-2-cui.tao@linux.dev>
+Subject: Re: [PATCH] blk-throttle: fix divide-by-zero on legacy iops limit
+ of 0
+Message-ID: <20260714123754.7a88a65b@pumpkin>
+In-Reply-To: <20260714103552.1335658-1-cui.tao@linux.dev>
+References: <20260714103552.1335658-1-cui.tao@linux.dev>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -104,12 +103,12 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17774-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17775-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
@@ -118,7 +117,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -130,62 +129,82 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,pumpkin:mid,linux.dev:email,kylinos.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,vger.kernel.org:from_smtp,pumpkin:mid,kylinos.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: EE1E2753F08
+X-Rspamd-Queue-Id: B2385753F9B
 
-On Tue, 14 Jul 2026 18:30:27 +0800
+On Tue, 14 Jul 2026 18:35:52 +0800
 Tao Cui <cui.tao@linux.dev> wrote:
 
 > From: Tao Cui <cuitao@kylinos.cn>
 > 
-> __tg_update_carryover() can call calculate_bytes_allowed() with a zero
-> jiffy_elapsed right after a slice starts. The overflow guard
+> Writing a multiple of 2^32 (e.g. 4294967296) to a legacy cgroup v1
+> throttle iops file (blkio.throttle.{read,write}_iops_device) silently
+> truncates to 0: tg_set_conf() stores the sscanf-parsed u64 value into
+> an unsigned int field with no clamping. The cgroup v2 path,
+> tg_set_limit(), already clamps the same kind of value with
+> min_t(u64, val, UINT_MAX), but the legacy path never did. Note that
+> the "!v -> U64_MAX" mapping only catches an explicit zero and does not
+> catch a value that truncates to zero.
 > 
->     if (ilog2(bps_limit) + ilog2(jiffy_elapsed) - ilog2(HZ) > 62)
+> With iops stored as 0, tg_update_has_rules() sets has_rules_iops[] and
+> the next IO reaches tg_within_iops_limit(), which computes
 > 
-> relies on ilog2(0) == -1 (fls64(0) - 1) to stay below the threshold so
-> that the subsequent mul_u64_u64_div_u64(bps, 0, HZ) == 0 is reached.
-> That works, but the ilog2(0) dependency is non-obvious.
+>     jiffy_wait = max(jiffy_wait, HZ / iops_limit + 1);
 > 
-> Add an explicit early return for jiffy_elapsed == 0, which is equivalent
-> (mul_u64_u64_div_u64(bps_limit, 0, HZ) == 0) and removes the reliance on
-> ilog2(0).
+> triggering a divide-by-zero oops.
 > 
-> No behavior change.
-
-There is a pending patch to make the x86-64 mul_u64_u64_div_u64()
-return ~0ULL on overflow to match the generic code.
-That would completely remove the requirement for the overflow guard.
-
-I can't remember why it got lost (again).
-There have been arguments about what should happen for divide by zero.
-Personally I'd return ~0ULL and let the caller decide what that means,
-but the generic mul_u64_u64_div_u64() goes to lengths to generate any
-trap that a normal divide by zero would generate.
-
-	David
-
+> Fix it in two places:
+> 
+>   * tg_set_conf(): clamp the value to UINT_MAX, consistent with
+>     tg_set_limit(). This closes the truncation root cause (and the
+>     general silent truncation for any value above UINT_MAX).
+> 
+>   * tg_dispatch_iops_time(): treat iops_limit == 0 as unlimited so the
+>     divide in tg_within_iops_limit() is never reached, defending
+>     against any future path that could produce a zero limit.
 > 
 > Signed-off-by: Tao Cui <cuitao@kylinos.cn>
 > ---
->  block/blk-throttle.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  block/blk-throttle.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
 > 
 > diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index ffc3b70065d4..f37911abefdd 100644
+> index ffc3b70065d4..3f3c1374f4b2 100644
 > --- a/block/blk-throttle.c
 > +++ b/block/blk-throttle.c
-> @@ -603,6 +603,10 @@ static unsigned int calculate_io_allowed(u32 iops_limit,
+> @@ -883,7 +883,12 @@ static unsigned long tg_dispatch_iops_time(struct throtl_grp *tg, struct bio *bi
+>  	u32 iops_limit = tg_iops_limit(tg, rw);
+>  	unsigned long iops_wait;
 >  
->  static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy_elapsed)
->  {
-> +	/* 0 elapsed => 0 bytes allowed; also avoids ilog2(0) below. */
-> +	if (!jiffy_elapsed)
-> +		return 0;
-> +
->  	/*
->  	 * Can result be wider than 64 bits?
->  	 * We check against 62, not 64, due to ilog2 truncation.
+> -	if (iops_limit == UINT_MAX || tg->flags & THROTL_TG_CANCELING)
+> +	/*
+> +	 * iops_limit == 0 is not a valid limit. Treat it as unlimited so we
+> +	 * never reach the HZ / iops_limit divide in tg_within_iops_limit().
+> +	 */
+> +	if (iops_limit == UINT_MAX || iops_limit == 0 ||
+> +	    tg->flags & THROTL_TG_CANCELING)
+>  		return 0;
+>  
+>  	tg_update_slice(tg, rw);
+> @@ -1386,7 +1391,8 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
+>  	if (is_u64)
+>  		*(u64 *)((void *)tg + of_cft(of)->private) = v;
+>  	else
+> -		*(unsigned int *)((void *)tg + of_cft(of)->private) = v;
+> +		*(unsigned int *)((void *)tg + of_cft(of)->private) =
+> +			min_t(u64, v, UINT_MAX);
+
+The LHS casts look horrid - there has to be a nicer way to do that.
+
+And you don't need min_t() a plain min() will be fine.
+
+	David
+
+
+
+>  
+>  	tg_conf_updated(tg, false);
+>  	ret = 0;
 
 
