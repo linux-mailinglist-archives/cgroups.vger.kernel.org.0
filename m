@@ -1,288 +1,198 @@
-Return-Path: <cgroups+bounces-17780-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17781-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8WozDDwvVmrk0wAAu9opvQ
-	(envelope-from <cgroups+bounces-17780-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:44:44 +0200
+	id 2KIjKOo9VmpU2AAAu9opvQ
+	(envelope-from <cgroups+bounces-17781-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 15:47:22 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAB07754B02
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:44:43 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A63E75551C
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 15:47:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=Vfw4wVy4;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17780-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17780-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="LB/8CSbN";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17781-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17781-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AF1283009089
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 12:44:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9EEEA300491F
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD879384235;
-	Tue, 14 Jul 2026 12:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C547477E33;
+	Tue, 14 Jul 2026 13:47:13 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFAED378D64
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 12:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B132745BD6F
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 13:47:11 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784033081; cv=none; b=jwpWNdM86ZW/isHAihTHXEdF4ZouU35H/CoJKw46Qjbrtij2pVPS6oD7DFDfaYKaL2UlfzfAz02v97uHnzJNra9QpcsIUJa7TEtS45bDVbYQ/VY1sn5wJqIEJ43F/rl1D1C5qbr90wAumSkyeKwiNeg585nkBE4yxUKwRxrm55g=
+	t=1784036832; cv=none; b=tkdCdQAgria0OWteNKAE3pCTN7ykslseb0ZsrGe7/v9CVtxnw6NyHUno3ex8fk2/LwHyXpuvCW5SnrvbdqgV82TRVo+ZmbHQVXxJRQUA75IqKAjiWf9ZJKgEQzMdSN+C+1qBV4AVhX7oU4WlAMGqpAinGQPb9pGROA96HN6gvfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784033081; c=relaxed/simple;
-	bh=UDMGl+NchJmNqRQFdjRgGeXOP2yiFKcr6jrvX+VusAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fylTWVGKDGCAlcR9hzE8UdMBt+QpfkRvHkVJM/SiOx3tfNLBA97oH/yZwbX12OSMB+oRRJ/sQ/x+Q1nG3v15nDhVFxkZBA43AgFwQmJkStnWkwxlajWdLqoZB2nouMz8NZCWcoRTkd2FHb+uytk9IIppwBTKwEHFTCY781ueGR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Vfw4wVy4; arc=none smtp.client-ip=91.218.175.181
-Message-ID: <25a94af5-1dbe-4ab4-b47d-fb49987bfcd4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784033076;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SL2BuBErJSR+msyoMlTQpeX2tgyYFMJLBrTouVN+o3E=;
-	b=Vfw4wVy4dFED07nvt6oOpMkXirev2Y5GMxKO5ot6QfOqKJyPHMsdi4giItxcH80oClK6xP
-	5UglsrKFeXrW34PiHzsomYxK4+ifqhq3VTgN8mGFL/rnG6aQRdHl6tSw7NIPegyx5yPDDI
-	RbSVA//0HtXp7v6qjpAxaIHb4J6CP6g=
-Date: Tue, 14 Jul 2026 13:44:03 +0100
+	s=arc-20240116; t=1784036832; c=relaxed/simple;
+	bh=J/MgbCRpYdKveBwJQwaMNReigKbH5UDqXw3/34RUAMc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WGlaJR52Na1q09E2cRzU2DnA8IYKtv8cYjdaXqWTEtK60YCnDKOHYq2QKHS7uRUwL8C4qNySugTbedlaMBZf4vhrePnmGxAORBDxgOF9RYDupf7c3udqmlcMLgO9ngzaUJ5TtdIgDK+kSBIdMD0CAvZtFtecN6gQuGZyAl5Jcz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LB/8CSbN; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69F861F00AC4
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 13:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784036831;
+	bh=LVXdaK2c8G8evNsHKw/C2JRPENt3K5Jpb3OpKjeLkUA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=LB/8CSbNgC0TdnmxsKyQrPpzOy7HzaXj6/F3Ax7OgH4RzmEEObjOVZTder8OBvXEV
+	 8tePK/5pGDcD3kJW70FwgGZQZVHwsuIAoVor3mapUe9ypgEZNHpPn4WCxgQ8t/iyoi
+	 4I0O/uih9TREsTxiL0Duh+RDatUe/xyYUK0M5T1VMWyG0wvh0yrD5x3MekJp+XCea2
+	 Ac+pR/nzTlsVNdDilXaHxyLY4QGDTPPzVjEuXIzMpxG/4OV0aQaq/XHZDhbUIHry+w
+	 pDhKwuX7VB/BxNPlOTfcXOfesziaxjVuO2YzUwWbb7PpMc6AYW30RV89P00FYgx7GX
+	 b6WVxYPJD51jQ==
+Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-9217d13c276so277200085a.1
+        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 06:47:11 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rq3dBklCO6ShMXR4C4k3ipMmbAHIPOjTByT/u5YQjCWYoyW+qopHBbmPHgP0hIc/Z1swHEJpp7L@vger.kernel.org
+X-Gm-Message-State: AOJu0YxtxeX3EEQPCXJ79Awx+aj3bmzRFzVZjLg1iJTH6Z2daCOD13wq
+	yrw7/4PhZqoHnusACssaJ3LnjoGxfUugNhjpQTO5hZG3/oiPuvBhogyC+VF2A+2OGoyooNVsvT0
+	vkdzIAs0hYna5/Ltqta/VSzsVhnK90l4=
+X-Received: by 2002:a05:620a:27d2:b0:92e:efc8:cbcd with SMTP id
+ af79cd13be357-93083c766c9mr310969485a.34.1784036830770; Tue, 14 Jul 2026
+ 06:47:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] mm/vmscan: reduce lru_lock contention via
- vmstat-derived scan-balance cost
-To: Andrew Morton <akpm@linux-foundation.org>, david@kernel.org,
- ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, rppt@kernel.org,
- surenb@google.com, mhocko@suse.com, kasong@tencent.com, qi.zheng@linux.dev,
- shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, chrisl@kernel.org, nphamcs@gmail.com,
- baoquan.he@linux.dev, youngjun.park@lge.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, muchun.song@linux.dev, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, rientjes@google.com,
- kernel-team@meta.com
-References: <20260713163443.3562378-1-usama.arif@linux.dev>
- <20260713163443.3562378-3-usama.arif@linux.dev>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Usama Arif <usama.arif@linux.dev>
-In-Reply-To: <20260713163443.3562378-3-usama.arif@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20260711091157.306070-1-ridong.chen@linux.dev>
+ <20260711091157.306070-2-ridong.chen@linux.dev> <CAGsJ_4y39eSYqYwSPzqcZPk1wcJEYN3HZr83MPv8pMgN8Nct5A@mail.gmail.com>
+ <87dc4105-b98b-4541-bafe-c0adfbf58836@linux.dev> <CAGsJ_4wDMrdvGksTJ1SMGE=aHY3CMY529ceKDD68cXLsHQCjtQ@mail.gmail.com>
+ <CAGsJ_4zcgURKZKBAc6i0Y5g7u2OXjENDE7A=nqYcQ9TTVuR=Hg@mail.gmail.com>
+ <0545ee70-b0a0-4a93-ac2c-3e84ff504e5a@linux.dev> <CAGsJ_4x7cg-L_OzCdyZy+8zoKptVi-Jh18k1HRkvTBTbn-EQRA@mail.gmail.com>
+ <bfb1cfa1-691a-4bac-beb6-caef9b3ac4e8@linux.dev>
+In-Reply-To: <bfb1cfa1-691a-4bac-beb6-caef9b3ac4e8@linux.dev>
+From: Barry Song <baohua@kernel.org>
+Date: Tue, 14 Jul 2026 21:46:58 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4w8P8ERoXJY70wXf71MYEA16vX+JMAaE4sfB4=OqzN_Pg@mail.gmail.com>
+X-Gm-Features: AUfX_my8Wy9WuK8pVudQOCevj6gZzWFIrCPc6vkC_rIS3KHDzSv4JuNzHZriO3A
+Message-ID: <CAGsJ_4w8P8ERoXJY70wXf71MYEA16vX+JMAaE4sfB4=OqzN_Pg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] memcg: move mem_cgroup_swappiness to memcontrol.h
+To: Ridong Chen <ridong.chen@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>, 
+	David Hildenbrand <david@kernel.org>, Yuanchu Xie <yuanchu@google.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ridong Chen <chenridong@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17781-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:axelrasmussen@google.com,m:yuanchu@google.com,m:weixugc@google.com,m:chrisl@kernel.org,m:nphamcs@gmail.com,m:baoquan.he@linux.dev,m:youngjun.park@lge.com,m:hannes@cmpxchg.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:rientjes@google.com,m:kernel-team@meta.com,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-17780-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,infradead.org,google.com,suse.com,tencent.com,linux.dev,gmail.com,lge.com,cmpxchg.org,kvack.org,vger.kernel.org,meta.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:david@kernel.org,m:yuanchu@google.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:chenridong@xiaomi.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FORGED_SENDER(0.00)[baohua@kernel.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[baohua@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,mail.gmail.com:mid,linux.dev:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: AAB07754B02
+X-Rspamd-Queue-Id: 3A63E75551C
 
+On Tue, Jul 14, 2026 at 7:31=E2=80=AFPM Ridong Chen <ridong.chen@linux.dev>=
+ wrote:
 
+[...]
+> >>>>
+> >>>> If this is the case, it still seems better to keep
+> >>>> extern int vm_swappiness in include/linux/swap.h.
+> >>>>
+> >>>> Then we don't need the comment:
+> >>>> /* Defined in mm/vmscan.c; used by mem_cgroup_swappiness(). */
+> >>>>
+> >>>> It also makes it clearer that vm_swappiness is an extern variable
+> >>>> belonging to the swap module, rather than the memcontrol module.
+> >>>
+> >>> BTW, if mem_c_group_swappiness() and vm_swappiness are only used
+> >>> within mm/, could all of these be moved to mm/swap.h and
+> >>> mm/internal.h instead?
+> >>>
+> >>> We are making a big effort to move many unrelated things out of
+> >>> include/linux/swap.h recently. Could you check?
+> >>>
+> >>> https://lore.kernel.org/linux-mm/20260708-ch-swap-series-plus-folio-l=
+ru-cleanup-v9-0-2bc72b4f8730@gmail.com/
+> >>
+> >> Good suggestion. Moving them to mm/internal.h makes sense. Will update
+> >> in the next version.
+> >
+> > Either mm/swap.h or mm/internal.h.
+> > vm_swappiness probably belongs in mm/swap.h rather than
+> > mm/internal.h, right?
+> >
+> > BTW, I am not particularly eager about this cleanup;
+> > it could be done later as a separate patch.
+> >
+> > If you decide not to do the cleanup, I think it would be better to
+> > leave "extern int vm_swappiness" in include/linux/swap.h rather than
+> > declaring it in include/linux/memcontrol.h?
+> I noticed that some swap-related macros are already defined in
+> mm/internal.h, so I'm planning to place the code right after them for
+> better grouping. Does that work for you?
 
-On 13/07/2026 17:34, Usama Arif wrote:
-> The anon/file scan balance in get_scan_count() is driven by two scalars
-> in struct lruvec, anon_cost and file_cost, accumulated by every reclaim
-> producer under lruvec->lru_lock. The acquisition sites for cost work
-> specifically are:
-> 
->   - shrink_inactive_list() re-takes lru_lock at function exit purely
->     to call lru_note_cost_unlock_irq() with (nr_pageout, nr_scanned -
->     nr_reclaimed). One acquisition per inactive shrink.
->   - shrink_active_list() does the same with (0, nr_rotated). One
->     acquisition per active shrink.
->   - workingset_refault() takes the lock via folio_lruvec_lock_irq()
->     purely to record the refault cost. One acquisition per refault.
->   - prepare_scan_control() takes lru_lock just to snapshot the two
->     scalars into sc->{anon,file}_cost.
->   - lru_note_cost_unlock_irq() itself walks parent_lruvec and
->     re-acquires lru_lock on each ancestor to propagate the update,
->     adding O(memcg-depth) acquisitions per producer call.
-> 
-> This hurts because lru_lock is already a heavy contention point on
-> memory-heavy workloads: every isolate_lru_folios(), move_folios_to_lru()
-> and folio_add_lru() takes it. The cost work itself is trivial (two
-> scalar bumps and one comparison), but it contends with and causes
-> contention for actual LRU manipulation. The parent_lruvec() walk also
-> multiplies cost-update overhead by memcg hierarchy depth.
-> 
-> Replace the producer-side accumulators with a read-side accumulator fed
-> from per-LRU vmstat counters. The old producer formula was:
-> 
->   cost = nr_io * SWAP_CLUSTER_MAX + nr_rotated
-> 
-> Add explicit node_stat counters for the producer-local inputs:
-> 
->   PGRECLAIM_PAGEOUT_{ANON,FILE} - reclaim-driven pageout submissions
->                                   (formerly stat.nr_pageout, weighted
->                                   by SWAP_CLUSTER_MAX).
->   PGROTATE_{ANON,FILE}          - reclaim-driven rotations, bumped from
->                                   both shrink_inactive_list (by
->                                   nr_scanned - nr_reclaimed) and
->                                   shrink_active_list (by nr_rotated),
->                                   unweighted.
-> 
-> WORKINGSET_RESTORE_{ANON,FILE} already captures the refault IO that
-> lru_note_cost_refault() used to bill.
-> 
-> In prepare_scan_control() the raw cost signal is recomputed lock-free of
-> lru_lock from monotonic counters:
-> 
->   now = (PGRECLAIM_PAGEOUT_X + WORKINGSET_RESTORE_X) * SWAP_CLUSTER_MAX
->         + PGROTATE_X
-> 
-> The delta against a per-lruvec prev_cost[] snapshot is folded into
-> cost_accum[]. Since one vmstat delta can cover many producer events
-> between reclaim passes, halve cost_accum[] until the total is back
-> within the lrusize/4 bound instead of halving only once.
-> 
-> Moving accumulation and decay to the reclaim side also improves the cost
-> model across reclaim gaps. With producer-side decay, events that happen
-> while reclaim is idle still age each other before reclaim ever samples
-> the costs. If a workload refaults a large anon set and then a smaller
-> file set before reclaim runs again, the later file activity can age the
-> earlier anon activity out of the cost model. The new scheme observes the
-> whole between-reclaim delta and decays anon and file proportionally, so
-> the scan-balance history better represents what happened since the last
-> reclaim pass.
-> 
-> A dedicated per-lruvec spinlock, cost_lock, serialises the prev_cost
-> RMW, the accumulator update, and the halving check against concurrent
-> reclaimers in the same memcg+node.
-> 
-> Hierarchy aggregation is now implicit in the vmstat accounting. The
-> producer-side parent_lruvec() walk and lru_reparent_memcg() cost splice
-> existed only because anon_cost/file_cost were private lruvec fields. With
-> the cost expressed as lruvec vmstats, rstat propagates the underlying
-> counters through the memcg hierarchy and prepare_scan_control() consumes
-> the same ratelimited rstat view as the surrounding reclaim heuristics.
-> 
-> memcg-v1's memory.stat anon_cost/file_cost is now sourced from
-> cost_accum[] instead of the removed lruvec anon_cost/file_cost fields.
-> The reported values only refresh when prepare_scan_control() runs and
-> are bounded at ~lrusize/4 by the halving loop; the scan-balance signal
-> they express is unchanged.
-> 
-> Signed-off-by: Usama Arif <usama.arif@linux.dev>
-> ---
->  include/linux/mmzone.h | 11 +++++--
->  include/linux/swap.h   |  3 --
->  mm/memcontrol-v1.c     |  4 +--
->  mm/memcontrol.c        |  4 +++
->  mm/mmzone.c            |  1 +
->  mm/swap.c              | 69 ----------------------------------------
->  mm/vmscan.c            | 72 ++++++++++++++++++++++++++++++++++++------
->  mm/vmstat.c            |  4 +++
->  mm/workingset.c        |  5 ---
->  9 files changed, 82 insertions(+), 91 deletions(-)
-> 
+We also have mm/swap.h, which is dedicated to exporting
+swap-related things. Is it a better place than mm/internal.h?
 
-The patch will need the below fixlet so that the counters keep incrementing
-for MGLRU as well. The counters themselves are not actually used by MGLRU,
-so this is just for observability. This was reported by sashiko, Thanks
-Andrew for pointing this out!
-
-
-From 0fd35b49112cc0d689741f04c485283e6dce3326 Mon Sep 17 00:00:00 2001
-From: Usama Arif <usama.arif@linux.dev>
-Date: Tue, 14 Jul 2026 05:18:16 -0700
-Subject: [PATCH] [fixlet] mm/vmscan: increment pgreclaim_pageout_* and
- pgrotate_* for MGLRU
-
-/proc/vmstat and per-memcg memory.stat expose pgreclaim_pageout_*
-and pgrotate_* directly (memcg_node_stat_items in memcontrol.c
-forwards them per-memcg). Without this fix they stay at 0 whenever
-reclaim runs through MGLRU, misreporting observability.
-
-Under pure MGLRU the scan-balance signal itself is not consumed (both
-prepare_scan_control() and get_scan_count() are short-circuited on the
-MGLRU paths, and MGLRU's own type/tier selection comes from
-read_ctrl_pos() on lrugen->{avg_refaulted,avg_total,refaulted,evicted},
-not from anon_cost/file_cost), so this fix is about observability.
-
-Signed-off-by: Usama Arif <usama.arif@linux.dev>
----
- mm/vmscan.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 279f78b7a0e4..2da36374bb4a 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4867,7 +4867,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- 	struct reclaim_stat stat;
- 	struct lru_gen_mm_walk *walk;
- 	int scanned, reclaimed;
--	int isolated = 0, type, type_scanned;
-+	int isolated = 0, nr_isolated = 0, type, type_scanned;
-+	unsigned long total_reclaimed = 0, total_pageout = 0;
- 	bool skip_retry = false;
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
-@@ -4879,6 +4880,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- 
- 	scanned = isolate_folios(nr_to_scan, lruvec, sc, swappiness,
- 				 &list, &isolated, &type, &type_scanned);
-+	nr_isolated = isolated;
- 
- 	/* Scanning may have emptied the oldest gen, flush it */
- 	if (scanned)
-@@ -4891,6 +4893,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- retry:
- 	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false, memcg);
- 	sc->nr_reclaimed += reclaimed;
-+	total_reclaimed += reclaimed;
-+	total_pageout += stat.nr_pageout;
- 	/* Retry pass is only meant for clean folios without new isolation */
- 	if (isolated)
- 		handle_reclaim_writeback(isolated, pgdat, sc, &stat);
-@@ -4944,6 +4948,13 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- 		goto retry;
- 	}
- 
-+	if (total_pageout)
-+		mod_lruvec_state(lruvec, PGRECLAIM_PAGEOUT_ANON + type,
-+				 total_pageout);
-+	if (nr_isolated > total_reclaimed)
-+		mod_lruvec_state(lruvec, PGROTATE_ANON + type,
-+				 nr_isolated - total_reclaimed);
-+
- 	return scanned;
- }
- 
--- 
-2.53.0-Meta
-
-
-
+>
+> ```
+> ...
+> #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+> #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+> #define MIN_SWAPPINESS 0
+> #define MAX_SWAPPINESS 200
+>
+> /* Just reclaim from anon folios in proactive memory reclaim */
+> #define SWAPPINESS_ANON_ONLY (MAX_SWAPPINESS + 1)
+>
+> extern int vm_swappiness;
+>
+> static inline int mem_cgroup_swappiness(struct mem_cgroup *memcg)
+> {
+> #ifdef CONFIG_MEMCG_V1
+>         /* Cgroup2 doesn't have per-cgroup swappiness */
+>         if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>                 return READ_ONCE(vm_swappiness);
+>
+>         /* root ? */
+>         if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
+>                 return READ_ONCE(vm_swappiness);
+>
+>         return READ_ONCE(memcg->swappiness);
+> #else
+>         return READ_ONCE(vm_swappiness);
+> #endif
+> }
+> ...
+> ```
 
