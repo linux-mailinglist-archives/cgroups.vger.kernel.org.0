@@ -1,155 +1,212 @@
-Return-Path: <cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17768-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id rUmMGpUCVmqFxwAAu9opvQ
-	(envelope-from <cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:34:13 +0200
+	id LlBDLlwOVmp1ygAAu9opvQ
+	(envelope-from <cgroups+bounces-17768-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 12:24:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2D58752E43
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:34:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7307535DA
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 12:24:28 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=google.com header.s=20251104 header.b=CwzbUHAp;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17767-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=google.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=l4Rqp1Sn;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17768-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17768-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9B328303E20E
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 09:32:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 981DB3045A92
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 10:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36DA843F8B0;
-	Tue, 14 Jul 2026 09:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5901736896D;
+	Tue, 14 Jul 2026 10:22:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f73.google.com (mail-wr1-f73.google.com [209.85.221.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4E53F8899
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 09:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1742364949
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 10:22:02 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784021542; cv=none; b=EORRilYCjQ3wb+YiUC1ygB4v2lvQngisEu/iv7CcFzC5WP0ivwrxdNt8g1/V40F1dH+5159uDvA3NuWFieTHS7w1T9vt/G59e5l6jHVl0qzWdMA1GwrHm1JyTg+5MQnGSX8s4G4pBK/uzwR7cN68UsMNKlA4CH3nZ4HaO4FzATk=
+	t=1784024524; cv=none; b=dDoAQNSKQXD3Vb5/VCkVmG5Xm/g76OlnpmTMWsX0wHUjmLCOxoularrwQClE/iPAAsu6p4dybGedU4/g4bG8GVcU/01LvPojZSbeQP4IRm/FPuukkpfKDWHVuLEmEjC3qJr8aWIkXJVIDFC3nHFkQBwZjwaiz3Sd80QXD6fOj6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784021542; c=relaxed/simple;
-	bh=loB3HG8brTXzmdSKSsUK401/V7kF9OMrAV2ZVZNmfIk=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DN3fNvr2e2eG8r5ZOqANCrCfz8qQjXjOlI/uZ0dXciGPfanW7R5wzMFR9vYERdMRzS/Ge4U6SgeHYIrZkDvg36gmL7fN+1glXGTMPtUNmqYGXyCZaj7YbxDU2mZLlzafJvPLnjVBKEl9l1Vs4Kl2u9EVKvYXBvo0xjakEOBEiN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CwzbUHAp; arc=none smtp.client-ip=209.85.221.73
-Received: by mail-wr1-f73.google.com with SMTP id ffacd0b85a97d-474170b59dfso2219525f8f.3
-        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 02:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1784021539; x=1784626339; darn=vger.kernel.org;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=WzKR252Snnew5WaAvQzSvTHfEGNrnKkZ6pkR9ltqCAo=;
-        b=CwzbUHAp0nWlTHkFa+h0qE+RUS7GQe639KewU3gLAFfQD/wBRavxlakTZs2oWlw4e7
-         OhFqKlsR23PYvXtjoUo34/RYYcSEZvH6FUfQWzOR5uHO4LX3DFXcIH/DZTS8oDJ5BaNh
-         XvibGCVavGT9YxVHWIai8QygMc4C5+Fe3n6Nv9jfCRjI/maDD7nWdXtbpI/gk79wwBjH
-         tFJGiQ2PSY+E+GnjnTqzzPO2xf61oNxa68Ycy/flM7j4Q0euiw/v76i1/biVwNCmYLSG
-         TgEW1diK2i5iBioiIJv0D/cDBxSvbjwM0FS9D7BaPBoujTEmZ2djU9Dk7cJX0y2XxYdX
-         FhXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784021539; x=1784626339;
-        h=content-type:cc:to:from:subject:message-id:references:mime-version
-         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=WzKR252Snnew5WaAvQzSvTHfEGNrnKkZ6pkR9ltqCAo=;
-        b=QYl//gJAncXzKe3SFeiG+FTV0pVOP8DKEjNPdLQ43JkTO7iA3D3LromXAAG+V+NaSo
-         nwNdaN7nlEVfFaY2Lk1qSZL5Kmy3z0DBFL6QiWDhyJhAf4rD+MFFTGVuslE48Jv6pxOk
-         53jgZ4YahWflP+TyIgi0P/CDrvoRMA3iQTj8UhgKrxrkjqmJ0L9xDTG3dd9xGSR7XDku
-         lEgBVprf0h2342peIRSnjRpRyC40sUEY3mhupFPLamkEpzGFfmorh9djQqpKGEDPr4XR
-         q1X7lzbbVLlas0kPHWu1j0q42bEJjOpnJgHC5Y/sZ6SN9zH/nWi3FtuSALg258+YOncW
-         8kzg==
-X-Forwarded-Encrypted: i=1; AHgh+Rr/6xJGy3AMFXz5ndcX7MhKvUnZxB7Ue1YZjhRP4WvzqxkToAX25hMS8ih+C+3WZtZddh+PeVOx@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzp4SAq5fh/8tuJMSiJg2ENW5hGOiD/xf4xEQ5yvV3oUEVWkO66
-	G9DH55k0DmQSr2ARQU9e9ntWqZYa+rqIaNJKjY8+a0HHvj2urc/tvGYBuZHNcVnaBKxxeDXqarI
-	McMxKpTkJRZDzCg==
-X-Received: from wmo8.prod.google.com ([2002:a05:600c:2308:b0:493:bc2d:fea8])
- (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:8119:b0:493:b6e4:fb2b with SMTP id 5b1f17b1804b1-493f882cc20mr115137745e9.25.1784021538718;
- Tue, 14 Jul 2026 02:32:18 -0700 (PDT)
-Date: Tue, 14 Jul 2026 09:32:02 +0000
-In-Reply-To: <20260714-spin-trylock-followup-v2-0-3c20ed032b14@google.com>
+	s=arc-20240116; t=1784024524; c=relaxed/simple;
+	bh=uw69uhkHsW1eTPurootcWnud9izN3fGJi9NOG8rWLvA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cyFQLEevvg3pyV9JQGiDvTG+hkT+OhS7/ZNgIC4H2ucg/SGcPRnM9HN8r75mDKaxNnj0Od1/zIEAnQPwOk3vjbhwFYgJ2Zd+YVG3ePZsDlqD2G5bSmoU6JoGvENsyj0OFdsNBRl2IuMSszk8HpKa59N9qX92fSS9e6LoPQ6KsvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l4Rqp1Sn; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B95C41F00A3E
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 10:22:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784024522;
+	bh=N9MWqkbaVeSAs5QQWSSS7b7WvPqPkyKj21JCF4S69vs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=l4Rqp1Sn6WdWoE4yLXk5VsGX8HcCgBXMmRWPd8Hc3mRvzrdBZQ1WE8IU1YiBFJpyH
+	 B2e7iTWkk0/NF1WnAl2tMFiIN24nKSVgrfm/06kFm936EyxeKJ4OSB/2oZaY4b9eVf
+	 Udied/4vKMyJmPRtXuwn/FU9J3nmlSlpqUWMx+XX198CMszfCrvYUAR5v/nKys+Vk5
+	 vUP6I7RuKRPwOspnyDiJgvWGLv7Nw0E7/Nw91ykVjASxTSA8UHZaLMJZSYuoD+YmRJ
+	 50mVDdC4q8DKDZf/0BdZCirdypixonSyUXbsrrVjHzpUL8e567u39CIooaI2yJy3Na
+	 LPHuNjyqVaCbw==
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-92c7a0a701aso269933885a.3
+        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 03:22:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RqMbVKvGxCysA/Mpozf+NwgzLc1rwYfTMXchv+vc5h2nRSRvqZ5edppEp9ApYzAk1L7wSxXlIsJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxZX0RJdvDIT3i2iEqJ6tDBKQGpUiV2JmxdShMy6vkOUxZkW4J3
+	7NZ93k2BP4nEEMOd8OUd7/XgZHc6j0W4Lq9Lr1954tumP/86KsS4tK29ZsV0PplfzVrRoR+wC6S
+	WedwmDF+FKESP4KU2plwHlUVcv6lzsQQ=
+X-Received: by 2002:a05:620a:4543:b0:8cf:c106:faca with SMTP id
+ af79cd13be357-93083c77332mr261027385a.36.1784024522021; Tue, 14 Jul 2026
+ 03:22:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260714-spin-trylock-followup-v2-0-3c20ed032b14@google.com>
-X-Mailer: b4 0.15.2
-Message-ID: <20260714-spin-trylock-followup-v2-4-3c20ed032b14@google.com>
-Subject: [PATCH v2 4/4] mm/page_alloc: remove a VM_BUG_ON()
-From: Brendan Jackman <jackmanb@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
-	Brendan Jackman <jackmanb@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Waiman Long <longman@redhat.com>, 
-	Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	"=?utf-8?q?Michal_Koutn=C3=BD?=" <mkoutny@suse.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20260711091157.306070-1-ridong.chen@linux.dev>
+ <20260711091157.306070-2-ridong.chen@linux.dev> <CAGsJ_4y39eSYqYwSPzqcZPk1wcJEYN3HZr83MPv8pMgN8Nct5A@mail.gmail.com>
+ <87dc4105-b98b-4541-bafe-c0adfbf58836@linux.dev> <CAGsJ_4wDMrdvGksTJ1SMGE=aHY3CMY529ceKDD68cXLsHQCjtQ@mail.gmail.com>
+ <CAGsJ_4zcgURKZKBAc6i0Y5g7u2OXjENDE7A=nqYcQ9TTVuR=Hg@mail.gmail.com> <0545ee70-b0a0-4a93-ac2c-3e84ff504e5a@linux.dev>
+In-Reply-To: <0545ee70-b0a0-4a93-ac2c-3e84ff504e5a@linux.dev>
+From: Barry Song <baohua@kernel.org>
+Date: Tue, 14 Jul 2026 18:21:50 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4x7cg-L_OzCdyZy+8zoKptVi-Jh18k1HRkvTBTbn-EQRA@mail.gmail.com>
+X-Gm-Features: AUfX_mw2KgsaUXheEE1KmhPftKrhTRh4Ox0BToKgjyllBsTmCYfrfr5f-D4f_Ig
+Message-ID: <CAGsJ_4x7cg-L_OzCdyZy+8zoKptVi-Jh18k1HRkvTBTbn-EQRA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] memcg: move mem_cgroup_swappiness to memcontrol.h
+To: Ridong Chen <ridong.chen@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>, 
+	David Hildenbrand <david@kernel.org>, Yuanchu Xie <yuanchu@google.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ridong Chen <chenridong@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-17768-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:vbabka@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:jackmanb@google.com,m:hannes@cmpxchg.org,m:ziy@nvidia.com,m:bigeasy@linutronix.de,m:clrkwllms@kernel.org,m:rostedt@goodmis.org,m:longman@redhat.com,m:ridong.chen@linux.dev,m:tj@kernel.org,m:mkoutny@suse.com,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[jackmanb@google.com,cgroups@vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-17767-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:ridong.chen@linux.dev,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:david@kernel.org,m:yuanchu@google.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:chenridong@xiaomi.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jackmanb@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FORGED_SENDER(0.00)[baohua@kernel.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[baohua@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[nvidia.com:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,mail.gmail.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: F2D58752E43
+X-Rspamd-Queue-Id: 0B7307535DA
 
-VM_BUG_ON() is out of favour and on the way to removal, since I recently
-touched this code I am removing this invocation. If this precondition is
-violated, the system will soon crash anyway.
+On Tue, Jul 14, 2026 at 3:43=E2=80=AFPM Ridong Chen <ridong.chen@linux.dev>=
+ wrote:
+>
+>
+>
+> On 7/14/2026 9:48 AM, Barry Song wrote:
+> > On Tue, Jul 14, 2026 at 9:43=E2=80=AFAM Barry Song <baohua@kernel.org> =
+wrote:
+> >>
+> >> On Tue, Jul 14, 2026 at 9:20=E2=80=AFAM Ridong Chen <ridong.chen@linux=
+.dev> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 7/13/2026 11:08 PM, Barry Song wrote:
+> >>>> On Sat, Jul 11, 2026 at 5:12=E2=80=AFPM Ridong Chen <ridong.chen@lin=
+ux.dev> wrote:
+> >>>>>
+> >>>>> From: Ridong Chen <chenridong@xiaomi.com>
+> >>>>>
+> >>>>> The per-memcg swappiness knob is v1-only; v2 always uses global
+> >>>>> vm_swappiness and ignores the per-cgroup field.
+> >>>>>
+> >>>>> Guard memcg->swappiness with CONFIG_MEMCG_V1, and move the helper
+> >>>>> to memcontrol.h where it belongs.
+> >>>>>
+> >>>>> No functional change for v1; v2-only kernels drop the unused field.
+> >>>>>
+> >>>>> Signed-off-by: Ridong Chen <chenridong@xiaomi.com>
+> >>>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> >>>>
+> >>>> Reviewed-by: Barry Song <baohua@kernel.org>
+> >>>>
+> >>>> With some nits.
+> >>>>
+> >>>>> ---
+> >>>> [...]
+> >>>>>           struct mem_cgroup_per_node *nodeinfo[];
+> >>>>> @@ -365,6 +366,9 @@ enum objext_flags {
+> >>>>>
+> >>>>>    #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
+> >>>>>
+> >>>>> +/* Defined in mm/vmscan.c; used by mem_cgroup_swappiness(). */
+> >>>>> +extern int vm_swappiness;
+> >>>>
+> >>>> This is a bit unusual. I'm not sure whether mm/swap.h would be
+> >>>> a more appropriate place for this.
+> >>>>
+> >>> Thank you for your reply.
+> >>>
+> >>> The vm_swappiness variable is not utilized within mm/swap.c.
+> >>> Furthermore, since memcontrol.h does not include swap.h, retaining th=
+e
+> >>> extern int vm_swappiness declaration in mm/swap.h will result in a
+> >>> compilation failure.
+> >>
+> >> If this is the case, it still seems better to keep
+> >> extern int vm_swappiness in include/linux/swap.h.
+> >>
+> >> Then we don't need the comment:
+> >> /* Defined in mm/vmscan.c; used by mem_cgroup_swappiness(). */
+> >>
+> >> It also makes it clearer that vm_swappiness is an extern variable
+> >> belonging to the swap module, rather than the memcontrol module.
+> >
+> > BTW, if mem_c_group_swappiness() and vm_swappiness are only used
+> > within mm/, could all of these be moved to mm/swap.h and
+> > mm/internal.h instead?
+> >
+> > We are making a big effort to move many unrelated things out of
+> > include/linux/swap.h recently. Could you check?
+> >
+> > https://lore.kernel.org/linux-mm/20260708-ch-swap-series-plus-folio-lru=
+-cleanup-v9-0-2bc72b4f8730@gmail.com/
+>
+> Good suggestion. Moving them to mm/internal.h makes sense. Will update
+> in the next version.
 
-Suggested-by: Zi Yan <ziy@nvidia.com>
-Link: https://lore.kernel.org/all/7F866265-3F2E-4765-B9D4-9AB898A9C4AC@nvidia.com/
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- mm/page_alloc.c | 1 -
- 1 file changed, 1 deletion(-)
+Either mm/swap.h or mm/internal.h.
+vm_swappiness probably belongs in mm/swap.h rather than
+mm/internal.h, right?
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d53f858e518f7..0db1a7281fc33 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5438,7 +5438,6 @@ struct page *alloc_pages_node_noprof(int nid, gfp_t gfp_mask, unsigned int order
- 	if (nid == NUMA_NO_NODE)
- 		nid = numa_mem_id();
- 
--	VM_BUG_ON(nid < 0 || nid >= MAX_NUMNODES);
- 	warn_if_node_offline(nid, gfp_mask);
- 
- 	return __alloc_pages_noprof(gfp_mask, order, nid, NULL, ALLOC_DEFAULT);
+BTW, I am not particularly eager about this cleanup;
+it could be done later as a separate patch.
 
--- 
-2.54.0
+If you decide not to do the cleanup, I think it would be better to
+leave "extern int vm_swappiness" in include/linux/swap.h rather than
+declaring it in include/linux/memcontrol.h?
 
+Best Regards
+Barry
 
