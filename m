@@ -1,210 +1,283 @@
-Return-Path: <cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /EwsFEYgVmoTzgAAu9opvQ
-	(envelope-from <cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:40:54 +0200
+	id xUJaA3goVmo50QAAu9opvQ
+	(envelope-from <cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:15:52 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2385753F9B
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 13:40:53 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D65754611
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:15:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=GEDllHkM;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17775-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=none;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=honor.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6DB64313F495
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 11:38:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E39993004F29
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 12:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C5F381B02;
-	Tue, 14 Jul 2026 11:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6AA3C0633;
+	Tue, 14 Jul 2026 12:15:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mta21.hihonor.com (mta21.honor.com [81.70.160.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5F6351C25
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 11:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83AE3BFAE2;
+	Tue, 14 Jul 2026 12:15:40 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784029079; cv=none; b=oJv0mRDoYm/RNkOQoDTa6NGd4hIAfPhJJa/qPg3VcIJJ60NbLiFbrZPMYTEw5hc57cOSMOxrKBbUWWSzl7PvWDg/09Lx4TCpfC+X8m2tRvmFIj/hUdxAicD30r+IFfWMSYv7QiAE+Yaw0kdZQNcndfsGfciQFE0iY9QZl39iQSk=
+	t=1784031344; cv=none; b=N8aIhMAWD3/oFjz9BIIvFfswqhCEL85ZNFj0/DErnwCnay3hoMxInLLUkUu1XFNcDDuX+mNX8ClYZVp8iHfQXGTO+Yrgigs2vmu5KeaUyCWtX6VmD+iXvCz4GxPm9sJSR11IyeV79OX4kK9apcdz+EWC3ENsyS/lOJrQvb50HPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784029079; c=relaxed/simple;
-	bh=jvi/C9nTXOmhhjc0Lb9aktYocYiVVnB804trf7lfPrM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uWDTWZxX0Dif/v0WdOjT5cZYQ0x6wU2tByEVaRoJl02EnuAgKlECvuivAqM89yGYMhPPoZmXjU0qkRkOqkXAKX3120yLv1BL2Cubss8odf7hWkr8Z8YYyjtVJDmBFlsc+LGvdyV8krTXM+tXxXYQIk3CCZ5p8OaqrzjAFyp5T8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GEDllHkM; arc=none smtp.client-ip=209.85.221.48
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-4728c12ba97so1853691f8f.0
-        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 04:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1784029076; x=1784633876; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=b41+ZmPO1kjwWz2S29LAqh9eI9JWVyVGFI2NWPufoa4=;
-        b=GEDllHkMR41S+dFNps77d42LYWFFvUETZcKa6lXe5Jznb1xNebSNVqjLBft4ultjhH
-         qPDxg6pt6SzoDx06feDSqLh/R/K7JoAPcsjhcb5xP4Z9aHTtsfihFjuMh/JfMN4WLDNZ
-         R9oKnySqSg266qG6syoaTLWYm4rD1FlA5PcK0holyYlTikmax3zsgTXs7Zi5uLiG8nGs
-         jcKJBg2m0W4fb7Q3uk4qkVbyYvKB9be78gNuSW4O/uFxwxDKmalSJYbHlVhcUKGo8MBo
-         u5+gwFL/wAdlaKM2RYh+QyfMAASBhfJf8BvWMSjIACaGt4mBpYCGmV3Fra+To33aBy7H
-         Tt5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784029076; x=1784633876;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=b41+ZmPO1kjwWz2S29LAqh9eI9JWVyVGFI2NWPufoa4=;
-        b=kqXdk6mLRsS6k9Yt4tT1nOU8p+0XxBC9cvkE3vQcrgoTPg3zF9MDcMqAOd6GtUj+dp
-         nR6MYtEb23PVHNAmfBTLfOBnfJJ3ZWl5tFG+YwL/TVSu/u5z4fpTdU5xXURoNVeNfTfI
-         wmrGOwm0thURuZyORcNuEFLIWO1WJQSzUpBAdGu373bqwRAlivwz3se5iHKrdgXnffK3
-         pxb34mgBiFO2ZdJ+ZMmRC8VoEqGyoxi2fI1mwyp0q7PMLuOZ0jgs7KHIYirP2smEpGUt
-         sn0v5DdTkGyoeTxb1zxkHTjPhXUbFbQ1/JU9wamc27O6O3eH9872WRQhavzV+WyHyOTP
-         t+uQ==
-X-Forwarded-Encrypted: i=1; AHgh+Rru3YvrGoGeG1z7k2HDxlDk7QFXMiz2UBYCIhJgS4tE3XN4TvIPRzJ6UCreDXGVeRQDnpSvEEgc@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBUwL3RPF1thQaV+7udlILJnBf2K7vEfRxOyzIMxjT60VytwSD
-	2St/np1+t+I+Hm8agmZeauJLu2wSQwcZ1v6URQ6UmC5oDlv9VTS0WwLB
-X-Gm-Gg: AfdE7cn91qQh5vfNKOhJg/yh5kVxJx7UQu73mZPuhFP/KT44VPc+L+ULzeG3qAzmL6V
-	yzSfej/hVM3lsJmlYMyfs/9LJhZdb77xSR5JmVckBYrJBk6+4m/l9j32dV4iHY7R7iyUMEoTHMq
-	vlVxIedQadhc3N+QnGKJijUxZdHSVOEtC25Jd2iB+1HfY523G/2YInxYZ24MlagP1TBllZ9U0bL
-	WpwcyLfPADUSS83Tgh3a53kZK/4SpcjKDZDdJioMnYkuew5J6qIedF4hGEOrQ28bOr45ugvBD3T
-	K02RKgwfZLGaZ/hOiPEWXwaWInWybEZxmnleFDEHJfphxV4Sk7MTSEh+hLRFktTefk8E2WptWcZ
-	S7ctHBJGw332rVQ1Voo3MgP2eyi4jc7Sq80IqZPRniijwYhJJgcQNjF8TsXULabGQ8CoU9TWH8F
-	fF9hTCKl9r/Iu/I8+s7hkrtT2KZjwyIyKm5scm4V4Rs+Q9NHIwsA==
-X-Received: by 2002:a05:6000:240f:b0:475:f0f0:9f01 with SMTP id ffacd0b85a97d-47f2dd05108mr15393267f8f.56.1784029076179;
-        Tue, 14 Jul 2026 04:37:56 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f464d6fa7sm7440719f8f.37.2026.07.14.04.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2026 04:37:55 -0700 (PDT)
-Date: Tue, 14 Jul 2026 12:37:54 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Tao Cui <cui.tao@linux.dev>
-Cc: axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, Tao Cui <cuitao@kylinos.cn>
-Subject: Re: [PATCH] blk-throttle: fix divide-by-zero on legacy iops limit
- of 0
-Message-ID: <20260714123754.7a88a65b@pumpkin>
-In-Reply-To: <20260714103552.1335658-1-cui.tao@linux.dev>
-References: <20260714103552.1335658-1-cui.tao@linux.dev>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1784031344; c=relaxed/simple;
+	bh=f6X73vT6jN5sHClUY/oGE694V8DJVGQ17AUdVqnsvHU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=l+Uqg3hTp1rhgmDcjzN7e78K7QdWsxLPu5ScKZiNDGLFphaGV3tlEv+l/ydBtTLagnWDl1lf5AmRoGgvR2pBjCGGaTqlzygtIfMG6l0XwZk81NCqorG1zuzfrUkHMZm+EE6fgUOROCvk+fLIndl9d2Rsa6q8Rj4Q0KaXZ8II/Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=honor.com; spf=pass smtp.mailfrom=honor.com; arc=none smtp.client-ip=81.70.160.142
+Received: from TW005.hihonor.com (unknown [10.72.0.123])
+	by mta21.hihonor.com (SkyGuard) with ESMTPS id 4gzytp13bjzYl7D0;
+	Tue, 14 Jul 2026 20:15:30 +0800 (CST)
+Received: from TA012-1.hihonor.com (10.77.199.132) by TW005.hihonor.com
+ (10.72.0.123) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Tue, 14 Jul
+ 2026 20:15:29 +0800
+Received: from localhost.localdomain (10.144.5.36) by TA012-1.hihonor.com
+ (10.77.199.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Tue, 14 Jul
+ 2026 20:15:19 +0800
+From: Zicheng Wang <wangzicheng@honor.com>
+To: <akpm@linux-foundation.org>, <yuanchu@google.com>
+CC: <tj@kernel.org>, <hannes@cmpxchg.org>, <mkoutny@suse.com>,
+	<corbet@lwn.net>, <kasong@tencent.com>, <qi.zheng@linux.dev>,
+	<shakeel.butt@linux.dev>, <baohua@kernel.org>, <axelrasmussen@google.com>,
+	<weixugc@google.com>, <david@kernel.org>, <ljs@kernel.org>,
+	<liam@infradead.org>, <vbabka@kernel.org>, <rppt@kernel.org>,
+	<surenb@google.com>, <mhocko@suse.com>, <roman.gushchin@linux.dev>,
+	<muchun.song@linux.dev>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<willy@infradead.org>, <denghaojie@honor.com>, <baoquan.he@linux.dev>,
+	<kaleshsingh@google.com>, <tjmercier@google.com>, <tao.wangtao@honor.com>,
+	<zhangji1@honor.com>, <wangzhen5@honor.com>, Zicheng Wang
+	<wangzicheng@honor.com>
+Subject: [RFC v2 0/3] mm/mglru: proactive aging via memory.aging
+Date: Tue, 14 Jul 2026 20:15:26 +0800
+Message-ID: <20260714121529.2237261-1-wangzicheng@honor.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TW004-1.hihonor.com (10.77.232.85) To TA012-1.hihonor.com
+ (10.77.199.132)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.14 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[honor.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-17777-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17775-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:cui.tao@linux.dev,m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:cuitao@kylinos.cn,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:yuanchu@google.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:corbet@lwn.net,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:baohua@kernel.org,m:axelrasmussen@google.com,m:weixugc@google.com,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:willy@infradead.org,m:denghaojie@honor.com,m:baoquan.he@linux.dev,m:kaleshsingh@google.com,m:tjmercier@google.com,m:tao.wangtao@honor.com,m:zhangji1@honor.com,m:wangzhen5@honor.com,m:wangzicheng@honor.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FORGED_SENDER(0.00)[wangzicheng@honor.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wangzicheng@honor.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,vger.kernel.org:from_smtp,pumpkin:mid,kylinos.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B2385753F9B
+X-Rspamd-Queue-Id: 98D65754611
 
-On Tue, 14 Jul 2026 18:35:52 +0800
-Tao Cui <cui.tao@linux.dev> wrote:
+MGLRU inverts the reclaim order when anonymous memory is faulted in
+bulk: anonymous pages sit in the young generations while file pages
+sit in the oldest two, so reclaim evicts hot file pages before cold
+anonymous pages.  swappiness cannot correct it.  This series adds a
+per-cgroup proactive-aging operation, memory.aging, with the
+observability to drive it as a closed loop, so userspace can rebalance
+a cgroup's generations before reclaim runs.
 
-> From: Tao Cui <cuitao@kylinos.cn>
-> 
-> Writing a multiple of 2^32 (e.g. 4294967296) to a legacy cgroup v1
-> throttle iops file (blkio.throttle.{read,write}_iops_device) silently
-> truncates to 0: tg_set_conf() stores the sscanf-parsed u64 value into
-> an unsigned int field with no clamping. The cgroup v2 path,
-> tg_set_limit(), already clamps the same kind of value with
-> min_t(u64, val, UINT_MAX), but the legacy path never did. Note that
-> the "!v -> U64_MAX" mapping only catches an explicit zero and does not
-> catch a value that truncates to zero.
-> 
-> With iops stored as 0, tg_update_has_rules() sets has_rules_iops[] and
-> the next IO reaches tg_within_iops_limit(), which computes
-> 
->     jiffy_wait = max(jiffy_wait, HZ / iops_limit + 1);
-> 
-> triggering a divide-by-zero oops.
-> 
-> Fix it in two places:
-> 
->   * tg_set_conf(): clamp the value to UINT_MAX, consistent with
->     tg_set_limit(). This closes the truncation root cause (and the
->     general silent truncation for any value above UINT_MAX).
-> 
->   * tg_dispatch_iops_time(): treat iops_limit == 0 as unlimited so the
->     divide in tg_within_iops_limit() is never reached, defending
->     against any future path that could produce a zero limit.
-> 
-> Signed-off-by: Tao Cui <cuitao@kylinos.cn>
-> ---
->  block/blk-throttle.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index ffc3b70065d4..3f3c1374f4b2 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -883,7 +883,12 @@ static unsigned long tg_dispatch_iops_time(struct throtl_grp *tg, struct bio *bi
->  	u32 iops_limit = tg_iops_limit(tg, rw);
->  	unsigned long iops_wait;
->  
-> -	if (iops_limit == UINT_MAX || tg->flags & THROTL_TG_CANCELING)
-> +	/*
-> +	 * iops_limit == 0 is not a valid limit. Treat it as unlimited so we
-> +	 * never reach the HZ / iops_limit divide in tg_within_iops_limit().
-> +	 */
-> +	if (iops_limit == UINT_MAX || iops_limit == 0 ||
-> +	    tg->flags & THROTL_TG_CANCELING)
->  		return 0;
->  
->  	tg_update_slice(tg, rw);
-> @@ -1386,7 +1391,8 @@ static ssize_t tg_set_conf(struct kernfs_open_file *of,
->  	if (is_u64)
->  		*(u64 *)((void *)tg + of_cft(of)->private) = v;
->  	else
-> -		*(unsigned int *)((void *)tg + of_cft(of)->private) = v;
-> +		*(unsigned int *)((void *)tg + of_cft(of)->private) =
-> +			min_t(u64, v, UINT_MAX);
+The problem
+-----------
 
-The LHS casts look horrid - there has to be a nicer way to do that.
+MGLRU places pages by access path, not hotness.  On the current tree
+the entry rules in lru_gen_folio_seq() give:
 
-And you don't need min_t() a plain min() will be fine.
+  - faulted-in pages (anonymous pages; the fault path sets the active
+    mark) land at the 2nd youngest generation (max_seq - 1);
+  - file pages from read()/fadvise() land in the oldest two
+    generations: non-workingset at min_seq, workingset at min_seq + 1.
 
-	David
+Pictorially, for a full four-generation window::
+
+       youngest                          oldest
+       max_seq   max_seq-1   min_seq+1   min_seq
+       -------------------------------------------
+ anon    .          X           .           .     (faulted in)
+ file    .          .           X           X     (read/fadvise)
+                                            ^
+                              reclaim scans from here -> evicts file first
+
+Reclaim scans from min_seq, so file pages are evicted before the
+anonymous pages two generations younger, a hot/cold inversion.
+
+swappiness does not fix it: it only selects which type to scan, not
+the ordering within a type, so reclaim can still evict hot pages.
+swappiness=201 (SWAPPINESS_ANON_ONLY) just flips the inversion to the
+other side: no value recovers a correct hot/cold order, because the
+order comes from the access path, not access recency [1].  This is not
+Android-specific; the same file over-reclaim is shown on servers and
+worked around there by forcing an age iteration before reclaim.
+
+Why userspace-driven
+--------------------
+
+The benefit is workload-dependent: file-cache-bound servers gain from
+aging, anon-bound servers do not, so no kernel default is correct for
+all.  The kernel also cannot know when to age: on Android the right
+moment is the foreground-to-background transition, when the app's pages
+are cold but their PTE accessed bits are still accurate from foreground
+execution, a framework concept.  The kernel therefore provides the
+mechanism; userspace runs the loop.
+
+Design: observation and control
+-------------------------------
+
+The series gives userspace one control primitive and the observation to
+use it.  All three pieces are per-cgroup and gated by CONFIG_LRU_GEN,
+and together they form a closed loop:
+
+  control   memory.aging          write nr_gens to advance max_seq without
+                                  reclaim; the aging counterpart of
+                                  memory.reclaim
+  observe   nr_oldest_anon/file   pages in the oldest generation of each
+                                  type: what the next reclaim can evict
+            aging                 number of aging passes, paired with
+                                  workingset_refault to spot over-aging
+
+A policy reads nr_oldest_* to see whether anon is sheltered, ages with
+memory.aging, then checks the aging counter and workingset_refault.
+A typical flow ages to rebalance, then reclaims::
+
+    echo 2 > /sys/fs/cgroup/foo/memory.aging
+    echo "100M" > /sys/fs/cgroup/foo/memory.reclaim
+
+Why cgroup v2
+-------------
+
+memory.reclaim already lives in cgroup v2, but it is broken when
+anonymous pages are sheltered in the young generations: reclaim cannot
+reach anon until aging advances it.  A useful memory.reclaim therefore
+requires aging first.  Aging is not a new MGLRU detail leaked into
+cgroup v2; it is the other half of the proactive-reclaim operation
+cgroup v2 already exposes.  Putting it anywhere else (sysfs) cuts one
+operation across two ABIs and two addressing models.
+
+memory.aging is gated by CONFIG_LRU_GEN and exposes one primitive
+(advancing the generation), not internal data structures; if MGLRU is
+removed, the file goes with it.
+
+Alternatives considered
+-----------------------
+
+1) sysfs (/sys/kernel/mm/lru_gen/) fights sysfs's one-value-per-file,
+stateless model: the command is multi-argument and per-(memcg,node),
+the read is parameterized per memcg, and css-id addressing is hostile
+to cgroup paths.  It also splits aging from memory.reclaim.
+
+2) in-kernel automatic aging is workload-dependent (memcached regresses)
+and needs a trigger the kernel cannot know: the Android
+foreground-to-background moment is a framework concept.  MGLRU had this
+once: `should_run_aging' fired on a generation-balance heuristic::
+
+    if (young * MIN_NR_GENS > total)
+        return true;
+    if (old * (MIN_NR_GENS + 2) < total)
+        return true;
 
 
+3) extending memory.reclaim to run the debugfs aging command
+(`+ memcg_id node_id seq`) overloads a reclaim file with a non-reclaim
+operation and pulls MGLRU's debugfs command syntax into a generic
+cgroup v2 ABI. But Aging is reclaim's counterpart, not one of its modes.
 
->  
->  	tg_conf_updated(tg, false);
->  	ret = 0;
+Results
+-------
+N39 (Device-X1 8 GB/SM7750, Device-X2 12 GB/SM8750).  Production telemetry,
+~300 users, 30K+ device-hours:
+    keep-alive          +15.4% (8 GB) / +10.2% (12 GB)
+    IME dismiss latency -47.2%
+    launch/exit jank >50ms   eliminated
+    one aging pass      342 us median, never on a UX thread
+
+AN90 (a new shipping product, separate from N39):
+    scroll jank >50 ms  -22%, severe jank -26%
+    cold-launch stalls >= 3 s  eliminated
+    workingset_refault (anon + file) and direct reclaim both down
+
+Server (Intel i7-14700F, 20C/28T, 32 GB DDR5-5600, 1 TB NVMe,
+Ubuntu 24.04; same root cause, aging triggered on the
+reclaim path when anon in the oldest gen ratio < 10%):
+    fio random-read     +31.8%
+    ripgrep             +15.8%
+    memcached           -1.2%   (anon-bound; expected no gain)
+
+N39 and AN90 are different products.
+
+Why RFC
+-------
+
+v1 [2] put the control in procfs/debugfs and was NAKed for the
+cgroup-v2 venue.  This version keeps aging in cgroup v2, next to
+memory.reclaim, and argues why above.  Discussed at LSF/MM 2026 [3].
+
+[1] swappiness=0/201 hot/cold inversion, and why the straightforward
+    fix is deferred:
+    https://lore.kernel.org/linux-mm/7829b070df1b405dbc97dd6a028d8c8a@honor.com/
+[2] v1: https://lore.kernel.org/linux-mm/20251128025315.3520689-1-wangzicheng@honor.com/
+[3] LSF/MM 2026 slides:
+    https://docs.google.com/presentation/d/1hUogz6InyLn13c8CjHuvEIzE4rT7saVRUV6xpWZoNfQ/
+
+Changes since v1
+----------------
+
+- Dropped the debugfs -> procfs move; aging is now a cgroup v2 file.
+- Added the AGING counter and nr_oldest_anon/file observability.
+- Corrected the generation-placement description to the current tree
+  (faults at the 2nd youngest, file in the oldest two).
+
+Zicheng Wang (3):
+  mm/lru_gen: add AGING counter and proactive aging helper
+  mm: memcontrol: add memory.aging cgroup v2 file
+  mm/lru_gen: expose oldest-generation page counts in memory.stat
+
+ Documentation/admin-guide/cgroup-v2.rst       |  53 +++++++++++
+ Documentation/admin-guide/mm/multigen_lru.rst |  13 +++
+ include/linux/mmzone.h                        |   3 +
+ mm/internal.h                                 |  19 +++++
+ mm/memcontrol.c                               |  63 +++++++++++
+ mm/vmscan.c                                   | 109 +++++++++++++++++++++
+ mm/vmstat.c                                   |   3 +
+ 7 files changed, 263 insertions(+)
+
+--
+2.25.1
 
 
