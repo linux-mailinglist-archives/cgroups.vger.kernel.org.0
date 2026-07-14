@@ -1,137 +1,146 @@
-Return-Path: <cgroups+bounces-17756-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17757-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 9P8OJjzJVWqLtAAAu9opvQ
-	(envelope-from <cgroups+bounces-17756-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 07:29:32 +0200
+	id k3NZOp3YVWoWuQAAu9opvQ
+	(envelope-from <cgroups+bounces-17757-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 08:35:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229F6751232
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 07:29:32 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53BFA751865
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 08:35:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("headers rsa verify failed") header.d=suksangroup.co.th header.s=default header.b="v/kx4sph";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17756-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17756-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=fail reason="SPF not aligned (relaxed)" header.from=inbox.org (policy=none);
+	dkim=pass header.d=linux.dev header.s=key1 header.b=GEebQZjY;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17757-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17757-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E3A7231249A2
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 05:16:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6EFF63065BF9
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 06:31:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8939A306B08;
-	Tue, 14 Jul 2026 05:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DAD13DD51C;
+	Tue, 14 Jul 2026 06:31:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from ns1.suksangroup.com (ns1.suksangroup.com [103.13.31.55])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE198309F1D
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 05:16:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490953DA7E6
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 06:31:47 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784006195; cv=none; b=XpGT4G4wIIKKB6kmlFBcnh5mAHJbRwXdnzdG2xQXB+9S1kZ3ZKYlzr+Sjx6+KXv59vxXNrdZgC6P2qetvFjFvGN5cZvGH1ajCJwk3SoGylMq1fNkHJtVJf6PDb9Nt9qhx73NHOBlZJ5+he7jq4od55K2XxWpeLhMnjqzPyobFsA=
+	t=1784010709; cv=none; b=W8IC3mTZljejb1ewAy0a6QLjjlyidZ/jRC2t0xeAKDpabaOBffJLKBCzzea5LtuIGxQqh41ZB80Gdxa4duiI6VrhmKthm13/jikfgQCfixzGmamI1eF2rk3wGoyZro37/hzVwzQwmAMARAeHQRktGkGRVD78rHlxb7HvfaYFWL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784006195; c=relaxed/simple;
-	bh=bV0Crq7WEkjHVUrf6724K3hQI00bw/RYadNeVkAvTPM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=isiYa5NzKIu2EIOn2+/ctsYgHbrwcJffzY5Cjq4sncPK5eFBZQjyehMwfhprgWW97F7RL3RcfRPqpfRwJW/irExjp7X3B9R5bv8PoU6hiKMaT0wSsYi2U3ry+0hMTcxruo5eQ4P3smlcBFClIsHUE3TTPj4pkb+8lUVTIxzJcls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=inbox.org; spf=fail smtp.mailfrom=inbox.org; dkim=pass (2048-bit key) header.d=suksangroup.co.th header.i=@suksangroup.co.th header.b=v/kx4sph; arc=none smtp.client-ip=103.13.31.55
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=suksangroup.co.th; s=default; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=bV0Crq7WEkjHVUrf6724K3hQI00bw/RYadNeVkAvTPM=; b=v/kx4sph4oRVgyPHemkBHNNSKJ
-	11hObeyZCvTUZM8H9ltb40oX++KNqjBXjhN+cq0ROaTGnfkXVHFgnEwoUCjDGpeKKBoYJZY5qrtfc
-	N4S5jZKUJjIDXMWEbTCGohRofbbhA1xHBCSNWXU76nMmOeoRiFlYcsxECPfR/CK5vvSPMhIGF1/AF
-	Uotghx5nRynwAyH43tlzZSeee1IHwrldbH/ihauejsHHL+ugdb29uhz+PgQPVVf/R+3lr1t4Irv3d
-	0HBZIFbQ/arbX7Y0HCP3yoU6zfHOYja2PsQKncD3FJO7IsGSl0hQGrrI7YGccoT5L2r3cfk+9ud5H
-	XwE3O1JA==;
-Received: from [207.189.26.187] (port=60967)
-	by ns1.suksangroup.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.99.4)
-	(envelope-from <info@inbox.org>)
-	id 1wjVVQ-0000000FrfE-2n7r
-	for cgroups@vger.kernel.org;
-	Tue, 14 Jul 2026 12:16:31 +0700
-Reply-To: hanns.schofield@lexcapitalgrowth.com
-From: Harry Schofield ESQ <info@inbox.org>
-To: cgroups@vger.kernel.org
-Subject: Dear cgroups, project info
-Date: 14 Jul 2026 00:16:28 -0500
-Message-ID: <20260714001628.E7EA577CE1494844@inbox.org>
+	s=arc-20240116; t=1784010709; c=relaxed/simple;
+	bh=p7ZGe7ovr6Fnp+xJqMj+SXZ7ZkuYYQUS1ExBdGpuXYI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DTCz2dF8UusOehne4mjxZxeAC9japz8mrMOEZ0pZCIsdXwXYMVS8a5eBOCIpxJzjkq5JgeR5wFbSZzAlYmtjVsQM2+rwO411Pv1LuJAVk/udBY6T6/8tceZwe/rLrhGxKd1CXcR+gSzDIonbRUy5GUwfTm7L0gf/ZtY7W8nE0AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GEebQZjY; arc=none smtp.client-ip=91.218.175.179
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1784010695;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=uX8GOm2Y6bu+4/Uc+uJ+m9Biszo7L7ChblxvTzcX6kg=;
+	b=GEebQZjY+R6uOyuJp7bWgNjQdi6sRvq8r8FRuB5PiK0T4/+6hvADZQwQMB35XC8NKuM0G3
+	eMdUfx6zGrD32Hhx0eWlZJTUOyh1DGvjzQBJr1QmBIsy233DvAt8MWPji+NE1nHBxuBju7
+	a5qfj8/OCFZ9xpvdnxu/7Wp/uXvNczk=
+From: Tao Cui <cui.tao@linux.dev>
+To: axboe@kernel.dk
+Cc: tj@kernel.org,
+	josef@toxicpanda.com,
+	boris@bur.io,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tao Cui <cuitao@kylinos.cn>
+Subject: [PATCH] blk-cgroup: avoid 32-bit overflow in root io.stat byte accounting
+Date: Tue, 14 Jul 2026 14:31:18 +0800
+Message-ID: <20260714063118.1153083-1-cui.tao@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - ns1.suksangroup.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - inbox.org
-X-Get-Message-Sender-Via: ns1.suksangroup.com: authenticated_id: smtp@suksangroup.co.th
-X-Authenticated-Sender: ns1.suksangroup.com: smtp@suksangroup.co.th
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [5.94 / 15.00];
-	ABUSE_SURBL(5.00)[lexcapitalgrowth.com:replyto];
-	R_DKIM_REJECT(1.00)[suksangroup.co.th:s=default];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	BAD_REP_POLICIES(0.10)[];
-	DMARC_POLICY_SOFTFAIL(0.10)[inbox.org : SPF not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:cgroups@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17756-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	HAS_X_AS(0.00)[smtp@suksangroup.co.th];
-	GREYLIST(0.00)[pass,body];
-	HAS_X_SOURCE(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17757-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	HAS_X_GMSV(0.00)[smtp@suksangroup.co.th];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_ONE(0.00)[1];
-	FORGED_SENDER(0.00)[info@inbox.org,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:axboe@kernel.dk,m:tj@kernel.org,m:josef@toxicpanda.com,m:boris@bur.io,m:cgroups@vger.kernel.org,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:cuitao@kylinos.cn,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[info@inbox.org,cgroups@vger.kernel.org];
-	HAS_REPLYTO(0.00)[hanns.schofield@lexcapitalgrowth.com];
+	FROM_NEQ_ENVFROM(0.00)[cui.tao@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_X_ANTIABUSE(0.00)[];
-	DKIM_TRACE(0.00)[suksangroup.co.th:-];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
-	MISSING_XM_UA(0.00)[];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[inbox.org:from_mime,inbox.org:mid,lexcapitalgrowth.com:replyto,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:from_mime,linux.dev:dkim,linux.dev:mid,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,kylinos.cn:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 229F6751232
+X-Rspamd-Queue-Id: 53BFA751865
 
+From: Tao Cui <cuitao@kylinos.cn>
 
-Re:Good day cgroups,
+blkcg_fill_root_iostats() converts per-CPU sector counts to bytes with
 
-Please let me know if this is best email to send you the project=20
-info.
+    tmp.bytes[BLKG_IOSTAT_READ] += cpu_dkstats->sectors[STAT_READ] << 9;
 
-Kind regards,
+but disk_stats.sectors is `unsigned long`, and the shift is carried out in
+that type before the result is promoted to the u64 accumulator.  On 32-bit
+kernels (unsigned long is 32 bits) this wraps, so once a per-CPU counter
+reaches 2**23 sectors (~4 GiB) the computed byte count is wrong, corrupting
+the root cgroup's io.stat.
 
-Harry Schofield, ceMBA
+Every other sector->byte conversion in the tree casts to a wide type first
+((loff_t)sectors << SECTOR_SHIFT in bdev.c, (u64)max_sectors << SECTOR_SHIFT
+in blk-settings.c); do the same here.
 
+Fixes: ef45fe470e1e5 ("blk-cgroup: show global disk stats in root cgroup io.stat")
+Signed-off-by: Tao Cui <cuitao@kylinos.cn>
+---
+ block/blk-cgroup.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index d2a1f5903f24..a778aa9d2bb9 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1112,11 +1112,11 @@ static void blkcg_fill_root_iostats(void)
+ 				cpu_dkstats->ios[STAT_DISCARD];
+ 			// convert sectors to bytes
+ 			tmp.bytes[BLKG_IOSTAT_READ] +=
+-				cpu_dkstats->sectors[STAT_READ] << 9;
++				(u64)cpu_dkstats->sectors[STAT_READ] << SECTOR_SHIFT;
+ 			tmp.bytes[BLKG_IOSTAT_WRITE] +=
+-				cpu_dkstats->sectors[STAT_WRITE] << 9;
++				(u64)cpu_dkstats->sectors[STAT_WRITE] << SECTOR_SHIFT;
+ 			tmp.bytes[BLKG_IOSTAT_DISCARD] +=
+-				cpu_dkstats->sectors[STAT_DISCARD] << 9;
++				(u64)cpu_dkstats->sectors[STAT_DISCARD] << SECTOR_SHIFT;
+ 		}
+ 
+ 		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
+-- 
+2.43.0
 
 
