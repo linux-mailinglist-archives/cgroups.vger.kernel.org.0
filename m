@@ -1,59 +1,58 @@
-Return-Path: <cgroups+bounces-17748-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17749-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id mHgLMLKMVWrCpwAAu9opvQ
-	(envelope-from <cgroups+bounces-17748-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 03:11:14 +0200
+	id Hv/zLtWOVWpAqAAAu9opvQ
+	(envelope-from <cgroups+bounces-17749-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 03:20:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3E0474FF9B
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 03:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F36E7500C6
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 03:20:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=g1eB9y3B;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17748-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17748-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=aLPVtxei;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17749-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17749-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B5E0130166DB
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 01:11:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E3BF63017F8E
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 01:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C0335AC1B;
-	Tue, 14 Jul 2026 01:11:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E2735F162;
+	Tue, 14 Jul 2026 01:20:18 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A0D2DB7B4
-	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 01:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359EF207DF7
+	for <cgroups@vger.kernel.org>; Tue, 14 Jul 2026 01:20:15 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783991469; cv=none; b=AtMzb+yC0PDtqdRuQjYhTCGrA5CMLHilxfBn4kFNNOsfnT7GD/pYyAqhZx49eflbbG4p5oKD7tOPGr+kKWjdVhb2k8c37OCzkBsu48YaEziCCzHQQTj8y2MqRnINu0tlBcgpx/50d1EE6tuiHmqIksrL1rxcy6tD+R9+cDYFrQs=
+	t=1783992017; cv=none; b=QMZGpQpT0NHZJkqTkC/p3GI1PqdPVP3TNIyZThG+IjyYOtcb3wTt7FNCoeyfTXguQQIxIF6wKWEfDbw5LzHWq4vy6L0NgZX0OEZA6+Kg95LXHQVBansbfn7LE6wsgii6qf9E9/xyu3Tsa502uv30OeHe+MjgacdiyYcWMdO2G3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783991469; c=relaxed/simple;
-	bh=Mgw7NaaPuVDLHrO0U6xaVK9/AaB9d3h9em6m0az3yBI=;
+	s=arc-20240116; t=1783992017; c=relaxed/simple;
+	bh=PkJdQaEDMEfonIw8EEkQse6zdo9BDrmz2jybU6BcgoA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MXmeJwPJDoUeYgI39C+mDom11TSqLLIDtf+qXP/u/sgVbtVkYmm4Cz1Zyua49tgENUuyvTW1HZFYQ/ydClLrUROR+KnLY9UdOog631iiVN1uRRicSS6pMpmHs4GumOK8D4AMwdtmzxYGVb9KLlsZuW5/guF0AQmHpQ7GpImoICU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=g1eB9y3B; arc=none smtp.client-ip=95.215.58.187
-Message-ID: <9117db4b-2a7b-41f3-b5e7-db9d6343bc83@linux.dev>
+	 In-Reply-To:Content-Type; b=p+06Lxfa4N1i45fpuNjOwGE109Gd+UKY+eGoaJCc1XInSM+xkqLHz8xOmn7nkfc5K2IrilXg8fezO/MEhjQ1srJKVznk+SSPJJTsI5rXftWqIahQlJSi951KdR7zHPIWFwm9DPiEHXgh25RaZdmQVTHWaRIiR2UuyPPHdDsf8Rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aLPVtxei; arc=none smtp.client-ip=95.215.58.186
+Message-ID: <87dc4105-b98b-4541-bafe-c0adfbf58836@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1783991464;
+	t=1783992013;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QBTuxEtzTYLRVryCNC/UKY74wgwZyisDAh2aK7ZURZk=;
-	b=g1eB9y3BOcZwZblAVHaos/wcXy3DKhqfRLmswKAnzYIj7k5fLSyUOp11oj4sbNwb7qZf5D
-	OVQeC6Z25fjQDNt934i+E6iM8eKME7IJcaZ32EqXAi0m56nj+UtEEi9MO7YgS4MX3WZ9ml
-	YHKg9phMJ74p6SrUNcGJpNitn9lZTMc=
-Date: Tue, 14 Jul 2026 09:10:46 +0800
+	bh=ZctEu+mX1koEkj7iSspmtkQvsQ427myBTirKB+Ofv9Q=;
+	b=aLPVtxeiDDTh4DfW/RDii/1ZK3BCZDRA8W8VefSwdDDRhy2veEza0ita+eFrzjWOY5Bk0U
+	vLbN3hjYA6Wa1jSjTAKTmZn8V8wZFSNkQ3PzQuisAK1lml21UZjnDRdvQqr8v7DUdU0XZf
+	mMwk10gxE/Gqd1uGn2LmMbIK2S+jeTg=
+Date: Tue, 14 Jul 2026 09:19:53 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] mm: vmscan: fix node reclaim ignoring swappiness
- parameter
+Subject: Re: [PATCH 1/2] memcg: move mem_cgroup_swappiness to memcontrol.h
 To: Barry Song <baohua@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
  Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
@@ -64,11 +63,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  Ridong Chen <chenridong@xiaomi.com>
 References: <20260711091157.306070-1-ridong.chen@linux.dev>
- <20260711091157.306070-3-ridong.chen@linux.dev>
- <CAGsJ_4xGKM3HxXw-mrtyr5HmwZL3L1QVZ27utCyozqSJr1F0gQ@mail.gmail.com>
+ <20260711091157.306070-2-ridong.chen@linux.dev>
+ <CAGsJ_4y39eSYqYwSPzqcZPk1wcJEYN3HZr83MPv8pMgN8Nct5A@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Ridong Chen <ridong.chen@linux.dev>
-In-Reply-To: <CAGsJ_4xGKM3HxXw-mrtyr5HmwZL3L1QVZ27utCyozqSJr1F0gQ@mail.gmail.com>
+In-Reply-To: <CAGsJ_4y39eSYqYwSPzqcZPk1wcJEYN3HZr83MPv8pMgN8Nct5A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -82,12 +81,12 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:baohua@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:david@kernel.org,m:yuanchu@google.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:chenridong@xiaomi.com,s:lists@lfdr.de];
 	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS(0.00)[m:baohua@kernel.org,m:akpm@linux-foundation.org,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:muchun.song@linux.dev,m:chrisl@kernel.org,m:kasong@tencent.com,m:david@kernel.org,m:yuanchu@google.com,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:chenridong@xiaomi.com,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[ridong.chen@linux.dev,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[15];
-	TAGGED_FROM(0.00)[bounces-17748-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17749-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -103,78 +102,51 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A3E0474FF9B
+X-Rspamd-Queue-Id: 0F36E7500C6
 
 
 
-On 7/13/2026 11:16 PM, Barry Song wrote:
+On 7/13/2026 11:08 PM, Barry Song wrote:
 > On Sat, Jul 11, 2026 at 5:12 PM Ridong Chen <ridong.chen@linux.dev> wrote:
 >>
 >> From: Ridong Chen <chenridong@xiaomi.com>
 >>
->> sc_swappiness() had two separate definitions depending on
->> CONFIG_MEMCG. The !CONFIG_MEMCG variant simply returned
->> vm_swappiness, ignoring the proactive_swappiness value passed
->> through scan_control. This caused the swappiness parameter
->> written to /sys/devices/system/node/nodeX/reclaim to have no
->> effect when CONFIG_MEMCG is disabled.
+>> The per-memcg swappiness knob is v1-only; v2 always uses global
+>> vm_swappiness and ignores the per-cgroup field.
 >>
->> Fix this by consolidating sc_swappiness() into a single definition
->> that checks sc->proactive_swappiness first, then falls back to
->> mem_cgroup_swappiness() which already handles both CONFIG_MEMCG
->> and !CONFIG_MEMCG.
+>> Guard memcg->swappiness with CONFIG_MEMCG_V1, and move the helper
+>> to memcontrol.h where it belongs.
 >>
->> Before fix (swappiness=max ignored, mostly file pages reclaimed):
+>> No functional change for v1; v2-only kernels drop the unused field.
 >>
->>      # cat /proc/sys/vm/swappiness
->>      60
->>      # cat /proc/vmstat | grep pgsteal
->>      pgsteal_kswapd 0
->>      pgsteal_direct 0
->>      pgsteal_khugepaged 0
->>      pgsteal_proactive 1840
->>      pgsteal_anon 25
->>      pgsteal_file 1815
->>      # echo "64M swappiness=max" > /sys/devices/system/node/node0/reclaim
->>      # cat /proc/vmstat | grep pgsteal
->>      pgsteal_kswapd 0
->>      pgsteal_direct 0
->>      pgsteal_khugepaged 0
->>      pgsteal_proactive 18013
->>      pgsteal_anon 337
->>      pgsteal_file 17676
->>
->> After fix (swappiness=max honored, anon pages reclaimed as expected):
->>
->>      # cat /proc/vmstat | grep pgsteal
->>      pgsteal_kswapd 0
->>      pgsteal_direct 0
->>      pgsteal_khugepaged 0
->>      pgsteal_proactive 0
->>      pgsteal_anon 0
->>      pgsteal_file 0
->>      # echo "64M swappiness=max" > /sys/devices/system/node/node0/reclaim
->>      # cat /proc/vmstat | grep pgsteal
->>      pgsteal_kswapd 0
->>      pgsteal_direct 0
->>      pgsteal_khugepaged 0
->>      pgsteal_proactive 16283
->>      pgsteal_anon 16283
->>      pgsteal_file 0
->>
->> Fixes: 68cd9050d871 ("mm: add swappiness= arg to memory.reclaim")
 >> Signed-off-by: Ridong Chen <chenridong@xiaomi.com>
+>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 > 
 > Reviewed-by: Barry Song <baohua@kernel.org>
 > 
-> As pointed out by Johannes, the Fixes tag should be
-> b980077899ea.
+> With some nits.
+> 
+>> ---
+> [...]
+>>          struct mem_cgroup_per_node *nodeinfo[];
+>> @@ -365,6 +366,9 @@ enum objext_flags {
+>>
+>>   #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
+>>
+>> +/* Defined in mm/vmscan.c; used by mem_cgroup_swappiness(). */
+>> +extern int vm_swappiness;
+> 
+> This is a bit unusual. I'm not sure whether mm/swap.h would be
+> a more appropriate place for this.
+> 
+Thank you for your reply.
 
-Hi Johannes and Barry,
-
-Thank you for your review. You are right, will update it.
+The vm_swappiness variable is not utilized within mm/swap.c. 
+Furthermore, since memcontrol.h does not include swap.h, retaining the 
+extern int vm_swappiness declaration in mm/swap.h will result in a 
+compilation failure.
 
 -- 
 Best regards
