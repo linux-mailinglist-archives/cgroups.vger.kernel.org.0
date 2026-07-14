@@ -1,45 +1,46 @@
-Return-Path: <cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17776-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id xUJaA3goVmo50QAAu9opvQ
-	(envelope-from <cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:15:52 +0200
+	id GFEgBrcpVmrJ0QAAu9opvQ
+	(envelope-from <cgroups+bounces-17776-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:21:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D65754611
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:15:51 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id F071D75473F
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 14:21:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17777-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17776-lists+cgroups=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="cgroups+bounces-17776-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=honor.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E39993004F29
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 12:15:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3C7293022A40
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2026 12:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6AA3C0633;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428D83C0606;
 	Tue, 14 Jul 2026 12:15:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mta21.hihonor.com (mta21.honor.com [81.70.160.142])
+Received: from mta20.hihonor.com (mta20.honor.com [81.70.206.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83AE3BFAE2;
-	Tue, 14 Jul 2026 12:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AD53BED42;
+	Tue, 14 Jul 2026 12:15:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784031344; cv=none; b=N8aIhMAWD3/oFjz9BIIvFfswqhCEL85ZNFj0/DErnwCnay3hoMxInLLUkUu1XFNcDDuX+mNX8ClYZVp8iHfQXGTO+Yrgigs2vmu5KeaUyCWtX6VmD+iXvCz4GxPm9sJSR11IyeV79OX4kK9apcdz+EWC3ENsyS/lOJrQvb50HPo=
+	t=1784031343; cv=none; b=dZ47tgDSKHTdUA0MzOobAJ/vBlkVPFPj574mJXxDR/2EJ/mYDTC+Md/LpZMLilH4uDHXheJllryXZh0cAy5l+8KVAX+zW+ikb+qrKpkgnRtbN0bmahFIrf7GLwnqCROvI85ichzEFLq57P9s0f+KupQyGUNBimWIWRCvnqOirYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784031344; c=relaxed/simple;
-	bh=f6X73vT6jN5sHClUY/oGE694V8DJVGQ17AUdVqnsvHU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=l+Uqg3hTp1rhgmDcjzN7e78K7QdWsxLPu5ScKZiNDGLFphaGV3tlEv+l/ydBtTLagnWDl1lf5AmRoGgvR2pBjCGGaTqlzygtIfMG6l0XwZk81NCqorG1zuzfrUkHMZm+EE6fgUOROCvk+fLIndl9d2Rsa6q8Rj4Q0KaXZ8II/Lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=honor.com; spf=pass smtp.mailfrom=honor.com; arc=none smtp.client-ip=81.70.160.142
-Received: from TW005.hihonor.com (unknown [10.72.0.123])
-	by mta21.hihonor.com (SkyGuard) with ESMTPS id 4gzytp13bjzYl7D0;
+	s=arc-20240116; t=1784031343; c=relaxed/simple;
+	bh=K5trL+Ani1qoBuWhLNtvjSFzEzNw+uYS2pyP1NmYRrI=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pjSi4jXPtSfpw/F3rokhaWv80n6Qoj+qOrrNrWQWfDlO+pbrSDLgcN66jk8N3riVqJIF1SRPkLK04t9jX639J/FaWwGHdC+JyRpXiX2Hgf44Q1IY6voeyo6Dp5qMuws8prJ0rTqXqzRAJhXbac1OISNe+GGQUmAk87Ci2zGdSBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=honor.com; spf=pass smtp.mailfrom=honor.com; arc=none smtp.client-ip=81.70.206.69
+Received: from TW003.hihonor.com (unknown [10.77.199.161])
+	by mta20.hihonor.com (SkyGuard) with ESMTPS id 4gzytp3XY4zYlLgc;
 	Tue, 14 Jul 2026 20:15:30 +0800 (CST)
-Received: from TA012-1.hihonor.com (10.77.199.132) by TW005.hihonor.com
- (10.72.0.123) with Microsoft SMTP Server (version=TLS1_2,
+Received: from TA012-1.hihonor.com (10.77.199.132) by TW003.hihonor.com
+ (10.77.199.161) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Tue, 14 Jul
- 2026 20:15:29 +0800
+ 2026 20:15:28 +0800
 Received: from localhost.localdomain (10.144.5.36) by TA012-1.hihonor.com
  (10.77.199.132) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Tue, 14 Jul
@@ -58,10 +59,12 @@ CC: <tj@kernel.org>, <hannes@cmpxchg.org>, <mkoutny@suse.com>,
 	<kaleshsingh@google.com>, <tjmercier@google.com>, <tao.wangtao@honor.com>,
 	<zhangji1@honor.com>, <wangzhen5@honor.com>, Zicheng Wang
 	<wangzicheng@honor.com>
-Subject: [RFC v2 0/3] mm/mglru: proactive aging via memory.aging
-Date: Tue, 14 Jul 2026 20:15:26 +0800
-Message-ID: <20260714121529.2237261-1-wangzicheng@honor.com>
+Subject: [RFC v2 1/3] mm/lru_gen: add AGING counter and proactive aging helper
+Date: Tue, 14 Jul 2026 20:15:27 +0800
+Message-ID: <20260714121529.2237261-2-wangzicheng@honor.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260714121529.2237261-1-wangzicheng@honor.com>
+References: <20260714121529.2237261-1-wangzicheng@honor.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,12 +80,12 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[honor.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17777-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17776-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:yuanchu@google.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:corbet@lwn.net,m:kasong@tencent.com,m:qi.zheng@linux.dev,m:shakeel.butt@linux.dev,m:baohua@kernel.org,m:axelrasmussen@google.com,m:weixugc@google.com,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:vbabka@kernel.org,m:rppt@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:cgroups@vger.kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:willy@infradead.org,m:denghaojie@honor.com,m:baoquan.he@linux.dev,m:kaleshsingh@google.com,m:tjmercier@google.com,m:tao.wangtao@honor.com,m:zhangji1@honor.com,m:wangzhen5@honor.com,m:wangzicheng@honor.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -91,7 +94,7 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[wangzicheng@honor.com,cgroups@vger.kernel.org];
@@ -102,182 +105,209 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,honor.com:from_mime,honor.com:email,honor.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 98D65754611
+X-Rspamd-Queue-Id: F071D75473F
 
-MGLRU inverts the reclaim order when anonymous memory is faulted in
-bulk: anonymous pages sit in the young generations while file pages
-sit in the oldest two, so reclaim evicts hot file pages before cold
-anonymous pages.  swappiness cannot correct it.  This series adds a
-per-cgroup proactive-aging operation, memory.aging, with the
-observability to drive it as a closed loop, so userspace can rebalance
-a cgroup's generations before reclaim runs.
+Add the two pieces the rest of the series builds on: an AGING node
+stat counter (the observation an aging policy pairs with
+workingset_refault to spot over-aging) and a reusable helper,
+lru_gen_age_memcg(), that ages a memcg by advancing max_seq without
+reclaim (the control primitive memory.aging wraps).
 
-The problem
------------
+The counter counts every pass in inc_max_seq(), regardless of caller.
+The helper mirrors lru_gen_seq_write()'s reclaim_state /
+memalloc_noreclaim / mm_walk setup; swappiness comes from
+get_swappiness() so anon is not rotated without swap, and a racing
+lruvec is skipped (-EAGAIN) without blocking other nodes.
 
-MGLRU places pages by access path, not hotness.  On the current tree
-the entry rules in lru_gen_folio_seq() give:
+Gated by CONFIG_LRU_GEN.  No user-visible change yet.
 
-  - faulted-in pages (anonymous pages; the fault path sets the active
-    mark) land at the 2nd youngest generation (max_seq - 1);
-  - file pages from read()/fadvise() land in the oldest two
-    generations: non-workingset at min_seq, workingset at min_seq + 1.
+Signed-off-by: Zicheng Wang <wangzicheng@honor.com>
+---
+ include/linux/mmzone.h |  3 ++
+ mm/internal.h          |  4 +++
+ mm/memcontrol.c        |  9 +++++
+ mm/vmscan.c            | 80 ++++++++++++++++++++++++++++++++++++++++++
+ mm/vmstat.c            |  3 ++
+ 5 files changed, 99 insertions(+)
 
-Pictorially, for a full four-generation window::
-
-       youngest                          oldest
-       max_seq   max_seq-1   min_seq+1   min_seq
-       -------------------------------------------
- anon    .          X           .           .     (faulted in)
- file    .          .           X           X     (read/fadvise)
-                                            ^
-                              reclaim scans from here -> evicts file first
-
-Reclaim scans from min_seq, so file pages are evicted before the
-anonymous pages two generations younger, a hot/cold inversion.
-
-swappiness does not fix it: it only selects which type to scan, not
-the ordering within a type, so reclaim can still evict hot pages.
-swappiness=201 (SWAPPINESS_ANON_ONLY) just flips the inversion to the
-other side: no value recovers a correct hot/cold order, because the
-order comes from the access path, not access recency [1].  This is not
-Android-specific; the same file over-reclaim is shown on servers and
-worked around there by forcing an age iteration before reclaim.
-
-Why userspace-driven
---------------------
-
-The benefit is workload-dependent: file-cache-bound servers gain from
-aging, anon-bound servers do not, so no kernel default is correct for
-all.  The kernel also cannot know when to age: on Android the right
-moment is the foreground-to-background transition, when the app's pages
-are cold but their PTE accessed bits are still accurate from foreground
-execution, a framework concept.  The kernel therefore provides the
-mechanism; userspace runs the loop.
-
-Design: observation and control
--------------------------------
-
-The series gives userspace one control primitive and the observation to
-use it.  All three pieces are per-cgroup and gated by CONFIG_LRU_GEN,
-and together they form a closed loop:
-
-  control   memory.aging          write nr_gens to advance max_seq without
-                                  reclaim; the aging counterpart of
-                                  memory.reclaim
-  observe   nr_oldest_anon/file   pages in the oldest generation of each
-                                  type: what the next reclaim can evict
-            aging                 number of aging passes, paired with
-                                  workingset_refault to spot over-aging
-
-A policy reads nr_oldest_* to see whether anon is sheltered, ages with
-memory.aging, then checks the aging counter and workingset_refault.
-A typical flow ages to rebalance, then reclaims::
-
-    echo 2 > /sys/fs/cgroup/foo/memory.aging
-    echo "100M" > /sys/fs/cgroup/foo/memory.reclaim
-
-Why cgroup v2
--------------
-
-memory.reclaim already lives in cgroup v2, but it is broken when
-anonymous pages are sheltered in the young generations: reclaim cannot
-reach anon until aging advances it.  A useful memory.reclaim therefore
-requires aging first.  Aging is not a new MGLRU detail leaked into
-cgroup v2; it is the other half of the proactive-reclaim operation
-cgroup v2 already exposes.  Putting it anywhere else (sysfs) cuts one
-operation across two ABIs and two addressing models.
-
-memory.aging is gated by CONFIG_LRU_GEN and exposes one primitive
-(advancing the generation), not internal data structures; if MGLRU is
-removed, the file goes with it.
-
-Alternatives considered
------------------------
-
-1) sysfs (/sys/kernel/mm/lru_gen/) fights sysfs's one-value-per-file,
-stateless model: the command is multi-argument and per-(memcg,node),
-the read is parameterized per memcg, and css-id addressing is hostile
-to cgroup paths.  It also splits aging from memory.reclaim.
-
-2) in-kernel automatic aging is workload-dependent (memcached regresses)
-and needs a trigger the kernel cannot know: the Android
-foreground-to-background moment is a framework concept.  MGLRU had this
-once: `should_run_aging' fired on a generation-balance heuristic::
-
-    if (young * MIN_NR_GENS > total)
-        return true;
-    if (old * (MIN_NR_GENS + 2) < total)
-        return true;
-
-
-3) extending memory.reclaim to run the debugfs aging command
-(`+ memcg_id node_id seq`) overloads a reclaim file with a non-reclaim
-operation and pulls MGLRU's debugfs command syntax into a generic
-cgroup v2 ABI. But Aging is reclaim's counterpart, not one of its modes.
-
-Results
--------
-N39 (Device-X1 8 GB/SM7750, Device-X2 12 GB/SM8750).  Production telemetry,
-~300 users, 30K+ device-hours:
-    keep-alive          +15.4% (8 GB) / +10.2% (12 GB)
-    IME dismiss latency -47.2%
-    launch/exit jank >50ms   eliminated
-    one aging pass      342 us median, never on a UX thread
-
-AN90 (a new shipping product, separate from N39):
-    scroll jank >50 ms  -22%, severe jank -26%
-    cold-launch stalls >= 3 s  eliminated
-    workingset_refault (anon + file) and direct reclaim both down
-
-Server (Intel i7-14700F, 20C/28T, 32 GB DDR5-5600, 1 TB NVMe,
-Ubuntu 24.04; same root cause, aging triggered on the
-reclaim path when anon in the oldest gen ratio < 10%):
-    fio random-read     +31.8%
-    ripgrep             +15.8%
-    memcached           -1.2%   (anon-bound; expected no gain)
-
-N39 and AN90 are different products.
-
-Why RFC
--------
-
-v1 [2] put the control in procfs/debugfs and was NAKed for the
-cgroup-v2 venue.  This version keeps aging in cgroup v2, next to
-memory.reclaim, and argues why above.  Discussed at LSF/MM 2026 [3].
-
-[1] swappiness=0/201 hot/cold inversion, and why the straightforward
-    fix is deferred:
-    https://lore.kernel.org/linux-mm/7829b070df1b405dbc97dd6a028d8c8a@honor.com/
-[2] v1: https://lore.kernel.org/linux-mm/20251128025315.3520689-1-wangzicheng@honor.com/
-[3] LSF/MM 2026 slides:
-    https://docs.google.com/presentation/d/1hUogz6InyLn13c8CjHuvEIzE4rT7saVRUV6xpWZoNfQ/
-
-Changes since v1
-----------------
-
-- Dropped the debugfs -> procfs move; aging is now a cgroup v2 file.
-- Added the AGING counter and nr_oldest_anon/file observability.
-- Corrected the generation-placement description to the current tree
-  (faults at the 2nd youngest, file in the oldest two).
-
-Zicheng Wang (3):
-  mm/lru_gen: add AGING counter and proactive aging helper
-  mm: memcontrol: add memory.aging cgroup v2 file
-  mm/lru_gen: expose oldest-generation page counts in memory.stat
-
- Documentation/admin-guide/cgroup-v2.rst       |  53 +++++++++++
- Documentation/admin-guide/mm/multigen_lru.rst |  13 +++
- include/linux/mmzone.h                        |   3 +
- mm/internal.h                                 |  19 +++++
- mm/memcontrol.c                               |  63 +++++++++++
- mm/vmscan.c                                   | 109 +++++++++++++++++++++
- mm/vmstat.c                                   |   3 +
- 7 files changed, 263 insertions(+)
-
---
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 9adb2ad21da5..ab5137c272ca 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -323,6 +323,9 @@ enum node_stat_item {
+ 	PGSCAN_ANON,
+ 	PGSCAN_FILE,
+ 	PGREFILL,
++#ifdef CONFIG_LRU_GEN
++	AGING,
++#endif
+ #ifdef CONFIG_HUGETLB_PAGE
+ 	NR_HUGETLB,
+ #endif
+diff --git a/mm/internal.h b/mm/internal.h
+index 5a2ddcf68e0b..96add6cd4627 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -634,6 +634,10 @@ extern void reclaim_throttle(pg_data_t *pgdat, enum vmscan_throttle_state reason
+ int user_proactive_reclaim(char *buf,
+ 			   struct mem_cgroup *memcg, pg_data_t *pgdat);
+ 
++#ifdef CONFIG_LRU_GEN
++int lru_gen_age_memcg(struct mem_cgroup *memcg, unsigned long nr_gens);
++#endif
++
+ /*
+  * in mm/rmap.c:
+  */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d978e18b9b2d..e42f97e004b6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -420,6 +420,9 @@ static const unsigned int memcg_node_stat_items[] = {
+ 	PGSCAN_ANON,
+ 	PGSCAN_FILE,
+ 	PGREFILL,
++#ifdef CONFIG_LRU_GEN
++	AGING,
++#endif
+ #ifdef CONFIG_HUGETLB_PAGE
+ 	NR_HUGETLB,
+ #endif
+@@ -1606,6 +1609,9 @@ static const struct memory_stat memory_stats[] = {
+ #ifdef CONFIG_NUMA_BALANCING
+ 	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
+ #endif
++#ifdef CONFIG_LRU_GEN
++	{ "aging",		AGING	},
++#endif
+ };
+ 
+ /* The actual unit of the state item, not the same as the output unit */
+@@ -1655,6 +1661,9 @@ static int memcg_page_state_output_unit(int item)
+ 	case PGSCAN_KHUGEPAGED:
+ 	case PGSCAN_PROACTIVE:
+ 	case PGREFILL:
++#ifdef CONFIG_LRU_GEN
++	case AGING:
++#endif
+ #ifdef CONFIG_NUMA_BALANCING
+ 	case PGPROMOTE_SUCCESS:
+ #endif
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b3e555561417..805e29c499c8 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -3987,6 +3987,9 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
+ 	WRITE_ONCE(lrugen->timestamps[next], jiffies);
+ 	/* make sure preceding modifications appear */
+ 	smp_store_release(&lrugen->max_seq, lrugen->max_seq + 1);
++
++	/* Count every aging pass for over-aging diagnosis. */
++	mod_lruvec_state(lruvec, AGING, 1);
+ unlock:
+ 	lruvec_unlock_irq(lruvec);
+ 
+@@ -5855,6 +5858,83 @@ static int __init init_lru_gen(void)
+ };
+ late_initcall(init_lru_gen);
+ 
++/**
++ * lru_gen_age_memcg - Proactively age a memcg by N generations
++ * @memcg: target memcg
++ * @nr_gens: number of generations to age (1..MAX_NR_GENS)
++ *
++ * Advances max_seq without page reclaim on all nodes of @memcg, using
++ * the same lock/walk protocol as lru_gen_seq_write().  Swappiness comes
++ * from get_swappiness() so anon rotation is skipped without swap.
++ * to the next node.
++ *
++ * Return: 0 on success, -EINVAL on bad input, -EAGAIN if a lruvec did
++ * not advance, -ENOMEM on mm_walk failure, -EINTR on signal.
++ */
++int lru_gen_age_memcg(struct mem_cgroup *memcg, unsigned long nr_gens)
++{
++	struct scan_control sc = {
++		.may_writepage = true,
++		.may_unmap = true,
++		.may_swap = true,
++		.reclaim_idx = MAX_NR_ZONES - 1,
++		.gfp_mask = GFP_KERNEL,
++		.proactive = true,
++	};
++	int nid, swappiness;
++	unsigned long i;
++	int ret = 0;
++	unsigned int flags;
++	struct blk_plug plug;
++	struct lruvec *lruvec;
++
++	if (!memcg)
++		return -EINVAL;
++
++	if (nr_gens == 0 || nr_gens > MAX_NR_GENS)
++		return -EINVAL;
++
++	set_task_reclaim_state(current, &sc.reclaim_state);
++	flags = memalloc_noreclaim_save();
++	blk_start_plug(&plug);
++	if (!set_mm_walk(NULL, true)) {
++		ret = -ENOMEM;
++		goto done;
++	}
++
++	for_each_node_state(nid, N_MEMORY) {
++		if (signal_pending(current)) {
++			ret = -EINTR;
++			goto done;
++		}
++
++		lruvec = get_lruvec(memcg, nid);
++		if (!lruvec)
++			continue;
++
++		swappiness = get_swappiness(lruvec, &sc);
++
++		for (i = 0; i < nr_gens; i++) {
++			DEFINE_MAX_SEQ(lruvec);
++
++			if (!try_to_inc_max_seq(lruvec, max_seq,
++						swappiness, false)) {
++				ret = -EAGAIN;
++				break;
++			}
++		}
++
++		cond_resched();
++	}
++
++done:
++	clear_mm_walk();
++	blk_finish_plug(&plug);
++	memalloc_noreclaim_restore(flags);
++	set_task_reclaim_state(current, NULL);
++	return ret;
++}
++
+ #else /* !CONFIG_LRU_GEN */
+ 
+ static void lru_gen_age_node(struct pglist_data *pgdat, struct scan_control *sc)
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index f534972f517d..78ea093428c7 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1290,6 +1290,9 @@ const char * const vmstat_text[] = {
+ 	[I(PGSCAN_ANON)]			= "pgscan_anon",
+ 	[I(PGSCAN_FILE)]			= "pgscan_file",
+ 	[I(PGREFILL)]				= "pgrefill",
++#ifdef CONFIG_LRU_GEN
++	[I(AGING)]			= "aging",
++#endif
+ #ifdef CONFIG_HUGETLB_PAGE
+ 	[I(NR_HUGETLB)]				= "nr_hugetlb",
+ #endif
+-- 
 2.25.1
 
 
