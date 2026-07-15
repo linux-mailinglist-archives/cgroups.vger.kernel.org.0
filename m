@@ -1,203 +1,299 @@
-Return-Path: <cgroups+bounces-17845-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id fzlABMtdV2rsKQEAu9opvQ
-	(envelope-from <cgroups+bounces-17845-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:15:39 +0200
+	id oU+/HodiV2pmKwEAu9opvQ
+	(envelope-from <cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:35:51 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7383C75CD63
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:15:38 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id E524275D0BB
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:35:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=lGHDqt5V;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17845-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17845-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=lWVjevAk;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1260930DF44D
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 10:11:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E255F3018429
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 10:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94D243E488;
-	Wed, 15 Jul 2026 10:11:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24987442137;
+	Wed, 15 Jul 2026 10:35:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9057243F4BE;
-	Wed, 15 Jul 2026 10:11:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412AB44211D
+	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 10:35:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784110286; cv=none; b=GU2xHX4TKJ8BoAiJazN1unYUubBffC6Ta5B4oI80izDUtekIDlwqaO3sfi1TB5pfzHa+HOeZyMbDNDmGPHt/4h+YSfPYod8CAaGMfhc0JoZ2frT683FMNqlSX3iPBK/BwxJqsoBoFzYmGYWPtTlpFZqoXGB1qi/YtEhafVOBvXc=
+	t=1784111740; cv=none; b=ObgSXA4ms7F7icIvaMwHBQMb/PxuIa1BkDJhGbdYDs4U7WxT6Rf+ZOD8Nbuyy/1WgUPZPeOsFrdOYDBS4/o08OWvRTjgIm9xUwbvW6mfD+jBT7bc+uvmLIPzLoIy/SaHEFxTyuMp7ggeLdBAZQi51ddLYhcdjBW32n7OgWZQTSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784110286; c=relaxed/simple;
-	bh=O0CIznq26Ds2kUKsMvzrT8Dx5jQK5mnuzi2ty7qEc0g=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HW/ggma22lmkTOrelZPYw1j+J6MWy4hpqDc6QB0duZRkDedNEHHOBYHVNwYWPqqv5ima3xBY3r60wgnGXi8xK+ASNFaJT0thW++rX0EERbqK217BDJBE16lym8fRISY2vYZma5MmRU3w/Y2ESXuI2FejRYbmQuOMIYxB+MGsfR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGHDqt5V; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 831751F00A3A;
-	Wed, 15 Jul 2026 10:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784110285;
-	bh=sxiKNmbJD7zBEkDQUyHwImzWMYztIT9SravkSnuQT8g=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=lGHDqt5VwPjEwT8kk2s3Ys3pWyu6FyVPdbFgHVC0vlQvErAZH6PxAPutt7waAvKb1
-	 sPYK5/rI9F0AP/MopFYh0hscAsBpuqgr9stRYMtsJLwEx5cZFa2CqqG2BtumyMr4RQ
-	 /hdyfFlwdEVyK6CqDt6Aw3di232txGDH7dTfQYIH4cBQr03QpcwYOFZFhSRChqb3QA
-	 oKJxtdn3g/R09HDdzGF+jWLF6W1mxKlW5KU5aG4hwofplZUCD62EZib4C+NScRzNck
-	 jrdi2vF5fS7y4GuXcuUiRVEi3CLpi8hW41rXZHlemscDJhmv5TF+l4h6MGNDHxZNbj
-	 BMiRwr9Ga9v0g==
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Wed, 15 Jul 2026 12:10:52 +0200
-Subject: [PATCH RFC 12/12] mm/slab: stop allocating objcg pointers when
- unnecessary
+	s=arc-20240116; t=1784111740; c=relaxed/simple;
+	bh=SwdezaImxQcMt43h0jRN9TZ6bt6yTKaTU02f07mkxsA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aV40SsjYD8kCCYOA/+iIU7RL1LcZrlvXCufUlU6k5X86u4J+jSWyPaCkfl2M5Ticg1tidZeqxNSXs1qsfrUeVx/65TfdgD/Rc+N7HaTms00gqkUkmrIHR3K1wpgKDnjF8o+Pe9MUsM1zUENajfvgt/07PVX+6E+t4CUTZ4a/TJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lWVjevAk; arc=none smtp.client-ip=91.218.175.171
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1784111726;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=0PjHU3TbDnfGWF+iD96TKWS2XZ53YHp9da69Ponf0rw=;
+	b=lWVjevAkYZ064aFltJs8lMrrHhbvW3jfDDXTJNUk7br0vYrO703lDuTQkLrrB6DW2oxclA
+	CDTz4ntBIHKH7+v1OXbDtlB7q9AuF4Y9XDGtBTQ8/JYqvFRDPp3/uFjWpytuv6YlkxJ9HI
+	zsJlgnUW59RhgT+41ErbmMD+ZA0Uy4k=
+From: Usama Arif <usama.arif@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	david@fromorbit.com,
+	dgc@kernel.org,
+	qi.zheng@linux.dev,
+	baolin.wang@linux.alibaba.com,
+	brauner@kernel.org,
+	cgroups@vger.kernel.org,
+	clm@fb.com,
+	dsterba@suse.com,
+	hannes@cmpxchg.org,
+	hughd@google.com,
+	jack@suse.cz,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	mhocko@kernel.org,
+	muchun.song@linux.dev,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	kernel-team@meta.com
+Cc: Usama Arif <usama.arif@linux.dev>
+Subject: [PATCH v2] fs: push nr_cached_objects memcg gating into individual filesystems
+Date: Wed, 15 Jul 2026 03:35:16 -0700
+Message-ID: <20260715103516.2410175-1-usama.arif@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260715-b4-objext_split-v1-12-9a49c4ccf4c3@kernel.org>
-References: <20260715-b4-objext_split-v1-0-9a49c4ccf4c3@kernel.org>
-In-Reply-To: <20260715-b4-objext_split-v1-0-9a49c4ccf4c3@kernel.org>
-To: Harry Yoo <harry@kernel.org>, Suren Baghdasaryan <surenb@google.com>
-Cc: Hao Li <hao.li@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
- Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
- Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org, 
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-X-Mailer: b4 0.15.2
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:surenb@google.com,m:hao.li@linux.dev,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:akpm@linux-foundation.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:vbabka@kernel.org,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-17845-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-17846-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@fromorbit.com,m:dgc@kernel.org,m:qi.zheng@linux.dev,m:baolin.wang@linux.alibaba.com,m:brauner@kernel.org,m:cgroups@vger.kernel.org,m:clm@fb.com,m:dsterba@suse.com,m:hannes@cmpxchg.org,m:hughd@google.com,m:jack@suse.cz,m:linux-btrfs@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:mhocko@kernel.org,m:muchun.song@linux.dev,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:viro@zeniv.linux.org.uk,m:kernel-team@meta.com,m:usama.arif@linux.dev,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim,suse.cz:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7383C75CD63
+X-Rspamd-Queue-Id: E524275D0BB
 
-Start using the slab_needs_objcg() helper to calculate slabobj_ext size.
-Caches that we know to never need objcg pointers (currently
-KMALLOC_NORMAL caches) will thus stop wasting memory on them when memory
-allocation profiling is enabled.
+Commit 0baad6f9b997 ("fs/super: skip non-memcg-aware nr_cached_objects
+in memcg slab shrink") added a check in fs/super.c that skipped every
+->nr_cached_objects() hook whenever the shrinker was invoked for a
+non-root memcg, on the assumption that none of them honour sc->memcg.
 
-For things to work properly, we need to also add slab_needs_objcg()
-checks to mem_cgroup_from_obj_slab() and memcg_slab_free_hook(), because
-when obj_exts array exists for a slab only due to mem_alloc profiling,
-we would otherwise attempt to access a non-existing objcg pointer in
-that slab.
+That assumption is wrong for XFS, whose inode-reclaim hook is
+intentionally driven from per-memcg contexts to free memcg-charged
+slab. Encoding a blanket "never memcg-aware" policy in fs/super.c
+short-circuits that path.
 
-The function __memcg_slab_post_alloc_hook() should not be possible to
-call for a slab where slab_needs_objcg() is false, but add a DEBUG_VM
-check there to prevent breaking this assumption accidentally.
+Push the check down into the callbacks whose counters really are
+irrelevant to per-memcg reclaim - btrfs_nr_cached_objects() and
+shmem_unused_huge_count() - and drop the fs/super.c gate. Each
+filesystem can now lift the restriction independently if its counter
+later grows memcg awareness, without touching fs/super.c.
 
-Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Introduce mem_cgroup_shrink_is_root() in <linux/memcontrol.h> so the
+callbacks don't open-code "sc->memcg is NULL or root".
+
+Fixes: 0baad6f9b997 ("fs/super: skip non-memcg-aware nr_cached_objects in memcg slab shrink")
+Acked-by: Qi Zheng <qi.zheng@linux.dev>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Usama Arif <usama.arif@linux.dev>
 ---
- mm/memcontrol.c |  6 ++++++
- mm/slab.h       | 12 ++++++++++--
- mm/slub.c       |  3 +++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+v1 -> v2:
+- Do not gate xfs_fs_nr_cached_objects(); XFS's inode reclaim is
+  intentionally driven from per-memcg contexts to free memcg-charged
+  slab (Dave Chinner).
+- Add mem_cgroup_shrink_is_root() helper in <linux/memcontrol.h> so the
+  filesystem callbacks don't open-code "sc->memcg is NULL or root".
+  (Dave Chinner)
+- Add fixes tag (Dave Chinner)
+---
+ fs/btrfs/super.c           | 10 ++++++++++
+ fs/super.c                 | 19 ++-----------------
+ include/linux/memcontrol.h | 21 +++++++++++++++++++++
+ mm/shmem.c                 | 10 ++++++++++
+ 4 files changed, 43 insertions(+), 17 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6303a2b1a9d0..09659722ec85 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2871,6 +2871,9 @@ struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
- 	if (!obj_exts)
- 		return NULL;
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index a7d804219bec..cc4537435399 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -22,6 +22,7 @@
+ #include <linux/namei.h>
+ #include <linux/miscdevice.h>
+ #include <linux/magic.h>
++#include <linux/memcontrol.h>
+ #include <linux/slab.h>
+ #include <linux/ratelimit.h>
+ #include <linux/crc32c.h>
+@@ -2434,6 +2435,15 @@ static long btrfs_nr_cached_objects(struct super_block *sb, struct shrink_contro
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
+ 	const s64 nr = percpu_counter_read_positive(&fs_info->evictable_extent_maps);
  
-+	if (!slab_needs_objcg(slab))
-+		return NULL;
++	/*
++	 * The evictable extent map counter is filesystem-global and does not
++	 * honour sc->memcg, so it is only meaningful on the global (kswapd or
++	 * root direct reclaim) shrink path. Skip the per-memcg iterations of
++	 * shrink_slab_memcg() to avoid queueing duplicate global work.
++	 */
++	if (!mem_cgroup_shrink_is_root(sc))
++		return 0;
 +
- 	get_slab_obj_exts(obj_exts);
- 	obj_ext = slab_obj_ext(slab->slab_cache, slab, obj_exts, p);
- 	objcg = *slab_obj_ext_objcgp(obj_ext);
-@@ -3581,6 +3584,9 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+ 	trace_btrfs_extent_map_shrinker_count(fs_info, nr);
  
- 		slab = virt_to_slab(p[i]);
- 
-+		if (IS_ENABLED(CONFIG_DEBUG_VM) && WARN_ON_ONCE(!slab_needs_objcg(slab)))
-+			continue;
-+
- 		if (!slab_obj_exts(slab) &&
- 		    alloc_slab_obj_exts(slab, s, flags, slab_alloc_flags)) {
- 			continue;
-diff --git a/mm/slab.h b/mm/slab.h
-index 948d075cdbef..072cc2506756 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -622,7 +622,15 @@ static inline size_t static_obj_ext_size(void)
- 
- static inline size_t slab_obj_ext_size(struct slab *slab)
- {
--	return static_obj_ext_size();
-+	size_t sz = 0;
-+
-+	if (slab_needs_objcg(slab))
-+		sz += 1;
-+
-+	if (slab_obj_ext_has_codetag())
-+		sz += 1;
-+
-+	return sizeof(struct slabobj_ext) * sz;
+ 	return nr;
+diff --git a/fs/super.c b/fs/super.c
+index d2d04a6f4f84..a8fd61136aaf 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -24,7 +24,6 @@
+ #include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/blkdev.h>
+-#include <linux/memcontrol.h>
+ #include <linux/mount.h>
+ #include <linux/security.h>
+ #include <linux/writeback.h>		/* for the emergency remount stuff */
+@@ -170,19 +169,6 @@ static void super_wake(struct super_block *sb, unsigned int flag)
+ 	wake_up_var(&sb->s_flags);
  }
  
- #ifdef CONFIG_SLAB_OBJ_EXT
-@@ -741,7 +749,7 @@ static inline struct obj_cgroup **slab_obj_ext_objcgp(struct slabobj_ext *obj_ex
- static inline union codetag_ref *
- slab_obj_ext_codetag_ref(struct slab *slab, struct slabobj_ext *obj_ext)
- {
--	if (IS_ENABLED(CONFIG_MEMCG))
-+	if (slab_needs_objcg(slab))
- 		obj_ext += 1;
+-/*
+- * The s_op->nr_cached_objects hooks (used for example by btrfs and xfs)
+- * operate on filesystem-global state and ignore sc->memcg. Driving them
+- * from per-memcg shrink_slab_memcg() invocations only burns CPU walking
+- * per-cpu counters and queueing duplicate work: the actual reclaim happens on
+- * the global path (kswapd or root direct reclaim) regardless. Restrict them
+- * to that path.
+- */
+-static inline bool super_fs_objects_eligible(struct shrink_control *sc)
+-{
+-	return !sc->memcg || mem_cgroup_is_root(sc->memcg);
+-}
+-
+ /*
+  * One thing we have to be careful of with a per-sb shrinker is that we don't
+  * drop the last active reference to the superblock from within the shrinker.
+@@ -212,7 +198,7 @@ static unsigned long super_cache_scan(struct shrinker *shrink,
+ 	if (!super_trylock_shared(sb))
+ 		return SHRINK_STOP;
  
- 	return &obj_ext->_ctref;
-diff --git a/mm/slub.c b/mm/slub.c
-index 771d73abacb6..09c4931e5435 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2503,6 +2503,9 @@ void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
- 	if (likely(!obj_exts))
- 		return;
+-	if (sb->s_op->nr_cached_objects && super_fs_objects_eligible(sc))
++	if (sb->s_op->nr_cached_objects)
+ 		fs_objects = sb->s_op->nr_cached_objects(sb, sc);
  
-+	if (!slab_needs_objcg(slab))
-+		return;
+ 	inodes = list_lru_shrink_count(&sb->s_inode_lru, sc);
+@@ -273,8 +259,7 @@ static unsigned long super_cache_count(struct shrinker *shrink,
+ 		return 0;
+ 	smp_rmb();
+ 
+-	if (sb->s_op && sb->s_op->nr_cached_objects &&
+-	    super_fs_objects_eligible(sc))
++	if (sb->s_op && sb->s_op->nr_cached_objects)
+ 		total_objects = sb->s_op->nr_cached_objects(sb, sc);
+ 
+ 	total_objects += list_lru_shrink_count(&sb->s_dentry_lru, sc);
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e1f46a0016fc..5407e4200460 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -520,6 +520,22 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+ 	return (memcg == root_mem_cgroup);
+ }
+ 
++/**
++ * mem_cgroup_shrink_is_root - is this a global or root-memcg shrink invocation?
++ * @sc: shrink_control describing the current shrinker call
++ *
++ * Returns true when @sc represents a global reclaim shrink (sc->memcg == NULL)
++ * or a root-memcg shrink, i.e. not a per-memcg iteration of
++ * shrink_slab_memcg(). Filesystems whose ->nr_cached_objects()/
++ * ->free_cached_objects() implementations operate on filesystem-global state
++ * and do not honour sc->memcg can use this to early-return 0 in per-memcg
++ * contexts.
++ */
++static inline bool mem_cgroup_shrink_is_root(struct shrink_control *sc)
++{
++	return !sc->memcg || mem_cgroup_is_root(sc->memcg);
++}
 +
- 	get_slab_obj_exts(obj_exts);
- 	__memcg_slab_free_hook(s, slab, p, objects, obj_exts);
- 	put_slab_obj_exts(obj_exts);
-
+ static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
+ {
+ 	return objcg->is_root;
+@@ -1071,6 +1087,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+ 	return true;
+ }
+ 
++static inline bool mem_cgroup_shrink_is_root(struct shrink_control *sc)
++{
++	return true;
++}
++
+ static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
+ {
+ 	return true;
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 5789a0f5a346..dc8cd4f563f4 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -846,6 +846,16 @@ static long shmem_unused_huge_count(struct super_block *sb,
+ 		struct shrink_control *sc)
+ {
+ 	struct shmem_sb_info *sbinfo = SHMEM_SB(sb);
++
++	/*
++	 * The per-superblock shrinklist is filesystem-global and does not
++	 * honour sc->memcg, so it is only meaningful on the global (kswapd or
++	 * root direct reclaim) shrink path. Skip the per-memcg iterations of
++	 * shrink_slab_memcg() to avoid queueing duplicate global work.
++	 */
++	if (!mem_cgroup_shrink_is_root(sc))
++		return 0;
++
+ 	return READ_ONCE(sbinfo->shrinklist_len);
+ }
+ #else /* !CONFIG_TRANSPARENT_HUGEPAGE */
 -- 
-2.55.0
+2.53.0-Meta
 
 
