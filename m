@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-17819-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17820-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 4dCMIXseV2pJFgEAu9opvQ
-	(envelope-from <cgroups+bounces-17819-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 07:45:31 +0200
+	id K1uWFCMiV2rzFgEAu9opvQ
+	(envelope-from <cgroups+bounces-17820-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 08:01:07 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 248C575ABCC
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 07:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C082775AD03
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 08:01:06 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17819-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17819-lists+cgroups=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17820-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17820-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=lge.com (policy=none);
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6564D303F2B4
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 05:45:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 544563041793
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 06:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8338733C192;
-	Wed, 15 Jul 2026 05:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8393624C3;
+	Wed, 15 Jul 2026 06:00:13 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo11.lge.com (lgeamrelo11.lge.com [156.147.23.51])
+Received: from lgeamrelo13.lge.com (lgeamrelo13.lge.com [156.147.23.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184843603DD
-	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 05:45:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB7F3B8407
+	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 06:00:10 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784094323; cv=none; b=dfC0ngqM31M8z5ctTzpE7rUwUFZon80kJZoAeOHWJ7gaRjlHQW02yhiPg/GkSdNGZHpUtApPIxsm9cVdWXq79asPExpnBGZz4tzHhSqlOG8rWy2A7+rRnpR2nHF1lRWop0bH5Za9XuaQbsE5xazxvImiM5kq5WYPc8OS7PFNHRY=
+	t=1784095213; cv=none; b=fGocOXixmjd3WKG55A0T3/b54vfuqaTkrzch28hT8kBLFd1qI68Qu2ja00HujLUCr8pZZG9Gp7I0OnUtg+9KAmg44lZR1LK4Ev6/OmT6s/nL1AqG+p9HkkPyrPwUovAvTO87qSx7jiifJvgJLxxTnvc0ujTvt0XpOaHdZRHu/4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784094323; c=relaxed/simple;
-	bh=Hm28BIe/+uU9DHL2MN8bkkIP3QkbTize3Ism2MWR+1c=;
+	s=arc-20240116; t=1784095213; c=relaxed/simple;
+	bh=eSNsvkcvE6JKJNwmVFw3JfTZhkZlxVISlOSZiTBrCyg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PJFnamCfZnzBCW3OW29/uf+DRdHbopSVE2XlmfD9Pdyp6joCUBzj4uplSyT5xrD/hYJALfcrjW4vKqvLLnGfk2vorwtGka7rLjlQD2d4Gq4is6iJLr0KaixjlUeQiC8HVf7BYZv6vhuCU8xRP0JeD8RkEubU/falEODICxg7vZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.23.51
-Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
-	by 156.147.23.51 with ESMTP; 15 Jul 2026 14:45:16 +0900
-X-Original-SENDERIP: 156.147.1.127
+	 Content-Type:Content-Disposition:In-Reply-To; b=t+8ayKK9J/EAi1xUeleD5r9AP2lsn+QvY8hjYUBbX3L3EM2mPQtDAfARBXvFpY5T3JjDV0mht65ck6SNqv6OLeEFvSODMkl7tLSfeGWo6vmnJlQAzs1di0sntWxehRLCVUzt1pXrO7pibN6yAwcRyHWnbL3VticBgNXhMUlGTGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.23.53
+Received: from unknown (HELO lgemrelse6q.lge.com) (156.147.1.121)
+	by 156.147.23.53 with ESMTP; 15 Jul 2026 14:57:53 +0900
+X-Original-SENDERIP: 156.147.1.121
 X-Original-MAILFROM: youngjun.park@lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.1.127 with ESMTP; 15 Jul 2026 14:45:16 +0900
+	by 156.147.1.121 with ESMTP; 15 Jul 2026 14:57:53 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
-Date: Wed, 15 Jul 2026 14:45:16 +0900
+Date: Wed, 15 Jul 2026 14:57:53 +0900
 From: Youngjun Park <youngjun.park@lge.com>
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org,
@@ -55,13 +55,15 @@ Cc: Yosry Ahmed <yosry@kernel.org>, akpm@linux-foundation.org,
 	baver.bae@lge.com, her0gyugyu@gmail.com
 Subject: Re: [PATCH v10 0/6] mm/swap, memcg: Introduce swap tiers for cgroup
  based swap control
-Message-ID: <alcebHobUCUyO70k@yjaykim-PowerEdge-T330>
+Message-ID: <alchYX43oV9KybWx@yjaykim-PowerEdge-T330>
 References: <20260713025644.170839-1-youngjun.park@lge.com>
  <CAO9r8zNJfhirbzvJzDWRaBQOM7XZcf_Jk0Bz=Y4dB4QK4W-MwQ@mail.gmail.com>
  <alUK8DWRy4LPxTpY@yjaykim-PowerEdge-T330>
  <CAO9r8zPvWKgQ8+ABxSnVnC452-enyMqCjBTA4pfNDVxsoJr25g@mail.gmail.com>
  <alUQ0ksPP00PVwew@yjaykim-PowerEdge-T330>
  <alae-LIRwEFUjgs1@linux.dev>
+ <CAO9r8zNfp-T19cYyZxKHBY-FnmQ_9=fbP4JYPPFgYtUCo5fZyg@mail.gmail.com>
+ <alawYov0c7a0Q6_l@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -70,7 +72,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alae-LIRwEFUjgs1@linux.dev>
+In-Reply-To: <alawYov0c7a0Q6_l@linux.dev>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.64 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -81,7 +83,7 @@ X-Spamd-Result: default: False [0.64 / 15.00];
 	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-17819-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17820-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:shakeel.butt@linux.dev,m:yosry@kernel.org,m:akpm@linux-foundation.org,m:chrisl@kernel.org,m:linux-mm@kvack.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:kasong@tencent.com,m:hannes@cmpxchg.org,m:mhocko@kernel.org,m:roman.gushchin@linux.dev,m:muchun.song@linux.dev,m:shikemeng@huaweicloud.com,m:baoquan.he@linux.dev,m:baohua@kernel.org,m:joshua.hahnjy@gmail.com,m:gunho.lee@lge.com,m:taejoon.song@lge.com,m:hyungjun.cho@lge.com,m:baver.bae@lge.com,m:her0gyugyu@gmail.com,m:joshuahahnjy@gmail.com,s:lists@lfdr.de];
@@ -103,151 +105,80 @@ X-Spamd-Result: default: False [0.64 / 15.00];
 	R_DKIM_NA(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,lge.com:from_mime,yjaykim-PowerEdge-T330:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 248C575ABCC
+X-Rspamd-Queue-Id: C082775AD03
 
-On Tue, Jul 14, 2026 at 01:44:28PM -0700, Shakeel Butt wrote:
-> Hi Youngjun,
-> 
-> Thanks for keep pushing this effort.
-
-Hi Shakeel
-Huge thanks again for suggestion.
-
-> > Right, that's the plan.
+On Tue, Jul 14, 2026 at 03:25:40PM -0700, Shakeel Butt wrote:
+> On Tue, Jul 14, 2026 at 01:52:14PM -0700, Yosry Ahmed wrote:
+> [...]
+> > >
+> > > Yosry, what is needed to enable zswap as a swap tier? What will be the minimum
+> > > requirements for that?
 > > 
-> > > but I would check all
-> > > user-visible behaviors related to zswap (e.g. interaction with other
-> > > zswap interfaces) to make sure nothing breaks or changes in a
-> > > meaningful way when zswap is introduced as a tier later.
-
-At now, the answer is there are nothing breaks or changes as a first review.
-I think it'll be better to introduce zswap tier after this patch.
-(Details are going on the below)
-
-> > Fair point. Let me review this more and get back to you!
+> > From zswap's perspective, we just need to skip zswap is zswap as a
+> > tier is disallowed. Could just be a check in zswap_store() similar to
+> > the check if zswap is enabled. I am assuming that if a swap tier is
+> > disabled, nothing happens to the existing swapped out pages in this
+> > tier, but new pages do not get swapped out to it. This is the same
+> > behavior that happens if zswap is disabled at runtime.
+> > 
+> > From the tiering perspective, we need to accept "zswap" as a possible
+> > tier, or maybe creating it as a tier by default if zswap is configured
+> > would be better to avoid handling the case where the user doesn't
+> > create a tier for zswap. 
 > 
-> Please do report back what you find.
+> Default tier if zswap is configured makes sense. Should zswap be treated as
+> having 32767 (or maybe 32768) as priority as it sits infront of all swap
+> devices today? Also whichever swap tier has priority range containing 32767,
+> will have zswap in it.
+
+Maybe we can handle zswap as an internally reserved tier which is always
+preferred over swap devices.
+
+I do not think there is a strong use case for grouping zswap together with a
+swap device that happens to use the highest priority. Also, using a visible
+priority value for zswap may have a small side effect that one priority value
+effectively becomes unavailable to users.
+
+That said, if zswap is represented as a tier, I agree that it should be the
+top tier. The exact priority value or whether it is internally reserved should
+be adjustable when we implement it.
+
+> > We also need to disallow zswap being the only
+> > tier as that combination cannot work without vswap.
 > 
-> Yosry, what is needed to enable zswap as a swap tier? What will be the minimum
-> requirements for that? If that is not too much, we can make that part of this
-> series.
+> Do we need to do anything explicitly for this? I am assuming in a kernel with
+> swap tier support, there always exist a swap tier if there is even a single swap
+> device configured i.e. a tier with the full priority range.
 > 
-> Shakeel
+> > 
+> > I think this should be enough to support "zswap" as a tier and allow
+> > disabling/enabling zswap per-memcg (or globally?) through tiering.
+> > 
+> > In the future, if/when swap demotion is added, we need to figure out
+> > how that would work with zswap. For example, if pages should go to
+> > swap device A then swap device B, then an entry in zswap using a swap
+> > slot in device B should not skip device A and be written back directly
+> > to B. vswap would naturally give us a solution for this problem.
+> 
+> This seems reasonable to me. Punting demotion/writeback to future.
 
-I tried to verify what changes once the zswap tier is introduced.
-Please correct me if I'm wrong!
+I agree this is reasonable. I can treat the demotion/writeback interaction as
+future work and follow up separately.
 
-First observation: before the zswap tier is introduced, some of this
-is already possible today:
+> Youngjun, what do you think? Is this reasonable amount of additional work or do
+> you envision some complexity here?
 
-  - a "zswap-only" tier equivalent on cgroup: memory.zswap.writeback = 0
-  - disabling zswap entirely on cgroup: memory.zswap.max = 0
-  - disabling swap (and zswap) entirely on cgroup: memory.swap.max = 0
+I sent a note with some thoughts about making zswap a tier. Since Chris also
+raised concerns around this area, I think it would be better to discuss it a
+bit more and evaluate the details carefully.
 
-Given that, my take is that introducing the tier concept itself
-doesn't change any user-visible zswap behavior, since on/off control
-for the zswap tier is basically already possible today through other
-knobs. So this isn't really a user-facing problem; it's more
-something we need to think through carefully in the patch that
-introduces the tier concept itself. That's what the points below are
-about.
+At this point, there does not seem to be an immediate use case that requires
+zswap tiering in this series. So my preference is to keep this as future work
+for now, and follow up with an RFC after verifying that introducing zswap as a
+tier on top of this patchset does not cause problems.
 
-The cgroup interface knobs and the zswap-global knobs need a
-different kind of review, so let's start with the global ones. The
-zswap-global knobs (compressor, max_pool_percent,
-accept_threshold_percent, shrinker_enabled) look fine with tiers.
-They're zswap-internal tuning, orthogonal to the tier concept, so
-tiers shouldn't change their behavior. The remaining one, "enabled",
-does overlap in spirit with the tier on/off knob: enabled = false is
-basically the same as disabling zswap for every cgroup. But like the
-other overlaps below, this doesn't look like a real problem.
-
-The part that needs more thought is the overlap between
-memory.zswap.max / memory.zswap.writeback, memory.swap.max, and the
-new tier on/off knob. Since all of the above is already possible
-today, adding a tier on top means we should make sure it doesn't
-create confusing overlap.
-
-1) memory.swap.max vs. tier on/off
-
-   memory.swap.max = 0 disables swap (and zswap) entirely, and
-   memory.swap.max = max leaves everything enabled, so one knob can
-   make the other a no-op. I don't think this is confusing in
-   practice; they're just two independent ways to reach the same end
-   state.
-
-   Conceptually, the tier knob controls on/off/auto-scale, while
-   memory.swap.max controls pure quantity, so they cover different
-   concerns and can coexist. Even if the tier knob later takes a
-   numeric value, that number would apply per tier, while swap.max is
-   a total budget that doesn't care how the tiers split it up, so
-   they still shouldn't step on each other.
-
-2) memory.zswap.max vs. zswap tier on/off
-
-   memory.zswap.max = 0 looks semantically equivalent to turning the
-   zswap tier off. Could memory.zswap.max simply be folded into
-   memory.<zswap_tier_name>.max?
-
-   Yosry pointed out:
-
-   > > memory.zswap.max integrates naturally (it's
-   > > memory.<tier_name>.max).
-   > Not really. memory.zswap.max is in terms of memory usage
-   > (compressed size), not swap usage (uncompressed size).
-
-   I'm not sure where the tier limit would actually apply here: is it
-   checked in zswap_store() against the pre-compression size, while
-   memory.zswap.max keeps tracking the compressed size? If so, once
-   you give the tier limit a number, wouldn't its usage end up
-   meaning basically the same thing as memory.zswap.max? For limit =
-   0 the two already look identical to me (both just block zswap
-   usage). I'd like to understand what benefit a non-zero tier limit
-   (uncompressed) gives us over the existing memory.zswap.max
-   (compressed), once tiers exist. Let me know if I'm missing
-   something here.
-
-   Also note the mixed states this creates:
-
-     - memory.zswap.max has room, but the tier is off, so zswap can't
-       be used.
-     - memory.zswap.max = 0, but the tier is on, so zswap still can't
-       be used.
-
-   Both knobs can independently block zswap usage, which seems worth
-   flagging even if it's not harmful by itself.
-
-   On top of that, the tier knob is likely to stay on/off/auto-scale
-   without a numeric limit, while memory.zswap.max only handles the
-   numeric side, so the two should coexist as is. If the tier ever
-   gains its own numeric limit, we'd need to revisit unifying it with
-   memory.zswap.max.
-
-3) memory.zswap.writeback vs. a "zswap-only" tier
-
-   memory.zswap.writeback = 0 can act like a zswap-only tier today,
-   because zswap still borrows a slot from the real swap device to
-   store data; writeback = 0 just skips writing that data out to the
-   device . A tier restriction works differently: it applies at
-   allocation time, so a zswap-only tier would block allocating any
-   slot from another device. Since zswap currently depends on that
-   very slot to store anything, this would break zswap instead of
-   giving us a working zswap-only mode, so the tier restriction can't
-   substitute for memory.zswap.writeback here.
-
-   With vswap, this changes: tier off and writeback = 0 converge to
-   the same effect(right now the pure zswap only tier),
-   since zswap no longer needs to borrow a slot from
-   another device. Even so, memory.zswap.writeback still needs to
-   stay, since vswap itself can be disabled at compile time or
-   runtime, and we'd still need a way to express zswap-only behavior
-   without it. I'd like to unify the two eventually, but for now they
-   have to stay separate. I'll keep thinking about it.
-
-How do you think?
-
-thanks
+Thanks,
 Youngjun
 
