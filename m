@@ -1,54 +1,54 @@
-Return-Path: <cgroups+bounces-17838-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17839-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id PXsaDcNdV2rpKQEAu9opvQ
-	(envelope-from <cgroups+bounces-17838-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:15:31 +0200
+	id ItTOOihdV2q6KQEAu9opvQ
+	(envelope-from <cgroups+bounces-17839-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:12:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D5B675CD58
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:15:30 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B6C075CCDC
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:12:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=CIAt3+pe;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17838-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17838-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=B708yIID;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17839-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17839-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 377B2311F098
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 10:11:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0ED3B307E69B
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 10:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ACEE433E7A;
-	Wed, 15 Jul 2026 10:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4DD43DA27;
+	Wed, 15 Jul 2026 10:11:08 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AD2143B6CA;
-	Wed, 15 Jul 2026 10:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC2EC43DA5D;
+	Wed, 15 Jul 2026 10:11:06 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784110265; cv=none; b=hyemUFs4rTOd/S6hG5Ny85btyCsq427gb+N10hIlH11AklW+P2Ge3AvpJQWmDhUfLraqwEOIzRR2VmL7sqn1mtfewZBrKyXyJQN0TlKv+n06BI95U7oCdA8OX2zsmC5KpC3dJAhEgP07o/cXY3yJ//eGeY7EJkauz9xzzU9S/xY=
+	t=1784110268; cv=none; b=SmVXp8g0ACZNgCr3owzI9HnNCXu64+FpOehJqxvZjDB9hK0iC2ryrktN/kij3EV/jfufd4r7w9YCBsB9QiaogvN7U9031mBVw7deiCpjYWJXGSja7MajCSEYFBqk8NT1mz1jlYIDYL3DXSVDoI+XmNFlR+jptx/roxD4T5cwcP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784110265; c=relaxed/simple;
-	bh=WUP+u5LtCO9Lnm0bpz/QH3WvOGZg0zXtJV5J+ezU95M=;
+	s=arc-20240116; t=1784110268; c=relaxed/simple;
+	bh=GfyLpES3wI8YbZIuBZalmdfcOlG7HdO2QJaXY7Zp+TI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fSe3Xb8ybB82ImKMApaOCqmbKfQJu8KDgXEqdCG8oXYH51kh4hj3kfjS2D6pX6D5iCvAhb90OBeCr3X0uiDG0Qa/4/R0frOdhFdTTKEGYyHG5iqChCViInFCT2t9ot+EAT4smm4cJMM/pBjMhEwxssOqSQOtcCfDTwYIgaaRBJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CIAt3+pe; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF521F00A3D;
-	Wed, 15 Jul 2026 10:11:00 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=iRVljvoMgHgJdHgRUODIkFeyxcIRB/LMfX8CQ5WqItpDxfAkDyxW9t/qqPgHb1s6slSIXIc4khMDovtcmsKqp6OyApdQTAGlFjdqcr/kIBbXYTjY2Rrl26S2lLH8rMaruQ/Cj6N5hNt6S4fln6Bc9d+dMw6JKQhFj8QHcAMKYJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B708yIID; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFF701F00A3A;
+	Wed, 15 Jul 2026 10:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784110263;
-	bh=GxN00IWro8eCPaP3MfYs22vlSvWNn2fiqNBuPgHAw1Y=;
+	s=k20260515; t=1784110266;
+	bh=HzIaBZel8a8JeHhvZs2k8s/0l5364bN/PN4wTwimX2g=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=CIAt3+peHEAjVLCFNdEtjzKI6Bn831EpZQol9Ve4nYeSqpWpoEXH+e1PZiE69sypP
-	 1nJ13de+fohnPBl/BNpnTUPnAvLsaLRYx67o3i3crWhZ+5Yste9ZYlSMVqxJx3jp0t
-	 M5ulcTaGX3MFh4DZ4V9bU3v1znNXCpBkEmUcKozrFkKdKb7dSBF/pnOr2fqmADvnYS
-	 p1QlnbmjV61UxE8ygT37MjupfQDhVPwJQ1euv8w2itANBlrgDvzIyxNi/L66pVVI0A
-	 BoHx+F42FMcDhpYFTkq6U/aCa1NeoRS6Zh0wjgd8TE5xnatzwnEFUmG4r8e9jbvlFu
-	 2ijvQhifFuvNw==
+	b=B708yIIDl8WT85J9RFbuGnwpgMU6yVOaj/crA1PR95SaKa6nytSokx5tzo+FKV7D6
+	 XpT3SBumfJ9I1/tg/XmpFMZn+Z1V4IFMHCGLtcNePxD0z9V3jpeTpWbO0k5UTTDmqm
+	 v97YwPDi+4USWOZlpvWv+5MbygBhjQ9RGRB8CYzPVLt8mo026uLWxwvMu6pW8PG7rr
+	 zu7b9AGPwUGbSL3B4lmBAIaE7J/o2tn/0GgwIaufhE8fxpD8I0bqrvRTAlbp088T/u
+	 HeoI8Q7Lj2IQtxqJBrzTY63AFWMgJL3wiDwxxHa+BIRzP/68gy/zdnZGWj0MTSbR+w
+	 xBI2D/ccN0R5g==
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Date: Wed, 15 Jul 2026 12:10:45 +0200
-Subject: [PATCH RFC 05/12] mm/slab: abstract slabobj_ext.objcg access
+Date: Wed, 15 Jul 2026 12:10:46 +0200
+Subject: [PATCH RFC 06/12] mm/slab: abstract slabobj_ext.ref access
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260715-b4-objext_split-v1-5-9a49c4ccf4c3@kernel.org>
+Message-Id: <20260715-b4-objext_split-v1-6-9a49c4ccf4c3@kernel.org>
 References: <20260715-b4-objext_split-v1-0-9a49c4ccf4c3@kernel.org>
 In-Reply-To: <20260715-b4-objext_split-v1-0-9a49c4ccf4c3@kernel.org>
 To: Harry Yoo <harry@kernel.org>, Suren Baghdasaryan <surenb@google.com>
@@ -74,7 +74,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -85,7 +85,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[14];
-	TAGGED_FROM(0.00)[bounces-17838-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17839-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -99,132 +99,46 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8D5B675CD58
+X-Rspamd-Queue-Id: 7B6C075CCDC
 
-In preparation for changes to the structure, abstract access to the
-objcg field with a slab_obj_ext_objcgp() function.
-Rename the field to _objcg to make an unexpected direct access a compile
-error.
+In preparation for changes to the structure, abstract access to the ref
+field with a slab_obj_ext_codetag_ref() function. Rename the field to
+_ctref to make an unexpected direct access a compile error.
 
 No functional change intended.
 
 Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 ---
- mm/kfence/core.c |  2 +-
- mm/memcontrol.c  | 23 +++++++++++++++--------
- mm/slab.h        |  9 ++++++++-
- mm/slub.c        |  2 +-
- 4 files changed, 25 insertions(+), 11 deletions(-)
+ mm/slab.h | 10 +++++++++-
+ mm/slub.c | 42 ++++++++++++++++++++++++++++--------------
+ 2 files changed, 37 insertions(+), 15 deletions(-)
 
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 6577bd76954e..717e8baf7e5d 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -1249,7 +1249,7 @@ void __kfence_free(void *addr)
- 	struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
- 
- #ifdef CONFIG_MEMCG
--	KFENCE_WARN_ON(meta->obj_exts.objcg);
-+	KFENCE_WARN_ON(*slab_obj_ext_objcgp(&meta->obj_exts));
- #endif
- 	/*
- 	 * If the objects of the cache are SLAB_TYPESAFE_BY_RCU, defer freeing
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4e427286a88a..6303a2b1a9d0 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2865,6 +2865,7 @@ struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
- 	 */
- 	unsigned long obj_exts;
- 	struct slabobj_ext *obj_ext;
-+	struct obj_cgroup *objcg;
- 
- 	obj_exts = slab_obj_exts(slab);
- 	if (!obj_exts)
-@@ -2872,9 +2873,8 @@ struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
- 
- 	get_slab_obj_exts(obj_exts);
- 	obj_ext = slab_obj_ext(slab->slab_cache, slab, obj_exts, p);
--	if (obj_ext->objcg) {
--		struct obj_cgroup *objcg = obj_ext->objcg;
--
-+	objcg = *slab_obj_ext_objcgp(obj_ext);
-+	if (objcg) {
- 		put_slab_obj_exts(obj_exts);
- 		return obj_cgroup_memcg(objcg);
- 	}
-@@ -3577,6 +3577,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
- 		unsigned long obj_exts;
- 		struct slabobj_ext *obj_ext;
- 		struct obj_stock_pcp *stock;
-+		struct obj_cgroup **objcgp;
- 
- 		slab = virt_to_slab(p[i]);
- 
-@@ -3612,10 +3613,15 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
- 		unlock_stock(stock);
- 
- 		obj_exts = slab_obj_exts(slab);
-+
- 		get_slab_obj_exts(obj_exts);
-+
- 		obj_ext = slab_obj_ext(s, slab, obj_exts, p[i]);
-+		objcgp = slab_obj_ext_objcgp(obj_ext);
-+
- 		obj_cgroup_get(objcg);
--		obj_ext->objcg = objcg;
-+		*objcgp = objcg;
-+
- 		put_slab_obj_exts(obj_exts);
- 	}
- 
-@@ -3628,16 +3634,17 @@ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
- 	size_t obj_size = obj_full_size(s);
- 
- 	for (int i = 0; i < objects; i++) {
--		struct obj_cgroup *objcg;
-+		struct obj_cgroup **objcgp, *objcg;
- 		struct slabobj_ext *obj_ext;
- 		struct obj_stock_pcp *stock;
- 
- 		obj_ext = slab_obj_ext(s, slab, obj_exts, p[i]);
--		objcg = obj_ext->objcg;
--		if (!objcg)
-+		objcgp = slab_obj_ext_objcgp(obj_ext);
-+		if (!*objcgp)
- 			continue;
- 
--		obj_ext->objcg = NULL;
-+		objcg = *objcgp;
-+		*objcgp = NULL;
- 
- 		stock = trylock_stock();
- 		__refill_obj_stock(objcg, stock, obj_size, true);
 diff --git a/mm/slab.h b/mm/slab.h
-index 36d067d6e7c0..789bd292075f 100644
+index 789bd292075f..e3f8e42070f1 100644
 --- a/mm/slab.h
 +++ b/mm/slab.h
-@@ -555,7 +555,7 @@ static inline bool need_kmalloc_no_objext(void)
-  */
- struct slabobj_ext {
- #ifdef CONFIG_MEMCG
--	struct obj_cgroup *objcg;
-+	struct obj_cgroup *_objcg;
+@@ -558,7 +558,7 @@ struct slabobj_ext {
+ 	struct obj_cgroup *_objcg;
  #endif
  #ifdef CONFIG_MEM_ALLOC_PROFILING
- 	union codetag_ref ref;
-@@ -661,6 +661,13 @@ slab_obj_ext(struct kmem_cache *s, struct slab *slab, unsigned long obj_exts,
- 	return kasan_reset_tag(obj_ext);
- }
+-	union codetag_ref ref;
++	union codetag_ref _ctref;
+ #endif
+ } __aligned(8);
  
-+#ifdef CONFIG_MEMCG
-+static inline struct obj_cgroup **slab_obj_ext_objcgp(struct slabobj_ext *obj_ext)
+@@ -668,6 +668,14 @@ static inline struct obj_cgroup **slab_obj_ext_objcgp(struct slabobj_ext *obj_ex
+ }
+ #endif
+ 
++#ifdef CONFIG_MEM_ALLOC_PROFILING
++static inline union codetag_ref *
++slab_obj_ext_codetag_ref(struct slab *slab, struct slabobj_ext *obj_ext)
 +{
-+	return &obj_ext->_objcg;
++	return &obj_ext->_ctref;
 +}
 +#endif
 +
@@ -232,18 +146,114 @@ index 36d067d6e7c0..789bd292075f 100644
  			gfp_t gfp, unsigned int alloc_flags);
  
 diff --git a/mm/slub.c b/mm/slub.c
-index 5e3f53bcd0d3..48e10198a3ce 100644
+index 48e10198a3ce..2bfcabc4c51a 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2523,7 +2523,7 @@ bool memcg_slab_post_charge(void *p, gfp_t flags)
- 	if (obj_exts) {
- 		get_slab_obj_exts(obj_exts);
- 		obj_ext = slab_obj_ext(s, slab, obj_exts, p);
--		if (unlikely(obj_ext->objcg)) {
-+		if (unlikely(*slab_obj_ext_objcgp(obj_ext))) {
- 			put_slab_obj_exts(obj_exts);
- 			return true;
+@@ -2071,18 +2071,20 @@ static inline void mark_obj_codetag_empty(const void *obj)
+ 	slab_exts = slab_obj_exts(obj_slab);
+ 	if (slab_exts) {
+ 		struct slabobj_ext *ext;
++		union codetag_ref *ref;
+ 
+ 		get_slab_obj_exts(slab_exts);
+ 		ext = slab_obj_ext(obj_slab->slab_cache, obj_slab, slab_exts, obj);
++		ref = slab_obj_ext_codetag_ref(obj_slab, ext);
+ 
+-		if (unlikely(is_codetag_empty(&ext->ref))) {
++		if (unlikely(is_codetag_empty(ref))) {
+ 			put_slab_obj_exts(slab_exts);
+ 			return;
  		}
+ 
+ 		/* codetag should be NULL here */
+-		WARN_ON(ext->ref.ct);
+-		set_codetag_empty(&ext->ref);
++		WARN_ON(ref->ct);
++		set_codetag_empty(ref);
+ 		put_slab_obj_exts(slab_exts);
+ 	}
+ }
+@@ -2092,19 +2094,22 @@ static inline bool mark_failed_objexts_alloc(struct slab *slab)
+ 	return cmpxchg(&slab->obj_exts, 0, OBJEXTS_ALLOC_FAIL) == 0;
+ }
+ 
+-static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+-			struct slabobj_ext *vec, unsigned int objects)
++static inline void handle_failed_objexts_alloc(struct slab *slab,
++		unsigned long obj_exts, struct slabobj_ext *vec)
+ {
+ 	/*
+ 	 * If vector previously failed to allocate then we have live
+ 	 * objects with no tag reference. Mark all references in this
+ 	 * vector as empty to avoid warnings later on.
+ 	 */
+-	if (obj_exts == OBJEXTS_ALLOC_FAIL) {
+-		unsigned int i;
++	if (obj_exts != OBJEXTS_ALLOC_FAIL)
++		return;
++
++	for (unsigned int i = 0; i < slab->objects; i++) {
++		union codetag_ref *ref = slab_obj_ext_codetag_ref(slab, vec);
+ 
+-		for (i = 0; i < objects; i++)
+-			set_codetag_empty(&vec[i].ref);
++		set_codetag_empty(ref);
++		vec++;
+ 	}
+ }
+ 
+@@ -2112,8 +2117,8 @@ static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+ 
+ static inline void mark_obj_codetag_empty(const void *obj) {}
+ static inline bool mark_failed_objexts_alloc(struct slab *slab) { return false; }
+-static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+-			struct slabobj_ext *vec, unsigned int objects) {}
++static inline void handle_failed_objexts_alloc(struct slab *slab,
++		unsigned long obj_exts, struct slabobj_ext *vec) {}
+ 
+ #endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+ 
+@@ -2181,7 +2186,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+ #endif
+ retry:
+ 	old_exts = READ_ONCE(slab->obj_exts);
+-	handle_failed_objexts_alloc(old_exts, vec, slab->objects);
++	handle_failed_objexts_alloc(slab, old_exts, vec);
+ 
+ 	if (new_slab) {
+ 		/*
+@@ -2361,9 +2366,15 @@ __alloc_tagging_slab_alloc_hook(struct kmem_cache *s, void *object, gfp_t flags,
+ 	 * check should be added before alloc_tag_add().
+ 	 */
+ 	if (obj_exts) {
++		union codetag_ref *ref;
++
+ 		get_slab_obj_exts(obj_exts);
++
+ 		obj_ext = slab_obj_ext(s, slab, obj_exts, object);
+-		alloc_tag_add(&obj_ext->ref, current->alloc_tag, s->size);
++		ref = slab_obj_ext_codetag_ref(slab, obj_ext);
++
++		alloc_tag_add(ref, current->alloc_tag, s->size);
++
+ 		put_slab_obj_exts(obj_exts);
+ 	} else {
+ 		alloc_tag_set_inaccurate(current->alloc_tag);
+@@ -2395,10 +2406,13 @@ __alloc_tagging_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p
+ 
+ 	get_slab_obj_exts(obj_exts);
+ 	for (int i = 0; i < objects; i++) {
++		struct slabobj_ext *ext;
++
+ 		if (is_kfence_address(p[i]))
+ 			continue;
+ 
+-		alloc_tag_sub(&slab_obj_ext(s, slab, obj_exts, p[i])->ref, s->size);
++		ext = slab_obj_ext(s, slab, obj_exts, p[i]);
++		alloc_tag_sub(slab_obj_ext_codetag_ref(slab, ext), s->size);
+ 	}
+ 	put_slab_obj_exts(obj_exts);
+ }
 
 -- 
 2.55.0
