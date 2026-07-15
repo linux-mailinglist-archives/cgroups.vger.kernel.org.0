@@ -1,189 +1,176 @@
-Return-Path: <cgroups+bounces-17832-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17833-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id oZ7GASBWV2olKAEAu9opvQ
-	(envelope-from <cgroups+bounces-17832-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 11:42:56 +0200
+	id cconMCldV2q7KQEAu9opvQ
+	(envelope-from <cgroups+bounces-17833-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:12:57 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B59C75CA23
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 11:42:55 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C84775CCE1
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:12:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=suse.com header.s=google header.b="QK4w1n/z";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17832-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17832-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=suse.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=JU3vARhF;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17833-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="cgroups+bounces-17833-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 127E830D63A8
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 09:36:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 918793086545
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 10:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 358D043552D;
-	Wed, 15 Jul 2026 09:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58FBF43B6E2;
+	Wed, 15 Jul 2026 10:10:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E61435AA3
-	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 09:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAAA43B6E3;
+	Wed, 15 Jul 2026 10:10:47 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784108203; cv=none; b=tzFLneHB/zOf82RYm9KcydbJSfhzF9RmW4GvqX9Qd7w5oVJeb7/d41UtMVxIYLT1BJfHi+5k/7sEZvOs2xOLco5ArSX799KlJvuvKvvMrrPNWhGGtM/zh5auAK8EXUYI4GGoRaejTN+WVsUvhYOfLCvuYC27RB1KTD5gcCj3A3w=
+	t=1784110249; cv=none; b=jTz6BJRJJUT/hA5OQ1nzPi2bsEZNN+Mlsf698mYXNl81Vorz/hu6ni9FA9wip9YAfpcL5sY/wnv6ovuXqv8G9S8flv6iUXC7OZp4+evBJig9lU9WagkGKAFS8ntrjvWR8RaGE05iVSHSUxZFZdmXVvo/mSJflyAhP1nxUlERexU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784108203; c=relaxed/simple;
-	bh=RbNCtiPz5Mwa5Td8hXh/+B4DFH6mFTZx9EuRAfA3MKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UkiLffFdP7VenYl221EyvuJduOsbNcep1ivAFaKKdoJZYVP+HBmBpDpBpjTSwWvayrqllOPDsXe596WBqAdrEJC3namVgqDdJsPXSXl15d5GAdo2XOINliO2qGPhy+DZgY0hs5hxepz9RIAKBZ0ma1jZVqdgvzpox74mkRTx6Qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QK4w1n/z; arc=none smtp.client-ip=209.85.221.46
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-47dec32798aso5363133f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 02:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1784108197; x=1784712997; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=RbNCtiPz5Mwa5Td8hXh/+B4DFH6mFTZx9EuRAfA3MKM=;
-        b=QK4w1n/z34eIYaU8kCpl4NfzDYIb7ErMJUXiTNqLdUF0pykqJBx1el++1WZHjhOYLO
-         mFoVAe0FNwAAQEVVPUNuLZkqKwCLVh1mSuF3HzNsB3ewm7XS2/HMgzno7ix6zPhFLxsP
-         DDd0DUg1Yw0BiblR66jOKQ6xEKvNV9A1PxaUXl8H2BFXRYnLRhre4WVU7XI0evIkQTJ9
-         +hzogwEX0nZYn4Ju1k4aD2JdqIxQgn05Zmo9SLv9sbM9fW/yM/fN9KYmBHDazIURCjZh
-         E+0+4Be+X24J9InYLe7undA+EU5mzf4y8W23P1ZlEA9Nshu6fk/OO0g/1goTrZ3TLPCS
-         LWIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1784108197; x=1784712997;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=RbNCtiPz5Mwa5Td8hXh/+B4DFH6mFTZx9EuRAfA3MKM=;
-        b=m8i/O+STEhj+NYnGx/9L7U9cwfM46eo18O0JyGtklyOQVopzI5a57sCxYXPxML7rS1
-         c3hihQz6wuqbTbo1rUb7Vvj61z96UoVlI8lqUQUxegQd3Jc+YFmcmpnQwL1whHjV+QdL
-         Id8Ef7w5zvYL0PJBBW3n9V+hIvZZRVL5BUYuv3YKwe51RSdfRFpo4P8lo9ZSQK5pExCV
-         aO4xrwq0dQzpUcuxrVykBcoCf6PsnHsiLd2Qrat4n/GeBdmEkCpO+NsqLnxcW0ZyX1rw
-         gco3Z1P9tT5KeJuB8eYKxE8GbogMsNUyOirc5OQ273DdM9l4c3swI3ys5me/jNN1yI4w
-         sYCw==
-X-Forwarded-Encrypted: i=1; AHgh+Rpm2eIsJLS3ZJRRcmYEtBJQNOwBScH2zqdyYMxKcU1tp+ucSkvMdX3Ks3wWxKlpIqcaJvvvkm01@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8iWlj0wPmvWe+2Ti6lvELOyWEb8qtmx1lpS1R9MPbWIKY9jO4
-	WndQk2tfFpYfm2zYLZ2e7iFZWtTZ4aPqHvKqsljrm9emPcnelJXN4wgu2/Mc90y6xsg=
-X-Gm-Gg: AfdE7cmnQwATVeB4MSohdVCZzKboOvBRb6bsUQry5G3QpLGoXx8YtImAK9y8x+DG4oK
-	oUzodUX5VsDKJG8cotMNlb3z6e+hhCgUq0Rt4vXc0Dz603xwmF6Yo+KcRZB7PGJ5TIDxLO6N1Rb
-	dGpSdEZZUgJSMz7WK9eusgf+nx++8S/wbeE8Nk8L2I10YZ4Juqe913mwqG0CyCsrCaqR3YSg8LO
-	3eeRc/tKjEpLwgTQHjCpFZVNk3uHN7bIo9ITAKC4Kkl42ok1N8UJgD7KsRYdvJ+QjSF/EXBR5K+
-	yPa8tC9OBB2CtBrMp7J7PiI0FLuWnRfB/a6eAU2AmZNG0A11Q2CbsrfId6f0h/9NIe0NK/85S8A
-	nvVSKJJxjLcXaJSKiUVpC/S82ZkKqjLUuYT05KLPJzIc3mBime4Xg8Hr6a08PakERRmWaYFUbeC
-	gCmceEScKZSUe/0QjM6K4o2iLqKZn59aY0cQXFDg==
-X-Received: by 2002:a05:6000:461c:b0:473:506a:e47c with SMTP id ffacd0b85a97d-47f4886399amr7394061f8f.26.1784108197277;
-        Wed, 15 Jul 2026 02:36:37 -0700 (PDT)
-Received: from localhost.localdomain (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-47f464c30a9sm14495687f8f.31.2026.07.15.02.36.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2026 02:36:36 -0700 (PDT)
-Date: Wed, 15 Jul 2026 11:36:34 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] selftests/cgroup: Fix intermittent
- test_cgfreezer_ptrace test failures
-Message-ID: <aldSsQAboD6g2Sso@localhost.localdomain>
-References: <20260715035446.565625-1-longman@redhat.com>
+	s=arc-20240116; t=1784110249; c=relaxed/simple;
+	bh=I6licoBYJt2IPq6ni1XuHA7t5SbrCb1JYja/oImYC7Q=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=M1LdeNkQPdt9dRFR97gyo3v3gK3R8fSbbHJtGwUqXMLEOouR09rSm18F1h9trtGzKlrVu4lL4OykY+vpbmQhn4fvLMaRtBd5J+Ynm+XOwGFnltxFJfx/+OR09GD4Q2B4bqF54C+S66/bc0033PJW+4aqZz/QH0sSksTvm7QwGg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JU3vARhF; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBD891F00A3A;
+	Wed, 15 Jul 2026 10:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1784110247;
+	bh=1yU7j6WD00tXKLJoBL+C1KnfNcZ9lkNAuc1rdIev1d4=;
+	h=From:Subject:Date:To:Cc;
+	b=JU3vARhFBqxgcz6dtnOdhN7PYUEXO65XU+mwWT3/Ssyk7TsI2WUDdQc6/M/xbv/eR
+	 MBcjsnv0YVtFKSDYLs4gk+uR8Qvzkx1fI4QhArEvC17fYjIycTOr4sfMMLOW6EuW0p
+	 JkzKagZn1p5HZRTOonNyW6m6fVzfjuaOujpqHxRIwnDLdT37HNSAZ7IPmpJtYynYJ9
+	 qrLL0X0DpEVIE+unsg2ZgN+fDLJKCDRCew4/5Luy78zv83VTH0RSQuiMkf6kZyiFdF
+	 NON6T2iFQD4Uv9AeEwBWJfLoYuYMrjkNRypzrxm4H0LsBF3NbQ6ZzG6s1H3RbEQQIc
+	 sbn8zdI9dbxXQ==
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Subject: [PATCH RFC 00/12] mm/slab, alloc_tag: reduce obj_ext memory waste
+Date: Wed, 15 Jul 2026 12:10:40 +0200
+Message-Id: <20260715-b4-objext_split-v1-0-9a49c4ccf4c3@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5ueouq2lhiett7pq"
-Content-Disposition: inline
-In-Reply-To: <20260715035446.565625-1-longman@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKBcV2oC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDc0MT3SQT3fykrNSKkvjigpzMEt2URAsjEyMzI1PzFFMloK6CotS0zAq
+ widFKQW7OSrEQweJSoK7kEpBZSrW1AO5kJnV4AAAA
+X-Change-ID: 20260714-b4-objext_split-da82426257d5
+To: Harry Yoo <harry@kernel.org>, Suren Baghdasaryan <surenb@google.com>
+Cc: Hao Li <hao.li@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+ Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, 
+ Andrew Morton <akpm@linux-foundation.org>, 
+ Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>, 
+ Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+ "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+X-Mailer: b4 0.15.2
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.26 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-5.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS(0.00)[m:harry@kernel.org,m:surenb@google.com,m:hao.li@linux.dev,m:shakeel.butt@linux.dev,m:glider@google.com,m:elver@google.com,m:akpm@linux-foundation.org,m:cl@gentwo.org,m:rientjes@google.com,m:roman.gushchin@linux.dev,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:vbabka@kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17832-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FORGED_RECIPIENTS(0.00)[m:longman@redhat.com,m:tj@kernel.org,m:hannes@cmpxchg.org,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	TAGGED_FROM(0.00)[bounces-17833-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,suse.com:from_mime,suse.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,localhost.localdomain:mid]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6B59C75CA23
+X-Rspamd-Queue-Id: 5C84775CCE1
 
+The recent fixes for objext array handling inspired me to look into this
+finally. It's been bothering me that the memory usage of struct
+slabobj_ext depend only on config options and not whether the fields are
+actually used. So with both CONFIG_MEMCG=y and
+CONFIG_MEM_ALLOC_PROFILING=y there is always objcg field and codetag_ref
+field. And thus:
 
---5ueouq2lhiett7pq
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] selftests/cgroup: Fix intermittent
- test_cgfreezer_ptrace test failures
-MIME-Version: 1.0
+1) Having memory allocation profiling config-enabled but not
+   boot-enabled means wasted memory on unused codetag_refs. This makes
+   it less suitable for a general distro config and the page allocator
+   side doesn't suffer from this, only slab and percpu.
 
-Hi.
+2) Complementary, with memory allocation profiling enabled, there are
+   caches/slabs that don't need the objcg field, so memory is wasted on
+   those.
 
-On Tue, Jul 14, 2026 at 11:54:46PM -0400, Waiman Long <longman@redhat.com> =
-wrote:
-> It is found that the test_cgfreezer_ptrace test of test_freezer can
-> intermittently fail on some architectures like arm64 and ppc64.
->=20
-> After further tracing of the mechanics of the test_cgfreezer_ptrace test,
-> it is found that the ptrace(PTRACE_DETACH) call will spawn another process
-> to perform the detach=20
+This series should solve the point 1) fully for slab, pcpuobj_ext
+handling can be perhaps improved similarly, haven't looked into that.
 
-I'm reading kernel/ptrace.c and cannot find a new task creation.
-I'm curious what is this "another process"?
+For 2) it avoids allocating objcg fields for KMALLOC_NORMAL caches where
+we know they are not necessary because kmalloc() with __GFP_ACCOUNT will
+pick a KMALLOC_CGROUP type.
 
-(Or is it referring to the child_fn() process from
-test_cgfreezer_ptrace()? Then I'm suspicous about the transitional
-unfreezing of it after PTRACE_DETACH. Wasn't it rightful expectation of
-the test that the cgroup remains contiguously frozen?)
+The named kmem_caches are tricky. They can be created with SLAB_ACCOUNT
+and then we know objcg fields are always needed. But also they can be
+created without SLAB_ACCOUNT and then some allocations have
+__GFP_ACCOUNT and some not and we don't know that in advance.
 
-> by temporarily unfreezes the cgroup and then freezes
-> it again afterward during the detaching process. The reading of the
-> frozen flag from cgroup.events is done by the main test_freezer process
-> running probably on a different CPU. As a result, racing is possible and
-> the intermediate unfrozen state can be read leading to occasional test
-> failures especially on architectures with a weak memory model like arm64.
+A possible future solution is to introduce e.g. SLAB_MAYBE_ACCOUNT, add
+it to caches where we know __GFP_ACCOUNT is used, and only honour
+__GFP_ACCOUNT for those, while warning for an unexpected usage
+elsewhere.
 
-What state would the task be in during this window?
+Only lightly tested, need to run at least some microbenchmarks to see if
+the now somewhat more complicated access to objcg is visible or not.
 
-Thanks,
-Michal
+Based on slab/for-next-fixes
 
---5ueouq2lhiett7pq
-Content-Type: application/pgp-signature; name="signature.asc"
+Git branch: https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=b4/objext_split
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+---
+Vlastimil Babka (SUSE) (12):
+      mm/slab: skip kfence objects in allocation profiling
+      mm/slab: remove objs_per_slab()
+      mm: move struct slabobj_ext to mm/slab.h
+      mm/slab: make slab_obj_ext() determine object index
+      mm/slab: abstract slabobj_ext.objcg access
+      mm/slab: abstract slabobj_ext.ref access
+      mm/slab: replace slab.stride with obj_exts_in_object
+      mm/slab: change struct slabobj_ext to a union
+      mm/slab: introduce slab_obj_ext_has_codetag()
+      mm/slab: reduce slabobj_ext memory with allocation profiling disabled
+      mm/slab: add slab_needs_objcg() helper
+      mm/slab: stop allocating objcg pointers when unnecessary
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaldUnRsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AgBiAEAtibykYvZC+3Kxm/NzjT1
-GszMpvkJPqiA7qKlwDnJvMMA/09aHmm6drkw1dia2aCU7YAPAnNa8o0FUlrsoBBC
-gs8E
-=tW7/
------END PGP SIGNATURE-----
+ include/linux/memcontrol.h |  13 ----
+ mm/kfence/core.c           |   5 +-
+ mm/kfence/kfence_test.c    |   2 +-
+ mm/memcontrol.c            |  41 ++++++-----
+ mm/slab.h                  | 169 ++++++++++++++++++++++++++++++++++++---------
+ mm/slub.c                  | 162 +++++++++++++++++++++++++++----------------
+ 6 files changed, 267 insertions(+), 125 deletions(-)
+---
+base-commit: d9e6a7623938968e3752b67e37eaff097e559a54
+change-id: 20260714-b4-objext_split-da82426257d5
 
---5ueouq2lhiett7pq--
 
