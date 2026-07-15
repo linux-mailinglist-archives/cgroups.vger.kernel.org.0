@@ -1,148 +1,224 @@
-Return-Path: <cgroups+bounces-17816-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17817-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id o4ZxCMDhVmptCQEAu9opvQ
-	(envelope-from <cgroups+bounces-17816-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 03:26:24 +0200
+	id NM2EFJwEV2pYEQEAu9opvQ
+	(envelope-from <cgroups+bounces-17817-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 05:55:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EFB2759DF9
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 03:26:23 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC43375A608
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 05:55:07 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=FMLjojmj;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17816-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17816-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=ZlxNdZWy;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17817-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17817-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=redhat.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DA78331038A1
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 01:25:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 579713010BD6
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 03:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44A137BE80;
-	Wed, 15 Jul 2026 01:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8873B3BE6;
+	Wed, 15 Jul 2026 03:55:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0027E37AA78
-	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 01:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B103AD52A
+	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 03:55:02 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784078729; cv=none; b=aPLubijOQTu47VVfy2FtPF8LjJbbxX5talN79+2TixZhLWRCLQE2mU8vPGtS87XqwsVpq1dddznAXiOAHYDC9xh3I17mJJ1XygnlVU+vlMQ/+Bhz+ooH17FxS40RqnkUV12y1teTE1Mr8ZrXW4b3fqCKUJ5mLmP9+XkFJwVhFKw=
+	t=1784087704; cv=none; b=QtdRhvbwzqqBLjgzOAF/iDUjGxU6zgB7QQBwm65/xEqySXu37yYxnX/Bcldd3Ke5kYA9tZwJk/hq3bowFk93YwxOS2waMQao5wwdn8R5ZBlDiI1+rGEfQaFF+MSEBmQaI5S9DDiS7vVdtvVK0Je/wbue4z9FM5XkyV8Jk2D6Xmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784078729; c=relaxed/simple;
-	bh=0hVRqmDAGBmc+K2tVTNOodwSWISji+6SQljSAkLXt5k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=or0soM2Qapv1gEWXwJsqsW+wU5vAIGj9Ow0ZaRn5QX5lQV5jLLEHG+MyLYjETqHUDWUNOHofKuSomfzT4ZSH+iIKWr33wH9hJ9NRUajFtuBnelQVV07spmqR2ruSR2LBeBpmFGJsNM3yxDjXUCwDrOEcULIQnIImLR99sr8I5g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FMLjojmj; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1784087704; c=relaxed/simple;
+	bh=ewdPb56xBjFmrnI7fXaoa7wPaFo1hdQQpES79KxD2+g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bQIAtMep6Me6vX+6aOgFySOTd1IkTAxmDZmGBz7aPV7vri6bsRDDL77yTn2OANChk5lqfKBRpUX2TnM/A8H6PJwx2nDYDmffq5tlSx2qbILhRdlez/tLT+PBjK30cXrePTvjPqutmiwEXzmwZn+M8Sbo7WDf8SOErPBDb+SP7T0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZlxNdZWy; arc=none smtp.client-ip=170.10.129.124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1784078726;
+	s=mimecast20190719; t=1784087701;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IsvswVfYoyusYXMLMx2fiSiHKgoP07k7egLqvGzTRX8=;
-	b=FMLjojmjaRdMg/EYEF6RrRWaFsyRtCfQoeaXnQwtolSNBzfXNw2reYW4PDRf6h5X6KxZpI
-	LVd/TVkp/vYNIObY3TPXZCD7bmgh4vNqGD2BXT2h4iS34z9ZHSxz2be3AC09thwItk2yJW
-	+dy5AXQ0+SJb3OxJRNuf67IE0L/kpIg=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=GmK/PKs9sAs6/cDg4W7d1yX1cAFZHAmC6KiaUiX97ac=;
+	b=ZlxNdZWyQRpKDcK5hL2FsCnk+cXTdztpQojJ8utJwGKILMUM45vdxtVEClEMM8DsjWzs7v
+	gFpUhnp7aJGaLtJOxQTmVyHr03irsYP3Z0xk4AGK6WRg2ohzIa3bhjpAsd+T29rtOS/0G9
+	sNKHvEP2EW/7iqyoCJOS/qrskbK6m1k=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-676-lijdt0kLNzaSKyfhdOm0Aw-1; Tue,
- 14 Jul 2026 21:25:21 -0400
-X-MC-Unique: lijdt0kLNzaSKyfhdOm0Aw-1
-X-Mimecast-MFC-AGG-ID: lijdt0kLNzaSKyfhdOm0Aw_1784078720
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-467-Nqb5ZOT6P26dU6isF68nVQ-1; Tue,
+ 14 Jul 2026 23:54:59 -0400
+X-MC-Unique: Nqb5ZOT6P26dU6isF68nVQ-1
+X-Mimecast-MFC-AGG-ID: Nqb5ZOT6P26dU6isF68nVQ_1784087697
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 10BE918005B6;
-	Wed, 15 Jul 2026 01:25:20 +0000 (UTC)
-Received: from [10.22.89.63] (unknown [10.22.89.63])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B37351800591;
-	Wed, 15 Jul 2026 01:25:18 +0000 (UTC)
-Message-ID: <5789e2ca-9490-4f3c-8dab-614a6167aaab@redhat.com>
-Date: Tue, 14 Jul 2026 21:25:18 -0400
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 892741956089;
+	Wed, 15 Jul 2026 03:54:57 +0000 (UTC)
+Received: from llong-thinkpadp1gen5.rmtusnh.csb (unknown [10.22.89.63])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A402A30001A2;
+	Wed, 15 Jul 2026 03:54:55 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v2] selftests/cgroup: Fix intermittent test_cgfreezer_ptrace test failures
+Date: Tue, 14 Jul 2026 23:54:46 -0400
+Message-ID: <20260715035446.565625-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/cgroup: Fix intermittent test_cgfreezer_ptrace
- test failures
-To: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20260714183125.521650-1-longman@redhat.com>
- <4ae04b8055b7145e182380a46f92c26e@kernel.org>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <4ae04b8055b7145e182380a46f92c26e@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17816-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-17817-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:tj@kernel.org,m:hannes@cmpxchg.org,m:mkoutny@suse.com,m:shuah@kernel.org,m:cgroups@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-kselftest@vger.kernel.org,m:longman@redhat.com,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cgroup.events:url]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6EFB2759DF9
+X-Rspamd-Queue-Id: DC43375A608
 
-On 7/14/26 6:09 PM, Tejun Heo wrote:
-> Hello, Waiman.
->
->> +	usleep(1000);
->>   	if (cg_check_frozen(cgroup, true))
->>   		goto cleanup;
-> A fixed 1ms sleep only hides the race. On a loaded machine or a slow arch
-> (you mention ppc64) the refreeze can take longer than 1ms, and the test
-> reads the unfrozen state and fails anyway.
->
-> The freezer test already has a way to wait for this properly.
-> cg_prepare_for_wait() sets up an inotify watch on cgroup.events and
-> cg_wait_for() blocks until it changes. cg_enter_and_wait_for_frozen() shows
-> the pattern: loop cg_wait_for() then cg_check_frozen(). The cgroup always
-> ends up frozen, so looping until cg_check_frozen() reports frozen is
-> reliable and doesn't depend on timing.
->
-> Can you respin using that instead of usleep()?
->
-> Also, temporaily -> temporarily, in both the changelog and the comment.
->
-> Thanks.
+It is found that the test_cgfreezer_ptrace test of test_freezer can
+intermittently fail on some architectures like arm64 and ppc64.
 
-Thanks for the suggestion. Will revise the patch as suggested.
+After further tracing of the mechanics of the test_cgfreezer_ptrace test,
+it is found that the ptrace(PTRACE_DETACH) call will spawn another process
+to perform the detach by temporarily unfreezes the cgroup and then freezes
+it again afterward during the detaching process. The reading of the
+frozen flag from cgroup.events is done by the main test_freezer process
+running probably on a different CPU. As a result, racing is possible and
+the intermediate unfrozen state can be read leading to occasional test
+failures especially on architectures with a weak memory model like arm64.
 
-Cheers,
-Longman
+Fix that by using the cg_prepare_for_wait() and cg_wait_for() helpers to
+wait until frozen state is set or it times out. A suppress_debug_msg flag
+is added to suppress the printing of debug message when cg_check_frozen()
+is used during this waiting process.
+
+By running test_freezer 100 times in a loop, there were 28
+test_cgfreezer_ptrace failures out of 100 on an arm64 test system before
+the patch. After applying the patch, there was no test failure at all
+in 100 runs of test_freezer.
+
+Suggested-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ tools/testing/selftests/cgroup/test_freezer.c | 41 +++++++++++++++++--
+ 1 file changed, 38 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
+index 0569e93fa6b0..9edb2d34658c 100644
+--- a/tools/testing/selftests/cgroup/test_freezer.c
++++ b/tools/testing/selftests/cgroup/test_freezer.c
+@@ -14,9 +14,11 @@
+ #include "kselftest.h"
+ #include "cgroup_util.h"
+ 
++static bool suppress_debug_msg;
++
+ #define DEBUG
+ #ifdef DEBUG
+-#define debug(args...) fprintf(stderr, args)
++#define debug(args...) do { if (!suppress_debug_msg) fprintf(stderr, args); } while (0)
+ #else
+ #define debug(args...)
+ #endif
+@@ -585,7 +587,8 @@ static int test_cgfreezer_ptrace(const char *root)
+ 	int ret = KSFT_FAIL;
+ 	char *cgroup = NULL;
+ 	siginfo_t siginfo;
+-	int pid;
++	int fd = -1, pid, retries;
++	bool frozen;
+ 
+ 	cgroup = cg_name(root, "cg_test_ptrace");
+ 	if (!cgroup)
+@@ -622,15 +625,47 @@ static int test_cgfreezer_ptrace(const char *root)
+ 	if (ptrace(PTRACE_GETSIGINFO, pid, NULL, &siginfo))
+ 		goto cleanup;
+ 
++	/*
++	 * The ptrace(PTRACE_DETACH) call spawns a different a process to
++	 * temporarily unfreeze the cgroup and then freeze it again in the
++	 * detaching process. The reading of the frozen flag from cgroup.events
++	 * is done by the main test process running probably on a different CPU.
++	 * As a result, racing is possible and the intermediate unfrozen state
++	 * can be read leading to occasional test failure especially on
++	 * architectures with a weak memory model like arm64.
++	 *
++	 * This intermittent test failure can be avoided by using the
++	 * cg_prepare_for_wait() and cg_wait_for() helpers to wait for change
++	 * in the frozen state if necessary.
++	 */
++	fd = cg_prepare_for_wait(cgroup);
++	if (fd < 0)
++		goto cleanup;
++
+ 	if (ptrace(PTRACE_DETACH, pid, NULL, NULL))
+ 		goto cleanup;
+ 
+-	if (cg_check_frozen(cgroup, true))
++	suppress_debug_msg = true;
++	frozen = !cg_check_frozen(cgroup, true);
++	if (!frozen) {
++		/* Attempt to wait until frozen */
++		for (retries = 0; retries < 3; retries++) {
++			if (cg_wait_for(fd))
++				break;
++			frozen = !cg_check_frozen(cgroup, true);
++			if (frozen)
++				break;
++		}
++	}
++	suppress_debug_msg = false;
++	if (!frozen)
+ 		goto cleanup;
+ 
+ 	ret = KSFT_PASS;
+ 
+ cleanup:
++	if (fd >= 0)
++		close(fd);
+ 	if (cgroup)
+ 		cg_destroy(cgroup);
+ 	free(cgroup);
+-- 
+2.55.0
 
 
