@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-17854-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17855-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Iv8SMLaIV2rOWQAAu9opvQ
-	(envelope-from <cgroups+bounces-17854-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 15:18:46 +0200
+	id Nir1A7+JV2oqWgAAu9opvQ
+	(envelope-from <cgroups+bounces-17855-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 15:23:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6582F75E94F
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 15:18:46 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2D275EA22
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 15:23:10 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="gQNfz/n4";
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17854-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="cgroups+bounces-17854-lists+cgroups=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Ok3JXN6g;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17855-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17855-lists+cgroups=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 8AC0A304CD40
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 13:15:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EC0963067C85
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 13:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94983E557F;
-	Wed, 15 Jul 2026 13:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458E840EBAB;
+	Wed, 15 Jul 2026 13:16:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFB9420493;
-	Wed, 15 Jul 2026 13:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB96040EBAD;
+	Wed, 15 Jul 2026 13:16:36 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784121300; cv=none; b=IDZa+Rz5HVHi4Ygik1RI+/lpz5ajikSCnnA2KSZMlu5ZGrmQxSeH5zbDsR4fMl6NbpfQkIy30qHqyWnjMzE4BaVolWsn39FyPduIDDBwRjxy5olHljaqN0JOQK6MQ7QSsXOcnoF/QbWG0bDga6fpbnmWh6lnLUYUFWmJk1dcVfg=
+	t=1784121400; cv=none; b=TeZmNYH8qE4kPT9fM+qXOfscLr2fBlcsSL8Aa5fpT3oK1U/kgHR/QbKwFzU3fbYMF4k3W4fx6WZg1EujtsQ/LD7gt3a3wJHH4u+1Py+PRrYIXLlQUwL6+hRSePee2G5ImKSpXX2DvdkCRjLZKjRU+zIyXUbJnDzF8C0Ec59KbhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784121300; c=relaxed/simple;
-	bh=wXWIOmQlAFsKQKh7NGu1MYJbt/eXwjt3MreYNkIAk7g=;
+	s=arc-20240116; t=1784121400; c=relaxed/simple;
+	bh=Kw4qNJiriDvmXjMEsDH+w7ghSOhjZ3L5XXQ39XhO05E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AHb+ihwbkwzCvh9s5KdA+BL8xhzDVdiw4/+9tMBdhU/ZZHj/vBZrYv9z4fmJetgbsZhBoJeuuyc8mv5isB5ekxb0MxEcBskx74nBWyI/K+oYg3P/Ap//s1mIeCYXE3DTQGqWDac7+NxjmUj36nF0DvHdQ/bXRNeyExb0hwY3vZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gQNfz/n4; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 230F21F000E9;
-	Wed, 15 Jul 2026 13:14:54 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=QJ3zaJBETVje+OCK8xvK7nZwqcReZqdgQxX59G81eUxd2xFHo1bau2wV7Hroug+5gO3rbhshLTwOAWly3mkyXjtoodsKp8bfd0Xp+vmQ5fNUoWMjiMnpfxyHn5Yj3gf6E5+Uo8JJteOIJ+WyMMfR+FVQygjoJwMlk6GF1kNzKL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ok3JXN6g; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5106F1F000E9;
+	Wed, 15 Jul 2026 13:16:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784121299;
-	bh=vM2dkF/6lSWo/swXz9lDfkksfM0DbUYYsHFUpZl+IKQ=;
+	s=k20260515; t=1784121394;
+	bh=L/blMt7c0/x/SOLABbbNCJG/CCPLnSKvmx9YqzzFQVA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=gQNfz/n4GrHbrVnvIgE2OgeJCJJpUZ0ZBqZufkO6fvqW5Se77tNKewsBgZD/gpLKw
-	 JGKciVFxEzfEslsNGysyRVW8RK/F1V/zPxlErEOezScbMjUbt8YpIo3K2A7BZFECdf
-	 8HsJ6IVlKkA3c4aVgoM3uBIQYD/Je3wLfTrnZ0q9hzDP/uDmD5OwL5QRLGRG2vp+p4
-	 ydiBCToxDIHDkoao24Nwh5wQVW+gIH4WSsWLjZ4BZTG0me1TUDGmc0v9NaRtK8it0A
-	 xeTwzvdnny3Bm7oCxnh5tmaXhQrvqNlGk0yeNERqr4guHDUyMzA/agMzf1HPHhz0Yd
-	 gCHZAswKY3DFg==
-Message-ID: <ada7bf29-1bd2-4de0-bf3c-0916f0ce512f@kernel.org>
-Date: Wed, 15 Jul 2026 15:14:53 +0200
+	b=Ok3JXN6gpujiV3WYE7zP0r0lt52trOjQDdcE9kNKvTHziuUZHP3P4fzdSoFmnaqQS
+	 jOkSXWvZPIfENSuklm7MShw6mNUQEosX9cteCzZKvFlab6DjYc27FmT16HaVRcN3e6
+	 wHrPVvSQNCVRKXbzh7NMwRN++gjPwOKO6MAYrTCqX4rdLA6l3cVycxT3rz4RizFbbM
+	 RKxa0OFzfReAQ7iRnxMCkjz5JR3QYN+cShFG0hjbYv38Hk/NG6lMMijhaWC09xwgDz
+	 Yf4iZ3zlV7bW8eEYbUpy3ye+L1QxYG86m6QfismhI/EWkC9MoZ0rT/ysFdQ5Osu0I6
+	 DRMUAcWKev7Vw==
+Message-ID: <ad397b95-bb3b-4f8f-b1e0-cbe204530721@kernel.org>
+Date: Wed, 15 Jul 2026 15:16:28 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] mm/page_alloc: rename FPI_TRYLOCK -> FPI_NOLOCK
+Subject: Re: [PATCH v3 2/4] cgroup/cpuset: update some comments about the page
+ allocator
 Content-Language: en-US
 To: Brendan Jackman <jackmanb@google.com>,
  Andrew Morton <akpm@linux-foundation.org>,
@@ -71,7 +72,7 @@ To: Brendan Jackman <jackmanb@google.com>,
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, linux-rt-devel@lists.linux.dev
 References: <20260715-spin-trylock-followup-v3-0-fc4d246f705d@google.com>
- <20260715-spin-trylock-followup-v3-1-fc4d246f705d@google.com>
+ <20260715-spin-trylock-followup-v3-2-fc4d246f705d@google.com>
 From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
 Autocrypt: addr=vbabka@kernel.org; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -112,14 +113,14 @@ Autocrypt: addr=vbabka@kernel.org; keydata=
  NcaZ+c6J4H+nEJGi2SkHAUJz5oBzuThvPudLvPA/SK8sKoM01IRxSihev/S/5WLazXB1PGem
  OCbvzC1IjWJJraxiDJ5IygokapUa2RP7+WBR22skQ3SSl6G107QgWKSyTOGWEaRmV53vxQLV
  jXuCmzSSasTL60zq5yGrT4/DYQVSNEUiUbG4pYekxJujNeEDkUlky0Y=
-In-Reply-To: <20260715-spin-trylock-followup-v3-1-fc4d246f705d@google.com>
+In-Reply-To: <20260715-spin-trylock-followup-v3-2-fc4d246f705d@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-5.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -130,7 +131,7 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	FORGED_SENDER(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[21];
-	TAGGED_FROM(0.00)[bounces-17854-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-17855-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
@@ -144,115 +145,81 @@ X-Spamd-Result: default: False [-5.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,nvidia.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,nvidia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6582F75E94F
+X-Rspamd-Queue-Id: 8D2D275EA22
 X-Rspamd-Action: no action
 
 On 7/15/26 13:03, Brendan Jackman wrote:
-> As discussed in the linked patch, the there is some inconsistency between
-> "trylock" and "nolock" nomenclature, let's align it. Since "nolock" is
-> used in the public API it seems to have more mindshare so do that.
+> These comments describing the page allocator are out of date:
 > 
-> The linked patch did this for the ALLOC_ flag but forgot about FPI_.
+> - __alloc_pages() is no longer a public API and has no business being
+>   described outside of mm/.
 > 
-> Link: https://lore.kernel.org/all/20260703-alloc-trylock-v5-1-c87b714e19d3@google.com/
+> - The `wait` variable is gone.
+> 
+> It may be out of date for other reasons too but this patch is just
+> fixing the issues that stood out.
+> 
+> To fix it:
+> 
+> - Instead of referring to a specific function, instead to "the page
+>   allocator"
+> 
+> - Completely drop out-of-date details of that function's internal
+>   behaviour, since they were irrelevant anyway.
+> 
+> Suggested-by: Zi Yan <ziy@nvidia.com>
+> Link: https://lore.kernel.org/all/DJP11T5V7BDW.2FZZZ8R6LOY4I@nvidia.com/
 > Reviewed-by: Zi Yan <ziy@nvidia.com>
 > Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
 Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
 
 > ---
->  mm/page_alloc.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+>  kernel/cgroup/cpuset.c | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index af63558391345..c2da85e69a0f8 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -90,7 +90,7 @@ typedef int __bitwise fpi_t;
->  #define FPI_TO_TAIL		((__force fpi_t)BIT(1))
->  
->  /* Free the page without taking locks. Rely on trylock only. */
-> -#define FPI_TRYLOCK		((__force fpi_t)BIT(2))
-> +#define FPI_NOLOCK		((__force fpi_t)BIT(2))
->  
->  /* free_pages_prepare() has already been called for page(s) being freed. */
->  #define FPI_PREPARED		((__force fpi_t)BIT(3))
-> @@ -1419,7 +1419,7 @@ static __always_inline bool __free_pages_prepare(struct page *page,
->  	page_table_check_free(page, order);
->  	pgalloc_tag_sub(page, 1 << order);
->  
-> -	if (!PageHighMem(page) && !(fpi_flags & FPI_TRYLOCK)) {
-> +	if (!PageHighMem(page) && !(fpi_flags & FPI_NOLOCK)) {
->  		debug_check_no_locks_freed(page_address(page),
->  					   PAGE_SIZE << order);
->  		debug_check_no_obj_freed(page_address(page),
-> @@ -1558,7 +1558,7 @@ static void free_one_page(struct zone *zone, struct page *page,
->  	struct llist_head *llhead;
->  	unsigned long flags;
->  
-> -	if (unlikely(fpi_flags & FPI_TRYLOCK)) {
-> +	if (unlikely(fpi_flags & FPI_NOLOCK)) {
->  		if (!spin_trylock_irqsave(&zone->lock, flags)) {
->  			add_page_to_zone_llist(zone, page, order);
->  			return;
-> @@ -1569,7 +1569,7 @@ static void free_one_page(struct zone *zone, struct page *page,
->  
->  	/* The lock succeeded. Process deferred pages. */
->  	llhead = &zone->trylock_free_pages;
-> -	if (unlikely(!llist_empty(llhead) && !(fpi_flags & FPI_TRYLOCK))) {
-> +	if (unlikely(!llist_empty(llhead) && !(fpi_flags & FPI_NOLOCK))) {
->  		struct llist_node *llnode;
->  		struct page *p, *tmp;
->  
-> @@ -2882,7 +2882,7 @@ static bool free_frozen_page_commit(struct zone *zone,
->  	if (pcp->free_count < (batch << CONFIG_PCP_BATCH_SCALE_MAX))
->  		pcp->free_count += (1 << order);
->  
-> -	if (unlikely(fpi_flags & FPI_TRYLOCK)) {
-> +	if (unlikely(fpi_flags & FPI_NOLOCK)) {
->  		/*
->  		 * Do not attempt to take a zone lock. Let pcp->count get
->  		 * over high mark temporarily.
-> @@ -2979,7 +2979,7 @@ static void __free_frozen_pages(struct page *page, unsigned int order,
->  		migratetype = MIGRATE_MOVABLE;
->  	}
->  
-> -	if (unlikely((fpi_flags & FPI_TRYLOCK) && IS_ENABLED(CONFIG_PREEMPT_RT)
-> +	if (unlikely((fpi_flags & FPI_NOLOCK) && IS_ENABLED(CONFIG_PREEMPT_RT)
->  		     && (in_nmi() || in_hardirq()))) {
->  		add_page_to_zone_llist(zone, page, order);
->  		return;
-> @@ -3002,7 +3002,7 @@ void free_frozen_pages(struct page *page, unsigned int order)
->  
->  void free_frozen_pages_nolock(struct page *page, unsigned int order)
->  {
-> -	__free_frozen_pages(page, order, FPI_TRYLOCK);
-> +	__free_frozen_pages(page, order, FPI_NOLOCK);
->  }
->  
->  /*
-> @@ -5399,7 +5399,7 @@ struct page *__alloc_frozen_pages_noprof(gfp_t gfp, unsigned int order,
->  	if (memcg_kmem_online() && (gfp & __GFP_ACCOUNT) && page &&
->  	    unlikely(__memcg_kmem_charge_page(page, gfp, order) != 0)) {
->  		__free_frozen_pages(page, order,
-> -				    alloc_flags & ALLOC_NOLOCK ? FPI_TRYLOCK : 0);
-> +				    alloc_flags & ALLOC_NOLOCK ? FPI_NOLOCK : 0);
->  		page = NULL;
->  	}
->  
-> @@ -5522,7 +5522,7 @@ EXPORT_SYMBOL(__free_pages);
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 24ea2d09cdbdb..dfd0f827e3b92 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -4193,7 +4193,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+>   * nearest enclosing hardwalled ancestor cpuset.
+>   *
+>   * Scanning up parent cpusets requires callback_lock.  The
+> - * __alloc_pages() routine only calls here with __GFP_HARDWALL bit
+> + * page allocator only calls here with __GFP_HARDWALL bit
+>   * _not_ set if it's a GFP_KERNEL allocation, and all nodes in the
+>   * current tasks mems_allowed came up empty on the first pass over
+>   * the zonelist.  So only GFP_KERNEL allocations, if all nodes in the
+> @@ -4206,11 +4206,8 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+>   * come before the __GFP_HARDWALL check, otherwise a dying task
+>   * would be blocked on the fast path.
+>   *
+> - * The second pass through get_page_from_freelist() doesn't even call
+> - * here for GFP_ATOMIC calls.  For those calls, the __alloc_pages()
+> - * variable 'wait' is not set, and the bit ALLOC_CPUSET is not set
+> - * in alloc_flags.  That logic and the checks below have the combined
+> - * affect that:
+> + * The second pass through get_page_from_freelist() doesn't even call here for
+> + * GFP_ATOMIC calls.  That, and the checks below have the combined affect that:
+>   *	in_interrupt - any node ok (current task context irrelevant)
+>   *	GFP_ATOMIC   - any node ok
+>   *	tsk_is_oom_victim   - any node ok
+> @@ -4327,8 +4324,8 @@ void cpuset_nodes_allowed(struct cgroup *cgroup, nodemask_t *mask)
+>   * should not be possible for the following code to return an
+>   * offline node.  But if it did, that would be ok, as this routine
+>   * is not returning the node where the allocation must be, only
+> - * the node where the search should start.  The zonelist passed to
+> - * __alloc_pages() will include all nodes.  If the slab allocator
+> + * the node where the search should start.  The zonelist used by
+> + * the allocator will include all nodes.  If the slab allocator
+>   * is passed an offline node, it will fall back to the local node.
+>   * See kmem_cache_alloc_node().
 >   */
->  void free_pages_nolock(struct page *page, unsigned int order)
->  {
-> -	___free_pages(page, order, FPI_TRYLOCK);
-> +	___free_pages(page, order, FPI_NOLOCK);
->  }
->  
->  /**
 > 
 
 
