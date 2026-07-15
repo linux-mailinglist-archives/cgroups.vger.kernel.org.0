@@ -1,299 +1,202 @@
-Return-Path: <cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-17848-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id oU+/HodiV2pmKwEAu9opvQ
-	(envelope-from <cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:35:51 +0200
+	id 1UoPLXdpV2qlMwEAu9opvQ
+	(envelope-from <cgroups+bounces-17848-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 13:05:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id E524275D0BB
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 12:35:50 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2796675D499
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 13:05:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=lWVjevAk;
-	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="cgroups+bounces-17846-lists+cgroups=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=google.com header.s=20251104 header.b=oFeUzVQw;
+	spf=pass (mail.lfdr.de: domain of "cgroups+bounces-17848-lists+cgroups=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="cgroups+bounces-17848-lists+cgroups=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E255F3018429
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 10:35:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1C801307B5C8
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2026 11:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24987442137;
-	Wed, 15 Jul 2026 10:35:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE8A44210B;
+	Wed, 15 Jul 2026 11:03:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412AB44211D
-	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 10:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1961942CB14
+	for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 11:03:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784111740; cv=none; b=ObgSXA4ms7F7icIvaMwHBQMb/PxuIa1BkDJhGbdYDs4U7WxT6Rf+ZOD8Nbuyy/1WgUPZPeOsFrdOYDBS4/o08OWvRTjgIm9xUwbvW6mfD+jBT7bc+uvmLIPzLoIy/SaHEFxTyuMp7ggeLdBAZQi51ddLYhcdjBW32n7OgWZQTSw=
+	t=1784113421; cv=none; b=jtbfTvZQk0rH3CKdLY76+7phk7blYBixTe/P71FGQPCrlv35aTDbn8ihlEA81+PW7SoLeguV1w8dNw4pJjVkPm9Ny3u3Ii2d+4wKx3ZtP+jmD3VcvSWb9qMMgw66ZSJrULebuta7OKokqJXZ2Ofz3UZhYVduJUAqoFmokAn4Zk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784111740; c=relaxed/simple;
-	bh=SwdezaImxQcMt43h0jRN9TZ6bt6yTKaTU02f07mkxsA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aV40SsjYD8kCCYOA/+iIU7RL1LcZrlvXCufUlU6k5X86u4J+jSWyPaCkfl2M5Ticg1tidZeqxNSXs1qsfrUeVx/65TfdgD/Rc+N7HaTms00gqkUkmrIHR3K1wpgKDnjF8o+Pe9MUsM1zUENajfvgt/07PVX+6E+t4CUTZ4a/TJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lWVjevAk; arc=none smtp.client-ip=91.218.175.171
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1784111726;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=0PjHU3TbDnfGWF+iD96TKWS2XZ53YHp9da69Ponf0rw=;
-	b=lWVjevAkYZ064aFltJs8lMrrHhbvW3jfDDXTJNUk7br0vYrO703lDuTQkLrrB6DW2oxclA
-	CDTz4ntBIHKH7+v1OXbDtlB7q9AuF4Y9XDGtBTQ8/JYqvFRDPp3/uFjWpytuv6YlkxJ9HI
-	zsJlgnUW59RhgT+41ErbmMD+ZA0Uy4k=
-From: Usama Arif <usama.arif@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	david@fromorbit.com,
-	dgc@kernel.org,
-	qi.zheng@linux.dev,
-	baolin.wang@linux.alibaba.com,
-	brauner@kernel.org,
-	cgroups@vger.kernel.org,
-	clm@fb.com,
-	dsterba@suse.com,
-	hannes@cmpxchg.org,
-	hughd@google.com,
-	jack@suse.cz,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	mhocko@kernel.org,
-	muchun.song@linux.dev,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	kernel-team@meta.com
-Cc: Usama Arif <usama.arif@linux.dev>
-Subject: [PATCH v2] fs: push nr_cached_objects memcg gating into individual filesystems
-Date: Wed, 15 Jul 2026 03:35:16 -0700
-Message-ID: <20260715103516.2410175-1-usama.arif@linux.dev>
+	s=arc-20240116; t=1784113421; c=relaxed/simple;
+	bh=OuHNTKCxUIMX67vpWylAoqXnFPUPv0sLTOv0JBYEmnM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=tYyYf9447pqiozqeg1nedC2jesIQWerI+qQc3koJGp9JDDlXhw6LD2e7iU9phJxf9vpBPyEQ82ozFf1iX//D3NfdW8P/8Gp7GY3oSMeCAiMJHtBQKpCbI5ARgCHFnvHMWk2tJG4v/bwjbBh044Wkpd2lYOSLMeNkAkbvzkHtj+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jackmanb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oFeUzVQw; arc=none smtp.client-ip=209.85.128.73
+Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-493c526df6bso17621315e9.3
+        for <cgroups@vger.kernel.org>; Wed, 15 Jul 2026 04:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1784113417; x=1784718217; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:from:subject
+         :message-id:mime-version:date:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=BvOk2rkLE/yZxPV4YYeXjAMJoxjIiJfLSZRx9VhA7SI=;
+        b=oFeUzVQwqtx+v7NZENqyVgL5XpqXndqq/1Tcni5EF//rBKuPbSA0sYnebZtFJOiEsG
+         PvuOwq8gO9pXXnAvealfvY4KvDUFCq9UFrqi3vVTtg7NHs2ppChxzsX8yXRFotPKjwbj
+         b8J4N2Nr1zXf0pLsu0tw+mQrGsKkU/smCQQvpoZ+BhAEAqfL1X9MCadJpbAkRdo5CGSK
+         yC8D/3qm0nfXF3FQ8723fs4tb4InuvnQvjIPuyz8EXHsUpMjr1g9zUH7oZe1v99K0oz6
+         eqoUTa/qI/RQOVHntn++qL/LFztW/tP1yzVGSqd7VvHzehkX3HI2ZApKdi7TlzUdPaoG
+         Y6eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784113417; x=1784718217;
+        h=content-transfer-encoding:content-type:cc:to:from:subject
+         :message-id:mime-version:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=BvOk2rkLE/yZxPV4YYeXjAMJoxjIiJfLSZRx9VhA7SI=;
+        b=FiQUSMohNKWKp3aicIK4zUy5ZfUFlY3YNrpVZkjz36IKF8aci4p2umC+hCOxXXULYr
+         1EaCXk7PTnspxB68BfnpMlDvMXtfCV0I8jtUeozF+f+864O4MKl9aBxBH9GfS5KPEEG/
+         dZea3h4m3JYsdvjudDCD1gjRNErHKke/oTkHl8HhlsyZ2ka8WwTe3Hn6YrzZTU9pXhLG
+         em+MlyDL/Djh1I97HD1Ng0jpS6Z7Pyw9M9MCDzcNcKRDPrypffm7VcRobX0JDyl14rZy
+         HRhtqo+LhNWYOdNDyVLJfYSfG4wNRHjfbMP+PiHy8VbJtbpxxePfOaUGDXGO8uGn2Ar4
+         pbfA==
+X-Forwarded-Encrypted: i=1; AHgh+RoK4jiKynEepLkryRzslxaKn/veci8wwD1Jj59uthhExEIJL4GSiAvKButdv1ZLA7pLZp0pVeB6@vger.kernel.org
+X-Gm-Message-State: AOJu0YxbVJ0ysO58NceKSpI7HLe0bfJhWX28SPVn+93LCwwlS3UUUzbf
+	pMNZqbJW0WJVLTwD0vp5fxgm1WsokEEQTgPwJV0GDJNvejWTElW1R8ETc2wJdbGMQiAwDKNyoL9
+	CxJzB/FsHFjrUuA==
+X-Received: from wmoq16.prod.google.com ([2002:a05:600c:46d0:b0:493:b593:ca9f])
+ (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:600c:4f8a:b0:493:f7c8:eae2 with SMTP id 5b1f17b1804b1-493f87e6e9cmr175096055e9.15.1784113417076;
+ Wed, 15 Jul 2026 04:03:37 -0700 (PDT)
+Date: Wed, 15 Jul 2026 11:03:17 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAPVoV2oC/4XNQQ6CMBQE0KuQrq35tIDBlfcwLqD8QrVS0kKVE
+ O5uixtdGJeTzLxZiEOr0JFjshCLXjll+hD4LiGiq/oWqWpCJgxYAYcUqBtUT0c7ayNuVBqtzWM
+ aKOdMFLxAaMqShO1gUarn5p4v7+ym+opijFhsdMqNxs7bsU9j79+HTynQSso6l5hjA3BqjWk17 oW5k3ji2SeT/WJYYLhgEAjO6jT7YtZ1fQEIegvxFAEAAA==
+X-Change-Id: 20260710-spin-trylock-followup-332c636e0d99
+X-Mailer: b4 0.15.2
+Message-ID: <20260715-spin-trylock-followup-v3-0-fc4d246f705d@google.com>
+Subject: [PATCH v3 0/4] mm/page_alloc: couple of followups for recent cleanups
+From: Brendan Jackman <jackmanb@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+	Brendan Jackman <jackmanb@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Waiman Long <longman@redhat.com>, 
+	Ridong Chen <ridong.chen@linux.dev>, Tejun Heo <tj@kernel.org>, 
+	"=?utf-8?q?Michal_Koutn=C3=BD?=" <mkoutny@suse.com>, David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, 
+	"Liam R. Howlett" <liam@infradead.org>, Mike Rapoport <rppt@kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-rt-devel@lists.linux.dev, sashiko-bot@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-17846-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:david@fromorbit.com,m:dgc@kernel.org,m:qi.zheng@linux.dev,m:baolin.wang@linux.alibaba.com,m:brauner@kernel.org,m:cgroups@vger.kernel.org,m:clm@fb.com,m:dsterba@suse.com,m:hannes@cmpxchg.org,m:hughd@google.com,m:jack@suse.cz,m:linux-btrfs@vger.kernel.org,m:linux-fsdevel@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-mm@kvack.org,m:mhocko@kernel.org,m:muchun.song@linux.dev,m:roman.gushchin@linux.dev,m:shakeel.butt@linux.dev,m:viro@zeniv.linux.org.uk,m:kernel-team@meta.com,m:usama.arif@linux.dev,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[usama.arif@linux.dev,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_TLS_LAST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:akpm@linux-foundation.org,m:vbabka@kernel.org,m:surenb@google.com,m:mhocko@suse.com,m:jackmanb@google.com,m:hannes@cmpxchg.org,m:ziy@nvidia.com,m:bigeasy@linutronix.de,m:clrkwllms@kernel.org,m:rostedt@goodmis.org,m:longman@redhat.com,m:ridong.chen@linux.dev,m:tj@kernel.org,m:mkoutny@suse.com,m:david@kernel.org,m:ljs@kernel.org,m:liam@infradead.org,m:rppt@kernel.org,m:linux-mm@kvack.org,m:linux-kernel@vger.kernel.org,m:cgroups@vger.kernel.org,m:linux-rt-devel@lists.linux.dev,m:sashiko-bot@kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[jackmanb@google.com,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-17848-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jackmanb@google.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linux.dev:from_mime,linux.dev:mid,linux.dev:email,linux.dev:dkim,suse.cz:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E524275D0BB
+X-Rspamd-Queue-Id: 2796675D499
 
-Commit 0baad6f9b997 ("fs/super: skip non-memcg-aware nr_cached_objects
-in memcg slab shrink") added a check in fs/super.c that skipped every
-->nr_cached_objects() hook whenever the shrinker was invoked for a
-non-root memcg, on the assumption that none of them honour sc->memcg.
 
-That assumption is wrong for XFS, whose inode-reclaim hook is
-intentionally driven from per-memcg contexts to free memcg-charged
-slab. Encoding a blanket "never memcg-aware" policy in fs/super.c
-short-circuits that path.
 
-Push the check down into the callbacks whose counters really are
-irrelevant to per-memcg reclaim - btrfs_nr_cached_objects() and
-shmem_unused_huge_count() - and drop the fs/super.c gate. Each
-filesystem can now lift the restriction independently if its counter
-later grows memcg awareness, without touching fs/super.c.
-
-Introduce mem_cgroup_shrink_is_root() in <linux/memcontrol.h> so the
-callbacks don't open-code "sc->memcg is NULL or root".
-
-Fixes: 0baad6f9b997 ("fs/super: skip non-memcg-aware nr_cached_objects in memcg slab shrink")
-Acked-by: Qi Zheng <qi.zheng@linux.dev>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
-Signed-off-by: Usama Arif <usama.arif@linux.dev>
 ---
-v1 -> v2:
-- Do not gate xfs_fs_nr_cached_objects(); XFS's inode reclaim is
-  intentionally driven from per-memcg contexts to free memcg-charged
-  slab (Dave Chinner).
-- Add mem_cgroup_shrink_is_root() helper in <linux/memcontrol.h> so the
-  filesystem callbacks don't open-code "sc->memcg is NULL or root".
-  (Dave Chinner)
-- Add fixes tag (Dave Chinner)
----
- fs/btrfs/super.c           | 10 ++++++++++
- fs/super.c                 | 19 ++-----------------
- include/linux/memcontrol.h | 21 +++++++++++++++++++++
- mm/shmem.c                 | 10 ++++++++++
- 4 files changed, 43 insertions(+), 17 deletions(-)
+Changes in v3:
+- Fixed Sashiko Links: (Zi Yan)
+- Fixed kerneldoc syntax (Sashiko)
+- Removed extra VM_BUG_ON() (Sashiko)
+- Link to v2: https://patch.msgid.link/20260714-spin-trylock-followup-v2-0-=
+3c20ed032b14@google.com
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index a7d804219bec..cc4537435399 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -22,6 +22,7 @@
- #include <linux/namei.h>
- #include <linux/miscdevice.h>
- #include <linux/magic.h>
-+#include <linux/memcontrol.h>
- #include <linux/slab.h>
- #include <linux/ratelimit.h>
- #include <linux/crc32c.h>
-@@ -2434,6 +2435,15 @@ static long btrfs_nr_cached_objects(struct super_block *sb, struct shrink_contro
- 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
- 	const s64 nr = percpu_counter_read_positive(&fs_info->evictable_extent_maps);
- 
-+	/*
-+	 * The evictable extent map counter is filesystem-global and does not
-+	 * honour sc->memcg, so it is only meaningful on the global (kswapd or
-+	 * root direct reclaim) shrink path. Skip the per-memcg iterations of
-+	 * shrink_slab_memcg() to avoid queueing duplicate global work.
-+	 */
-+	if (!mem_cgroup_shrink_is_root(sc))
-+		return 0;
-+
- 	trace_btrfs_extent_map_shrinker_count(fs_info, nr);
- 
- 	return nr;
-diff --git a/fs/super.c b/fs/super.c
-index d2d04a6f4f84..a8fd61136aaf 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -24,7 +24,6 @@
- #include <linux/export.h>
- #include <linux/slab.h>
- #include <linux/blkdev.h>
--#include <linux/memcontrol.h>
- #include <linux/mount.h>
- #include <linux/security.h>
- #include <linux/writeback.h>		/* for the emergency remount stuff */
-@@ -170,19 +169,6 @@ static void super_wake(struct super_block *sb, unsigned int flag)
- 	wake_up_var(&sb->s_flags);
- }
- 
--/*
-- * The s_op->nr_cached_objects hooks (used for example by btrfs and xfs)
-- * operate on filesystem-global state and ignore sc->memcg. Driving them
-- * from per-memcg shrink_slab_memcg() invocations only burns CPU walking
-- * per-cpu counters and queueing duplicate work: the actual reclaim happens on
-- * the global path (kswapd or root direct reclaim) regardless. Restrict them
-- * to that path.
-- */
--static inline bool super_fs_objects_eligible(struct shrink_control *sc)
--{
--	return !sc->memcg || mem_cgroup_is_root(sc->memcg);
--}
--
- /*
-  * One thing we have to be careful of with a per-sb shrinker is that we don't
-  * drop the last active reference to the superblock from within the shrinker.
-@@ -212,7 +198,7 @@ static unsigned long super_cache_scan(struct shrinker *shrink,
- 	if (!super_trylock_shared(sb))
- 		return SHRINK_STOP;
- 
--	if (sb->s_op->nr_cached_objects && super_fs_objects_eligible(sc))
-+	if (sb->s_op->nr_cached_objects)
- 		fs_objects = sb->s_op->nr_cached_objects(sb, sc);
- 
- 	inodes = list_lru_shrink_count(&sb->s_inode_lru, sc);
-@@ -273,8 +259,7 @@ static unsigned long super_cache_count(struct shrinker *shrink,
- 		return 0;
- 	smp_rmb();
- 
--	if (sb->s_op && sb->s_op->nr_cached_objects &&
--	    super_fs_objects_eligible(sc))
-+	if (sb->s_op && sb->s_op->nr_cached_objects)
- 		total_objects = sb->s_op->nr_cached_objects(sb, sc);
- 
- 	total_objects += list_lru_shrink_count(&sb->s_dentry_lru, sc);
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index e1f46a0016fc..5407e4200460 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -520,6 +520,22 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
- 	return (memcg == root_mem_cgroup);
- }
- 
-+/**
-+ * mem_cgroup_shrink_is_root - is this a global or root-memcg shrink invocation?
-+ * @sc: shrink_control describing the current shrinker call
-+ *
-+ * Returns true when @sc represents a global reclaim shrink (sc->memcg == NULL)
-+ * or a root-memcg shrink, i.e. not a per-memcg iteration of
-+ * shrink_slab_memcg(). Filesystems whose ->nr_cached_objects()/
-+ * ->free_cached_objects() implementations operate on filesystem-global state
-+ * and do not honour sc->memcg can use this to early-return 0 in per-memcg
-+ * contexts.
-+ */
-+static inline bool mem_cgroup_shrink_is_root(struct shrink_control *sc)
-+{
-+	return !sc->memcg || mem_cgroup_is_root(sc->memcg);
-+}
-+
- static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
- {
- 	return objcg->is_root;
-@@ -1071,6 +1087,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
- 	return true;
- }
- 
-+static inline bool mem_cgroup_shrink_is_root(struct shrink_control *sc)
-+{
-+	return true;
-+}
-+
- static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
- {
- 	return true;
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5789a0f5a346..dc8cd4f563f4 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -846,6 +846,16 @@ static long shmem_unused_huge_count(struct super_block *sb,
- 		struct shrink_control *sc)
- {
- 	struct shmem_sb_info *sbinfo = SHMEM_SB(sb);
-+
-+	/*
-+	 * The per-superblock shrinklist is filesystem-global and does not
-+	 * honour sc->memcg, so it is only meaningful on the global (kswapd or
-+	 * root direct reclaim) shrink path. Skip the per-memcg iterations of
-+	 * shrink_slab_memcg() to avoid queueing duplicate global work.
-+	 */
-+	if (!mem_cgroup_shrink_is_root(sc))
-+		return 0;
-+
- 	return READ_ONCE(sbinfo->shrinklist_len);
- }
- #else /* !CONFIG_TRANSPARENT_HUGEPAGE */
--- 
-2.53.0-Meta
+Changes in v2:
+- Separated from functional fixes
+- Added cpuset cleanup, comment fixup, VM_BUG_ON() removal from Zi Yan's
+  review of [0].
+- Link to v1: https://patch.msgid.link/20260710-spin-trylock-followup-v1-0-=
+affb5fe5ed00@google.com
+
+Based on mm-new, these are followups to [0]
+
+The alloc_pages_nolock_noprof() comment fixup could be squashed into
+"mm/page_alloc: relax GFP WARN in nolock allocs" - currently
+11770f8836f44 in mm-new.
+
+The VM_BUG_ON() removal could be squashed into "mm: remove
+__alloc_pages_node()", currently fba100a6cdfc5.
+[0]: https://lore.kernel.org/all/20260703-alloc-trylock-v5-0-c87b714e19d3@g=
+oogle.com/
+
+To: Andrew Morton <akpm@linux-foundation.org>
+To: Vlastimil Babka <vbabka@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+To: Michal Hocko <mhocko@suse.com>
+To: Brendan Jackman <jackmanb@google.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+To: Zi Yan <ziy@nvidia.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Clark Williams <clrkwllms@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+To: Waiman Long <longman@redhat.com>
+To: Ridong Chen <ridong.chen@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+To: Michal Koutn=C3=BD <mkoutny@suse.com>
+To: David Hildenbrand <david@kernel.org>
+To: Lorenzo Stoakes <ljs@kernel.org>
+To: "Liam R. Howlett" <liam@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: cgroups@vger.kernel.org
+Cc: linux-rt-devel@lists.linux.dev
+
+---
+Brendan Jackman (4):
+      mm/page_alloc: rename FPI_TRYLOCK -> FPI_NOLOCK
+      cgroup/cpuset: update some comments about the page allocator
+      mm/page_alloc: fixup alloc_pages_nolock_noprof() comment
+      mm/page_alloc: remove a couple of VM_BUG_ON()st
+
+ include/linux/gfp.h    |  1 -
+ kernel/cgroup/cpuset.c | 13 +++++--------
+ mm/page_alloc.c        | 22 +++++++++++-----------
+ 3 files changed, 16 insertions(+), 20 deletions(-)
+---
+base-commit: 59c684a9908d2e6f7a791f7f033eae57ec2b3a61
+change-id: 20260710-spin-trylock-followup-332c636e0d99
+
+Best regards,
+-- =20
+Brendan Jackman <jackmanb@google.com>
 
 
